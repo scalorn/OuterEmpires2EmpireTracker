@@ -36,12 +36,23 @@ namespace OE2EmpireTracker.Common.Client
         private DateTime _lastRefill;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TokenBucketRateLimiter"/> class.
+        /// Initializes a new instance of the <see cref="TokenBucketRateLimiter"/> class
+        /// with the default TPS of 0.9.
         /// </summary>
         public TokenBucketRateLimiter()
+            : this(0.9)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TokenBucketRateLimiter"/> class
+        /// with the specified transactions per second.
+        /// </summary>
+        /// <param name="tokensPerSecond">The target throughput in tokens per second.</param>
+        public TokenBucketRateLimiter(double tokensPerSecond)
         {
             _concurrency = new SemaphoreSlim(9, 9);
-            _tokensPerSecond = 0.9;
+            _tokensPerSecond = tokensPerSecond > 0 ? tokensPerSecond : 0.9;
             _tokens = 1.0;
             _lastRefill = SystemClock.UtcNow;
         }

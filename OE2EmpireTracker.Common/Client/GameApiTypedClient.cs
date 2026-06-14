@@ -43,11 +43,23 @@ namespace OE2EmpireTracker.Common.Client
         /// <param name="httpClient">The HTTP client to use for API requests.</param>
         /// <param name="appId">The application ID for header injection.</param>
         public GameApiTypedClient(HttpClient httpClient, string appId)
+            : this(httpClient, appId, 0.9)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GameApiTypedClient"/> class
+        /// with a custom rate limiter TPS.
+        /// </summary>
+        /// <param name="httpClient">The HTTP client to use for API requests.</param>
+        /// <param name="appId">The application ID for header injection.</param>
+        /// <param name="tps">The target transactions per second for the rate limiter.</param>
+        public GameApiTypedClient(HttpClient httpClient, string appId, double tps)
         {
             _httpClient = httpClient;
             _generatedClient = new GameApiGeneratedClient(httpClient);
             _appId = appId;
-            _rateLimiter = new TokenBucketRateLimiter();
+            _rateLimiter = new TokenBucketRateLimiter(tps);
             _tokenCache = new ConcurrentDictionary<string, CachedToken>();
 
             _retryPolicy = Policy
@@ -61,6 +73,18 @@ namespace OE2EmpireTracker.Common.Client
                 .CircuitBreakerAsync(3, TimeSpan.FromSeconds(30));
 
             _policyWrap = Policy.WrapAsync(_retryPolicy, _circuitBreaker);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GameApiTypedClient"/> class
+        /// with a server URL, creating its own <see cref="HttpClient"/>.
+        /// </summary>
+        /// <param name="serverUrl">The base URL of the game API server.</param>
+        /// <param name="appId">The application ID for header injection.</param>
+        /// <param name="tps">The target transactions per second for the rate limiter.</param>
+        public GameApiTypedClient(string serverUrl, string appId, double tps)
+            : this(new HttpClient { BaseAddress = new Uri(serverUrl) }, appId, tps)
+        {
         }
 
         /// <inheritdoc/>

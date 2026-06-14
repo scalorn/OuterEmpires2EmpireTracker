@@ -5,13 +5,14 @@
 using System;
 using System.Collections.Generic;
 using NLog;
+using OE2EmpireTracker.Common.Client;
 using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Client
 {
     /// <summary>
     /// Top-level singleton coordinating all game API components.
-    /// Owns the credential manager, HTTP client, connection monitor, and sync scheduler.
+    /// Owns the credential manager, typed client, connection monitor, and sync scheduler.
     /// Follows the startup sequence: read settings, check enabled, create components, start monitor and scheduler.
     /// Uses OAuth2 client_credentials flow (appId + clientId + secret) for authentication.
     /// </summary>
@@ -29,12 +30,12 @@ namespace OE2EmpireTracker.Client
         /// </summary>
         private GameApiContext(
             GameApiCredentialManager credentialManager,
-            GameApiClient client,
+            IGameApiTypedClient typedClient,
             GameApiConnectionMonitor connectionMonitor,
             GameApiSyncScheduler syncScheduler)
         {
             CredentialManager = credentialManager;
-            Client = client;
+            TypedClient = typedClient;
             ConnectionMonitor = connectionMonitor;
             SyncScheduler = syncScheduler;
             LastSyncTimes = new Dictionary<string, DateTime>();
@@ -46,9 +47,9 @@ namespace OE2EmpireTracker.Client
         public static GameApiContext Instance => _instance;
 
         /// <summary>
-        /// Gets the game API HTTP client.
+        /// Gets the strongly-typed game API client.
         /// </summary>
-        public GameApiClient Client { get; }
+        public IGameApiTypedClient TypedClient { get; }
 
         /// <summary>
         /// Gets the credential manager for per-character secrets.
@@ -123,29 +124,24 @@ namespace OE2EmpireTracker.Client
             }
 
             string firstPlayerUUID = configuredPlayers[0];
-            var client = new GameApiClient(settings.ServerUrl);
 
-            // Set the client's internal rate limiter as the authoritative TPS enforcer.
-            // The queue's TokenBucketGovernor is set to a very high rate (effectively disabled)
-            // so that dispatch is limited only by maxInflight and the client's semaphore.
-            int clientRatePerMinute = Math.Max(1, (int)Math.Ceiling(settings.Tps * 60));
-            client.SetRateLimit(clientRatePerMinute);
+            var typedClient = new GameApiTypedClient(settings.ServerUrl, settings.AppId, settings.Tps);
 
             var connectionMonitor = new GameApiConnectionMonitor(
-                client,
+                typedClient,
                 credentialManager,
                 firstPlayerUUID,
                 settings.AppId,
                 settings.ClientId);
             var syncScheduler = new ProductionSyncScheduler(
-                client,
+                typedClient,
                 credentialManager,
                 connectionMonitor,
                 settings.AppId,
                 settings.ClientId,
                 EmpireContext.PlayerContext);
 
-            _instance = new GameApiContext(credentialManager, client, connectionMonitor, syncScheduler);
+            _instance = new GameApiContext(credentialManager, typedClient, connectionMonitor, syncScheduler);
 
             GameApiMetricsCollector.Initialize();
 
@@ -181,7 +177,7 @@ namespace OE2EmpireTracker.Client
         }
 
         /// <summary>
-        /// Releases all resources: stops the monitor and scheduler, disposes the client.
+        /// Releases all resources: stops the monitor and scheduler, disposes the typed client.
         /// </summary>
         public void Dispose()
         {
@@ -201,7 +197,7 @@ namespace OE2EmpireTracker.Client
                 {
                     SyncScheduler?.Stop();
                     ConnectionMonitor?.Stop();
-                    Client?.Dispose();
+                    TypedClient?.Dispose();
                 }
 
                 _disposed = true;

@@ -1,13 +1,18 @@
+// <copyright file="BankingService.cs" company="OE2EmpireTracker">
+// Copyright (c) OE2EmpireTracker. All rights reserved.
+// </copyright>
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using NLog;
-using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Client;
+using OE2EmpireTracker.Common.Client.Generated;
 using OE2EmpireTracker.Models;
+using ApiBankingTransaction = OE2EmpireTracker.Common.Client.Generated.BankingTransaction;
 
 namespace OE2EmpireTracker.Services
 {
@@ -24,16 +29,14 @@ namespace OE2EmpireTracker.Services
         /// Imports banking transactions from the game API, deduplicating against existing records.
         /// Paginates through all available pages and persists new transactions to the player context.
         /// </summary>
-        /// <param name="apiClient">The game API client instance.</param>
-        /// <param name="appId">The registered application GUID.</param>
-        /// <param name="tokenAccessor">A function that returns the current access token (supports mid-sync refresh).</param>
+        /// <param name="typedClient">The typed game API client instance.</param>
         /// <param name="playerContext">The player context for persistence.</param>
+        /// <param name="ct">Cancellation token.</param>
         /// <returns>A <see cref="BankingImportResult"/> describing the outcome.</returns>
         public static async Task<BankingImportResult> ImportTransactionsAsync(
-            GameApiClient apiClient,
-            string appId,
-            Func<string> tokenAccessor,
-            PlayerContext playerContext)
+            IGameApiTypedClient typedClient,
+            PlayerContext playerContext,
+            CancellationToken ct = default)
         {
             var result = new BankingImportResult();
 
@@ -55,30 +58,19 @@ namespace OE2EmpireTracker.Services
             {
                 currentPage++;
 
-                (bool success, string json) apiResult;
+                BankingTransactions response;
                 try
                 {
-                    string token = tokenAccessor();
-                    apiResult = await apiClient.GetBankingTransactionsAsync(
-                        appId,
-                        token,
-                        offset,
-                        PageSize).ConfigureAwait(false);
-
-                    // Retry once on 401 with a refreshed token
-                    if (!apiResult.success && apiResult.json == "401")
-                    {
-                        Log.Warn("Banking import 401 at page {0}, re-reading token and retrying once.", currentPage);
-                        string refreshedToken = tokenAccessor();
-                        if (refreshedToken != token)
-                        {
-                            apiResult = await apiClient.GetBankingTransactionsAsync(
-                                appId,
-                                refreshedToken,
-                                offset,
-                                PageSize).ConfigureAwait(false);
-                        }
-                    }
+                    response = await typedClient.GetBankingTransactionsAsync(
+                        offset, PageSize, ct).ConfigureAwait(false);
+                }
+                catch (ApiHttpException ex) when (ex.StatusCode == 401)
+                {
+                    Log.Warn("Banking import 401 at page {0}.", currentPage);
+                    result.Success = false;
+                    result.ErrorMessage = "Authentication failure (401) at page " + currentPage;
+                    result.FailedAtPage = currentPage;
+                    break;
                 }
                 catch (Exception ex)
                 {
@@ -89,53 +81,19 @@ namespace OE2EmpireTracker.Services
                     break;
                 }
 
-                if (!apiResult.success || string.IsNullOrEmpty(apiResult.json))
+                ICollection<ApiBankingTransaction> transactions = response.Transactions;
+                if (transactions == null || transactions.Count == 0)
                 {
-                    Log.Error("Banking transaction import failed at page {0}: API returned failure", currentPage);
-                    result.Success = false;
-                    result.ErrorMessage = "API returned failure at page " + currentPage;
-                    result.FailedAtPage = currentPage;
-                    break;
-                }
-
-                JArray transactions;
-                try
-                {
-                    var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<JToken>>(apiResult.json);
-                    if (envelope == null || !envelope.Success || envelope.Data == null)
-                    {
-                        Log.Error("Banking transaction import: envelope unsuccessful at page {0}", currentPage);
-                        result.Success = false;
-                        result.ErrorMessage = envelope?.ReturnString ?? "Envelope unsuccessful";
-                        result.FailedAtPage = currentPage;
-                        break;
-                    }
-
-                    transactions = envelope.Data.Type == JTokenType.Array
-                        ? (JArray)envelope.Data
-                        : envelope.Data["transactions"] as JArray;
-
-                    if (transactions == null)
-                    {
-                        Log.Warn("Banking transaction import: no transactions array at page {0}, treating as empty", currentPage);
-                        transactions = new JArray();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Log.Error(ex, "Failed to parse banking transaction response at page {0}", currentPage);
-                    result.Success = false;
-                    result.ErrorMessage = "JSON parse error: " + ex.Message;
-                    result.FailedAtPage = currentPage;
+                    Log.Warn("Banking transaction import: no transactions at page {0}, treating as empty", currentPage);
                     break;
                 }
 
                 int pageDuplicates = 0;
                 foreach (var item in transactions)
                 {
-                    string transactionDT = item.Value<string>("transactionDT") ?? string.Empty;
-                    decimal creditChange = item.Value<decimal>("creditChange");
-                    string detail = item.Value<string>("detail") ?? string.Empty;
+                    string transactionDT = item.TransactionDT.ToString("o", CultureInfo.InvariantCulture);
+                    decimal creditChange = (decimal)item.CreditChange;
+                    string detail = item.Detail ?? string.Empty;
 
                     string compositeKey = string.Format("{0}|{1}|{2}", transactionDT, creditChange, detail);
 
@@ -146,19 +104,19 @@ namespace OE2EmpireTracker.Services
                         continue;
                     }
 
-                    var bankingTx = new BankingTransaction
+                    var bankingTx = new Models.BankingTransaction
                     {
                         UUID = Guid.NewGuid().ToString(),
                         OwnerUUID = playerContext.CurrentPlayerUUID,
                         TransactionDateTime = transactionDT,
                         CreditChange = creditChange,
-                        OldBalance = item.Value<decimal>("oldBalance"),
-                        NewBalance = item.Value<decimal>("newBalance"),
-                        TransactionType = item.Value<int>("transactionType"),
+                        OldBalance = (decimal)item.OldBalance,
+                        NewBalance = (decimal)item.NewBalance,
+                        TransactionType = item.TransactionType,
                         Detail = detail,
-                        CharacterId = item.Value<int?>("characterId"),
-                        SystemObjectId = item.Value<int?>("systemObjectId"),
-                        SystemId = item.Value<int?>("systemId"),
+                        CharacterId = item.CharacterId,
+                        SystemObjectId = item.SystemObjectId,
+                        SystemId = item.SystemId,
                         IsManualEntry = false,
                     };
 
@@ -205,50 +163,26 @@ namespace OE2EmpireTracker.Services
         /// <summary>
         /// Imports the current banking balance from the game API.
         /// </summary>
-        /// <param name="apiClient">The game API client instance.</param>
-        /// <param name="appId">The registered application GUID.</param>
-        /// <param name="accessToken">The Bearer access token.</param>
+        /// <param name="typedClient">The typed game API client instance.</param>
+        /// <param name="ct">Cancellation token.</param>
         /// <returns>The balance as a decimal, or null if the import failed.</returns>
         public static async Task<decimal?> ImportBalanceAsync(
-            GameApiClient apiClient,
-            string appId,
-            string accessToken)
+            IGameApiTypedClient typedClient,
+            CancellationToken ct = default)
         {
-            (bool success, string json) apiResult;
             try
             {
-                apiResult = await apiClient.GetBankingBalanceAsync(appId, accessToken).ConfigureAwait(false);
+                var response = await typedClient.GetBankingBalanceAsync(ct).ConfigureAwait(false);
+                return (decimal)response.Balance;
+            }
+            catch (ApiHttpException ex) when (ex.StatusCode == 401)
+            {
+                Log.Error("Banking balance import: authentication failure (401)");
+                return null;
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "Failed to import banking balance");
-                return null;
-            }
-
-            if (!apiResult.success || string.IsNullOrEmpty(apiResult.json))
-            {
-                Log.Error("Banking balance import failed: API returned failure");
-                return null;
-            }
-
-            try
-            {
-                var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<JToken>>(apiResult.json);
-                if (envelope == null || !envelope.Success || envelope.Data == null)
-                {
-                    Log.Error("Banking balance import: envelope unsuccessful");
-                    return null;
-                }
-
-                decimal balance = envelope.Data.Type == JTokenType.Object
-                    ? envelope.Data.Value<decimal>("balance")
-                    : envelope.Data.Value<decimal>();
-
-                return balance;
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Failed to parse banking balance response");
                 return null;
             }
         }
@@ -261,9 +195,9 @@ namespace OE2EmpireTracker.Services
         /// <param name="creditChange">The credit change amount (must be non-zero).</param>
         /// <param name="transactionType">The transaction type code.</param>
         /// <param name="detail">The transaction detail text.</param>
-        /// <returns>A new <see cref="BankingTransaction"/> with IsManualEntry set to true.</returns>
+        /// <returns>A new <see cref="Models.BankingTransaction"/> with IsManualEntry set to true.</returns>
         /// <exception cref="ArgumentException">Thrown when creditChange is zero.</exception>
-        public static BankingTransaction CreateManualTransaction(
+        public static Models.BankingTransaction CreateManualTransaction(
             string ownerUUID,
             DateTime transactionDateTime,
             decimal creditChange,
@@ -275,7 +209,7 @@ namespace OE2EmpireTracker.Services
                 throw new ArgumentException("Credit change must be non-zero.", nameof(creditChange));
             }
 
-            return new BankingTransaction
+            return new Models.BankingTransaction
             {
                 UUID = Guid.NewGuid().ToString(),
                 OwnerUUID = ownerUUID,
@@ -295,7 +229,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         /// <param name="playerContext">The player context to mutate.</param>
         /// <param name="transaction">The transaction to add.</param>
-        public static void AddManualTransaction(PlayerContext playerContext, BankingTransaction transaction)
+        public static void AddManualTransaction(PlayerContext playerContext, Models.BankingTransaction transaction)
         {
             if (playerContext == null)
             {
@@ -317,7 +251,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         /// <param name="transactions">The transactions to summarize.</param>
         /// <returns>A <see cref="BankingSummary"/> with computed totals.</returns>
-        public static BankingSummary ComputeSummary(IEnumerable<BankingTransaction> transactions)
+        public static BankingSummary ComputeSummary(IEnumerable<Models.BankingTransaction> transactions)
         {
             if (transactions == null)
             {
@@ -356,18 +290,18 @@ namespace OE2EmpireTracker.Services
         /// <param name="fromDate">Optional inclusive start date.</param>
         /// <param name="toDate">Optional inclusive end date.</param>
         /// <returns>Filtered and sorted list of transactions.</returns>
-        public static IReadOnlyList<BankingTransaction> FilterTransactions(
-            IReadOnlyList<BankingTransaction> transactions,
+        public static IReadOnlyList<Models.BankingTransaction> FilterTransactions(
+            IReadOnlyList<Models.BankingTransaction> transactions,
             int? transactionType,
             DateTime? fromDate,
             DateTime? toDate)
         {
             if (transactions == null || transactions.Count == 0)
             {
-                return Array.Empty<BankingTransaction>();
+                return Array.Empty<Models.BankingTransaction>();
             }
 
-            IEnumerable<BankingTransaction> result = transactions;
+            IEnumerable<Models.BankingTransaction> result = transactions;
 
             if (transactionType.HasValue)
             {

@@ -4,6 +4,7 @@
 
 using System.Collections.Generic;
 using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Client;
 using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Services
@@ -19,20 +20,20 @@ namespace OE2EmpireTracker.Services
         /// <summary>
         /// Initializes a new instance of the <see cref="ProductionSyncScheduler"/> class.
         /// </summary>
-        /// <param name="client">The game API client used for profile requests.</param>
+        /// <param name="typedClient">The typed game API client used for API requests.</param>
         /// <param name="credentialManager">The credential manager for retrieving secrets.</param>
         /// <param name="connectionMonitor">The connection monitor for detecting connect/disconnect transitions.</param>
         /// <param name="appId">The registered application GUID.</param>
         /// <param name="clientId">The player's account identifier.</param>
         /// <param name="playerContext">The player context for data access and persistence.</param>
         public ProductionSyncScheduler(
-            GameApiClient client,
+            IGameApiTypedClient typedClient,
             GameApiCredentialManager credentialManager,
             GameApiConnectionMonitor connectionMonitor,
             string appId,
             string clientId,
             PlayerContext playerContext)
-            : base(client, credentialManager, connectionMonitor, appId, clientId)
+            : base(typedClient, credentialManager, connectionMonitor, appId, clientId)
         {
             _playerContext = playerContext;
         }

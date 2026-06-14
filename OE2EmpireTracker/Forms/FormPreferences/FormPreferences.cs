@@ -572,21 +572,27 @@ namespace OE2EmpireTracker.Forms
 
             try
             {
-                using (var client = new GameApiClient(url))
+                using (var client = new OE2EmpireTracker.Common.Client.GameApiTypedClient(url, appId, 0.9))
                 {
-                    var result = await client.TestConnectionAsync(appId, clientId, secret).ConfigureAwait(true);
-                    Log.Info("Game API test connection result: Success={0}, Message='{1}'", result.Success, result.Message);
-                    if (result.Success)
+                    bool connected = await client.TestConnectionAsync(appId, clientId, secret).ConfigureAwait(true);
+                    Log.Info("Game API test connection result: Success={0}", connected);
+                    if (connected)
                     {
                         lblTestResult.ForeColor = Color.Green;
-                        lblTestResult.Text = result.Message;
+                        lblTestResult.Text = "Connected successfully";
                     }
                     else
                     {
                         lblTestResult.ForeColor = Color.Red;
-                        lblTestResult.Text = result.Message;
+                        lblTestResult.Text = "Connection test returned false";
                     }
                 }
+            }
+            catch (OE2EmpireTracker.Common.Client.ApiHttpException ex)
+            {
+                Log.Warn("Game API test connection failed: HTTP {0}", ex.StatusCode);
+                lblTestResult.ForeColor = Color.Red;
+                lblTestResult.Text = "Failed: HTTP " + ex.StatusCode;
             }
             catch (Exception ex)
             {

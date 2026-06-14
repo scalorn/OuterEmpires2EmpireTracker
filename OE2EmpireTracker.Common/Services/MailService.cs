@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using NLog;
-using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Client;
+using OE2EmpireTracker.Common.Client.Generated;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 
@@ -50,114 +50,77 @@ namespace OE2EmpireTracker.Services
 
         /// <summary>
         /// Performs incremental sync from the game API.
-        /// Fetches pages of mail IDs starting at offset 0, stopping when all IDs
+        /// Fetches pages of mail headers, stopping when all IDs
         /// on a page already exist locally. For each new mailId, fetches the
         /// detail endpoint for full content.
         /// </summary>
-        /// <param name="client">The game API client instance.</param>
-        /// <param name="appId">The registered application GUID.</param>
-        /// <param name="tokenAccessor">A function that returns the current access token (supports mid-sync refresh).</param>
+        /// <param name="typedClient">The typed game API client.</param>
         /// <param name="playerContext">The player context for persistence.</param>
-        /// <returns>The number of new messages synced, or -1 on error.</returns>
+        /// <param name="ct">Cancellation token.</param>
+        /// <returns>The number of new messages synced, -1 on auth failure, or -2 on rate limit.</returns>
         public static async Task<int> SyncMailAsync(
-            GameApiClient client,
-            string appId,
-            Func<string> tokenAccessor,
-            PlayerContext playerContext)
+            IGameApiTypedClient typedClient,
+            PlayerContext playerContext,
+            CancellationToken ct = default)
         {
             int offset = 0;
             int pageSize = 50;
             int newCount = 0;
 
-            while (true)
+            try
             {
-                string token = tokenAccessor();
-                var apiResult = await client.GetMailListAsync(appId, token, offset, pageSize).ConfigureAwait(false);
-                if (!apiResult.Success)
+                while (true)
                 {
-                    if (apiResult.Json == "401" || apiResult.Json == "403")
+                    var mailList = await typedClient.GetMailListAsync(offset, pageSize, ct: ct).ConfigureAwait(false);
+
+                    if (mailList.Mail == null || mailList.Mail.Count == 0)
                     {
-                        Log.Error("Authentication failed for mail sync");
-                        return -1;
+                        break;
                     }
 
-                    if (apiResult.Json == "429")
+                    bool allExist = true;
+
+                    foreach (var header in mailList.Mail)
                     {
-                        Log.Warn("Rate limited during mail sync");
-                        return -1;
+                        if (header.MailId <= 0)
+                        {
+                            continue;
+                        }
+
+                        if (playerContext.FindMailMessage(header.MailId) != null)
+                        {
+                            continue;
+                        }
+
+                        allExist = false;
+
+                        MailMessage message = await FetchMailDetailAsync(typedClient, header, ct).ConfigureAwait(false);
+
+                        if (message != null)
+                        {
+                            message.LocalRead = false;
+                            playerContext.AddMailMessage(message);
+                            newCount++;
+                        }
                     }
 
-                    Log.Error("Mail sync failed: network error");
-                    return -1;
-                }
-
-                if (string.IsNullOrEmpty(apiResult.Json))
-                {
-                    Log.Error("Mail sync failed: empty response at offset {0}", offset);
-                    return -1;
-                }
-
-                JArray mails;
-                try
-                {
-                    var envelope = JObject.Parse(apiResult.Json);
-                    mails = envelope["data"]?["mail"] as JArray;
-                }
-                catch (JsonException ex)
-                {
-                    Log.Error(ex, "Mail sync failed: JSON parse error at offset {0}", offset);
-                    return -1;
-                }
-
-                if (mails == null || mails.Count == 0)
-                {
-                    break;
-                }
-
-                bool allExist = true;
-
-                foreach (var item in mails)
-                {
-                    int mailId = item.Value<int>("mailId");
-                    if (mailId <= 0)
+                    if (allExist)
                     {
-                        continue;
+                        break;
                     }
 
-                    if (playerContext.FindMailMessage(mailId) != null)
-                    {
-                        continue;
-                    }
-
-                    allExist = false;
-
-                    var detailResult = await FetchMailDetailWithRetryAsync(client, appId, tokenAccessor, mailId).ConfigureAwait(false);
-                    MailMessage message;
-
-                    if (detailResult.Success && !string.IsNullOrEmpty(detailResult.Json))
-                    {
-                        message = ParseMailFromDetail(detailResult.Json);
-                    }
-                    else
-                    {
-                        Log.Error("Mail detail fetch failed for mailId={0}, storing with empty content", mailId);
-                        message = ParseMailFromListItem(item);
-                    }
-
-                    if (message != null)
-                    {
-                        message.LocalRead = false;
-                        playerContext.AddMailMessage(message);
-                        newCount++;
-                    }
+                    offset += pageSize;
                 }
-
-                if (allExist)
-                {
-                    break;
-                }
-
-                offset += pageSize;
+            }
+            catch (ApiHttpException ex) when (ex.StatusCode == 401 || ex.StatusCode == 403)
+            {
+                Log.Error("Authentication failed for mail sync (HTTP {0})", ex.StatusCode);
+                return -1;
+            }
+            catch (ApiHttpException ex) when (ex.StatusCode == 429)
+            {
+                Log.Warn("Rate limited during mail sync (HTTP 429)");
+                return -2;
             }
 
             if (newCount > 0)
@@ -265,34 +228,70 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
-        /// Fetches a mail detail with a single retry on 401 (token expired).
-        /// Re-reads the token accessor to pick up a potentially-refreshed token.
+        /// Fetches a mail detail and converts the DTO to a local MailMessage.
+        /// Falls back to constructing the message from the header if the detail fetch fails.
         /// </summary>
-        /// <param name="client">The game API client instance.</param>
-        /// <param name="appId">The registered application GUID.</param>
-        /// <param name="tokenAccessor">A function that returns the current access token.</param>
-        /// <param name="mailId">The mail identifier to fetch.</param>
-        /// <returns>The API result tuple.</returns>
-        private static async Task<(bool Success, string Json)> FetchMailDetailWithRetryAsync(
-            GameApiClient client,
-            string appId,
-            Func<string> tokenAccessor,
-            int mailId)
+        /// <param name="typedClient">The typed game API client.</param>
+        /// <param name="header">The mail header from the list response.</param>
+        /// <param name="ct">Cancellation token.</param>
+        /// <returns>A MailMessage constructed from the detail or header, or null on failure.</returns>
+        private static async Task<MailMessage> FetchMailDetailAsync(
+            IGameApiTypedClient typedClient,
+            MailHeader header,
+            CancellationToken ct)
         {
-            string token = tokenAccessor();
-            var result = await client.GetMailDetailAsync(appId, token, mailId).ConfigureAwait(false);
-
-            if (!result.Success && result.Json == "401")
+            try
             {
-                Log.Warn("Mail detail 401 for mailId={0}, re-reading token and retrying once.", mailId);
-                string refreshedToken = tokenAccessor();
-                if (refreshedToken != token)
-                {
-                    result = await client.GetMailDetailAsync(appId, refreshedToken, mailId).ConfigureAwait(false);
-                }
+                var body = await typedClient.GetMailBodyAsync(header.MailId, ct).ConfigureAwait(false);
+                return BuildMessageFromBody(body);
             }
+            catch (ApiHttpException ex) when (ex.StatusCode == 401 || ex.StatusCode == 403)
+            {
+                throw;
+            }
+            catch (ApiHttpException ex) when (ex.StatusCode == 429)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Mail detail fetch failed for mailId={0}, storing with empty content", header.MailId);
+                return BuildMessageFromHeader(header);
+            }
+        }
 
-            return result;
+        private static MailMessage BuildMessageFromBody(MailBody body)
+        {
+            return new MailMessage
+            {
+                MailId = body.MailId,
+                CharacterIdFrom = body.CharacterIdFrom,
+                FromName = (body.FromName ?? string.Empty).Trim(),
+                CharacterIdTo = body.CharacterIdTo,
+                ToName = (body.ToName ?? string.Empty).Trim(),
+                SentTime = body.SentTime.ToString("o", CultureInfo.InvariantCulture),
+                Subject = body.Subject ?? string.Empty,
+                MailRead = body.MailRead,
+                MailType = body.MailType,
+                MailContent = body.MailContent ?? string.Empty,
+            };
+        }
+
+        private static MailMessage BuildMessageFromHeader(MailHeader header)
+        {
+            return new MailMessage
+            {
+                MailId = header.MailId,
+                CharacterIdFrom = header.CharacterIdFrom,
+                FromName = (header.FromName ?? string.Empty).Trim(),
+                CharacterIdTo = header.CharacterIdTo,
+                ToName = (header.ToName ?? string.Empty).Trim(),
+                SentTime = header.SentTime.ToString("o", CultureInfo.InvariantCulture),
+                Subject = header.Subject ?? string.Empty,
+                MailRead = header.MailRead,
+                MailType = header.MailType,
+                MailContent = string.Empty,
+            };
         }
 
         private static bool PassesReadFilter(MailMessage msg, string readFilter)
@@ -386,67 +385,6 @@ namespace OE2EmpireTracker.Services
             }
 
             return DateTime.MinValue;
-        }
-
-        private static MailMessage ParseMailFromDetail(string json)
-        {
-            try
-            {
-                var envelope = JObject.Parse(json);
-                var data = envelope["data"];
-                if (data == null)
-                {
-                    return null;
-                }
-
-                var message = new MailMessage
-                {
-                    MailId = data.Value<int>("mailId"),
-                    CharacterIdFrom = data.Value<int>("characterIdFrom"),
-                    FromName = (data.Value<string>("fromName") ?? string.Empty).Trim(),
-                    CharacterIdTo = data.Value<int>("characterIdTo"),
-                    ToName = (data.Value<string>("toName") ?? string.Empty).Trim(),
-                    SentTime = data.Value<string>("sentTime") ?? string.Empty,
-                    Subject = data.Value<string>("subject") ?? string.Empty,
-                    MailRead = data.Value<bool>("mailRead"),
-                    MailType = data.Value<string>("mailType"),
-                    MailContent = data.Value<string>("mailContent") ?? string.Empty,
-                };
-
-                return message;
-            }
-            catch (JsonException ex)
-            {
-                Log.Error(ex, "Failed to parse mail detail JSON");
-                return null;
-            }
-        }
-
-        private static MailMessage ParseMailFromListItem(JToken item)
-        {
-            try
-            {
-                var message = new MailMessage
-                {
-                    MailId = item.Value<int>("mailId"),
-                    CharacterIdFrom = item.Value<int>("characterIdFrom"),
-                    FromName = (item.Value<string>("fromName") ?? string.Empty).Trim(),
-                    CharacterIdTo = item.Value<int>("characterIdTo"),
-                    ToName = (item.Value<string>("toName") ?? string.Empty).Trim(),
-                    SentTime = item.Value<string>("sentTime") ?? string.Empty,
-                    Subject = item.Value<string>("subject") ?? string.Empty,
-                    MailRead = item.Value<bool>("mailRead"),
-                    MailType = item.Value<string>("mailType"),
-                    MailContent = string.Empty,
-                };
-
-                return message;
-            }
-            catch (JsonException ex)
-            {
-                Log.Error(ex, "Failed to parse mail list item JSON");
-                return null;
-            }
         }
     }
 }

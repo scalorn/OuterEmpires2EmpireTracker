@@ -1,16 +1,15 @@
-// <copyright file="GameApiTokenResponse.cs" company="OE2EmpireTracker">
+// <copyright file="LegacyResponseModels.cs" company="OE2EmpireTracker">
 // Copyright (c) OE2EmpireTracker. All rights reserved.
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Client
 {
     /// <summary>
     /// DTO representing the token response from the OE2 public API OAuth2 token exchange.
+    /// Retained in test project for backward-compatible test code until task 10.x migrates tests.
     /// </summary>
     public class GameApiTokenResponse
     {
@@ -54,6 +53,7 @@ namespace OE2EmpireTracker.Client
     /// <summary>
     /// Generic service response envelope from the OE2 public API.
     /// All API responses are wrapped in this structure.
+    /// Retained in test project for backward-compatible test code until task 10.x migrates tests.
     /// </summary>
     /// <typeparam name="T">The type of the data payload.</typeparam>
     public class GameApiServiceResponse<T>
@@ -84,35 +84,33 @@ namespace OE2EmpireTracker.Client
     }
 
     /// <summary>
-    /// Cached token entry with expiration tracking.
+    /// DTO representing the skill currently in training from the game API.
+    /// Retained in test project for backward-compatible test code until task 10.x migrates tests.
     /// </summary>
-    internal class CachedToken
+    public class GameApiSkillInTrainingResponse
     {
         /// <summary>
-        /// Gets or sets the token response data.
+        /// Gets or sets the name of the skill being trained.
         /// </summary>
-        public GameApiTokenResponse Token { get; set; }
+        [JsonProperty("skillName")]
+        public string SkillName { get; set; }
 
         /// <summary>
-        /// Gets or sets the UTC time when the token was obtained.
+        /// Gets or sets the target level for training.
         /// </summary>
-        public DateTime ObtainedAtUtc { get; set; }
+        [JsonProperty("targetLevel")]
+        public int TargetLevel { get; set; }
 
         /// <summary>
-        /// Gets a value indicating whether the token is expired or about to expire (60s buffer).
+        /// Gets or sets the training percentage complete.
         /// </summary>
-        public bool IsExpired
-        {
-            get
-            {
-                if (Token == null)
-                {
-                    return true;
-                }
+        [JsonProperty("trainingPercentageComplete")]
+        public int TrainingPercentageComplete { get; set; }
 
-                DateTime expiresAt = ObtainedAtUtc.AddSeconds(Token.ExpiresIn - 60);
-                return SystemClock.UtcNow >= expiresAt;
-            }
-        }
+        /// <summary>
+        /// Gets or sets the remaining minutes until training completes.
+        /// </summary>
+        [JsonProperty("remainingMinutes")]
+        public int RemainingMinutes { get; set; }
     }
 }

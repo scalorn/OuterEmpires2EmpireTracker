@@ -5,9 +5,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
 using NLog;
-using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Client.Generated;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 
@@ -91,17 +90,18 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
-        /// Imports crate contents from a raw JSON response into the local data model.
-        /// Returns work items for any nested crates discovered.
+        /// Imports crate contents from a typed <see cref="AssetCrateContents"/> DTO
+        /// into the local data model. Bypasses JSON deserialization since the typed
+        /// client already provides the unwrapped DTO.
         /// </summary>
-        /// <param name="json">Raw JSON from GetAssetCrateAsync (GameApiAssetDetailResponse shape).</param>
+        /// <param name="crateContents">The typed crate contents DTO from the game API.</param>
         /// <param name="crateGameItemId">The GameItemId of the parent crate item.</param>
-        /// <param name="parentBag">The ItemBag containing the crate item (ship cargo, station hold, etc.).</param>
+        /// <param name="parentBag">The ItemBag containing the crate item.</param>
         /// <param name="ownerUUID">Owner UUID for blueprint routing.</param>
         /// <param name="visitedCrateIds">Set of already-visited crate IDs for cycle detection.</param>
         /// <returns>Result containing nested crate IDs to cascade and import statistics.</returns>
         public CrateContentImportResult Import(
-            string json,
+            AssetCrateContents crateContents,
             int crateGameItemId,
             ItemBag parentBag,
             string ownerUUID,
@@ -112,36 +112,23 @@ namespace OE2EmpireTracker.Services
             // Mark self as visited before processing contents (cycle detection)
             visitedCrateIds.Add(crateGameItemId);
 
-            GameApiAssetDetailResponse response;
-            try
+            if (crateContents?.Cargo == null)
             {
-                var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiAssetDetailResponse>>(json);
-                response = envelope?.Data;
-            }
-            catch (JsonException ex)
-            {
-                Log.Error("CrateContentImporter: malformed JSON for crate GameItemId={0}: {1}", crateGameItemId, ex.Message);
-                result.Success = false;
-                result.Errors.Add($"Malformed JSON: {ex.Message}");
+                Log.Info("CrateContentImporter: crate GameItemId={0} has no cargo (null DTO or cargo).", crateGameItemId);
                 return result;
             }
 
-            if (response?.Cargo == null)
-            {
-                Log.Info("CrateContentImporter: crate GameItemId={0} has no cargo (null response or cargo).", crateGameItemId);
-                return result;
-            }
-
-            result.TotalItems = response.Cargo.Count;
-            Log.Info("CrateContentImporter: starting import for crate GameItemId={0}, cargo count={1}", crateGameItemId, response.Cargo.Count);
+            var cargoList = crateContents.Cargo.ToList();
+            result.TotalItems = cargoList.Count;
+            Log.Info("CrateContentImporter: starting import for crate GameItemId={0}, cargo count={1}", crateGameItemId, cargoList.Count);
 
             var createdItems = new List<Item>();
 
-            for (int i = 0; i < response.Cargo.Count; i++)
+            for (int i = 0; i < cargoList.Count; i++)
             {
                 try
                 {
-                    var cargoItem = response.Cargo[i];
+                    var cargoItem = cargoList[i];
                     var mappedType = AssetMergeService.MapAssetTypeC(cargoItem.TypeC);
                     Log.Debug("CrateContentImporter: item[{0}] TypeC='{1}' mapped to ItemType={2}", i, cargoItem.TypeC, mappedType);
 
@@ -174,7 +161,7 @@ namespace OE2EmpireTracker.Services
                     {
                         try
                         {
-                            int nestedCrateId = cargoItem.CargoItemId;
+                            int nestedCrateId = cargoItem.Id;
                             if (visitedCrateIds.Contains(nestedCrateId))
                             {
                                 Log.Warn("CrateContentImporter: cycle detected — nested crate GameItemId={0} already visited, skipping cascade", nestedCrateId);
@@ -207,7 +194,7 @@ namespace OE2EmpireTracker.Services
                     result.Failed++;
                     try
                     {
-                        string itemName = (i < response.Cargo.Count) ? response.Cargo[i]?.ResourceName ?? "(unknown)" : "(unknown)";
+                        string itemName = (i < cargoList.Count) ? cargoList[i]?.ResourceName ?? "(unknown)" : "(unknown)";
                         Log.Error("CrateContentImporter: failed to process item[{0}] '{1}' in crate GameItemId={2}: {3}", i, itemName, crateGameItemId, ex.Message);
                         result.Errors.Add($"Item[{i}] '{itemName}': {ex.Message}");
                     }

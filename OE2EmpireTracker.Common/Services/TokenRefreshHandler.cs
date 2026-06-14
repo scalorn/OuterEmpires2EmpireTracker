@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using NLog;
 using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Client;
 
 namespace OE2EmpireTracker.Services
 {
@@ -38,7 +39,7 @@ namespace OE2EmpireTracker.Services
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         private readonly SemaphoreSlim _refreshLock = new SemaphoreSlim(1, 1);
-        private readonly GameApiClient _apiClient;
+        private readonly IGameApiTypedClient _typedClient;
         private readonly GameApiConnectionSettings _settings;
         private readonly GameApiCredentialManager _credentialManager;
         private readonly string _playerUUID;
@@ -49,19 +50,19 @@ namespace OE2EmpireTracker.Services
         /// <summary>
         /// Initializes a new instance of the <see cref="TokenRefreshHandler"/> class.
         /// </summary>
-        /// <param name="apiClient">The game API client used for token exchange.</param>
+        /// <param name="typedClient">The typed game API client used for token exchange.</param>
         /// <param name="settings">The connection settings containing AppId and ClientId.</param>
         /// <param name="credentialManager">The credential manager for retrieving the character secret.</param>
         /// <param name="playerUUID">The player UUID whose credentials are used for refresh.</param>
         /// <param name="initialAccessToken">The initial access token to use.</param>
         public TokenRefreshHandler(
-            GameApiClient apiClient,
+            IGameApiTypedClient typedClient,
             GameApiConnectionSettings settings,
             GameApiCredentialManager credentialManager,
             string playerUUID,
             string initialAccessToken)
         {
-            _apiClient = apiClient ?? throw new ArgumentNullException(nameof(apiClient));
+            _typedClient = typedClient ?? throw new ArgumentNullException(nameof(typedClient));
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
             _credentialManager = credentialManager ?? throw new ArgumentNullException(nameof(credentialManager));
             _playerUUID = playerUUID ?? string.Empty;
@@ -111,29 +112,23 @@ namespace OE2EmpireTracker.Services
                     return new TokenRefreshResult { Success = false, NewToken = null };
                 }
 
-                // Invalidate the GameApiClient token cache before refreshing.
-                // Without this, ExchangeTokenAsync may return the same expired token
-                // from its internal cache if the client-side expiry buffer hasn't elapsed yet.
-                _apiClient.InvalidateToken(_settings.ClientId, secret);
-
-                var tokenResult = await _apiClient.ExchangeTokenAsync(
+                // No InvalidateToken call needed — typed client manages its own token cache.
+                var tokenDto = await _typedClient.ExchangeTokenAsync(
                     _settings.AppId,
                     _settings.ClientId,
-                    secret).ConfigureAwait(false);
+                    secret,
+                    ct).ConfigureAwait(false);
 
-                if (tokenResult.Success)
-                {
-                    _currentAccessToken = tokenResult.Token.AccessToken;
-                    _tokenVersion++;
-                    Log.Info(
-                        "Token refresh succeeded (version now {0})",
-                        _tokenVersion);
-                    return new TokenRefreshResult { Success = true, NewToken = _currentAccessToken };
-                }
-
-                Log.Error(
-                    "Token refresh failed: {0}",
-                    tokenResult.ErrorMessage ?? "unknown error");
+                _currentAccessToken = tokenDto.AccessToken;
+                _tokenVersion++;
+                Log.Info(
+                    "Token refresh succeeded (version now {0})",
+                    _tokenVersion);
+                return new TokenRefreshResult { Success = true, NewToken = _currentAccessToken };
+            }
+            catch (ApiHttpException ex)
+            {
+                Log.Error("Token refresh failed: HTTP {0}", ex.StatusCode);
                 return new TokenRefreshResult { Success = false, NewToken = null };
             }
             finally

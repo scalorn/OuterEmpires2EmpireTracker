@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NLog;
 using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Client.Generated;
 using OE2EmpireTracker.Common.Models;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
@@ -28,24 +29,24 @@ namespace OE2EmpireTracker.Services
         /// Deduplicates by PlanetName + SystemName (case-insensitive) within the same owner.
         /// Skips entries with null/empty SystemObjectName. Per-colony errors are caught and logged.
         /// </summary>
-        /// <param name="apiColonies">The colonies returned by the game API.</param>
+        /// <param name="apiResponse">The colony list response from the game API.</param>
         /// <param name="localColonies">The local colony list to merge into (may be modified).</param>
         /// <param name="ownerUUID">The UUID of the player who owns these colonies.</param>
         /// <returns>A <see cref="ColonyMergeResult"/> summarizing the merge outcome.</returns>
         public static ColonyMergeResult MergeColonyList(
-            List<GameApiColonyListItem> apiColonies,
+            ColonyList apiResponse,
             List<Colony> localColonies,
             string ownerUUID)
         {
             var result = new ColonyMergeResult();
 
-            if (apiColonies == null || localColonies == null)
+            if (apiResponse?.Colonies == null || localColonies == null)
             {
-                Log.Warn("MergeColonyList: apiColonies or localColonies is null, returning empty result");
+                Log.Warn("MergeColonyList: apiResponse/Colonies or localColonies is null, returning empty result");
                 return result;
             }
 
-            foreach (var apiColony in apiColonies)
+            foreach (var apiColony in apiResponse.Colonies)
             {
                 if (string.IsNullOrEmpty(apiColony.SystemObjectName))
                 {
@@ -89,16 +90,16 @@ namespace OE2EmpireTracker.Services
         /// Never removes local structures absent from the API response.
         /// Preserves local-only fields on existing structures.
         /// </summary>
-        /// <param name="apiBuildings">The buildings returned by the game API.</param>
+        /// <param name="apiResponse">The colony buildings response from the game API.</param>
         /// <param name="colony">The local colony whose structures are being merged.</param>
         /// <returns>True if any structures were created or updated; otherwise false.</returns>
         public static bool MergeBuildings(
-            List<GameApiColonyBuilding> apiBuildings,
+            ColonyBuildings apiResponse,
             Colony colony)
         {
-            if (apiBuildings == null || colony == null)
+            if (apiResponse?.Buildings == null || colony == null)
             {
-                Log.Warn("MergeBuildings: apiBuildings or colony is null, returning false");
+                Log.Warn("MergeBuildings: apiResponse/Buildings or colony is null, returning false");
                 return false;
             }
 
@@ -106,8 +107,8 @@ namespace OE2EmpireTracker.Services
 
             // Sort API buildings by constructingBuildingFinish ascending.
             // Buildings constructed first have earlier dates; the one currently being built has the latest.
-            var sortedApiBuildings = apiBuildings
-                .OrderBy(b => b.ConstructingBuildingFinish ?? DateTime.MaxValue)
+            var sortedApiBuildings = apiResponse.Buildings
+                .OrderBy(b => b.ConstructingBuildingFinish?.UtcDateTime ?? DateTime.MaxValue)
                 .ToList();
 
             // Phase 1: Ordered matching with pool consumption tracking.
@@ -406,7 +407,7 @@ namespace OE2EmpireTracker.Services
             Log.Info(
                 "MergeBuildings: completed for colony {0} — {1} API buildings processed, hasChanges={2}",
                 colony.UUID,
-                apiBuildings.Count,
+                apiResponse.Buildings.Count,
                 hasChanges);
 
             return hasChanges;
@@ -418,20 +419,20 @@ namespace OE2EmpireTracker.Services
         /// using the same DTO and processing code as the asset sync.
         /// Optionally invokes blueprint and survey linkage services for qualifying items.
         /// </summary>
-        /// <param name="apiItems">The warehouse items returned by the game API.</param>
+        /// <param name="apiResponse">The colony warehouse response from the game API.</param>
         /// <param name="colony">The local colony whose Items bag will be updated.</param>
         /// <param name="blueprintLinkage">Optional blueprint linkage service for Bp/S items with properties.</param>
         /// <param name="surveyLinkage">Optional survey linkage service for Sc items.</param>
         /// <returns>True if any item was created or updated; otherwise false.</returns>
         public static bool MergeWarehouse(
-            List<GameApiAssetCargoItem> apiItems,
+            ColonyWarehouse apiResponse,
             Colony colony,
             BlueprintLinkageService blueprintLinkage = null,
             SurveyLinkageService surveyLinkage = null)
         {
-            if (apiItems == null || colony == null)
+            if (apiResponse?.Contents == null || colony == null)
             {
-                Log.Warn("MergeWarehouse: apiItems or colony is null, returning false");
+                Log.Warn("MergeWarehouse: apiResponse/Contents or colony is null, returning false");
                 return false;
             }
 
@@ -443,7 +444,7 @@ namespace OE2EmpireTracker.Services
             bool hasChanges = false;
             var touchedUUIDs = new HashSet<string>();
 
-            foreach (var apiItem in apiItems)
+            foreach (var apiItem in apiResponse.Contents)
             {
                 try
                 {
@@ -541,7 +542,7 @@ namespace OE2EmpireTracker.Services
         /// <param name="apiWorkers">The workers response from the game API.</param>
         /// <param name="colony">The local colony to update.</param>
         /// <returns>True if any data changed; otherwise false.</returns>
-        public static bool MergeWorkers(GameApiColonyWorkersResponse apiWorkers, Colony colony)
+        public static bool MergeWorkers(ColonyWorkers apiWorkers, Colony colony)
         {
             if (apiWorkers == null || colony == null)
             {
@@ -657,7 +658,7 @@ namespace OE2EmpireTracker.Services
         /// Determines whether an API item qualifies for blueprint linkage.
         /// Returns true if typeC is "Bp" or "S" and the item has non-empty properties.
         /// </summary>
-        private static bool HasBlueprintProperties(GameApiAssetCargoItem apiItem)
+        private static bool HasBlueprintProperties(AssetCargoItem apiItem)
         {
             var typeC = apiItem.TypeC?.Trim();
             if (string.IsNullOrEmpty(typeC))
@@ -674,7 +675,7 @@ namespace OE2EmpireTracker.Services
         /// <summary>
         /// Determines whether an API item is a survey item (typeC = "Sc").
         /// </summary>
-        private static bool IsSurveyItem(GameApiAssetCargoItem apiItem)
+        private static bool IsSurveyItem(AssetCargoItem apiItem)
         {
             return string.Equals(apiItem.TypeC?.Trim(), AssetTypeCodes.Survey, StringComparison.OrdinalIgnoreCase);
         }
@@ -682,7 +683,7 @@ namespace OE2EmpireTracker.Services
         /// <summary>
         /// Maps API commodity demands to local CommodityRequested list.
         /// </summary>
-        private static List<CommodityRequested> MapCommodityDemands(List<GameApiCommodityDemand> demands)
+        private static List<CommodityRequested> MapCommodityDemands(ICollection<ColonyCommodityDemand> demands)
         {
             if (demands == null || demands.Count == 0)
             {
@@ -697,7 +698,7 @@ namespace OE2EmpireTracker.Services
                 {
                     Name = d.TypeName,
                     Requested = d.Amount,
-                    NeedBy = d.RequiredBy,
+                    NeedBy = d.RequiredBy.UtcDateTime,
                     Fulfilled = d.Fulfilled,
                     Delivered = d.Fulfilled ? d.Amount : 0,
                 };
@@ -783,7 +784,7 @@ namespace OE2EmpireTracker.Services
         /// <param name="consumed">Set of pool entry UUIDs already matched; excluded from candidates.</param>
         /// <returns>The matched local structure, or null if no match found.</returns>
         private static ColonyStructure FindLocalStructure(
-            GameApiColonyBuilding apiBuilding,
+            ColonyBuilding apiBuilding,
             Colony colony,
             HashSet<string> consumed)
         {
@@ -830,7 +831,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         private static bool MergeExistingStructure(
             ColonyStructure local,
-            GameApiColonyBuilding apiBuilding)
+            ColonyBuilding apiBuilding)
         {
             bool changed = false;
 
@@ -844,7 +845,7 @@ namespace OE2EmpireTracker.Services
             // Update Built/Online status from API (Req 8.2)
             // If constructingBuildingFinish is in the future, the building is still under construction
             bool isCurrentlyBuilding = apiBuilding.ConstructingBuildingFinish != null &&
-                apiBuilding.ConstructingBuildingFinish.Value > SystemClock.UtcNow;
+                apiBuilding.ConstructingBuildingFinish.Value.UtcDateTime > SystemClock.UtcNow;
             bool apiBuildingBuilt = apiBuilding.StatusId > 0 && !isCurrentlyBuilding;
             bool apiOnline = apiBuildingBuilt && apiBuilding.BuildingOnline;
 
@@ -978,7 +979,7 @@ namespace OE2EmpireTracker.Services
 
             if (apiBuilding.ConstructingBuildingFinish != null && local.BuildCompletionTime == null)
             {
-                var finishTime = apiBuilding.ConstructingBuildingFinish.Value;
+                var finishTime = apiBuilding.ConstructingBuildingFinish.Value.UtcDateTime;
                 var now = SystemClock.UtcNow;
                 long remainingSeconds = (long)(finishTime - now).TotalSeconds;
                 if (remainingSeconds < 0)
@@ -1031,7 +1032,7 @@ namespace OE2EmpireTracker.Services
         /// <summary>
         /// Creates a new ColonyStructure from API building data.
         /// </summary>
-        private static ColonyStructure CreateStructureFromApi(GameApiColonyBuilding apiBuilding)
+        private static ColonyStructure CreateStructureFromApi(ColonyBuilding apiBuilding)
         {
             var structure = new ColonyStructure
             {
@@ -1048,7 +1049,7 @@ namespace OE2EmpireTracker.Services
             // Set Built/Online status (Req 8.3)
             // If constructingBuildingFinish is in the future, the building is still under construction
             bool isCurrentlyBuilding = apiBuilding.ConstructingBuildingFinish != null &&
-                apiBuilding.ConstructingBuildingFinish.Value > SystemClock.UtcNow;
+                apiBuilding.ConstructingBuildingFinish.Value.UtcDateTime > SystemClock.UtcNow;
             bool isBuilt = apiBuilding.StatusId > 0 && !isCurrentlyBuilding;
             structure.Properties.SetProperty(GameConstants.PropBuilt, isBuilt);
             structure.Properties.SetProperty(GameConstants.PropOnline, isBuilt && apiBuilding.BuildingOnline);
@@ -1070,7 +1071,7 @@ namespace OE2EmpireTracker.Services
             // Conditional: BuildCompletionTime from ConstructingBuildingFinish
             if (apiBuilding.ConstructingBuildingFinish != null)
             {
-                var finishTime = apiBuilding.ConstructingBuildingFinish.Value;
+                var finishTime = apiBuilding.ConstructingBuildingFinish.Value.UtcDateTime;
                 var now = SystemClock.UtcNow;
                 long remainingSeconds = (long)(finishTime - now).TotalSeconds;
                 if (remainingSeconds < 0)
@@ -1120,7 +1121,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         private static bool ReplaceOpsStatusEffects(
             ColonyStructure local,
-            GameApiColonyBuilding apiBuilding)
+            ColonyBuilding apiBuilding)
         {
             var mapped = MapOpsStatusEffects(apiBuilding.OpsStatusEffects);
             local.OpsStatusEffects = mapped;
@@ -1132,7 +1133,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         private static bool ReplaceIndustries(
             ColonyStructure local,
-            GameApiColonyBuilding apiBuilding)
+            ColonyBuilding apiBuilding)
         {
             var mapped = MapIndustries(apiBuilding.Industries);
             local.Industries = mapped;
@@ -1144,7 +1145,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         private static bool ReplaceDetailsRequired(
             ColonyStructure local,
-            GameApiColonyBuilding apiBuilding)
+            ColonyBuilding apiBuilding)
         {
             var mapped = MapDetailsRequired(apiBuilding.DetailsRequired);
             local.DetailsRequired = mapped;
@@ -1156,7 +1157,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         private static bool ReplaceSupportDetailsRequired(
             ColonyStructure local,
-            GameApiColonyBuilding apiBuilding)
+            ColonyBuilding apiBuilding)
         {
             var mapped = MapDetailsRequired(apiBuilding.SupportDetailsRequired);
             local.SupportDetailsRequired = mapped;
@@ -1168,7 +1169,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         private static bool ReplaceBuildingAttributes(
             ColonyStructure local,
-            GameApiColonyBuilding apiBuilding)
+            ColonyBuilding apiBuilding)
         {
             var mapped = MapBuildingAttributes(apiBuilding.BuildingAttributes);
             local.BuildingAttributes = mapped;
@@ -1180,7 +1181,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         private static bool ReplaceExtraProperties(
             ColonyStructure local,
-            GameApiColonyBuilding apiBuilding)
+            ColonyBuilding apiBuilding)
         {
             var mapped = MapExtraProperties(apiBuilding.ExtraProperties);
             local.ExtraProperties = mapped;
@@ -1191,7 +1192,7 @@ namespace OE2EmpireTracker.Services
         /// Maps API status effects to local model types.
         /// </summary>
         private static List<BuildingStatusEffect> MapOpsStatusEffects(
-            List<GameApiBuildingStatusEffect> apiEffects)
+            ICollection<ColonyBuildingStatusEffect> apiEffects)
         {
             if (apiEffects == null)
             {
@@ -1210,7 +1211,7 @@ namespace OE2EmpireTracker.Services
         /// Maps API industries to local model types.
         /// </summary>
         private static List<BuildingIndustry> MapIndustries(
-            List<GameApiBuildingIndustry> apiIndustries)
+            ICollection<ColonyBuildingIndustry> apiIndustries)
         {
             if (apiIndustries == null)
             {
@@ -1219,7 +1220,7 @@ namespace OE2EmpireTracker.Services
 
             return apiIndustries.Select(i => new BuildingIndustry
             {
-                Id = i.Id,
+                Id = i.Id ?? 0,
                 Name = i.Name ?? string.Empty,
             }).ToList();
         }
@@ -1228,7 +1229,7 @@ namespace OE2EmpireTracker.Services
         /// Maps API detail requirements to local model types.
         /// </summary>
         private static List<BuildingDetailRequirement> MapDetailsRequired(
-            List<GameApiBuildingDetailRequirement> apiDetails)
+            ICollection<ColonyBuildingDetailRequirement> apiDetails)
         {
             if (apiDetails == null)
             {
@@ -1238,7 +1239,7 @@ namespace OE2EmpireTracker.Services
             return apiDetails.Select(d => new BuildingDetailRequirement
             {
                 Name = d.Name ?? string.Empty,
-                WorkerID = d.WorkerID,
+                WorkerID = d.WorkerId,
             }).ToList();
         }
 
@@ -1246,7 +1247,7 @@ namespace OE2EmpireTracker.Services
         /// Maps API building attributes to local model types.
         /// </summary>
         private static List<BuildingAttribute> MapBuildingAttributes(
-            List<GameApiBuildingAttribute> apiAttributes)
+            ICollection<ColonyBuildingAttribute> apiAttributes)
         {
             if (apiAttributes == null)
             {
@@ -1258,7 +1259,7 @@ namespace OE2EmpireTracker.Services
                 ModTypeId = a.ModTypeId,
                 PropertyName = a.PropertyName ?? string.Empty,
                 FriendlyPropertyName = a.FriendlyPropertyName ?? string.Empty,
-                PropertyValue = a.PropertyValue ?? string.Empty,
+                PropertyValue = a.PropertyValue.ToString(),
                 Unit = a.Unit ?? string.Empty,
             }).ToList();
         }
@@ -1267,7 +1268,7 @@ namespace OE2EmpireTracker.Services
         /// Maps API extra properties to local model types.
         /// </summary>
         private static List<BuildingExtraProperty> MapExtraProperties(
-            List<GameApiBuildingExtraProperty> apiProperties)
+            ICollection<ColonyBuildingExtraProperty> apiProperties)
         {
             if (apiProperties == null)
             {
@@ -1287,7 +1288,7 @@ namespace OE2EmpireTracker.Services
         /// Processes a single API colony: finds a local match or creates a new colony.
         /// </summary>
         private static void ProcessSingleColony(
-            GameApiColonyListItem apiColony,
+            ColonyListItem apiColony,
             List<Colony> localColonies,
             string ownerUUID,
             ColonyMergeResult result)
@@ -1355,7 +1356,7 @@ namespace OE2EmpireTracker.Services
         /// <summary>
         /// Creates a new Colony from API data with a new UUID.
         /// </summary>
-        private static Colony CreateColonyFromApi(GameApiColonyListItem apiColony, string ownerUUID)
+        private static Colony CreateColonyFromApi(ColonyListItem apiColony, string ownerUUID)
         {
             var colony = new Colony
             {
@@ -1397,7 +1398,7 @@ namespace OE2EmpireTracker.Services
         /// <param name="local">The local colony to update.</param>
         /// <param name="apiColony">The API colony data.</param>
         /// <returns>True if any field was changed; otherwise false.</returns>
-        private static bool MergeAllColonyFields(Colony local, GameApiColonyListItem apiColony)
+        private static bool MergeAllColonyFields(Colony local, ColonyListItem apiColony)
         {
             bool changed = false;
 

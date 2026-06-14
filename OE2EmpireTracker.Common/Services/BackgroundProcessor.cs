@@ -369,7 +369,7 @@ namespace OE2EmpireTracker.Services
                 _queueSyncService = new QueueSyncService(
                     _playerContext,
                     EmpireContext.GetInstance(),
-                    gameApiContext.Client,
+                    gameApiContext.TypedClient,
                     settings,
                     gameApiContext.CredentialManager);
                 Log.Info("BackgroundProcessor: QueueSyncService constructed");

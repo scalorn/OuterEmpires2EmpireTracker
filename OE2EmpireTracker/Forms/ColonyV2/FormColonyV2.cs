@@ -1686,131 +1686,114 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             string secret = CredentialStore.SecureStringToString(secureSecret);
             secureSecret.Dispose();
 
-            // Exchange token
-            var tokenResult = await gameApi.Client.ExchangeTokenAsync(appId, clientId, secret).ConfigureAwait(false);
-            if (!tokenResult.Success)
-            {
-                if (tokenResult.ErrorMessage != null && tokenResult.ErrorMessage.Contains("401"))
-                {
-                    Log.Warn("Manual sync: token exchange failed (HTTP 401) for colony {0}", colonyId);
-                    return new SyncResult { Status = SyncStatus.Error, TransitionToInvalidKey = true };
-                }
+            var typedClient = gameApi.TypedClient;
 
-                Log.Warn("Manual sync: token exchange failed for colony {0}: {1}", colonyId, tokenResult.ErrorMessage);
+            // Exchange token
+            try
+            {
+                await typedClient.ExchangeTokenAsync(appId, clientId, secret).ConfigureAwait(false);
+            }
+            catch (OE2EmpireTracker.Common.Client.ApiHttpException ex) when (ex.StatusCode == 401)
+            {
+                Log.Warn("Manual sync: token exchange failed (HTTP 401) for colony {0}", colonyId);
+                return new SyncResult { Status = SyncStatus.Error, TransitionToInvalidKey = true };
+            }
+            catch (Exception ex)
+            {
+                Log.Warn("Manual sync: token exchange failed for colony {0}: {1}", colonyId, ex.Message);
                 return new SyncResult { Status = SyncStatus.Error };
             }
 
-            string accessToken = tokenResult.Token.AccessToken;
             bool anyChanges = false;
             bool buildingsSucceeded = false;
             bool warehouseSucceeded = false;
 
             // Fetch buildings
-            var buildingsResult = await gameApi.Client.GetColonyBuildingsAsync(appId, accessToken, colonyId).ConfigureAwait(false);
-            if (buildingsResult.Success)
+            try
             {
-                try
+                var buildingsDto = await typedClient.GetColonyBuildingsAsync(colonyId).ConfigureAwait(false);
+                if (buildingsDto != null)
                 {
-                    var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiColonyBuildingsResponse>>(buildingsResult.Json);
-                    if (envelope?.Data?.Buildings != null)
+                    var colony = playerContext.FindMutableColony(colonyUUID);
+                    if (colony != null)
                     {
-                        var colony = playerContext.FindMutableColony(colonyUUID);
-                        if (colony != null)
+                        bool changed = ColonyMergeService.MergeBuildings(buildingsDto, colony);
+                        if (changed)
                         {
-                            bool changed = ColonyMergeService.MergeBuildings(envelope.Data.Buildings, colony);
-                            if (changed)
-                            {
-                                anyChanges = true;
-                            }
-
-                            buildingsSucceeded = true;
+                            anyChanges = true;
                         }
+
+                        buildingsSucceeded = true;
                     }
                 }
-                catch (JsonException ex)
-                {
-                    Log.Error(ex, "Manual sync: malformed buildings JSON for colony {0}", colonyId);
-                }
             }
-            else if (buildingsResult.Json == "401")
+            catch (OE2EmpireTracker.Common.Client.ApiHttpException ex) when (ex.StatusCode == 401)
             {
                 Log.Warn("Manual sync: buildings fetch returned 401 for colony {0}", colonyId);
                 return new SyncResult { Status = SyncStatus.Error, AnyChanges = anyChanges, TransitionToInvalidKey = true };
             }
-            else if (buildingsResult.Json == "403")
+            catch (OE2EmpireTracker.Common.Client.ApiHttpException ex) when (ex.StatusCode == 403)
             {
                 Log.Warn("Manual sync: buildings scope not granted for colony {0}", colonyId);
                 return new SyncResult { Status = SyncStatus.Error, AnyChanges = anyChanges };
             }
-            else if (buildingsResult.Json == "404")
+            catch (OE2EmpireTracker.Common.Client.ApiHttpException ex) when (ex.StatusCode == 404)
             {
                 Log.Warn("Manual sync: colony {0} not found on server", colonyId);
                 return new SyncResult { Status = SyncStatus.Error, AnyChanges = anyChanges };
             }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Manual sync: buildings fetch failed for colony {0}", colonyId);
+            }
 
             // Fetch warehouse
-            var warehouseResult = await gameApi.Client.GetColonyWarehouseAsync(appId, accessToken, colonyId).ConfigureAwait(false);
-            if (warehouseResult.Success)
+            try
             {
-                try
+                var warehouseDto = await typedClient.GetColonyWarehouseAsync(colonyId).ConfigureAwait(false);
+                if (warehouseDto != null)
                 {
-                    var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiColonyWarehouseResponse>>(warehouseResult.Json);
-                    if (envelope?.Data?.Contents != null)
+                    var colony = playerContext.FindMutableColony(colonyUUID);
+                    if (colony != null)
                     {
-                        var colony = playerContext.FindMutableColony(colonyUUID);
-                        if (colony != null)
+                        var blueprintLinkage = new BlueprintLinkageService(playerContext, empireContext);
+                        var surveyLinkage = new SurveyLinkageService(playerContext);
+                        bool changed = ColonyMergeService.MergeWarehouse(
+                            warehouseDto, colony, blueprintLinkage, surveyLinkage);
+                        if (changed)
                         {
-                            var blueprintLinkage = new BlueprintLinkageService(playerContext, empireContext);
-                            var surveyLinkage = new SurveyLinkageService(playerContext);
-                            bool changed = ColonyMergeService.MergeWarehouse(
-                                envelope.Data.Contents, colony, blueprintLinkage, surveyLinkage);
-                            if (changed)
-                            {
-                                anyChanges = true;
-                            }
-
-                            warehouseSucceeded = true;
+                            anyChanges = true;
                         }
+
+                        warehouseSucceeded = true;
                     }
                 }
-                catch (JsonException ex)
-                {
-                    Log.Error(ex, "Manual sync: malformed warehouse JSON for colony {0}", colonyId);
-                }
             }
-            else
+            catch (Exception ex)
             {
-                Log.Warn("Manual sync: warehouse fetch failed for colony {0} (status={1})", colonyId, warehouseResult.Json);
+                Log.Warn("Manual sync: warehouse fetch failed for colony {0}: {1}", colonyId, ex.Message);
             }
 
             // Fetch workers
-            var workersResult = await gameApi.Client.GetColonyWorkersAsync(appId, accessToken, colonyId).ConfigureAwait(false);
-            if (workersResult.Success)
+            try
             {
-                try
+                var workersDto = await typedClient.GetColonyWorkersAsync(colonyId).ConfigureAwait(false);
+                if (workersDto != null)
                 {
-                    var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiColonyWorkersResponse>>(workersResult.Json);
-                    if (envelope?.Data != null)
+                    var colony = playerContext.FindMutableColony(colonyUUID);
+                    if (colony != null)
                     {
-                        var colony = playerContext.FindMutableColony(colonyUUID);
-                        if (colony != null)
+                        bool changed = ColonyMergeService.MergeWorkers(workersDto, colony);
+                        if (changed)
                         {
-                            bool changed = ColonyMergeService.MergeWorkers(envelope.Data, colony);
-                            if (changed)
-                            {
-                                anyChanges = true;
-                            }
+                            anyChanges = true;
                         }
                     }
                 }
-                catch (JsonException ex)
-                {
-                    Log.Error(ex, "Manual sync: malformed workers JSON for colony {0}", colonyId);
-                }
             }
-            else
+            catch (Exception ex)
             {
-                Log.Warn("Manual sync: workers fetch failed for colony {0} (status={1})", colonyId, workersResult.Json);
+                Log.Warn("Manual sync: workers fetch failed for colony {0}: {1}", colonyId, ex.Message);
             }
 
             // Persist if any changes occurred (partial success: persist whatever succeeded)

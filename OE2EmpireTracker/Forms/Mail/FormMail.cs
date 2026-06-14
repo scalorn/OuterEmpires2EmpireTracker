@@ -171,21 +171,22 @@ namespace OE2EmpireTracker.Forms.Mail
                 string secret = CredentialStore.SecureStringToString(secureSecret);
                 secureSecret.Dispose();
 
-                var tokenResult = await gameApi.Client.ExchangeTokenAsync(appId, clientId, secret).ConfigureAwait(false);
-                if (!tokenResult.Success)
+                // Exchange token via typed client (it caches internally)
+                try
                 {
-                    Log.Error("Mail sync: token exchange failed: {0}", tokenResult.ErrorMessage);
+                    await gameApi.TypedClient.ExchangeTokenAsync(appId, clientId, secret).ConfigureAwait(false);
+                }
+                catch (OE2EmpireTracker.Common.Client.ApiHttpException)
+                {
+                    Log.Error("Mail sync: token exchange failed (HTTP error)");
                     this.UpdateSyncStatus("Sync failed: auth error");
                     int retryMs = PreferencesStore.GetMailSyncIntervalMs();
                     this._syncTimer?.Change(retryMs, Timeout.Infinite);
                     return;
                 }
 
-                string accessToken = tokenResult.Token.AccessToken;
                 int result = await MailService.SyncMailAsync(
-                    gameApi.Client,
-                    appId,
-                    () => accessToken,
+                    gameApi.TypedClient,
                     this.playerContext).ConfigureAwait(false);
 
                 if (result < 0)

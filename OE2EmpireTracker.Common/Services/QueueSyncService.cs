@@ -11,12 +11,13 @@ using System.Runtime.InteropServices;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog;
 using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Client;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
+using Generated = OE2EmpireTracker.Common.Client.Generated;
 
 namespace OE2EmpireTracker.Services
 {
@@ -30,7 +31,7 @@ namespace OE2EmpireTracker.Services
 
         private readonly PlayerContext _playerContext;
         private readonly EmpireContext _empireContext;
-        private readonly GameApiClient _apiClient;
+        private readonly IGameApiTypedClient _typedClient;
         private readonly GameApiConnectionSettings _settings;
         private readonly GameApiCredentialManager _credentialManager;
 
@@ -47,19 +48,19 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         /// <param name="playerContext">The player context for data persistence.</param>
         /// <param name="empireContext">The empire context for shared game data.</param>
-        /// <param name="apiClient">The game API client for HTTP communication.</param>
+        /// <param name="typedClient">The typed game API client for HTTP communication.</param>
         /// <param name="settings">The connection settings (TPS, AppId, etc.).</param>
         /// <param name="credentialManager">The credential manager for token refresh operations.</param>
         public QueueSyncService(
             PlayerContext playerContext,
             EmpireContext empireContext,
-            GameApiClient apiClient,
+            IGameApiTypedClient typedClient,
             GameApiConnectionSettings settings,
             GameApiCredentialManager credentialManager)
         {
             _playerContext = playerContext;
             _empireContext = empireContext;
-            _apiClient = apiClient;
+            _typedClient = typedClient;
             _settings = settings;
             _credentialManager = credentialManager;
         }
@@ -101,20 +102,24 @@ namespace OE2EmpireTracker.Services
                 }
 
                 string plainSecret = SecureStringToPlain(secret);
-                var tokenResult = await _apiClient.ExchangeTokenAsync(
-                    _settings.AppId, _settings.ClientId, plainSecret).ConfigureAwait(false);
 
-                if (!tokenResult.Success)
+                try
                 {
-                    Log.Error("QueueSyncService: token exchange failed: {0}", tokenResult.ErrorMessage);
+                    var tokenDto = await _typedClient.ExchangeTokenAsync(
+                        _settings.AppId, _settings.ClientId, plainSecret, ct).ConfigureAwait(false);
+
+                    _currentAccessToken = tokenDto.AccessToken;
+                }
+                catch (ApiHttpException ex)
+                {
+                    Log.Error("QueueSyncService: token exchange failed: HTTP {0}", ex.StatusCode);
                     return new QueueSyncResult();
                 }
 
-                _currentAccessToken = tokenResult.Token.AccessToken;
                 Log.Info("QueueSyncService: token exchange succeeded, starting dispatch.");
 
                 _tokenRefreshHandler = new TokenRefreshHandler(
-                    _apiClient,
+                    _typedClient,
                     _settings,
                     _credentialManager,
                     playerUUID,
@@ -124,7 +129,7 @@ namespace OE2EmpireTracker.Services
                     AppDomain.CurrentDomain.BaseDirectory,
                     "sync-metrics.csv");
 
-                // Rate limiting is enforced by GameApiClient's internal semaphore (set from settings.Tps).
+                // Rate limiting is enforced by the typed client's TokenBucketRateLimiter (set from settings.Tps).
                 // Pass a high TPS to the queue so its TokenBucketGovernor acts as a pass-through;
                 // it only controls dispatch pacing, not actual HTTP rate.
                 var queue = new GameApiRequestQueue(
@@ -195,56 +200,36 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
-        /// Checks whether a crate detail JSON response contains any blueprint entries.
+        /// Checks whether a collection of cargo items contains any blueprint entries.
         /// </summary>
-        /// <param name="json">The raw JSON from GetAssetCrateAsync.</param>
-        /// <returns>True if the response contains at least one item with TypeC equal to Blueprint.</returns>
-        internal static bool ResponseContainsBlueprints(string json)
+        /// <param name="cargo">The cargo items from an asset crate or location detail.</param>
+        /// <returns>True if the collection contains at least one item with TypeC equal to Blueprint.</returns>
+        internal static bool ResponseContainsBlueprints(ICollection<Generated.AssetCargoItem> cargo)
         {
-            try
-            {
-                var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiAssetDetailResponse>>(json);
-                var response = envelope?.Data;
-                if (response?.Cargo == null)
-                {
-                    return false;
-                }
-
-                return response.Cargo.Any(c =>
-                    string.Equals(c.TypeC, AssetTypeCodes.Blueprint, StringComparison.OrdinalIgnoreCase));
-            }
-            catch (JsonException)
+            if (cargo == null || cargo.Count == 0)
             {
                 return false;
             }
+
+            return cargo.Any(c =>
+                string.Equals(c.TypeC, AssetTypeCodes.Blueprint, StringComparison.OrdinalIgnoreCase));
         }
 
         /// <summary>
         /// Builds a CrateImporter-compatible JSON array from blueprint entries
-        /// in a crate detail response. Transforms GameApiAssetCargoItem format
+        /// in a cargo item collection. Transforms AssetCargoItem format
         /// into the scraper-format JSON that CrateImporter.ImportFromJson expects.
         /// </summary>
-        /// <param name="json">The raw JSON from GetAssetCrateAsync.</param>
+        /// <param name="cargo">The cargo items from an asset crate or location detail.</param>
         /// <returns>A JSON array string for CrateImporter, or null if no blueprints found.</returns>
-        internal static string BuildCrateImporterJson(string json)
+        internal static string BuildCrateImporterJson(ICollection<Generated.AssetCargoItem> cargo)
         {
-            GameApiAssetDetailResponse response;
-            try
-            {
-                var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiAssetDetailResponse>>(json);
-                response = envelope?.Data;
-            }
-            catch (JsonException)
+            if (cargo == null || cargo.Count == 0)
             {
                 return null;
             }
 
-            if (response?.Cargo == null)
-            {
-                return null;
-            }
-
-            var blueprintItems = response.Cargo.Where(c =>
+            var blueprintItems = cargo.Where(c =>
                 string.Equals(c.TypeC, AssetTypeCodes.Blueprint, StringComparison.OrdinalIgnoreCase)).ToList();
 
             if (blueprintItems.Count == 0)
@@ -261,7 +246,7 @@ namespace OE2EmpireTracker.Services
                     ["evolution"] = item.Evolution ?? 0,
                 };
 
-                // Build properties object from GameApiAssetItemProperty list
+                // Build properties object from AssetCargoProperty list
                 var propsObj = new JObject();
                 if (item.Properties != null)
                 {
@@ -303,7 +288,7 @@ namespace OE2EmpireTracker.Services
         /// <param name="planetName">The planet name from the parent asset location context.</param>
         /// <param name="systemName">The star system name from the parent asset location context.</param>
         /// <returns>A temporary Survey populated with the API response data.</returns>
-        private static Survey BuildTempSurveyFromDetail(GameApiSurveyDetail detail, string planetName, string systemName)
+        private static Survey BuildTempSurveyFromDetail(Generated.Survey detail, string planetName, string systemName)
         {
             var temp = new Survey
             {
@@ -418,34 +403,12 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
-        /// Truncates a JSON string for safe inclusion in log messages.
-        /// Prevents log flooding from large API response bodies.
-        /// </summary>
-        /// <param name="json">The JSON string to truncate, or null.</param>
-        /// <param name="maxLength">The maximum number of characters to retain (default 500).</param>
-        /// <returns>The truncated string, or "(null)" if the input is null.</returns>
-        private static string TruncateForLog(string json, int maxLength = 500)
-        {
-            if (json == null)
-            {
-                return "(null)";
-            }
-
-            if (json.Length <= maxLength)
-            {
-                return json;
-            }
-
-            return json.Substring(0, maxLength) + "...(truncated)";
-        }
-
-        /// <summary>
         /// Builds a temporary Blueprint populated with API response properties for use
         /// as the scoring template in <see cref="BlueprintService.FindBestMatch"/>.
         /// </summary>
         /// <param name="response">The API blueprint detail response.</param>
         /// <returns>A temporary Blueprint with Name, Evolution, and Properties set.</returns>
-        private static Blueprint BuildScoringTemplate(GameApiBlueprintDetailResponse response)
+        private static Blueprint BuildScoringTemplate(Generated.AssetBlueprint response)
         {
             var bpInfo = response.Blueprint;
             var temp = new Blueprint(bpInfo.Name)
@@ -538,71 +501,43 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
-        /// Checks an API result for HTTP 401 (unauthorized) and attempts a token refresh.
-        /// If the refresh succeeds, updates the stored access token and throws an
-        /// <see cref="InvalidOperationException"/> so that the queue retries the work item
-        /// with the new token. If the refresh fails, throws an
+        /// Handles an HTTP 401 unauthorized response by attempting to refresh the access token
+        /// via the TokenRefreshHandler. If the refresh succeeds, updates the stored access token
+        /// and returns so the caller can retry. If the refresh fails, throws
         /// <see cref="UnauthorizedAccessException"/> which will exhaust retries and mark
         /// the work item as failed.
         /// </summary>
-        /// <param name="result">The API call result tuple.</param>
         /// <param name="label">The work item label for logging.</param>
         /// <param name="ct">Cancellation token.</param>
-        /// <returns>A task that completes if no 401 was detected, or throws on 401.</returns>
-        private async Task ThrowIfUnauthorizedAsync(
-            (bool Success, string Json) result,
-            string label,
-            CancellationToken ct)
+        /// <returns>A task that completes when token refresh succeeds (caller should retry).</returns>
+        private async Task HandleUnauthorizedAsync(string label, CancellationToken ct)
         {
-            if (result.Success || !string.Equals(result.Json, "401", StringComparison.Ordinal))
-            {
-                return;
-            }
-
-            string failedToken = _currentAccessToken;
             Log.Warn("{0}: received HTTP 401, attempting token refresh.", label);
-
-            var refreshResult = await _tokenRefreshHandler.HandleUnauthorizedAsync(failedToken, ct)
+            var refreshResult = await _tokenRefreshHandler.HandleUnauthorizedAsync(_currentAccessToken, ct)
                 .ConfigureAwait(false);
 
             if (refreshResult.Success)
             {
                 _currentAccessToken = refreshResult.NewToken;
-                Log.Info("{0}: token refresh succeeded, retrying with new token.", label);
-                throw new InvalidOperationException(
-                    "Token refreshed successfully for '" + label + "'; retrying.");
-            }
-
-            Log.Error("{0}: token refresh failed, marking work item as failed.", label);
-            throw new UnauthorizedAccessException(
-                "Token refresh failed for '" + label + "'; no further retry.");
-        }
-
-        /// <summary>
-        /// Checks an API result for HTTP 429 (rate limited) and notifies the queue to pause dispatch.
-        /// If a 429 is detected, calls <see cref="GameApiRequestQueue.NotifyRateLimited"/> with the
-        /// Retry-After value (defaulting to 60 seconds if not specified) and throws an
-        /// <see cref="InvalidOperationException"/> so that the queue retries the work item
-        /// after the pause period expires.
-        /// </summary>
-        /// <param name="result">The API call result tuple.</param>
-        /// <param name="label">The work item label for logging.</param>
-        private void ThrowIfRateLimited(
-            (bool Success, string Json) result,
-            string label)
-        {
-            if (result.Success || !string.Equals(result.Json, "429", StringComparison.Ordinal))
-            {
+                Log.Info("{0}: token refresh succeeded.", label);
                 return;
             }
 
+            Log.Error("{0}: token refresh failed.", label);
+            throw new UnauthorizedAccessException("Token refresh failed for '" + label + "'.");
+        }
+
+        /// <summary>
+        /// Handles an HTTP 429 rate-limited response by notifying the queue to pause dispatch
+        /// for a default interval and throwing <see cref="InvalidOperationException"/> so that
+        /// the queue retries the work item after the pause period expires.
+        /// </summary>
+        /// <param name="label">The work item label for logging.</param>
+        private void HandleRateLimited(string label)
+        {
             const int defaultRetryAfterSeconds = 60;
-            Log.Warn("{0}: received HTTP 429 (rate limited), pausing queue for {1}s.", label, defaultRetryAfterSeconds);
-
+            Log.Warn("{0}: received HTTP 429, pausing queue for {1}s.", label, defaultRetryAfterSeconds);
             _currentQueue.NotifyRateLimited(defaultRetryAfterSeconds);
-
-            throw new InvalidOperationException(
-                "Rate limited (429) for '" + label + "'; retrying after pause.");
         }
 
         /// <summary>
@@ -616,31 +551,9 @@ namespace OE2EmpireTracker.Services
                 Label = "CharacterProfile",
                 ExecuteAsync = async ct =>
                 {
-                    var result = await _apiClient.GetCharacterAsync(
-                        _settings.AppId, _currentAccessToken).ConfigureAwait(false);
-
-                    await ThrowIfUnauthorizedAsync(result, "CharacterProfile", ct)
-                        .ConfigureAwait(false);
-
-                    ThrowIfRateLimited(result, "CharacterProfile");
-
-                    if (!result.Success)
-                    {
-                        Log.Warn("CharacterProfile fetch failed: {0}", result.Json);
-                        return Array.Empty<WorkItem>();
-                    }
-
-                    Log.Debug("CharacterProfile fetched successfully.");
-
                     try
                     {
-                        var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiProfileResponse>>(result.Json);
-                        var remoteProfile = envelope?.Data;
-                        if (remoteProfile == null)
-                        {
-                            Log.Warn("CharacterProfile: deserialized response was null.");
-                            return Array.Empty<WorkItem>();
-                        }
+                        var profile = await _typedClient.GetCharacterAsync(ct).ConfigureAwait(false);
 
                         var localProfile = _playerContext.FindMutablePlayerProfile(
                             _playerContext.CurrentPlayerUUID);
@@ -650,7 +563,7 @@ namespace OE2EmpireTracker.Services
                             return Array.Empty<WorkItem>();
                         }
 
-                        bool changed = ProfileMergeService.MergeProfileData(localProfile, remoteProfile);
+                        bool changed = ProfileMergeService.MergeProfileData(localProfile, profile);
                         if (changed)
                         {
                             _playerContext.WriteContext();
@@ -662,12 +575,17 @@ namespace OE2EmpireTracker.Services
                             Log.Debug("CharacterProfile: merge found no changes.");
                         }
                     }
-                    catch (JsonException ex)
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
                     {
-                        Log.Error(
-                            "CharacterProfile: failed to deserialize response: {0}\nBody (truncated): {1}",
-                            ex.Message,
-                            TruncateForLog(result.Json));
+                        await HandleUnauthorizedAsync("CharacterProfile", ct).ConfigureAwait(false);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 429)
+                    {
+                        HandleRateLimited("CharacterProfile");
+                    }
+                    catch (ApiBusinessException ex)
+                    {
+                        Log.Error("CharacterProfile: business error RC={0}: {1}", ex.ReturnCode, ex.ReturnString);
                     }
 
                     return Array.Empty<WorkItem>();
@@ -686,21 +604,22 @@ namespace OE2EmpireTracker.Services
                 Label = "CharacterSkills",
                 ExecuteAsync = async ct =>
                 {
-                    var result = await _apiClient.GetCharacterSkillsAsync(
-                        _settings.AppId, _currentAccessToken).ConfigureAwait(false);
-
-                    await ThrowIfUnauthorizedAsync(result, "CharacterSkills", ct)
-                        .ConfigureAwait(false);
-
-                    ThrowIfRateLimited(result, "CharacterSkills");
-
-                    if (result.Success)
+                    try
                     {
-                        Log.Debug("CharacterSkills fetched successfully.");
+                        var skills = await _typedClient.GetCharacterSkillsAsync(ct).ConfigureAwait(false);
+                        Log.Debug("CharacterSkills fetched successfully ({0} skills).", skills.Skills?.Count ?? 0);
                     }
-                    else
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
                     {
-                        Log.Warn("CharacterSkills fetch failed: {0}", result.Json);
+                        await HandleUnauthorizedAsync("CharacterSkills", ct).ConfigureAwait(false);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 429)
+                    {
+                        HandleRateLimited("CharacterSkills");
+                    }
+                    catch (ApiBusinessException ex)
+                    {
+                        Log.Error("CharacterSkills: business error RC={0}: {1}", ex.ReturnCode, ex.ReturnString);
                     }
 
                     return Array.Empty<WorkItem>();
@@ -709,7 +628,7 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
-        /// Creates a work item that imports the banking balance via BankingService.
+        /// Creates a work item that imports the banking balance from the game API.
         /// </summary>
         /// <returns>A work item for banking balance import.</returns>
         private WorkItem CreateBankingBalanceItem()
@@ -721,24 +640,24 @@ namespace OE2EmpireTracker.Services
                 {
                     try
                     {
-                        decimal? balance = await BankingService.ImportBalanceAsync(
-                            _apiClient, _settings.AppId, _currentAccessToken).ConfigureAwait(false);
+                        var balanceDto = await _typedClient.GetBankingBalanceAsync(ct).ConfigureAwait(false);
 
-                        if (balance.HasValue)
-                        {
-                            _playerContext.BankingBalance = balance.Value;
-                            _playerContext.WriteContext();
-                            _playerContext.OnBankingDataChanged();
-                            Log.Debug("BankingBalance imported: {0}", balance.Value);
-                        }
-                        else
-                        {
-                            Log.Warn("BankingBalance: ImportBalanceAsync returned null, skipping update.");
-                        }
+                        _playerContext.BankingBalance = (decimal)balanceDto.Balance;
+                        _playerContext.WriteContext();
+                        _playerContext.OnBankingDataChanged();
+                        Log.Debug("BankingBalance imported: {0}", balanceDto.Balance);
                     }
-                    catch (Exception ex)
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
                     {
-                        Log.Error("BankingBalance: unexpected error during import: {0}", ex.Message);
+                        await HandleUnauthorizedAsync("BankingBalance", ct).ConfigureAwait(false);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 429)
+                    {
+                        HandleRateLimited("BankingBalance");
+                    }
+                    catch (ApiBusinessException ex)
+                    {
+                        Log.Error("BankingBalance: business error RC={0}: {1}", ex.ReturnCode, ex.ReturnString);
                     }
 
                     return Array.Empty<WorkItem>();
@@ -747,7 +666,8 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
-        /// Creates a work item that fetches the banking transactions from the game API.
+        /// Creates a work item that fetches banking transactions from the game API
+        /// and imports them with deduplication into the player context.
         /// </summary>
         /// <returns>A work item for banking transactions retrieval.</returns>
         private WorkItem CreateBankingTransactionsItem()
@@ -757,21 +677,84 @@ namespace OE2EmpireTracker.Services
                 Label = "BankingTransactions",
                 ExecuteAsync = async ct =>
                 {
-                    Log.Debug("BankingTransactions: delegating to BankingService.ImportTransactionsAsync.");
-                    var importResult = await BankingService.ImportTransactionsAsync(
-                        _apiClient, _settings.AppId, () => _currentAccessToken, _playerContext).ConfigureAwait(false);
+                    try
+                    {
+                        var txDto = await _typedClient.GetBankingTransactionsAsync(ct: ct).ConfigureAwait(false);
 
-                    if (importResult.Success)
-                    {
+                        if (txDto.Transactions == null || txDto.Transactions.Count == 0)
+                        {
+                            Log.Debug("BankingTransactions: no transactions returned.");
+                            return Array.Empty<WorkItem>();
+                        }
+
+                        var existingKeys = new HashSet<string>();
+                        foreach (var tx in _playerContext.BankingTransactionList)
+                        {
+                            string key = string.Format(
+                                "{0}|{1}|{2}",
+                                tx.TransactionDateTime,
+                                tx.CreditChange,
+                                tx.Detail);
+                            existingKeys.Add(key);
+                        }
+
+                        int imported = 0;
+                        int duplicates = 0;
+
+                        foreach (var item in txDto.Transactions)
+                        {
+                            string transactionDT = item.TransactionDT.ToString("o");
+                            decimal creditChange = (decimal)item.CreditChange;
+                            string detail = item.Detail ?? string.Empty;
+
+                            string compositeKey = string.Format("{0}|{1}|{2}", transactionDT, creditChange, detail);
+
+                            if (existingKeys.Contains(compositeKey))
+                            {
+                                duplicates++;
+                                continue;
+                            }
+
+                            var bankingTx = new Models.BankingTransaction
+                            {
+                                UUID = Guid.NewGuid().ToString(),
+                                OwnerUUID = _playerContext.CurrentPlayerUUID,
+                                TransactionDateTime = transactionDT,
+                                CreditChange = creditChange,
+                                OldBalance = (decimal)item.OldBalance,
+                                NewBalance = (decimal)item.NewBalance,
+                                TransactionType = item.TransactionType,
+                                Detail = detail,
+                                CharacterId = item.CharacterId,
+                                SystemObjectId = item.SystemObjectId,
+                                SystemId = item.SystemId,
+                                IsManualEntry = false,
+                            };
+
+                            _playerContext.AddBankingTransaction(bankingTx);
+                            existingKeys.Add(compositeKey);
+                            imported++;
+                        }
+
+                        _playerContext.WriteContext();
+                        _playerContext.OnBankingDataChanged();
+
                         Log.Debug(
-                            "BankingTransactions: imported {0} new, {1} duplicates skipped, {2} pages.",
-                            importResult.TransactionsImported,
-                            importResult.DuplicatesSkipped,
-                            importResult.PagesCompleted);
+                            "BankingTransactions: imported {0} new, {1} duplicates skipped.",
+                            imported,
+                            duplicates);
                     }
-                    else
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
                     {
-                        Log.Warn("BankingTransactions import failed: {0}", importResult.ErrorMessage);
+                        await HandleUnauthorizedAsync("BankingTransactions", ct).ConfigureAwait(false);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 429)
+                    {
+                        HandleRateLimited("BankingTransactions");
+                    }
+                    catch (ApiBusinessException ex)
+                    {
+                        Log.Error("BankingTransactions: business error RC={0}: {1}", ex.ReturnCode, ex.ReturnString);
                     }
 
                     return Array.Empty<WorkItem>();
@@ -790,21 +773,22 @@ namespace OE2EmpireTracker.Services
                 Label = "AcceptedJobs",
                 ExecuteAsync = async ct =>
                 {
-                    var result = await _apiClient.GetAcceptedJobsAsync(
-                        _settings.AppId, _currentAccessToken).ConfigureAwait(false);
-
-                    await ThrowIfUnauthorizedAsync(result, "AcceptedJobs", ct)
-                        .ConfigureAwait(false);
-
-                    ThrowIfRateLimited(result, "AcceptedJobs");
-
-                    if (result.Success)
+                    try
                     {
-                        Log.Debug("AcceptedJobs fetched successfully.");
+                        var jobs = await _typedClient.GetAcceptedJobsAsync(ct).ConfigureAwait(false);
+                        Log.Debug("AcceptedJobs fetched successfully ({0} jobs).", jobs.Jobs?.Count ?? 0);
                     }
-                    else
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
                     {
-                        Log.Warn("AcceptedJobs fetch failed: {0}", result.Json);
+                        await HandleUnauthorizedAsync("AcceptedJobs", ct).ConfigureAwait(false);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 429)
+                    {
+                        HandleRateLimited("AcceptedJobs");
+                    }
+                    catch (ApiBusinessException ex)
+                    {
+                        Log.Error("AcceptedJobs: business error RC={0}: {1}", ex.ReturnCode, ex.ReturnString);
                     }
 
                     return Array.Empty<WorkItem>();
@@ -823,31 +807,9 @@ namespace OE2EmpireTracker.Services
                 Label = "ShipConfiguration",
                 ExecuteAsync = async ct =>
                 {
-                    var result = await _apiClient.GetShipConfigurationAsync(
-                        _settings.AppId, _currentAccessToken).ConfigureAwait(false);
-
-                    await ThrowIfUnauthorizedAsync(result, "ShipConfiguration", ct)
-                        .ConfigureAwait(false);
-
-                    ThrowIfRateLimited(result, "ShipConfiguration");
-
-                    if (!result.Success)
-                    {
-                        Log.Warn("ShipConfiguration fetch failed: {0}", result.Json);
-                        return Array.Empty<WorkItem>();
-                    }
-
-                    Log.Debug("ShipConfiguration fetched successfully.");
-
                     try
                     {
-                        var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiShipConfigurationResponse>>(result.Json);
-                        var config = envelope?.Data;
-                        if (config == null)
-                        {
-                            Log.Warn("ShipConfiguration: deserialized response was null.");
-                            return Array.Empty<WorkItem>();
-                        }
+                        var config = await _typedClient.GetShipConfigurationAsync(ct).ConfigureAwait(false);
 
                         var ship = _playerContext.FindShipByGameLocationId(config.ShipId);
                         if (ship == null)
@@ -888,18 +850,17 @@ namespace OE2EmpireTracker.Services
                         _playerContext.OnShipDataChanged(ship.UUID);
                         Log.Info("ShipConfiguration: merge applied for ship '{0}' (GameLocationId {1}).", ship.Name, config.ShipId);
                     }
-                    catch (JsonException ex)
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
                     {
-                        Log.Error(
-                            "ShipConfiguration: failed to deserialize response: {0}\nBody (truncated): {1}",
-                            ex.Message,
-                            TruncateForLog(result.Json));
+                        await HandleUnauthorizedAsync("ShipConfiguration", ct).ConfigureAwait(false);
                     }
-                    catch (Exception ex)
+                    catch (ApiHttpException ex) when (ex.StatusCode == 429)
                     {
-                        Log.Error(
-                            "ShipConfiguration: merge failed: {0}",
-                            ex.Message);
+                        HandleRateLimited("ShipConfiguration");
+                    }
+                    catch (ApiBusinessException ex)
+                    {
+                        Log.Error("ShipConfiguration: business error RC={0}: {1}", ex.ReturnCode, ex.ReturnString);
                     }
 
                     return Array.Empty<WorkItem>();
@@ -909,9 +870,9 @@ namespace OE2EmpireTracker.Services
 
         /// <summary>
         /// Creates a work item that fetches the ship cargo from the game API.
-        /// Deserializes the response as a direct JSON array of cargo items (no envelope),
-        /// merges into the active ship's cargo, and cascades detail work items for
-        /// crates, blueprints, and surveys.
+        /// Deserializes the response via the typed client as ShipCargo DTO,
+        /// merges into the active ship's cargo, and cascades detail items for
+        /// crates, blueprints, and surveys via CascadeCargoDetailItems.
         /// </summary>
         /// <returns>A work item for ship cargo retrieval.</returns>
         private WorkItem CreateShipCargoItem()
@@ -921,27 +882,11 @@ namespace OE2EmpireTracker.Services
                 Label = "ShipCargo",
                 ExecuteAsync = async ct =>
                 {
-                    var result = await _apiClient.GetShipCargoAsync(
-                        _settings.AppId, _currentAccessToken).ConfigureAwait(false);
-
-                    await ThrowIfUnauthorizedAsync(result, "ShipCargo", ct)
-                        .ConfigureAwait(false);
-
-                    ThrowIfRateLimited(result, "ShipCargo");
-
-                    if (!result.Success)
-                    {
-                        Log.Warn("ShipCargo fetch failed: {0}", result.Json);
-                        return Array.Empty<WorkItem>();
-                    }
-
-                    Log.Debug("ShipCargo fetched successfully.");
-
                     try
                     {
-                        var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiAssetDetailResponse>>(result.Json);
-                        var cargoResponse = envelope?.Data;
-                        var cargoItems = cargoResponse?.Cargo;
+                        var shipCargo = await _typedClient.GetShipCargoAsync(ct).ConfigureAwait(false);
+
+                        var cargoItems = shipCargo.Cargo;
                         if (cargoItems == null || cargoItems.Count == 0)
                         {
                             Log.Debug("ShipCargo: no cargo items in response.");
@@ -965,16 +910,17 @@ namespace OE2EmpireTracker.Services
 
                         return CascadeCargoDetailItems(cargoItems, activeShip.Name, string.Empty, activeShip.Cargo);
                     }
-                    catch (JsonException ex)
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
                     {
-                        Log.Error(
-                            "ShipCargo: failed to deserialize response: {0}\nBody (truncated): {1}",
-                            ex.Message,
-                            TruncateForLog(result.Json));
+                        await HandleUnauthorizedAsync("ShipCargo", ct).ConfigureAwait(false);
                     }
-                    catch (Exception ex)
+                    catch (ApiHttpException ex) when (ex.StatusCode == 429)
                     {
-                        Log.Error("ShipCargo: merge failed: {0}", ex.Message);
+                        HandleRateLimited("ShipCargo");
+                    }
+                    catch (ApiBusinessException ex)
+                    {
+                        Log.Error("ShipCargo: business error RC={0}: {1}", ex.ReturnCode, ex.ReturnString);
                     }
 
                     return Array.Empty<WorkItem>();
@@ -993,21 +939,22 @@ namespace OE2EmpireTracker.Services
                 Label = "MarketListings",
                 ExecuteAsync = async ct =>
                 {
-                    var result = await _apiClient.GetMarketListingsAsync(
-                        _settings.AppId, _currentAccessToken, "all").ConfigureAwait(false);
-
-                    await ThrowIfUnauthorizedAsync(result, "MarketListings", ct)
-                        .ConfigureAwait(false);
-
-                    ThrowIfRateLimited(result, "MarketListings");
-
-                    if (result.Success)
+                    try
                     {
+                        var listings = await _typedClient.GetMarketListingsAsync("all", ct: ct).ConfigureAwait(false);
                         Log.Debug("MarketListings fetched successfully.");
                     }
-                    else
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
                     {
-                        Log.Warn("MarketListings fetch failed: {0}", result.Json);
+                        await HandleUnauthorizedAsync("MarketListings", ct).ConfigureAwait(false);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 429)
+                    {
+                        HandleRateLimited("MarketListings");
+                    }
+                    catch (ApiBusinessException ex)
+                    {
+                        Log.Error("MarketListings: business error RC={0}: {1}", ex.ReturnCode, ex.ReturnString);
                     }
 
                     return Array.Empty<WorkItem>();
@@ -1026,21 +973,22 @@ namespace OE2EmpireTracker.Services
                 Label = "MarketItems",
                 ExecuteAsync = async ct =>
                 {
-                    var result = await _apiClient.GetMarketItemsAsync(
-                        _settings.AppId, _currentAccessToken, "all", "all").ConfigureAwait(false);
-
-                    await ThrowIfUnauthorizedAsync(result, "MarketItems", ct)
-                        .ConfigureAwait(false);
-
-                    ThrowIfRateLimited(result, "MarketItems");
-
-                    if (result.Success)
+                    try
                     {
+                        var items = await _typedClient.GetMarketItemsAsync("all", "all", ct).ConfigureAwait(false);
                         Log.Debug("MarketItems fetched successfully.");
                     }
-                    else
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
                     {
-                        Log.Warn("MarketItems fetch failed: {0}", result.Json);
+                        await HandleUnauthorizedAsync("MarketItems", ct).ConfigureAwait(false);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 429)
+                    {
+                        HandleRateLimited("MarketItems");
+                    }
+                    catch (ApiBusinessException ex)
+                    {
+                        Log.Error("MarketItems: business error RC={0}: {1}", ex.ReturnCode, ex.ReturnString);
                     }
 
                     return Array.Empty<WorkItem>();
@@ -1059,21 +1007,22 @@ namespace OE2EmpireTracker.Services
                 Label = "MarketBuyOrders",
                 ExecuteAsync = async ct =>
                 {
-                    var result = await _apiClient.GetMarketBuyOrdersAsync(
-                        _settings.AppId, _currentAccessToken).ConfigureAwait(false);
-
-                    await ThrowIfUnauthorizedAsync(result, "MarketBuyOrders", ct)
-                        .ConfigureAwait(false);
-
-                    ThrowIfRateLimited(result, "MarketBuyOrders");
-
-                    if (result.Success)
+                    try
                     {
+                        var orders = await _typedClient.GetMarketBuyOrdersAsync(ct).ConfigureAwait(false);
                         Log.Debug("MarketBuyOrders fetched successfully.");
                     }
-                    else
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
                     {
-                        Log.Warn("MarketBuyOrders fetch failed: {0}", result.Json);
+                        await HandleUnauthorizedAsync("MarketBuyOrders", ct).ConfigureAwait(false);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 429)
+                    {
+                        HandleRateLimited("MarketBuyOrders");
+                    }
+                    catch (ApiBusinessException ex)
+                    {
+                        Log.Error("MarketBuyOrders: business error RC={0}: {1}", ex.ReturnCode, ex.ReturnString);
                     }
 
                     return Array.Empty<WorkItem>();
@@ -1092,21 +1041,22 @@ namespace OE2EmpireTracker.Services
                 Label = "MarketSellOrders",
                 ExecuteAsync = async ct =>
                 {
-                    var result = await _apiClient.GetMarketSellOrdersAsync(
-                        _settings.AppId, _currentAccessToken).ConfigureAwait(false);
-
-                    await ThrowIfUnauthorizedAsync(result, "MarketSellOrders", ct)
-                        .ConfigureAwait(false);
-
-                    ThrowIfRateLimited(result, "MarketSellOrders");
-
-                    if (result.Success)
+                    try
                     {
+                        var orders = await _typedClient.GetMarketSellOrdersAsync(ct).ConfigureAwait(false);
                         Log.Debug("MarketSellOrders fetched successfully.");
                     }
-                    else
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
                     {
-                        Log.Warn("MarketSellOrders fetch failed: {0}", result.Json);
+                        await HandleUnauthorizedAsync("MarketSellOrders", ct).ConfigureAwait(false);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 429)
+                    {
+                        HandleRateLimited("MarketSellOrders");
+                    }
+                    catch (ApiBusinessException ex)
+                    {
+                        Log.Error("MarketSellOrders: business error RC={0}: {1}", ex.ReturnCode, ex.ReturnString);
                     }
 
                     return Array.Empty<WorkItem>();
@@ -1125,36 +1075,23 @@ namespace OE2EmpireTracker.Services
                 Label = "ColonyList",
                 ExecuteAsync = async ct =>
                 {
-                    var result = await _apiClient.GetColonyListAsync(
-                        _settings.AppId, _currentAccessToken).ConfigureAwait(false);
-
-                    await ThrowIfUnauthorizedAsync(result, "ColonyList", ct)
-                        .ConfigureAwait(false);
-
-                    ThrowIfRateLimited(result, "ColonyList");
-
-                    if (!result.Success)
-                    {
-                        Log.Warn("ColonyList fetch failed: {0}", result.Json);
-                        return Array.Empty<WorkItem>();
-                    }
-
-                    Log.Debug("ColonyList fetched successfully.");
-
                     try
                     {
-                        var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiColonyListResponse>>(result.Json);
-                        var response = envelope?.Data;
+                        var response = await _typedClient.GetColonyListAsync(ct).ConfigureAwait(false);
+
                         if (response?.Colonies == null || response.Colonies.Count == 0)
                         {
+                            Log.Debug("ColonyList: no colonies in response.");
                             return Array.Empty<WorkItem>();
                         }
+
+                        Log.Debug("ColonyList fetched successfully.");
 
                         var localColonies = _playerContext.GetMutableColoniesForOwner(
                             _playerContext.CurrentPlayerUUID);
 
                         var mergeResult = ColonyMergeService.MergeColonyList(
-                            response.Colonies,
+                            response,
                             localColonies,
                             _playerContext.CurrentPlayerUUID);
 
@@ -1183,14 +1120,20 @@ namespace OE2EmpireTracker.Services
 
                         return cascaded;
                     }
-                    catch (JsonException ex)
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
                     {
-                        Log.Error(
-                            "ColonyList: failed to deserialize response: {0}\nBody (truncated): {1}",
-                            ex.Message,
-                            TruncateForLog(result.Json));
-                        return Array.Empty<WorkItem>();
+                        await HandleUnauthorizedAsync("ColonyList", ct).ConfigureAwait(false);
                     }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 429)
+                    {
+                        HandleRateLimited("ColonyList");
+                    }
+                    catch (ApiBusinessException ex)
+                    {
+                        Log.Error("ColonyList: business error RC={0}: {1}", ex.ReturnCode, ex.ReturnString);
+                    }
+
+                    return Array.Empty<WorkItem>();
                 },
             };
         }
@@ -1207,21 +1150,22 @@ namespace OE2EmpireTracker.Services
                 Label = "ColonySummary:" + colonyId,
                 ExecuteAsync = async ct =>
                 {
-                    var result = await _apiClient.GetColonySummaryAsync(
-                        _settings.AppId, _currentAccessToken, colonyId).ConfigureAwait(false);
-
-                    await ThrowIfUnauthorizedAsync(result, "ColonySummary:" + colonyId, ct)
-                        .ConfigureAwait(false);
-
-                    ThrowIfRateLimited(result, "ColonySummary:" + colonyId);
-
-                    if (result.Success)
+                    try
                     {
+                        var summary = await _typedClient.GetColonySummaryAsync(colonyId, ct).ConfigureAwait(false);
                         Log.Debug("ColonySummary:{0} fetched successfully.", colonyId);
                     }
-                    else
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
                     {
-                        Log.Warn("ColonySummary:{0} fetch failed: {1}", colonyId, result.Json);
+                        await HandleUnauthorizedAsync("ColonySummary:" + colonyId, ct).ConfigureAwait(false);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 429)
+                    {
+                        HandleRateLimited("ColonySummary:" + colonyId);
+                    }
+                    catch (ApiBusinessException ex)
+                    {
+                        Log.Error("ColonySummary:{0}: business error RC={1}: {2}", colonyId, ex.ReturnCode, ex.ReturnString);
                     }
 
                     return Array.Empty<WorkItem>();
@@ -1241,21 +1185,22 @@ namespace OE2EmpireTracker.Services
                 Label = "ColonyBuildings:" + colonyId,
                 ExecuteAsync = async ct =>
                 {
-                    var result = await _apiClient.GetColonyBuildingsAsync(
-                        _settings.AppId, _currentAccessToken, colonyId).ConfigureAwait(false);
-
-                    await ThrowIfUnauthorizedAsync(result, "ColonyBuildings:" + colonyId, ct)
-                        .ConfigureAwait(false);
-
-                    ThrowIfRateLimited(result, "ColonyBuildings:" + colonyId);
-
-                    if (result.Success)
+                    try
                     {
+                        var buildings = await _typedClient.GetColonyBuildingsAsync(colonyId, ct).ConfigureAwait(false);
                         Log.Debug("ColonyBuildings:{0} fetched successfully.", colonyId);
                     }
-                    else
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
                     {
-                        Log.Warn("ColonyBuildings:{0} fetch failed: {1}", colonyId, result.Json);
+                        await HandleUnauthorizedAsync("ColonyBuildings:" + colonyId, ct).ConfigureAwait(false);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 429)
+                    {
+                        HandleRateLimited("ColonyBuildings:" + colonyId);
+                    }
+                    catch (ApiBusinessException ex)
+                    {
+                        Log.Error("ColonyBuildings:{0}: business error RC={1}: {2}", colonyId, ex.ReturnCode, ex.ReturnString);
                     }
 
                     return Array.Empty<WorkItem>();
@@ -1275,21 +1220,28 @@ namespace OE2EmpireTracker.Services
                 Label = "ColonyWarehouse:" + colonyId,
                 ExecuteAsync = async ct =>
                 {
-                    var result = await _apiClient.GetColonyWarehouseAsync(
-                        _settings.AppId, _currentAccessToken, colonyId).ConfigureAwait(false);
-
-                    await ThrowIfUnauthorizedAsync(result, "ColonyWarehouse:" + colonyId, ct)
-                        .ConfigureAwait(false);
-
-                    ThrowIfRateLimited(result, "ColonyWarehouse:" + colonyId);
-
-                    if (result.Success)
+                    try
                     {
+                        var warehouse = await _typedClient.GetColonyWarehouseAsync(colonyId, ct)
+                            .ConfigureAwait(false);
                         Log.Debug("ColonyWarehouse:{0} fetched successfully.", colonyId);
                     }
-                    else
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
                     {
-                        Log.Warn("ColonyWarehouse:{0} fetch failed: {1}", colonyId, result.Json);
+                        await HandleUnauthorizedAsync("ColonyWarehouse:" + colonyId, ct)
+                            .ConfigureAwait(false);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 429)
+                    {
+                        HandleRateLimited("ColonyWarehouse:" + colonyId);
+                    }
+                    catch (ApiBusinessException ex)
+                    {
+                        Log.Error(
+                            "ColonyWarehouse:{0}: business error RC={1}: {2}",
+                            colonyId,
+                            ex.ReturnCode,
+                            ex.ReturnString);
                     }
 
                     return Array.Empty<WorkItem>();
@@ -1309,21 +1261,28 @@ namespace OE2EmpireTracker.Services
                 Label = "ColonyWorkers:" + colonyId,
                 ExecuteAsync = async ct =>
                 {
-                    var result = await _apiClient.GetColonyWorkersAsync(
-                        _settings.AppId, _currentAccessToken, colonyId).ConfigureAwait(false);
-
-                    await ThrowIfUnauthorizedAsync(result, "ColonyWorkers:" + colonyId, ct)
-                        .ConfigureAwait(false);
-
-                    ThrowIfRateLimited(result, "ColonyWorkers:" + colonyId);
-
-                    if (result.Success)
+                    try
                     {
+                        var workers = await _typedClient.GetColonyWorkersAsync(colonyId, ct)
+                            .ConfigureAwait(false);
                         Log.Debug("ColonyWorkers:{0} fetched successfully.", colonyId);
                     }
-                    else
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
                     {
-                        Log.Warn("ColonyWorkers:{0} fetch failed: {1}", colonyId, result.Json);
+                        await HandleUnauthorizedAsync("ColonyWorkers:" + colonyId, ct)
+                            .ConfigureAwait(false);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 429)
+                    {
+                        HandleRateLimited("ColonyWorkers:" + colonyId);
+                    }
+                    catch (ApiBusinessException ex)
+                    {
+                        Log.Error(
+                            "ColonyWorkers:{0}: business error RC={1}: {2}",
+                            colonyId,
+                            ex.ReturnCode,
+                            ex.ReturnString);
                     }
 
                     return Array.Empty<WorkItem>();
@@ -1364,32 +1323,19 @@ namespace OE2EmpireTracker.Services
 
                     Log.Debug("ColonyBuildings:{0} resolved target colony UUID: {1}", colonyId, colonyUUID);
 
-                    var result = await _apiClient.GetColonyBuildingsAsync(
-                        _settings.AppId, _currentAccessToken, colonyId).ConfigureAwait(false);
-
-                    await ThrowIfUnauthorizedAsync(result, "ColonyBuildings:" + colonyId, ct)
-                        .ConfigureAwait(false);
-
-                    ThrowIfRateLimited(result, "ColonyBuildings:" + colonyId);
-
-                    if (!result.Success)
-                    {
-                        Log.Warn("ColonyBuildings:{0} fetch failed: {1}", colonyId, result.Json);
-                        return Array.Empty<WorkItem>();
-                    }
-
-                    Log.Debug("ColonyBuildings:{0} fetched successfully.", colonyId);
-
                     try
                     {
-                        var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiColonyBuildingsResponse>>(result.Json);
-                        if (envelope?.Data?.Buildings == null)
+                        var response = await _typedClient.GetColonyBuildingsAsync(colonyId, ct).ConfigureAwait(false);
+
+                        if (response?.Buildings == null)
                         {
                             Log.Warn(
-                                "ColonyBuildings:{0} — deserialized Data.Buildings is null, skipping merge.",
+                                "ColonyBuildings:{0} — response Buildings is null, skipping merge.",
                                 colonyId);
                             return Array.Empty<WorkItem>();
                         }
+
+                        Log.Debug("ColonyBuildings:{0} fetched successfully.", colonyId);
 
                         var localColonies = _playerContext.GetMutableColoniesForOwner(
                             _playerContext.CurrentPlayerUUID);
@@ -1403,25 +1349,22 @@ namespace OE2EmpireTracker.Services
                             return Array.Empty<WorkItem>();
                         }
 
-                        ColonyMergeService.MergeBuildings(envelope.Data.Buildings, targetColony);
+                        ColonyMergeService.MergeBuildings(response, targetColony);
                         _playerContext.WriteContext();
                         _playerContext.OnColonyDataChanged(colonyUUID);
                         Log.Debug("ColonyBuildings:{0} merge completed.", colonyId);
                     }
-                    catch (JsonException ex)
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
                     {
-                        Log.Error(
-                            "ColonyBuildings:{0} — failed to deserialize response: {1}\nBody (truncated): {2}",
-                            colonyId,
-                            ex.Message,
-                            TruncateForLog(result.Json));
+                        await HandleUnauthorizedAsync("ColonyBuildings:" + colonyId, ct).ConfigureAwait(false);
                     }
-                    catch (Exception ex)
+                    catch (ApiHttpException ex) when (ex.StatusCode == 429)
                     {
-                        Log.Error(
-                            "ColonyBuildings:{0} — merge error: {1}",
-                            colonyId,
-                            ex.Message);
+                        HandleRateLimited("ColonyBuildings:" + colonyId);
+                    }
+                    catch (ApiBusinessException ex)
+                    {
+                        Log.Error("ColonyBuildings:{0}: business error RC={1}: {2}", colonyId, ex.ReturnCode, ex.ReturnString);
                     }
 
                     return Array.Empty<WorkItem>();
@@ -1462,32 +1405,12 @@ namespace OE2EmpireTracker.Services
 
                     Log.Debug("ColonyWarehouse:{0} resolved target colony UUID: {1}", colonyId, colonyUUID);
 
-                    var result = await _apiClient.GetColonyWarehouseAsync(
-                        _settings.AppId, _currentAccessToken, colonyId).ConfigureAwait(false);
-
-                    await ThrowIfUnauthorizedAsync(result, "ColonyWarehouse:" + colonyId, ct)
-                        .ConfigureAwait(false);
-
-                    ThrowIfRateLimited(result, "ColonyWarehouse:" + colonyId);
-
-                    if (!result.Success)
-                    {
-                        Log.Warn("ColonyWarehouse:{0} fetch failed: {1}", colonyId, result.Json);
-                        return Array.Empty<WorkItem>();
-                    }
-
-                    Log.Debug("ColonyWarehouse:{0} fetched successfully.", colonyId);
-
                     try
                     {
-                        var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiColonyWarehouseResponse>>(result.Json);
-                        if (envelope?.Data?.Contents == null)
-                        {
-                            Log.Warn(
-                                "ColonyWarehouse:{0} — deserialized Data.Contents is null, skipping merge.",
-                                colonyId);
-                            return Array.Empty<WorkItem>();
-                        }
+                        var warehouse = await _typedClient.GetColonyWarehouseAsync(colonyId, ct)
+                            .ConfigureAwait(false);
+
+                        Log.Debug("ColonyWarehouse:{0} fetched successfully.", colonyId);
 
                         var localColonies = _playerContext.GetMutableColoniesForOwner(
                             _playerContext.CurrentPlayerUUID);
@@ -1504,25 +1427,27 @@ namespace OE2EmpireTracker.Services
                         var blueprintLinkage = new BlueprintLinkageService(_playerContext, _empireContext);
                         var surveyLinkage = new SurveyLinkageService(_playerContext);
                         ColonyMergeService.MergeWarehouse(
-                            envelope.Data.Contents, targetColony, blueprintLinkage, surveyLinkage);
+                            warehouse, targetColony, blueprintLinkage, surveyLinkage);
                         _playerContext.WriteContext();
                         _playerContext.OnColonyDataChanged(colonyUUID);
                         Log.Debug("ColonyWarehouse:{0} merge completed.", colonyId);
                     }
-                    catch (JsonException ex)
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
                     {
-                        Log.Error(
-                            "ColonyWarehouse:{0} — failed to deserialize response: {1}\nBody (truncated): {2}",
-                            colonyId,
-                            ex.Message,
-                            TruncateForLog(result.Json));
+                        await HandleUnauthorizedAsync("ColonyWarehouse:" + colonyId, ct)
+                            .ConfigureAwait(false);
                     }
-                    catch (Exception ex)
+                    catch (ApiHttpException ex) when (ex.StatusCode == 429)
+                    {
+                        HandleRateLimited("ColonyWarehouse:" + colonyId);
+                    }
+                    catch (ApiBusinessException ex)
                     {
                         Log.Error(
-                            "ColonyWarehouse:{0} — merge error: {1}",
+                            "ColonyWarehouse:{0}: business error RC={1}: {2}",
                             colonyId,
-                            ex.Message);
+                            ex.ReturnCode,
+                            ex.ReturnString);
                     }
 
                     return Array.Empty<WorkItem>();
@@ -1563,30 +1488,12 @@ namespace OE2EmpireTracker.Services
 
                     Log.Debug("ColonyWorkers:{0} resolved target colony UUID: {1}", colonyId, colonyUUID);
 
-                    var result = await _apiClient.GetColonyWorkersAsync(
-                        _settings.AppId, _currentAccessToken, colonyId).ConfigureAwait(false);
-
-                    await ThrowIfUnauthorizedAsync(result, "ColonyWorkers:" + colonyId, ct)
-                        .ConfigureAwait(false);
-
-                    ThrowIfRateLimited(result, "ColonyWorkers:" + colonyId);
-
-                    if (!result.Success)
-                    {
-                        Log.Warn("ColonyWorkers:{0} fetch failed: {1}", colonyId, result.Json);
-                        return Array.Empty<WorkItem>();
-                    }
-
-                    Log.Debug("ColonyWorkers:{0} fetched successfully.", colonyId);
-
                     try
                     {
-                        var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiColonyWorkersResponse>>(result.Json);
-                        if (envelope?.Data == null)
-                        {
-                            Log.Warn("ColonyWorkers:{0} — deserialized Data was null, skipping merge.", colonyId);
-                            return Array.Empty<WorkItem>();
-                        }
+                        var workers = await _typedClient.GetColonyWorkersAsync(colonyId, ct)
+                            .ConfigureAwait(false);
+
+                        Log.Debug("ColonyWorkers:{0} fetched successfully.", colonyId);
 
                         var localColonies = _playerContext.GetMutableColoniesForOwner(
                             _playerContext.CurrentPlayerUUID);
@@ -1600,25 +1507,27 @@ namespace OE2EmpireTracker.Services
                             return Array.Empty<WorkItem>();
                         }
 
-                        ColonyMergeService.MergeWorkers(envelope.Data, targetColony);
+                        ColonyMergeService.MergeWorkers(workers, targetColony);
                         _playerContext.WriteContext();
                         _playerContext.OnColonyDataChanged(colonyUUID);
                         Log.Debug("ColonyWorkers:{0} merge completed.", colonyId);
                     }
-                    catch (JsonException ex)
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
                     {
-                        Log.Error(
-                            "ColonyWorkers:{0} — failed to deserialize response: {1}\nBody (truncated): {2}",
-                            colonyId,
-                            ex.Message,
-                            TruncateForLog(result.Json));
+                        await HandleUnauthorizedAsync("ColonyWorkers:" + colonyId, ct)
+                            .ConfigureAwait(false);
                     }
-                    catch (Exception ex)
+                    catch (ApiHttpException ex) when (ex.StatusCode == 429)
+                    {
+                        HandleRateLimited("ColonyWorkers:" + colonyId);
+                    }
+                    catch (ApiBusinessException ex)
                     {
                         Log.Error(
-                            "ColonyWorkers:{0} — merge failed: {1}",
+                            "ColonyWorkers:{0}: business error RC={1}: {2}",
                             colonyId,
-                            ex.Message);
+                            ex.ReturnCode,
+                            ex.ReturnString);
                     }
 
                     return Array.Empty<WorkItem>();
@@ -1637,39 +1546,43 @@ namespace OE2EmpireTracker.Services
                 Label = "AssetLocations",
                 ExecuteAsync = async ct =>
                 {
-                    var result = await _apiClient.GetAssetLocationsAsync(
-                        _settings.AppId, _currentAccessToken).ConfigureAwait(false);
-
-                    await ThrowIfUnauthorizedAsync(result, "AssetLocations", ct)
-                        .ConfigureAwait(false);
-
-                    ThrowIfRateLimited(result, "AssetLocations");
-
-                    if (!result.Success)
+                    try
                     {
-                        Log.Warn("AssetLocations fetch failed: {0}", result.Json);
-                        return Array.Empty<WorkItem>();
+                        var response = await _typedClient.GetAssetLocationsAsync(ct).ConfigureAwait(false);
+
+                        if (response?.Locations == null || response.Locations.Count == 0)
+                        {
+                            Log.Debug("AssetLocations: no locations in response.");
+                            return Array.Empty<WorkItem>();
+                        }
+
+                        Log.Debug("AssetLocations fetched successfully.");
+
+                        var cascaded = response.Locations
+                            .Where(loc => loc.LocationId > 0 && !string.IsNullOrEmpty(loc.LocationType))
+                            .Select(loc => CreateAssetLocationDetailItem(
+                                loc.LocationId,
+                                loc.LocationType,
+                                loc.LocationName,
+                                loc.SystemName))
+                            .ToArray();
+
+                        return cascaded;
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
+                    {
+                        await HandleUnauthorizedAsync("AssetLocations", ct).ConfigureAwait(false);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 429)
+                    {
+                        HandleRateLimited("AssetLocations");
+                    }
+                    catch (ApiBusinessException ex)
+                    {
+                        Log.Error("AssetLocations: business error RC={0}: {1}", ex.ReturnCode, ex.ReturnString);
                     }
 
-                    Log.Debug("AssetLocations fetched successfully.");
-
-                    var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiAssetLocationsResponse>>(result.Json);
-                    var response = envelope?.Data;
-                    if (response?.Locations == null || response.Locations.Count == 0)
-                    {
-                        return Array.Empty<WorkItem>();
-                    }
-
-                    var cascaded = response.Locations
-                        .Where(loc => loc.LocationId > 0 && !string.IsNullOrEmpty(loc.LocationType))
-                        .Select(loc => CreateAssetLocationDetailItem(
-                            loc.LocationId,
-                            loc.LocationType,
-                            loc.LocationName,
-                            loc.SystemName))
-                        .ToArray();
-
-                    return cascaded;
+                    return Array.Empty<WorkItem>();
                 },
             };
         }
@@ -1690,82 +1603,87 @@ namespace OE2EmpireTracker.Services
                 Label = "AssetDetail:" + id,
                 ExecuteAsync = async ct =>
                 {
-                    var result = await _apiClient.GetAssetLocationDetailAsync(
-                        _settings.AppId, _currentAccessToken, id, typeC).ConfigureAwait(false);
-
-                    await ThrowIfUnauthorizedAsync(result, "AssetDetail:" + id, ct)
-                        .ConfigureAwait(false);
-
-                    ThrowIfRateLimited(result, "AssetDetail:" + id);
-
-                    if (!result.Success)
+                    try
                     {
-                        Log.Warn("AssetDetail:{0} fetch failed: {1}", id, result.Json);
-                        return Array.Empty<WorkItem>();
-                    }
+                        var response = await _typedClient.GetAssetLocationDetailAsync(id, typeC, ct)
+                            .ConfigureAwait(false);
 
-                    Log.Debug("AssetDetail:{0} ({1}) at {2}/{3} fetched successfully.", id, typeC, systemName, planetName);
-
-                    var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiAssetDetailResponse>>(result.Json);
-                    var response = envelope?.Data;
-                    if (response?.Cargo == null || response.Cargo.Count == 0)
-                    {
-                        return Array.Empty<WorkItem>();
-                    }
-
-                    // Generic cargo merge dispatched by location type
-                    ItemBag cargoBag = null;
-                    switch (typeC)
-                    {
-                        case AssetTypeCodes.Colony:
-                            var colonies = _playerContext.GetMutableColoniesForOwner(
-                                _playerContext.CurrentPlayerUUID);
-                            var colony = colonies.FirstOrDefault(c => c.ColonyId == id);
-                            if (colony != null)
-                            {
-                                AssetMergeService.MergeColonyAssets(response.Cargo, colony);
-                                _playerContext.WriteContext();
-                                _playerContext.OnColonyDataChanged(colony.UUID);
-                                cargoBag = colony.Items;
-                            }
-                            else
-                            {
-                                Log.Warn("AssetDetail:{0}: no colony found with ColonyId={0}, skipping merge.", id);
-                            }
-
-                            break;
-
-                        case AssetTypeCodes.Station:
-                            var station = FindOrCreateStation(id, planetName, systemName);
-                            ItemBag targetHold;
-                            string playerUUID = _playerContext.CurrentPlayerUUID;
-                            if (!station.Holds.TryGetValue(playerUUID, out targetHold))
-                            {
-                                targetHold = new ItemBag();
-                                station.Holds[playerUUID] = targetHold;
-                            }
-
-                            AssetMergeService.MergeStationAssets(response.Cargo, station, targetHold);
-                            _playerContext.WriteContext();
-                            _playerContext.OnStationDataChanged();
-                            cargoBag = targetHold;
-                            break;
-
-                        case AssetTypeCodes.Ship:
-                            var ship = FindOrCreateShip(id, planetName);
-                            AssetMergeService.MergeShipAssets(response.Cargo, ship);
-                            _playerContext.WriteContext();
-                            _playerContext.OnShipDataChanged(ship.UUID);
-                            cargoBag = ship.Cargo;
-                            break;
-
-                        default:
-                            Log.Warn("AssetDetail:{0}: unknown location type '{1}', skipping merge.", id, typeC);
+                        if (response?.Cargo == null || response.Cargo.Count == 0)
+                        {
+                            Log.Debug("AssetDetail:{0} ({1}) at {2}/{3}: no cargo.", id, typeC, systemName, planetName);
                             return Array.Empty<WorkItem>();
+                        }
+
+                        Log.Debug("AssetDetail:{0} ({1}) at {2}/{3} fetched successfully.", id, typeC, systemName, planetName);
+
+                        // Generic cargo merge dispatched by location type
+                        ItemBag cargoBag = null;
+                        switch (typeC)
+                        {
+                            case AssetTypeCodes.Colony:
+                                var colonies = _playerContext.GetMutableColoniesForOwner(
+                                    _playerContext.CurrentPlayerUUID);
+                                var colony = colonies.FirstOrDefault(c => c.ColonyId == id);
+                                if (colony != null)
+                                {
+                                    AssetMergeService.MergeColonyAssets(response.Cargo, colony);
+                                    _playerContext.WriteContext();
+                                    _playerContext.OnColonyDataChanged(colony.UUID);
+                                    cargoBag = colony.Items;
+                                }
+                                else
+                                {
+                                    Log.Warn("AssetDetail:{0}: no colony found with ColonyId={0}, skipping merge.", id);
+                                }
+
+                                break;
+
+                            case AssetTypeCodes.Station:
+                                var station = FindOrCreateStation(id, planetName, systemName);
+                                ItemBag targetHold;
+                                string playerUUID = _playerContext.CurrentPlayerUUID;
+                                if (!station.Holds.TryGetValue(playerUUID, out targetHold))
+                                {
+                                    targetHold = new ItemBag();
+                                    station.Holds[playerUUID] = targetHold;
+                                }
+
+                                AssetMergeService.MergeStationAssets(response.Cargo, station, targetHold);
+                                _playerContext.WriteContext();
+                                _playerContext.OnStationDataChanged();
+                                cargoBag = targetHold;
+                                break;
+
+                            case AssetTypeCodes.Ship:
+                                var ship = FindOrCreateShip(id, planetName);
+                                AssetMergeService.MergeShipAssets(response.Cargo, ship);
+                                _playerContext.WriteContext();
+                                _playerContext.OnShipDataChanged(ship.UUID);
+                                cargoBag = ship.Cargo;
+                                break;
+
+                            default:
+                                Log.Warn("AssetDetail:{0}: unknown location type '{1}', skipping merge.", id, typeC);
+                                return Array.Empty<WorkItem>();
+                        }
+
+                        // Cascade detail work items using shared helper
+                        return CascadeCargoDetailItems(response.Cargo, planetName, systemName, cargoBag);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
+                    {
+                        await HandleUnauthorizedAsync("AssetDetail:" + id, ct).ConfigureAwait(false);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 429)
+                    {
+                        HandleRateLimited("AssetDetail:" + id);
+                    }
+                    catch (ApiBusinessException ex)
+                    {
+                        Log.Error("AssetDetail:{0}: business error RC={1}: {2}", id, ex.ReturnCode, ex.ReturnString);
                     }
 
-                    // Cascade detail work items using shared helper
-                    return CascadeCargoDetailItems(response.Cargo, planetName, systemName, cargoBag);
+                    return Array.Empty<WorkItem>();
                 },
             };
         }
@@ -1776,13 +1694,13 @@ namespace OE2EmpireTracker.Services
         /// and ShipCargo, ensuring consistent freshness thresholds, factory methods, and skip
         /// conditions regardless of cargo source.
         /// </summary>
-        /// <param name="cargo">The list of cargo items to cascade.</param>
+        /// <param name="cargo">The collection of cargo items to cascade.</param>
         /// <param name="planetName">The planet name for survey context.</param>
         /// <param name="systemName">The star system name for survey context.</param>
         /// <param name="parentBag">The parent ItemBag containing the cargo items (for crate content import).</param>
         /// <returns>An array of cascaded detail work items.</returns>
         private WorkItem[] CascadeCargoDetailItems(
-            List<GameApiAssetCargoItem> cargo,
+            ICollection<Generated.AssetCargoItem> cargo,
             string planetName,
             string systemName,
             ItemBag parentBag)
@@ -1799,34 +1717,34 @@ namespace OE2EmpireTracker.Services
                 switch (entry.TypeC?.Trim())
                 {
                     case AssetTypeCodes.Crate:
-                        items.Add(CreateCrateDetailItem(entry.CargoItemId, parentBag, visitedCrateIds, planetName, systemName));
+                        items.Add(CreateCrateDetailItem(entry.Id, parentBag, visitedCrateIds, planetName, systemName));
                         break;
 
                     case AssetTypeCodes.Blueprint:
-                        var existingBp = _playerContext.FindBlueprintByApiId(entry.CargoItemId);
+                        var existingBp = _playerContext.FindBlueprintByApiId(entry.Id);
                         if (existingBp == null || !IsDetailFresh(existingBp.LastDetailImportUtc))
                         {
-                            items.Add(CreateBlueprintDetailItem(entry.CargoItemId));
+                            items.Add(CreateBlueprintDetailItem(entry.Id));
                             blueprintsFetched++;
                         }
                         else
                         {
-                            Log.Debug("BlueprintDetail:{0} skipped (fresh).", entry.CargoItemId);
+                            Log.Debug("BlueprintDetail:{0} skipped (fresh).", entry.Id);
                             blueprintsSkipped++;
                         }
 
                         break;
 
                     case AssetTypeCodes.Survey:
-                        var existingSurvey = _playerContext.FindSurveyByApiId(entry.CargoItemId);
+                        var existingSurvey = _playerContext.FindSurveyByApiId(entry.Id);
                         if (existingSurvey == null || !IsDetailFresh(existingSurvey.LastDetailImportUtc))
                         {
-                            items.Add(CreateSurveyDetailItem(entry.CargoItemId, planetName, systemName));
+                            items.Add(CreateSurveyDetailItem(entry.Id, planetName, systemName));
                             surveysFetched++;
                         }
                         else
                         {
-                            Log.Debug("SurveyDetail:{0} skipped (fresh).", entry.CargoItemId);
+                            Log.Debug("SurveyDetail:{0} skipped (fresh).", entry.Id);
                             surveysSkipped++;
                         }
 
@@ -1937,122 +1855,112 @@ namespace OE2EmpireTracker.Services
                 Label = "CrateDetail:" + crateId,
                 ExecuteAsync = async ct =>
                 {
-                    var result = await _apiClient.GetAssetCrateAsync(
-                        _settings.AppId, _currentAccessToken, crateId).ConfigureAwait(false);
-
-                    await ThrowIfUnauthorizedAsync(result, "CrateDetail:" + crateId, ct)
-                        .ConfigureAwait(false);
-
-                    ThrowIfRateLimited(result, "CrateDetail:" + crateId);
-
-                    if (!result.Success)
-                    {
-                        Log.Warn("CrateDetail:{0} fetch failed: {1}", crateId, result.Json);
-                        return Array.Empty<WorkItem>();
-                    }
-
-                    Log.Debug("CrateDetail:{0} fetched successfully, importing.", crateId);
-
-                    // Invoke CrateContentImporter for full content population
-                    string ownerUUID = _playerContext.CurrentPlayerUUID;
-                    var blueprintLinkageService = new BlueprintLinkageService(_playerContext, _empireContext);
-                    var importer = new CrateContentImporter(_playerContext, _empireContext, blueprintLinkageService);
-
-                    bool contentSuccess = false;
-                    CrateContentImportResult importResult = null;
                     try
                     {
-                        importResult = importer.Import(result.Json, crateId, parentBag, ownerUUID, visitedCrateIds);
-                        contentSuccess = importResult.Success;
+                        var crateContents = await _typedClient.GetCrateContentsAsync(crateId, ct)
+                            .ConfigureAwait(false);
 
-                        if (!importResult.Success)
+                        Log.Debug("CrateDetail:{0} fetched successfully, importing.", crateId);
+
+                        // Invoke CrateContentImporter for full content population
+                        string ownerUUID = _playerContext.CurrentPlayerUUID;
+                        var blueprintLinkageService = new BlueprintLinkageService(_playerContext, _empireContext);
+                        var importer = new CrateContentImporter(_playerContext, _empireContext, blueprintLinkageService);
+
+                        bool contentSuccess = false;
+                        CrateContentImportResult importResult = null;
+                        try
                         {
-                            Log.Warn("CrateDetail:{0} content import failed with {1} error(s).", crateId, importResult.Errors.Count);
+                            importResult = importer.Import(crateContents, crateId, parentBag, ownerUUID, visitedCrateIds);
+                            contentSuccess = importResult.Success;
+
+                            if (!importResult.Success)
+                            {
+                                Log.Warn("CrateDetail:{0} content import failed with {1} error(s).", crateId, importResult.Errors.Count);
+                            }
                         }
-                    }
-                    catch (Exception contentEx)
-                    {
-                        Log.Error("CrateDetail:{0} content import threw exception: {1}", crateId, contentEx.Message);
-                        importResult = new CrateContentImportResult { Success = false };
-                    }
-
-                    // NOTE: Blueprint extraction via BuildCrateImporterJson was removed.
-                    // Blueprints inside crates are handled by the cascade logic below which
-                    // creates CreateBlueprintDetailItem work items for a full detail fetch.
-                    // The previous approach created incomplete shell entries (no type, no
-                    // resources, no manufacture time) that could orphan when the detail
-                    // fetch imported via a different slot.
-
-                    // Return cascade work items for nested crates, surveys, and blueprints
-                    var cascadeItems = new List<WorkItem>();
-                    foreach (int nestedCrateId in importResult.NestedCrateIds)
-                    {
-                        cascadeItems.Add(CreateCrateDetailItem(nestedCrateId, parentBag, visitedCrateIds, planetName, systemName));
-                    }
-
-                    // Cascade survey and blueprint detail items from crate contents
-                    int blueprintsFetched = 0;
-                    int blueprintsSkipped = 0;
-                    int surveysFetched = 0;
-                    int surveysSkipped = 0;
-
-                    try
-                    {
-                        var crateEnvelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiAssetDetailResponse>>(result.Json);
-                        var crateResponse = crateEnvelope?.Data;
-                        if (crateResponse?.Cargo != null)
+                        catch (Exception contentEx)
                         {
-                            foreach (var entry in crateResponse.Cargo)
+                            Log.Error("CrateDetail:{0} content import threw exception: {1}", crateId, contentEx.Message);
+                            importResult = new CrateContentImportResult { Success = false };
+                        }
+
+                        // Return cascade work items for nested crates, surveys, and blueprints
+                        var cascadeItems = new List<WorkItem>();
+                        foreach (int nestedCrateId in importResult.NestedCrateIds)
+                        {
+                            cascadeItems.Add(CreateCrateDetailItem(nestedCrateId, parentBag, visitedCrateIds, planetName, systemName));
+                        }
+
+                        // Cascade survey and blueprint detail items from crate contents
+                        int blueprintsFetched = 0;
+                        int blueprintsSkipped = 0;
+                        int surveysFetched = 0;
+                        int surveysSkipped = 0;
+
+                        if (crateContents?.Cargo != null)
+                        {
+                            foreach (var entry in crateContents.Cargo)
                             {
                                 string typeC = entry.TypeC?.Trim();
                                 if (string.Equals(typeC, AssetTypeCodes.Survey, StringComparison.OrdinalIgnoreCase))
                                 {
-                                    var existingSurvey = _playerContext.FindSurveyByApiId(entry.CargoItemId);
+                                    var existingSurvey = _playerContext.FindSurveyByApiId(entry.Id);
                                     if (existingSurvey == null || !IsDetailFresh(existingSurvey.LastDetailImportUtc))
                                     {
-                                        cascadeItems.Add(CreateSurveyDetailItem(entry.CargoItemId, planetName, systemName));
+                                        cascadeItems.Add(CreateSurveyDetailItem(entry.Id, planetName, systemName));
                                         surveysFetched++;
                                     }
                                     else
                                     {
-                                        Log.Debug("CrateDetail:{0} SurveyDetail:{1} skipped (fresh).", crateId, entry.CargoItemId);
+                                        Log.Debug("CrateDetail:{0} SurveyDetail:{1} skipped (fresh).", crateId, entry.Id);
                                         surveysSkipped++;
                                     }
                                 }
                                 else if (string.Equals(typeC, AssetTypeCodes.Blueprint, StringComparison.OrdinalIgnoreCase))
                                 {
-                                    var existingBp = _playerContext.FindBlueprintByApiId(entry.CargoItemId);
+                                    var existingBp = _playerContext.FindBlueprintByApiId(entry.Id);
                                     if (existingBp == null || !IsDetailFresh(existingBp.LastDetailImportUtc))
                                     {
-                                        cascadeItems.Add(CreateBlueprintDetailItem(entry.CargoItemId));
+                                        cascadeItems.Add(CreateBlueprintDetailItem(entry.Id));
                                         blueprintsFetched++;
                                     }
                                     else
                                     {
-                                        Log.Debug("CrateDetail:{0} BlueprintDetail:{1} skipped (fresh).", crateId, entry.CargoItemId);
+                                        Log.Debug("CrateDetail:{0} BlueprintDetail:{1} skipped (fresh).", crateId, entry.Id);
                                         blueprintsSkipped++;
                                     }
                                 }
                             }
                         }
+
+                        if (blueprintsFetched > 0 || blueprintsSkipped > 0 || surveysFetched > 0 || surveysSkipped > 0)
+                        {
+                            Log.Info(
+                                "CrateDetail:{0} cascade: blueprints fetched={1} skipped={2}, surveys fetched={3} skipped={4}",
+                                crateId,
+                                blueprintsFetched,
+                                blueprintsSkipped,
+                                surveysFetched,
+                                surveysSkipped);
+                        }
+
+                        return cascadeItems;
                     }
-                    catch (JsonException parseEx)
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
                     {
-                        Log.Warn("CrateDetail:{0} failed to parse cargo for cascade: {1}", crateId, parseEx.Message);
+                        await HandleUnauthorizedAsync("CrateDetail:" + crateId, ct).ConfigureAwait(false);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 429)
+                    {
+                        HandleRateLimited("CrateDetail:" + crateId);
+                    }
+                    catch (ApiBusinessException ex)
+                    {
+                        Log.Error("CrateDetail:{0}: business error RC={1}: {2}", crateId, ex.ReturnCode, ex.ReturnString);
                     }
 
-                    if (blueprintsFetched > 0 || blueprintsSkipped > 0 || surveysFetched > 0 || surveysSkipped > 0)
-                    {
-                        Log.Info(
-                            "CrateDetail:{0} cascade: blueprints fetched={1} skipped={2}, surveys fetched={3} skipped={4}",
-                            crateId,
-                            blueprintsFetched,
-                            blueprintsSkipped,
-                            surveysFetched,
-                            surveysSkipped);
-                    }
-
-                    return cascadeItems;
+                    return Array.Empty<WorkItem>();
                 },
             };
         }
@@ -2069,128 +1977,130 @@ namespace OE2EmpireTracker.Services
                 Label = "BlueprintDetail:" + blueprintId,
                 ExecuteAsync = async ct =>
                 {
-                    var result = await _apiClient.GetAssetBlueprintAsync(
-                        _settings.AppId, _currentAccessToken, blueprintId).ConfigureAwait(false);
-
-                    await ThrowIfUnauthorizedAsync(result, "BlueprintDetail:" + blueprintId, ct)
-                        .ConfigureAwait(false);
-
-                    ThrowIfRateLimited(result, "BlueprintDetail:" + blueprintId);
-
-                    if (!result.Success)
+                    try
                     {
-                        Log.Warn("BlueprintDetail:{0} fetch failed: {1}", blueprintId, result.Json);
-                        return Array.Empty<WorkItem>();
-                    }
+                        var response = await _typedClient.GetBlueprintDetailAsync(blueprintId, ct)
+                            .ConfigureAwait(false);
 
-                    Log.Debug("BlueprintDetail:{0} fetched successfully, importing.", blueprintId);
-
-                    var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiBlueprintDetailResponse>>(result.Json);
-                    var response = envelope?.Data;
-                    if (response?.Blueprint == null)
-                    {
-                        Log.Warn("BlueprintDetail:{0} response has no blueprint info.", blueprintId);
-                        return Array.Empty<WorkItem>();
-                    }
-
-                    var bpInfo = response.Blueprint;
-
-                    var entry = new JObject
-                    {
-                        ["name"] = bpInfo.Name,
-                        ["evolution"] = bpInfo.Evolution,
-                    };
-
-                    if (!string.IsNullOrEmpty(bpInfo.PartTypeIcon))
-                    {
-                        entry["iconClass"] = "ui_icon_" + bpInfo.PartTypeIcon;
-
-                        string iconPos = ConvertPartTypeIconToPosition(bpInfo.PartTypeIcon);
-                        if (!string.IsNullOrEmpty(iconPos))
+                        if (response?.Blueprint == null)
                         {
-                            entry["iconPosition"] = iconPos;
-                        }
-                    }
-
-                    entry["description"] = bpInfo.Description;
-
-                    var propsObj = new JObject();
-                    if (response.BlueprintProperties != null)
-                    {
-                        foreach (var prop in response.BlueprintProperties)
-                        {
-                            string key = !string.IsNullOrEmpty(prop.FriendlyPropertyName)
-                                ? prop.FriendlyPropertyName
-                                : prop.PropertyName;
-                            string value = string.IsNullOrEmpty(prop.Unit)
-                                ? prop.PropertyValue.ToString()
-                                : prop.PropertyValue + prop.Unit;
-                            propsObj[key] = value;
-                        }
-                    }
-
-                    // Map manufacture time — API value is in hours (e.g. 35 = 35h)
-                    int mfgHours = bpInfo.ManufactureTime;
-                    if (mfgHours > 0)
-                    {
-                        propsObj[BlueprintPropertyKeys.ManufactureRunTime] = mfgHours + "h";
-                    }
-
-                    // Map manufacture amount (only if > 1, since 1 is the default)
-                    if (bpInfo.ManufactureAmount > 1)
-                    {
-                        propsObj[BlueprintPropertyKeys.AmountManufactured] = bpInfo.ManufactureAmount.ToString();
-                    }
-
-                    entry["properties"] = propsObj;
-
-                    var resObj = new JObject();
-                    if (response.ResourcesRequired != null)
-                    {
-                        foreach (var res in response.ResourcesRequired)
-                        {
-                            resObj[res.ResourceName] = res.ResourceAmount.ToString();
-                        }
-                    }
-
-                    entry["resources"] = resObj;
-
-                    var jsonArray = new JArray { entry };
-                    var importResult = CrateImporter.ImportFromJson(jsonArray.ToString(), _playerContext, _empireContext);
-
-                    // Track API ID and freshness on the imported blueprint.
-                    if (importResult.Entries.Count > 0 &&
-                        importResult.Entries[0].Action != ImportAction.Skipped)
-                    {
-                        string matchedUUID = importResult.Entries[0].MatchedUUID;
-                        Blueprint blueprint = null;
-
-                        if (!string.IsNullOrEmpty(matchedUUID))
-                        {
-                            // Use the UUID directly from the import result — most reliable
-                            blueprint = _playerContext.FindMutableBlueprint(matchedUUID)
-                                ?? _empireContext.FindMutableGlobalBlueprint(matchedUUID);
+                            Log.Warn("BlueprintDetail:{0} response has no blueprint info.", blueprintId);
+                            return Array.Empty<WorkItem>();
                         }
 
-                        if (blueprint == null)
+                        Log.Debug("BlueprintDetail:{0} fetched successfully, importing.", blueprintId);
+
+                        var bpInfo = response.Blueprint;
+
+                        var entry = new JObject
                         {
-                            // Fallback to the multi-tier resolution strategy
-                            string importedName = importResult.Entries[0].Name;
-                            int importedEvo = importResult.Entries[0].Evolution;
-                            blueprint = ResolveBlueprintForApiId(
-                                blueprintId, importedName, importedEvo, response);
+                            ["name"] = bpInfo.Name,
+                            ["evolution"] = bpInfo.Evolution,
+                        };
+
+                        if (!string.IsNullOrEmpty(bpInfo.PartTypeIcon))
+                        {
+                            entry["iconClass"] = "ui_icon_" + bpInfo.PartTypeIcon;
+
+                            string iconPos = ConvertPartTypeIconToPosition(bpInfo.PartTypeIcon);
+                            if (!string.IsNullOrEmpty(iconPos))
+                            {
+                                entry["iconPosition"] = iconPos;
+                            }
                         }
 
-                        if (blueprint != null)
+                        entry["description"] = bpInfo.Description;
+
+                        var propsObj = new JObject();
+                        if (response.BlueprintProperties != null)
                         {
-                            blueprint.GameApiBlueprintId = blueprintId;
-                            blueprint.LastDetailImportUtc = SystemClock.UtcNow;
-                            _playerContext.IndexBlueprintByApiId(blueprint);
-                            Log.Debug(
-                                "BlueprintDetail:{0} tracked API ID on UUID={1}.",
-                                blueprintId,
-                                blueprint.UUID);
+                            foreach (var prop in response.BlueprintProperties)
+                            {
+                                string key = !string.IsNullOrEmpty(prop.FriendlyPropertyName)
+                                    ? prop.FriendlyPropertyName
+                                    : prop.PropertyName;
+                                string value = string.IsNullOrEmpty(prop.Unit)
+                                    ? prop.PropertyValue.ToString()
+                                    : prop.PropertyValue + prop.Unit;
+                                propsObj[key] = value;
+                            }
                         }
+
+                        // Map manufacture time — API value is in hours (e.g. 35 = 35h)
+                        int mfgHours = bpInfo.ManufactureTime;
+                        if (mfgHours > 0)
+                        {
+                            propsObj[BlueprintPropertyKeys.ManufactureRunTime] = mfgHours + "h";
+                        }
+
+                        // Map manufacture amount (only if > 1, since 1 is the default)
+                        if (bpInfo.ManufactureAmount > 1)
+                        {
+                            propsObj[BlueprintPropertyKeys.AmountManufactured] = bpInfo.ManufactureAmount.ToString();
+                        }
+
+                        entry["properties"] = propsObj;
+
+                        var resObj = new JObject();
+                        if (response.ResourcesRequired != null)
+                        {
+                            foreach (var res in response.ResourcesRequired)
+                            {
+                                resObj[res.ResourceName] = res.ResourceAmount.ToString();
+                            }
+                        }
+
+                        entry["resources"] = resObj;
+
+                        var jsonArray = new JArray { entry };
+                        var importResult = CrateImporter.ImportFromJson(jsonArray.ToString(), _playerContext, _empireContext);
+
+                        // Track API ID and freshness on the imported blueprint.
+                        if (importResult.Entries.Count > 0 &&
+                            importResult.Entries[0].Action != ImportAction.Skipped)
+                        {
+                            string matchedUUID = importResult.Entries[0].MatchedUUID;
+                            Blueprint blueprint = null;
+
+                            if (!string.IsNullOrEmpty(matchedUUID))
+                            {
+                                // Use the UUID directly from the import result — most reliable
+                                blueprint = _playerContext.FindMutableBlueprint(matchedUUID)
+                                    ?? _empireContext.FindMutableGlobalBlueprint(matchedUUID);
+                            }
+
+                            if (blueprint == null)
+                            {
+                                // Fallback to the multi-tier resolution strategy
+                                string importedName = importResult.Entries[0].Name;
+                                int importedEvo = importResult.Entries[0].Evolution;
+                                blueprint = ResolveBlueprintForApiId(
+                                    blueprintId, importedName, importedEvo, response);
+                            }
+
+                            if (blueprint != null)
+                            {
+                                blueprint.GameApiBlueprintId = blueprintId;
+                                blueprint.LastDetailImportUtc = SystemClock.UtcNow;
+                                _playerContext.IndexBlueprintByApiId(blueprint);
+                                Log.Debug(
+                                    "BlueprintDetail:{0} tracked API ID on UUID={1}.",
+                                    blueprintId,
+                                    blueprint.UUID);
+                            }
+                        }
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
+                    {
+                        await HandleUnauthorizedAsync("BlueprintDetail:" + blueprintId, ct).ConfigureAwait(false);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 429)
+                    {
+                        HandleRateLimited("BlueprintDetail:" + blueprintId);
+                    }
+                    catch (ApiBusinessException ex)
+                    {
+                        Log.Error("BlueprintDetail:{0}: business error RC={1}: {2}", blueprintId, ex.ReturnCode, ex.ReturnString);
                     }
 
                     return Array.Empty<WorkItem>();
@@ -2214,7 +2124,7 @@ namespace OE2EmpireTracker.Services
             int blueprintId,
             string importedName,
             int importedEvo,
-            GameApiBlueprintDetailResponse response)
+            Generated.AssetBlueprint response)
         {
             // Tier 1: Check if this API ID is already assigned to a local blueprint.
             var existing = _playerContext.FindBlueprintByApiId(blueprintId);
@@ -2304,64 +2214,67 @@ namespace OE2EmpireTracker.Services
                 Label = "SurveyDetail:" + surveyId,
                 ExecuteAsync = async ct =>
                 {
-                    var result = await _apiClient.GetAssetSurveyAsync(
-                        _settings.AppId, _currentAccessToken, surveyId).ConfigureAwait(false);
-
-                    await ThrowIfUnauthorizedAsync(result, "SurveyDetail:" + surveyId, ct)
-                        .ConfigureAwait(false);
-
-                    ThrowIfRateLimited(result, "SurveyDetail:" + surveyId);
-
-                    if (!result.Success)
+                    try
                     {
-                        Log.Warn("SurveyDetail:{0} fetch failed: {1}", surveyId, result.Json);
-                        return Array.Empty<WorkItem>();
-                    }
+                        var surveyResponse = await _typedClient.GetSurveyDetailAsync(surveyId, ct)
+                            .ConfigureAwait(false);
 
-                    Log.Debug("SurveyDetail:{0} fetched successfully, importing.", surveyId);
-
-                    var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiSurveyResponse>>(result.Json);
-                    var detail = envelope?.Data?.Survey;
-                    if (detail == null)
-                    {
-                        Log.Warn("SurveyDetail:{0} response contained no survey data.", surveyId);
-                        return Array.Empty<WorkItem>();
-                    }
-
-                    var tempSurvey = BuildTempSurveyFromDetail(detail, planetName, systemName);
-
-                    var surveys = _playerContext.SurveyList;
-                    var existing = SurveyImportHelper.FindByKey(surveys, planetName, detail.EncryptedId);
-
-                    Survey survey;
-                    if (existing != null)
-                    {
-                        SurveyImportHelper.MergeData(existing, tempSurvey);
-                        survey = existing;
-                        Log.Debug("SurveyDetail:{0} merged into existing survey UUID={1}.", surveyId, survey.UUID);
-                    }
-                    else
-                    {
-                        survey = SurveyImportHelper.CreateFromTemp(tempSurvey, _playerContext.CurrentPlayerUUID);
-                        _playerContext.AddSurvey(survey);
-                        Log.Debug("SurveyDetail:{0} created new survey UUID={1}.", surveyId, survey.UUID);
-                    }
-
-                    SurveyImportHelper.LinkOrCreateAsteroid(survey, _playerContext);
-
-                    survey.SystemObjectId = detail.SystemObjectId;
-                    if (detail.SystemObjectId > 0 && !string.IsNullOrEmpty(survey.AsteroidUUID))
-                    {
-                        var asteroid = _playerContext.FindAsteroid(survey.AsteroidUUID);
-                        if (asteroid != null)
+                        var detail = surveyResponse?.Survey;
+                        if (detail == null)
                         {
-                            asteroid.SystemObjectId = detail.SystemObjectId;
+                            Log.Warn("SurveyDetail:{0} response contained no survey data.", surveyId);
+                            return Array.Empty<WorkItem>();
                         }
-                    }
 
-                    survey.GameApiSurveyId = surveyId;
-                    survey.LastDetailImportUtc = SystemClock.UtcNow;
-                    _playerContext.IndexSurveyByApiId(survey);
+                        Log.Debug("SurveyDetail:{0} fetched successfully, importing.", surveyId);
+
+                        var tempSurvey = BuildTempSurveyFromDetail(detail, planetName, systemName);
+
+                        var surveys = _playerContext.SurveyList;
+                        var existing = SurveyImportHelper.FindByKey(surveys, planetName, detail.EncryptedId);
+
+                        Survey survey;
+                        if (existing != null)
+                        {
+                            SurveyImportHelper.MergeData(existing, tempSurvey);
+                            survey = existing;
+                            Log.Debug("SurveyDetail:{0} merged into existing survey UUID={1}.", surveyId, survey.UUID);
+                        }
+                        else
+                        {
+                            survey = SurveyImportHelper.CreateFromTemp(tempSurvey, _playerContext.CurrentPlayerUUID);
+                            _playerContext.AddSurvey(survey);
+                            Log.Debug("SurveyDetail:{0} created new survey UUID={1}.", surveyId, survey.UUID);
+                        }
+
+                        SurveyImportHelper.LinkOrCreateAsteroid(survey, _playerContext);
+
+                        survey.SystemObjectId = detail.SystemObjectId;
+                        if (detail.SystemObjectId > 0 && !string.IsNullOrEmpty(survey.AsteroidUUID))
+                        {
+                            var asteroid = _playerContext.FindAsteroid(survey.AsteroidUUID);
+                            if (asteroid != null)
+                            {
+                                asteroid.SystemObjectId = detail.SystemObjectId;
+                            }
+                        }
+
+                        survey.GameApiSurveyId = surveyId;
+                        survey.LastDetailImportUtc = SystemClock.UtcNow;
+                        _playerContext.IndexSurveyByApiId(survey);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
+                    {
+                        await HandleUnauthorizedAsync("SurveyDetail:" + surveyId, ct).ConfigureAwait(false);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 429)
+                    {
+                        HandleRateLimited("SurveyDetail:" + surveyId);
+                    }
+                    catch (ApiBusinessException ex)
+                    {
+                        Log.Error("SurveyDetail:{0}: business error RC={1}: {2}", surveyId, ex.ReturnCode, ex.ReturnString);
+                    }
 
                     return Array.Empty<WorkItem>();
                 },
@@ -2379,36 +2292,39 @@ namespace OE2EmpireTracker.Services
                 Label = "KillMailList",
                 ExecuteAsync = async ct =>
                 {
-                    var result = await _apiClient.GetKillMailListAsync(
-                        _settings.AppId, _currentAccessToken).ConfigureAwait(false);
-
-                    await ThrowIfUnauthorizedAsync(result, "KillMailList", ct)
-                        .ConfigureAwait(false);
-
-                    ThrowIfRateLimited(result, "KillMailList");
-
-                    if (!result.Success)
+                    try
                     {
-                        Log.Warn("KillMailList fetch failed: {0}", result.Json);
-                        return Array.Empty<WorkItem>();
+                        var killMailList = await _typedClient.GetKillMailListAsync(ct: ct).ConfigureAwait(false);
+
+                        if (killMailList.KillMails == null || killMailList.KillMails.Count == 0)
+                        {
+                            Log.Debug("KillMailList: no kill mails returned.");
+                            return Array.Empty<WorkItem>();
+                        }
+
+                        Log.Debug("KillMailList: fetched {0} kill mails.", killMailList.KillMails.Count);
+
+                        var cascaded = killMailList.KillMails
+                            .Where(km => km.KillMailId > 0)
+                            .Select(km => CreateKillMailDetailItem(km.KillMailId))
+                            .ToArray();
+
+                        return cascaded;
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
+                    {
+                        await HandleUnauthorizedAsync("KillMailList", ct).ConfigureAwait(false);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 429)
+                    {
+                        HandleRateLimited("KillMailList");
+                    }
+                    catch (ApiBusinessException ex)
+                    {
+                        Log.Error("KillMailList: business error RC={0}: {1}", ex.ReturnCode, ex.ReturnString);
                     }
 
-                    Log.Debug("KillMailList fetched successfully.");
-
-                    var envelope = JObject.Parse(result.Json);
-                    var killMails = envelope["data"]?["killMails"] as JArray;
-                    if (killMails == null || killMails.Count == 0)
-                    {
-                        return Array.Empty<WorkItem>();
-                    }
-
-                    var cascaded = killMails
-                        .Select(km => km["killMailId"]?.Value<int>() ?? 0)
-                        .Where(id => id > 0)
-                        .Select(id => CreateKillMailDetailItem(id))
-                        .ToArray();
-
-                    return cascaded;
+                    return Array.Empty<WorkItem>();
                 },
             };
         }
@@ -2425,21 +2341,22 @@ namespace OE2EmpireTracker.Services
                 Label = "KillMailDetail:" + killMailId,
                 ExecuteAsync = async ct =>
                 {
-                    var result = await _apiClient.GetKillMailDetailAsync(
-                        _settings.AppId, _currentAccessToken, killMailId).ConfigureAwait(false);
-
-                    await ThrowIfUnauthorizedAsync(result, "KillMailDetail:" + killMailId, ct)
-                        .ConfigureAwait(false);
-
-                    ThrowIfRateLimited(result, "KillMailDetail:" + killMailId);
-
-                    if (result.Success)
+                    try
                     {
+                        var detail = await _typedClient.GetKillMailDetailAsync(killMailId, ct).ConfigureAwait(false);
                         Log.Debug("KillMailDetail:{0} fetched successfully.", killMailId);
                     }
-                    else
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
                     {
-                        Log.Warn("KillMailDetail:{0} fetch failed: {1}", killMailId, result.Json);
+                        await HandleUnauthorizedAsync("KillMailDetail:" + killMailId, ct).ConfigureAwait(false);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 429)
+                    {
+                        HandleRateLimited("KillMailDetail:" + killMailId);
+                    }
+                    catch (ApiBusinessException ex)
+                    {
+                        Log.Error("KillMailDetail:{0}: business error RC={1}: {2}", killMailId, ex.ReturnCode, ex.ReturnString);
                     }
 
                     return Array.Empty<WorkItem>();
@@ -2448,8 +2365,7 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
-        /// Creates a work item that fetches the first page of the mail list and cascades
-        /// one detail item per mail plus a next page item if the current page is non-empty.
+        /// Creates a work item that syncs the mail list by delegating to MailService.
         /// </summary>
         /// <returns>A work item for mail list retrieval with cascading.</returns>
         private WorkItem CreateMailListItem()
@@ -2461,7 +2377,7 @@ namespace OE2EmpireTracker.Services
                 {
                     Log.Debug("MailList: delegating to MailService.SyncMailAsync.");
                     int result = await MailService.SyncMailAsync(
-                        _apiClient, _settings.AppId, () => _currentAccessToken, _playerContext).ConfigureAwait(false);
+                        _typedClient, _playerContext, ct).ConfigureAwait(false);
 
                     if (result >= 0)
                     {

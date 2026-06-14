@@ -4,8 +4,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NLog;
-using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Client.Generated;
 using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Services
@@ -22,9 +23,10 @@ namespace OE2EmpireTracker.Services
         /// Merges remote profile data into the local player profile using "API wins" strategy.
         /// </summary>
         /// <param name="local">The local player profile to update.</param>
-        /// <param name="remote">The remote profile data from the game API.</param>
+        /// <param name="remote">The remote profile data from the game API (PublicCharacter DTO).</param>
+        /// <param name="skills">The remote skills data from the game API, or null if not fetched.</param>
         /// <returns>True if any fields were changed; otherwise false.</returns>
-        public static bool MergeProfileData(PlayerProfile local, GameApiProfileResponse remote)
+        public static bool MergeProfileData(PlayerProfile local, PublicCharacter remote, CharacterSkills skills = null)
         {
             if (local == null || remote == null)
             {
@@ -32,39 +34,6 @@ namespace OE2EmpireTracker.Services
             }
 
             bool changed = false;
-
-            // Merge Faction
-            if (remote.Faction != null && remote.Faction != local.Faction)
-            {
-                Log.Info(
-                    "Profile merge conflict: Faction '{0}' -> '{1}' (strategy: API wins)",
-                    local.Faction,
-                    remote.Faction);
-                local.Faction = remote.Faction;
-                changed = true;
-            }
-
-            // Merge CitizenId
-            if (remote.CitizenId != null && remote.CitizenId != local.CitizenId)
-            {
-                Log.Info(
-                    "Profile merge conflict: CitizenId '{0}' -> '{1}' (strategy: API wins)",
-                    local.CitizenId,
-                    remote.CitizenId);
-                local.CitizenId = remote.CitizenId;
-                changed = true;
-            }
-
-            // Merge SkillPoints
-            if (remote.SkillPoints != local.SkillPoints)
-            {
-                Log.Info(
-                    "Profile merge conflict: SkillPoints '{0}' -> '{1}' (strategy: API wins)",
-                    local.SkillPoints,
-                    remote.SkillPoints);
-                local.SkillPoints = remote.SkillPoints;
-                changed = true;
-            }
 
             // Merge CharacterId (Req 1, 9.1)
             if (remote.CharacterId != 0 && remote.CharacterId != local.CharacterId)
@@ -114,80 +83,92 @@ namespace OE2EmpireTracker.Services
                 }
             }
 
-            // Merge Ranks
-            if (remote.Ranks != null)
+            // Merge Ranks from Levels collection
+            if (remote.Levels != null)
             {
-                changed |= MergeRank(local.Public, remote.Ranks.Public, "Public");
-                changed |= MergeRank(local.Private, remote.Ranks.Private, "Private");
-                changed |= MergeRank(local.Military, remote.Ranks.Military, "Military");
+                foreach (var level in remote.Levels)
+                {
+                    if (string.Equals(level.Track, "public", StringComparison.OrdinalIgnoreCase))
+                    {
+                        changed |= MergeRank(local.Public, level, "Public");
+                    }
+                    else if (string.Equals(level.Track, "private", StringComparison.OrdinalIgnoreCase))
+                    {
+                        changed |= MergeRank(local.Private, level, "Private");
+                    }
+                    else if (string.Equals(level.Track, "military", StringComparison.OrdinalIgnoreCase))
+                    {
+                        changed |= MergeRank(local.Military, level, "Military");
+                    }
+                }
             }
 
             // Merge Skills (overwrite levels from API, preserve TrainingStarted and CompletionTime)
-            if (remote.Skills != null)
+            if (skills?.Skills != null)
             {
-                changed |= MergeSkills(local, remote.Skills, remote.SkillInTraining);
+                changed |= MergeSkills(local, skills.Skills, skills.SkillInTraining);
             }
 
             return changed;
         }
 
         /// <summary>
-        /// Merges a single rank category (Public, Private, or Military) from the API response.
+        /// Merges a single rank category (Public, Private, or Military) from a CharacterLevel DTO.
         /// </summary>
         /// <param name="localRank">The local rank to update.</param>
-        /// <param name="remoteRank">The remote rank data from the API.</param>
+        /// <param name="remoteLevel">The remote level data from the API.</param>
         /// <param name="rankName">The display name of the rank category for logging.</param>
         /// <returns>True if any rank fields were changed; otherwise false.</returns>
-        private static bool MergeRank(PlayerRank localRank, GameApiRankResponse remoteRank, string rankName)
+        private static bool MergeRank(PlayerRank localRank, CharacterLevel remoteLevel, string rankName)
         {
-            if (localRank == null || remoteRank == null)
+            if (localRank == null || remoteLevel == null)
             {
                 return false;
             }
 
             bool changed = false;
 
-            if (remoteRank.Level != localRank.Rank)
+            if (remoteLevel.LevelId != localRank.Rank)
             {
                 Log.Info(
                     "Profile merge conflict: {0}.Rank '{1}' -> '{2}' (strategy: API wins)",
                     rankName,
                     localRank.Rank,
-                    remoteRank.Level);
-                localRank.Rank = remoteRank.Level;
+                    remoteLevel.LevelId);
+                localRank.Rank = remoteLevel.LevelId;
                 changed = true;
             }
 
-            if (remoteRank.LevelName != null && remoteRank.LevelName != localRank.RankName)
+            if (remoteLevel.LevelName != null && remoteLevel.LevelName != localRank.RankName)
             {
                 Log.Info(
                     "Profile merge conflict: {0}.RankName '{1}' -> '{2}' (strategy: API wins)",
                     rankName,
                     localRank.RankName,
-                    remoteRank.LevelName);
-                localRank.RankName = remoteRank.LevelName;
+                    remoteLevel.LevelName);
+                localRank.RankName = remoteLevel.LevelName;
                 changed = true;
             }
 
-            if (remoteRank.XpToNextLevel != localRank.XpToNextLevel)
+            if (remoteLevel.XpToNextLevel != localRank.XpToNextLevel)
             {
                 Log.Info(
                     "Profile merge conflict: {0}.XpToNextLevel '{1}' -> '{2}' (strategy: API wins)",
                     rankName,
                     localRank.XpToNextLevel,
-                    remoteRank.XpToNextLevel);
-                localRank.XpToNextLevel = remoteRank.XpToNextLevel;
+                    remoteLevel.XpToNextLevel);
+                localRank.XpToNextLevel = remoteLevel.XpToNextLevel;
                 changed = true;
             }
 
-            if (remoteRank.CurrentXp != localRank.CurrentXp)
+            if (remoteLevel.CurrentXP != localRank.CurrentXp)
             {
                 Log.Info(
                     "Profile merge conflict: {0}.CurrentXp '{1}' -> '{2}' (strategy: API wins)",
                     rankName,
                     localRank.CurrentXp,
-                    remoteRank.CurrentXp);
-                localRank.CurrentXp = remoteRank.CurrentXp;
+                    remoteLevel.CurrentXP);
+                localRank.CurrentXp = remoteLevel.CurrentXP;
                 changed = true;
             }
 
@@ -199,30 +180,34 @@ namespace OE2EmpireTracker.Services
         /// Preserves local TrainingStarted and CompletionTime fields.
         /// </summary>
         /// <param name="local">The local player profile containing skills.</param>
-        /// <param name="remoteSkills">The remote skills dictionary from the API.</param>
+        /// <param name="remoteSkills">The remote skills collection from the API.</param>
         /// <param name="skillInTraining">The skill currently in training, or null.</param>
         /// <returns>True if any skill fields were changed; otherwise false.</returns>
         private static bool MergeSkills(
             PlayerProfile local,
-            Dictionary<string, GameApiSkillResponse> remoteSkills,
-            GameApiSkillInTrainingResponse skillInTraining)
+            ICollection<Skill> remoteSkills,
+            SkillInTraining skillInTraining)
         {
             bool changed = false;
 
-            foreach (var kvp in remoteSkills)
+            foreach (var remoteSkill in remoteSkills)
             {
-                string skillName = kvp.Key;
-                GameApiSkillResponse remoteSkill = kvp.Value;
+                string skillName = remoteSkill.SkillName;
+                if (string.IsNullOrEmpty(skillName))
+                {
+                    continue;
+                }
+
                 PlayerSkill localSkill = local.GetSkill(skillName);
 
-                if (remoteSkill.Level != localSkill.Level)
+                if (remoteSkill.SkillLevel != localSkill.Level)
                 {
                     Log.Info(
                         "Profile merge conflict: Skills[{0}].Level '{1}' -> '{2}' (strategy: API wins)",
                         skillName,
                         localSkill.Level,
-                        remoteSkill.Level);
-                    localSkill.Level = remoteSkill.Level;
+                        remoteSkill.SkillLevel);
+                    localSkill.Level = remoteSkill.SkillLevel;
                     changed = true;
                 }
 
@@ -240,9 +225,9 @@ namespace OE2EmpireTracker.Services
                     changed = true;
                 }
 
-                if (remoteSkill.AmountPerLevel != localSkill.AmountPerLevel)
+                if ((int)remoteSkill.AmountPerLevel != localSkill.AmountPerLevel)
                 {
-                    localSkill.AmountPerLevel = remoteSkill.AmountPerLevel;
+                    localSkill.AmountPerLevel = (int)remoteSkill.AmountPerLevel;
                     changed = true;
                 }
 
@@ -286,10 +271,15 @@ namespace OE2EmpireTracker.Services
                 }
             }
 
+            // Build a set of remote skill names for lookup
+            var remoteSkillNames = new HashSet<string>(
+                remoteSkills.Where(s => !string.IsNullOrEmpty(s.SkillName)).Select(s => s.SkillName),
+                StringComparer.OrdinalIgnoreCase);
+
             // Reset training fields for skills NOT in remoteSkills (Req 7.3, 7.4)
             foreach (var kvp in local.Skills)
             {
-                if (!remoteSkills.ContainsKey(kvp.Key))
+                if (!remoteSkillNames.Contains(kvp.Key))
                 {
                     PlayerSkill skill = kvp.Value;
                     if (skill.TargetLevel != 0 || skill.TrainingPercentageComplete != 0 || skill.RemainingMinutes != 0)

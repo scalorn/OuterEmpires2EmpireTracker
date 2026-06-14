@@ -9,6 +9,7 @@ using NUnit.Framework;
 using OE2EmpireTracker.Client;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
+using Generated = OE2EmpireTracker.Common.Client.Generated;
 
 namespace OE2EmpireTracker.Tests.Services
 {
@@ -678,27 +679,24 @@ namespace OE2EmpireTracker.Tests.Services
 
         /// <summary>
         /// Verifies that ResponseContainsBlueprints returns false when the
-        /// crate detail response contains no items with TypeC == "Bp", and
+        /// cargo collection contains no items with TypeC == "Bp", and
         /// that BuildCrateImporterJson returns null in this case.
         /// </summary>
         [Test]
         public void QueueSyncService_CrateDetail_SkipsBlueprintExtractionWhenNone()
         {
-            // Build a response with only non-blueprint items
-            var cargoItems = new List<GameApiAssetCargoItem>
+            // Build a DTO cargo collection with only non-blueprint items
+            var cargo = new List<Generated.AssetCargoItem>
             {
-                MakeCargoItem(1, "R", "Iron (High Purity)"),
-                MakeCargoItem(2, "C", "Electronics"),
-                MakeCargoItem(3, "A", "Rail Slugs"),
-                MakeCargoItem(4, "S", "Shield Generator"),
+                new Generated.AssetCargoItem { Id = 1, TypeC = "R", ResourceName = "Iron (High Purity)", Amount = 1 },
+                new Generated.AssetCargoItem { Id = 2, TypeC = "C", ResourceName = "Electronics", Amount = 1 },
+                new Generated.AssetCargoItem { Id = 3, TypeC = "A", ResourceName = "Rail Slugs", Amount = 1 },
+                new Generated.AssetCargoItem { Id = 4, TypeC = "S", ResourceName = "Shield Generator", Amount = 1 },
             };
 
-            var response = new GameApiAssetDetailResponse { Cargo = cargoItems };
-            string json = WrapInEnvelope(response);
-
             // Act: check blueprint detection
-            bool hasBlueprints = QueueSyncService.ResponseContainsBlueprints(json);
-            string crateImporterJson = QueueSyncService.BuildCrateImporterJson(json);
+            bool hasBlueprints = QueueSyncService.ResponseContainsBlueprints(cargo);
+            string crateImporterJson = QueueSyncService.BuildCrateImporterJson(cargo);
 
             // Assert: no blueprints detected, no JSON produced
             Assert.That(hasBlueprints, Is.False, "Should not detect blueprints when none present");
@@ -713,42 +711,39 @@ namespace OE2EmpireTracker.Tests.Services
 
         /// <summary>
         /// Verifies that ResponseContainsBlueprints returns true when the
-        /// crate detail response contains items with TypeC == "Bp", and that
+        /// cargo collection contains items with TypeC == "Bp", and that
         /// BuildCrateImporterJson produces valid CrateImporter-compatible JSON.
         /// </summary>
         [Test]
         public void QueueSyncService_CrateDetail_ExtractsBlueprintsWhenPresent()
         {
-            // Build a response with mixed items including blueprints
-            var cargoItems = new List<GameApiAssetCargoItem>
+            // Build a DTO cargo collection with mixed items including blueprints
+            var cargo = new List<Generated.AssetCargoItem>
             {
-                MakeCargoItem(1, "R", "Iron (High Purity)"),
-                new GameApiAssetCargoItem
+                new Generated.AssetCargoItem { Id = 1, TypeC = "R", ResourceName = "Iron (High Purity)", Amount = 1 },
+                new Generated.AssetCargoItem
                 {
-                    CargoItemId = 2,
+                    Id = 2,
                     TypeC = "Bp",
                     ResourceName = "Laser Mk3",
                     Amount = 1,
                     Evolution = 3,
-                    Properties = new List<GameApiAssetItemProperty>
+                    Properties = new List<Generated.AssetCargoProperty>
                     {
-                        new GameApiAssetItemProperty
+                        new Generated.AssetCargoProperty
                         {
                             FriendlyPropertyName = "Damage",
-                            PropertyValue = 20.0m,
+                            PropertyValue = 20.0,
                             Unit = "HP",
                         },
                     },
                 },
-                MakeCargoItem(3, "A", "Rail Slugs"),
+                new Generated.AssetCargoItem { Id = 3, TypeC = "A", ResourceName = "Rail Slugs", Amount = 1 },
             };
 
-            var response = new GameApiAssetDetailResponse { Cargo = cargoItems };
-            string json = WrapInEnvelope(response);
-
             // Act: check blueprint detection
-            bool hasBlueprints = QueueSyncService.ResponseContainsBlueprints(json);
-            string crateImporterJson = QueueSyncService.BuildCrateImporterJson(json);
+            bool hasBlueprints = QueueSyncService.ResponseContainsBlueprints(cargo);
+            string crateImporterJson = QueueSyncService.BuildCrateImporterJson(cargo);
 
             // Assert: blueprints detected and valid JSON produced
             Assert.That(hasBlueprints, Is.True, "Should detect blueprints when present");
@@ -766,7 +761,7 @@ namespace OE2EmpireTracker.Tests.Services
             // Verify properties were transformed
             var props = entry["properties"] as Newtonsoft.Json.Linq.JObject;
             Assert.That(props, Is.Not.Null);
-            Assert.That(props["Damage"]?.ToString(), Is.EqualTo("20.0HP"));
+            Assert.That(props["Damage"]?.ToString(), Is.EqualTo("20HP"));
         }
     }
 }

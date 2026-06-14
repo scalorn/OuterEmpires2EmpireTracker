@@ -6,7 +6,7 @@ using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using NLog;
-using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Client.Generated;
 using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Services
@@ -41,7 +41,7 @@ namespace OE2EmpireTracker.Services
         /// <param name="localItem">The local item to link via BaseItemTypeID.</param>
         /// <param name="ownerUUID">The UUID of the owning player.</param>
         /// <returns>True if linkage was established; false if the name was malformed.</returns>
-        public bool ProcessItem(GameApiAssetCargoItem apiItem, Item localItem, string ownerUUID)
+        public bool ProcessItem(AssetCargoItem apiItem, Item localItem, string ownerUUID)
         {
             var match = SurveyNameRegex.Match(apiItem.ResourceName ?? string.Empty);
             if (!match.Success)
@@ -71,7 +71,7 @@ namespace OE2EmpireTracker.Services
             }
 
             // Create stub survey
-            var stub = new Survey
+            var stub = new Models.Survey
             {
                 UUID = Guid.NewGuid().ToString(),
                 PlanetName = planetName,

@@ -9,9 +9,10 @@ using System.Runtime.InteropServices;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using NLog;
 using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Client;
+using OE2EmpireTracker.Common.Client.Generated;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using Polly.CircuitBreaker;
@@ -27,7 +28,7 @@ namespace OE2EmpireTracker.Services
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-        private readonly GameApiClient _client;
+        private readonly IGameApiTypedClient _typedClient;
         private readonly GameApiCredentialManager _credentialManager;
         private readonly GameApiConnectionMonitor _connectionMonitor;
         private readonly string _appId;
@@ -41,19 +42,19 @@ namespace OE2EmpireTracker.Services
         /// <summary>
         /// Initializes a new instance of the <see cref="GameApiSyncScheduler"/> class.
         /// </summary>
-        /// <param name="client">The game API client used for profile requests.</param>
+        /// <param name="typedClient">The typed game API client used for API requests.</param>
         /// <param name="credentialManager">The credential manager for retrieving secrets.</param>
         /// <param name="connectionMonitor">The connection monitor for detecting connect/disconnect transitions.</param>
         /// <param name="appId">The registered application GUID.</param>
         /// <param name="clientId">The player's account identifier.</param>
         public GameApiSyncScheduler(
-            GameApiClient client,
+            IGameApiTypedClient typedClient,
             GameApiCredentialManager credentialManager,
             GameApiConnectionMonitor connectionMonitor,
             string appId,
             string clientId)
         {
-            _client = client ?? throw new ArgumentNullException(nameof(client));
+            _typedClient = typedClient ?? throw new ArgumentNullException(nameof(typedClient));
             _credentialManager = credentialManager ?? throw new ArgumentNullException(nameof(credentialManager));
             _connectionMonitor = connectionMonitor ?? throw new ArgumentNullException(nameof(connectionMonitor));
             _appId = appId ?? string.Empty;
@@ -96,7 +97,6 @@ namespace OE2EmpireTracker.Services
             _pollingIntervalMs = pollingIntervalMinutes * 60 * 1000;
             _connectionMonitor.StatusChanged += OnConnectionStatusChanged;
 
-            // Determine initial suspended state based on current connection status
             _suspended = _connectionMonitor.CurrentState != GameApiConnectionMonitor.ConnectionState.Connected;
 
             if (_suspended)
@@ -121,7 +121,6 @@ namespace OE2EmpireTracker.Services
 
         /// <summary>
         /// Updates the polling interval without restarting the scheduler.
-        /// The new interval takes effect after the current polling cycle completes.
         /// </summary>
         /// <param name="pollingIntervalMinutes">The new interval between sync cycles in minutes.</param>
         public void UpdatePollingInterval(int pollingIntervalMinutes)
@@ -192,14 +191,14 @@ namespace OE2EmpireTracker.Services
         /// <param name="local">The local player profile to update.</param>
         /// <param name="remote">The API response containing authoritative game data.</param>
         /// <returns>True if any fields were changed; otherwise false.</returns>
-        internal static bool MergeProfileData(PlayerProfile local, GameApiProfileResponse remote)
+        internal static bool MergeProfileData(PlayerProfile local, PublicCharacter remote)
         {
             return ProfileMergeService.MergeProfileData(local, remote);
         }
 
         /// <summary>
         /// Performs a sync for a single character by exchanging a token and calling GetCharacterAsync.
-        /// Deserializes the response and merges game-authoritative fields into the local profile.
+        /// Merges game-authoritative fields into the local profile.
         /// Internal for test access.
         /// </summary>
         /// <param name="playerUUID">The player UUID to sync.</param>
@@ -219,92 +218,72 @@ namespace OE2EmpireTracker.Services
             try
             {
                 // Exchange token first
-                var tokenResult = await _client.ExchangeTokenAsync(_appId, _clientId, secret).ConfigureAwait(false);
-                if (!tokenResult.Success)
-                {
-                    if (tokenResult.ErrorMessage != null && tokenResult.ErrorMessage.Contains("401"))
-                    {
-                        Log.Warn("Profile sync for character {0}: credentials are invalid (HTTP 401), stopping polling", playerUUID);
-                        _connectionMonitor.TransitionTo(
-                            GameApiConnectionMonitor.ConnectionState.DisconnectedInvalidKey,
-                            "Credentials are invalid (HTTP 401)");
-                    }
-                    else
-                    {
-                        Log.Warn("Profile sync for character {0}: token exchange failed: {1}", playerUUID, tokenResult.ErrorMessage);
-                    }
-
-                    return false;
-                }
+                await _typedClient.ExchangeTokenAsync(_appId, _clientId, secret).ConfigureAwait(false);
 
                 // Use the token to fetch character data
-                var result = await _client.GetCharacterAsync(_appId, tokenResult.Token.AccessToken).ConfigureAwait(false);
-                if (result.Success)
+                var remoteProfile = await _typedClient.GetCharacterAsync().ConfigureAwait(false);
+                if (remoteProfile == null)
                 {
-                    var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiProfileResponse>>(result.Json);
-                    GameApiProfileResponse remoteProfile = envelope?.Data;
-                    if (remoteProfile == null)
-                    {
-                        Log.Warn("Profile sync for character {0}: deserialized response was null", playerUUID);
-                        return false;
-                    }
-
-                    var localProfile = GetPlayerProfile(playerUUID);
-                    if (localProfile != null)
-                    {
-                        MergeProfileData(localProfile, remoteProfile);
-                    }
-
-                    Log.Info("Successfully synced profile for character {0}", playerUUID);
-
-                    // Colony sync runs after profile sync succeeds (Req 5.1)
-                    // Wrapped in try/catch so colony failures don't affect profile result (Req 5.2)
-                    try
-                    {
-                        await SyncColoniesAsync(playerUUID, tokenResult.Token.AccessToken).ConfigureAwait(false);
-                    }
-                    catch (Exception colonyEx)
-                    {
-                        Log.Error(colonyEx, "Colony sync failed for character {0}, profile sync result preserved", playerUUID);
-                    }
-
-                    // Asset sync runs after colony sync (Req 8.1)
-                    // Wrapped in try/catch so asset failures don't affect profile/colony sync (Req 8.4)
-                    try
-                    {
-                        await SyncAssetsAsync(playerUUID, tokenResult.Token.AccessToken).ConfigureAwait(false);
-                    }
-                    catch (Exception assetEx)
-                    {
-                        Log.Error(assetEx, "Asset sync failed for character {0}, profile/colony sync results preserved", playerUUID);
-                    }
-
-                    // Banking sync runs after asset sync (Req 4.2)
-                    // Wrapped in try/catch so banking failures don't affect profile/colony/asset sync (Req 2.1, 2.2)
-                    try
-                    {
-                        await SyncBankingAsync(playerUUID, tokenResult.Token.AccessToken).ConfigureAwait(false);
-                    }
-                    catch (Exception bankingEx)
-                    {
-                        Log.Error(bankingEx, "Banking sync failed for character {0}, profile/colony/asset sync results preserved", playerUUID);
-                    }
-
-                    return true;
-                }
-
-                // Handle HTTP 401 — token expired or invalid
-                if (result.Json == "401")
-                {
-                    Log.Warn("Profile sync for character {0}: token rejected (HTTP 401), invalidating cache", playerUUID);
-                    _client.InvalidateToken(_clientId, secret);
-                    _connectionMonitor.TransitionTo(
-                        GameApiConnectionMonitor.ConnectionState.DisconnectedInvalidKey,
-                        "Credentials are invalid (HTTP 401)");
+                    Log.Warn("Profile sync for character {0}: response was null", playerUUID);
                     return false;
                 }
 
-                Log.Warn("Profile sync failed for character {0}", playerUUID);
+                var localProfile = GetPlayerProfile(playerUUID);
+                if (localProfile != null)
+                {
+                    MergeProfileData(localProfile, remoteProfile);
+                }
+
+                Log.Info("Successfully synced profile for character {0}", playerUUID);
+
+                // Colony sync runs after profile sync succeeds (Req 5.1)
+                try
+                {
+                    await SyncColoniesAsync(playerUUID).ConfigureAwait(false);
+                }
+                catch (Exception colonyEx)
+                {
+                    Log.Error(colonyEx, "Colony sync failed for character {0}, profile sync result preserved", playerUUID);
+                }
+
+                // Asset sync runs after colony sync (Req 8.1)
+                try
+                {
+                    await SyncAssetsAsync(playerUUID).ConfigureAwait(false);
+                }
+                catch (Exception assetEx)
+                {
+                    Log.Error(assetEx, "Asset sync failed for character {0}, profile/colony sync results preserved", playerUUID);
+                }
+
+                // Banking sync runs after asset sync (Req 4.2)
+                try
+                {
+                    await SyncBankingAsync(playerUUID).ConfigureAwait(false);
+                }
+                catch (Exception bankingEx)
+                {
+                    Log.Error(bankingEx, "Banking sync failed for character {0}, profile/colony/asset sync results preserved", playerUUID);
+                }
+
+                return true;
+            }
+            catch (ApiHttpException ex) when (ex.StatusCode == 401)
+            {
+                Log.Warn("Profile sync for character {0}: credentials are invalid (HTTP 401), stopping polling", playerUUID);
+                _connectionMonitor.TransitionTo(
+                    GameApiConnectionMonitor.ConnectionState.DisconnectedInvalidKey,
+                    "Credentials are invalid (HTTP 401)");
+                return false;
+            }
+            catch (ApiHttpException ex) when (ex.StatusCode == 403)
+            {
+                Log.Warn("Profile sync for character {0}: scope not granted (HTTP 403)", playerUUID);
+                return false;
+            }
+            catch (ApiHttpException ex) when (ex.StatusCode == 429)
+            {
+                Log.Warn("Profile sync for character {0}: rate limited (HTTP 429)", playerUUID);
                 return false;
             }
             catch (Exception ex)
@@ -316,112 +295,102 @@ namespace OE2EmpireTracker.Services
 
         /// <summary>
         /// Retrieves the local PlayerProfile for the given UUID.
-        /// Override point for testing. Returns null if no profile is found.
+        /// Override point for testing.
         /// </summary>
         /// <param name="playerUUID">The player UUID to look up.</param>
         /// <returns>The local PlayerProfile, or null if not found.</returns>
         internal virtual PlayerProfile GetPlayerProfile(string playerUUID)
         {
-            // Default implementation returns null — wired to PlayerContext in production via GameApiContext
             return null;
         }
 
         /// <summary>
         /// Retrieves the mutable colony list for the given player UUID.
-        /// Override point for testing. Returns null if no colonies are found.
+        /// Override point for testing.
         /// </summary>
         /// <param name="playerUUID">The player UUID to look up.</param>
         /// <returns>The mutable colony list, or null if not found.</returns>
         internal virtual List<Colony> GetPlayerColonies(string playerUUID)
         {
-            // Default implementation returns null — wired to PlayerContext in production via GameApiContext
             return null;
         }
 
         /// <summary>
         /// Persists the current player context to disk.
-        /// Override point for testing. In production, calls PlayerContext.WriteContext().
+        /// Override point for testing.
         /// </summary>
         internal virtual void WriteContext()
         {
-            // Default implementation is a no-op — wired to PlayerContext in production via GameApiContext
         }
 
         /// <summary>
         /// Raises the ColonyDataChanged event to notify UI subscribers.
-        /// Override point for testing. In production, calls PlayerContext.OnColonyDataChanged.
+        /// Override point for testing.
         /// </summary>
         internal virtual void RaiseColonyDataChanged()
         {
-            // Default implementation is a no-op — wired to PlayerContext in production via GameApiContext
         }
 
         /// <summary>
         /// Notifies subscribers that a specific colony's data has changed.
-        /// Override point for testing. In production, calls PlayerContext.OnColonyDataChanged(colonyUUID).
+        /// Override point for testing.
         /// </summary>
         /// <param name="colonyUUID">The UUID of the colony that changed.</param>
         internal virtual void RaiseColonyDataChanged(string colonyUUID)
         {
-            // Default implementation is a no-op — wired to PlayerContext in production via GameApiContext
         }
 
         /// <summary>
         /// Retrieves the mutable station list for the given player UUID.
-        /// Override point for testing. Returns null if no stations are found.
+        /// Override point for testing.
         /// </summary>
         /// <param name="playerUUID">The player UUID to look up.</param>
         /// <returns>The mutable station list, or null if not found.</returns>
         internal virtual List<Station> GetPlayerStations(string playerUUID)
         {
-            // Default implementation returns null — wired to PlayerContext in production via GameApiContext
             return null;
         }
 
         /// <summary>
         /// Retrieves the mutable ship list for the given player UUID.
-        /// Override point for testing. Returns null if no ships are found.
+        /// Override point for testing.
         /// </summary>
         /// <param name="playerUUID">The player UUID to look up.</param>
         /// <returns>The mutable ship list, or null if not found.</returns>
         internal virtual List<Ship> GetPlayerShips(string playerUUID)
         {
-            // Default implementation returns null — wired to PlayerContext in production via GameApiContext
             return null;
         }
 
         /// <summary>
         /// Raises the AssetDataChanged event to notify UI subscribers.
-        /// Override point for testing. In production, calls PlayerContext.OnAssetDataChanged.
+        /// Override point for testing.
         /// </summary>
         internal virtual void RaiseAssetDataChanged()
         {
-            // Default implementation is a no-op — wired to PlayerContext in production via GameApiContext
         }
 
         /// <summary>
         /// Adds a newly created station to the player's data.
-        /// Override point for testing. In production, calls PlayerContext.AddStation.
+        /// Override point for testing.
         /// </summary>
         /// <param name="station">The station to add.</param>
         internal virtual void AddStation(Station station)
         {
-            // Default no-op — overridden in ProductionSyncScheduler
         }
 
         /// <summary>
         /// Adds a newly created ship to the player's data.
-        /// Override point for testing. In production, calls PlayerContext.AddShip.
+        /// Override point for testing.
         /// </summary>
         /// <param name="ship">The ship to add.</param>
         internal virtual void AddShip(Ship ship)
         {
-            // Default no-op — overridden in ProductionSyncScheduler
         }
 
         /// <summary>
         /// Creates a <see cref="BlueprintLinkageService"/> for use during colony warehouse sync.
-        /// Override point for testing. In production, returns a real instance wired to contexts.
+        /// Override point for testing.
         /// </summary>
         /// <returns>A blueprint linkage service, or null if linkage is not available.</returns>
         internal virtual BlueprintLinkageService CreateBlueprintLinkageService()
@@ -431,7 +400,7 @@ namespace OE2EmpireTracker.Services
 
         /// <summary>
         /// Creates a <see cref="SurveyLinkageService"/> for use during colony warehouse sync.
-        /// Override point for testing. In production, returns a real instance wired to contexts.
+        /// Override point for testing.
         /// </summary>
         /// <returns>A survey linkage service, or null if linkage is not available.</returns>
         internal virtual SurveyLinkageService CreateSurveyLinkageService()
@@ -441,11 +410,10 @@ namespace OE2EmpireTracker.Services
 
         /// <summary>
         /// Raises the BankingDataChanged event to notify UI subscribers.
-        /// Override point for testing. In production, calls PlayerContext.OnBankingDataChanged.
+        /// Override point for testing.
         /// </summary>
         internal virtual void RaiseBankingDataChanged()
         {
-            // Default implementation is a no-op — wired to PlayerContext in production via GameApiContext
         }
 
         /// <summary>
@@ -455,7 +423,6 @@ namespace OE2EmpireTracker.Services
         /// <returns>The player context, or null if not available.</returns>
         internal virtual PlayerContext GetPlayerContext()
         {
-            // Default implementation returns null — wired in production via GameApiContext
             return null;
         }
 
@@ -466,75 +433,53 @@ namespace OE2EmpireTracker.Services
         /// <param name="balance">The new banking balance value.</param>
         internal virtual void SetBankingBalance(decimal balance)
         {
-            // Default implementation is a no-op — wired in production via GameApiContext
         }
 
         /// <summary>
         /// Fetches the colony list from the game API and merges it into local data.
-        /// Called after profile sync succeeds. Handles 401 (token invalid) and 403 (scope missing).
-        /// Colony sync failures are logged but do not affect the profile sync result.
+        /// Called after profile sync succeeds.
         /// </summary>
         /// <param name="playerUUID">The player UUID whose colonies to sync.</param>
-        /// <param name="accessToken">The Bearer access token from token exchange.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        internal async Task SyncColoniesAsync(string playerUUID, string accessToken)
+        internal async Task SyncColoniesAsync(string playerUUID)
         {
             Log.Info("Colony sync starting for character {0}", playerUUID);
 
-            // 1. Fetch colony list (Req 5.1)
-            var listResult = await _client.GetColonyListAsync(_appId, accessToken).ConfigureAwait(false);
-
-            if (!listResult.Success)
-            {
-                // Handle HTTP 401 — same as profile 401 (Req 5.6)
-                if (listResult.Json == "401")
-                {
-                    Log.Warn("Colony sync for character {0}: token rejected (HTTP 401), invalidating", playerUUID);
-                    _connectionMonitor.TransitionTo(
-                        GameApiConnectionMonitor.ConnectionState.DisconnectedInvalidKey,
-                        "Credentials are invalid (HTTP 401)");
-                    return;
-                }
-
-                // Handle HTTP 403 — scope not granted (Req 5.5, 13.4)
-                if (listResult.Json == "403")
-                {
-                    Log.Info("Colony sync skipped: colony.list.read scope not granted");
-                    return;
-                }
-
-                Log.Warn("Colony sync failed: could not fetch colony list for character {0}", playerUUID);
-                return;
-            }
-
-            // 2. Deserialize — fail-fast before mutation (Req 5.3, 15.5)
-            GameApiColonyListResponse colonyListResponse;
+            ColonyList colonyListResponse;
             try
             {
-                var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiColonyListResponse>>(listResult.Json);
-                colonyListResponse = envelope?.Data;
-                if (colonyListResponse == null)
-                {
-                    Log.Warn("Colony sync for character {0}: deserialized response was null", playerUUID);
-                    return;
-                }
+                colonyListResponse = await _typedClient.GetColonyListAsync().ConfigureAwait(false);
             }
-            catch (JsonException ex)
+            catch (ApiHttpException ex) when (ex.StatusCode == 401)
             {
-                string truncated = listResult.Json?.Length > 500
-                    ? listResult.Json.Substring(0, 500)
-                    : listResult.Json;
-                Log.Error(ex, "Colony sync: malformed JSON response: {0}", truncated);
+                Log.Warn("Colony sync for character {0}: token rejected (HTTP 401)", playerUUID);
+                _connectionMonitor.TransitionTo(
+                    GameApiConnectionMonitor.ConnectionState.DisconnectedInvalidKey,
+                    "Credentials are invalid (HTTP 401)");
+                return;
+            }
+            catch (ApiHttpException ex) when (ex.StatusCode == 403)
+            {
+                Log.Info("Colony sync skipped: colony.list.read scope not granted");
+                return;
+            }
+            catch (ApiHttpException ex)
+            {
+                Log.Warn("Colony sync failed for character {0}: HTTP {1}", playerUUID, ex.StatusCode);
                 return;
             }
 
-            // Req 5.7 — log count received
+            if (colonyListResponse?.Colonies == null)
+            {
+                Log.Warn("Colony sync for character {0}: response or colonies was null", playerUUID);
+                return;
+            }
+
             Log.Info(
                 "Received {0} colonies from game API for character {1}",
                 colonyListResponse.Colonies.Count,
                 playerUUID);
 
-            // 3. Merge colony list (Req 5.3, 13.1)
             var localColonies = GetPlayerColonies(playerUUID);
             if (localColonies == null)
             {
@@ -543,11 +488,11 @@ namespace OE2EmpireTracker.Services
             }
 
             var mergeResult = ColonyMergeService.MergeColonyList(
-                colonyListResponse.Colonies,
+                colonyListResponse,
                 localColonies,
                 playerUUID);
 
-            // 4. Fetch per-colony details — buildings + warehouse (Req 5.4, 5.5, 14.2, 14.3, 14.4)
+            // Fetch per-colony details
             bool buildingsScopeAvailable = true;
             bool warehouseScopeAvailable = true;
             bool workersScopeAvailable = true;
@@ -576,129 +521,114 @@ namespace OE2EmpireTracker.Services
 
                 bool colonyChanged = false;
 
-                // Buildings (Req 14.2, 13.6)
+                // Buildings
                 if (buildingsScopeAvailable)
                 {
-                    var buildingsResult = await _client.GetColonyBuildingsAsync(_appId, accessToken, apiColony.ColonyId).ConfigureAwait(false);
-                    if (buildingsResult.Success)
+                    try
                     {
-                        try
+                        var buildingsResponse = await _typedClient.GetColonyBuildingsAsync(apiColony.ColonyId).ConfigureAwait(false);
+                        if (buildingsResponse != null)
                         {
-                            var bEnvelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiColonyBuildingsResponse>>(buildingsResult.Json);
-                            if (bEnvelope?.Data?.Buildings != null)
+                            bool buildingsChanged = ColonyMergeService.MergeBuildings(buildingsResponse, colony);
+                            colonyChanged |= buildingsChanged;
+                            if (buildingsChanged && mergeResult.Updated == 0)
                             {
-                                bool buildingsChanged = ColonyMergeService.MergeBuildings(bEnvelope.Data.Buildings, colony);
-                                colonyChanged |= buildingsChanged;
-                                if (buildingsChanged && mergeResult.Updated == 0)
-                                {
-                                    mergeResult.Updated++;
-                                }
+                                mergeResult.Updated++;
                             }
                         }
-                        catch (JsonException ex)
-                        {
-                            Log.Error(ex, "Colony sync: malformed buildings JSON for colonyId={0}", apiColony.ColonyId);
-                        }
                     }
-                    else if (buildingsResult.Json == "403")
+                    catch (ApiHttpException ex) when (ex.StatusCode == 403)
                     {
                         buildingsScopeAvailable = false;
                         Log.Info("Colony sync: colony.buildings.read scope not available, skipping buildings for all colonies");
                     }
-                    else if (buildingsResult.Json != "404")
+                    catch (ApiHttpException ex) when (ex.StatusCode == 404)
                     {
-                        Log.Warn("Colony sync: buildings fetch failed for colonyId={0}", apiColony.ColonyId);
+                        Log.Debug("Colony sync: buildings not found for colonyId={0}", apiColony.ColonyId);
+                    }
+                    catch (ApiHttpException ex)
+                    {
+                        Log.Warn("Colony sync: buildings fetch failed for colonyId={0}: HTTP {1}", apiColony.ColonyId, ex.StatusCode);
                     }
                 }
 
-                // Warehouse (Req 14.3, 13.6)
+                // Warehouse
                 if (warehouseScopeAvailable)
                 {
-                    var warehouseResult = await _client.GetColonyWarehouseAsync(_appId, accessToken, apiColony.ColonyId).ConfigureAwait(false);
-                    if (warehouseResult.Success)
+                    try
                     {
-                        try
+                        var warehouseResponse = await _typedClient.GetColonyWarehouseAsync(apiColony.ColonyId).ConfigureAwait(false);
+                        if (warehouseResponse != null)
                         {
-                            var wEnvelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiColonyWarehouseResponse>>(warehouseResult.Json);
-                            if (wEnvelope?.Data?.Contents != null)
+                            var blueprintLinkage = CreateBlueprintLinkageService();
+                            var surveyLinkage = CreateSurveyLinkageService();
+                            bool warehouseChanged = ColonyMergeService.MergeWarehouse(
+                                warehouseResponse, colony, blueprintLinkage, surveyLinkage);
+                            colonyChanged |= warehouseChanged;
+                            if (warehouseChanged && mergeResult.Updated == 0)
                             {
-                                var blueprintLinkage = CreateBlueprintLinkageService();
-                                var surveyLinkage = CreateSurveyLinkageService();
-                                bool warehouseChanged = ColonyMergeService.MergeWarehouse(
-                                    wEnvelope.Data.Contents, colony, blueprintLinkage, surveyLinkage);
-                                colonyChanged |= warehouseChanged;
-                                if (warehouseChanged && mergeResult.Updated == 0)
-                                {
-                                    mergeResult.Updated++;
-                                }
+                                mergeResult.Updated++;
                             }
                         }
-                        catch (JsonException ex)
-                        {
-                            Log.Error(ex, "Colony sync: malformed warehouse JSON for colonyId={0}", apiColony.ColonyId);
-                        }
                     }
-                    else if (warehouseResult.Json == "403")
+                    catch (ApiHttpException ex) when (ex.StatusCode == 403)
                     {
                         warehouseScopeAvailable = false;
                         Log.Info("Colony sync: colony.warehouse.read scope not available, skipping warehouse for all colonies");
                     }
-                    else if (warehouseResult.Json != "404")
+                    catch (ApiHttpException ex) when (ex.StatusCode == 404)
                     {
-                        Log.Warn("Colony sync: warehouse fetch failed for colonyId={0}", apiColony.ColonyId);
+                        Log.Debug("Colony sync: warehouse not found for colonyId={0}", apiColony.ColonyId);
+                    }
+                    catch (ApiHttpException ex)
+                    {
+                        Log.Warn("Colony sync: warehouse fetch failed for colonyId={0}: HTTP {1}", apiColony.ColonyId, ex.StatusCode);
                     }
                 }
 
-                // Workers (Req 14.1, 14.2, 14.3, 14.4)
+                // Workers
                 if (workersScopeAvailable)
                 {
-                    var workersResult = await _client.GetColonyWorkersAsync(_appId, accessToken, apiColony.ColonyId).ConfigureAwait(false);
-                    if (workersResult.Success)
+                    try
                     {
-                        try
+                        var workersResponse = await _typedClient.GetColonyWorkersAsync(apiColony.ColonyId).ConfigureAwait(false);
+                        if (workersResponse != null)
                         {
-                            var wkEnvelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiColonyWorkersResponse>>(workersResult.Json);
-                            if (wkEnvelope?.Data != null)
+                            bool workersChanged = ColonyMergeService.MergeWorkers(workersResponse, colony);
+                            colonyChanged |= workersChanged;
+                            if (workersChanged && mergeResult.Updated == 0)
                             {
-                                bool workersChanged = ColonyMergeService.MergeWorkers(wkEnvelope.Data, colony);
-                                colonyChanged |= workersChanged;
-                                if (workersChanged && mergeResult.Updated == 0)
-                                {
-                                    mergeResult.Updated++;
-                                }
+                                mergeResult.Updated++;
                             }
                         }
-                        catch (JsonException ex)
-                        {
-                            Log.Error(ex, "Colony sync: malformed workers JSON for colonyId={0}", apiColony.ColonyId);
-                        }
                     }
-                    else if (workersResult.Json == "403")
+                    catch (ApiHttpException ex) when (ex.StatusCode == 403)
                     {
                         workersScopeAvailable = false;
                         Log.Info("Colony sync: colony.workers.read scope not available, skipping workers for all colonies");
                     }
-                    else if (workersResult.Json != "404")
+                    catch (ApiHttpException ex) when (ex.StatusCode == 404)
                     {
-                        Log.Warn("Colony sync: workers fetch failed for colonyId={0}", apiColony.ColonyId);
+                        Log.Debug("Colony sync: workers not found for colonyId={0}", apiColony.ColonyId);
+                    }
+                    catch (ApiHttpException ex)
+                    {
+                        Log.Warn("Colony sync: workers fetch failed for colonyId={0}: HTTP {1}", apiColony.ColonyId, ex.StatusCode);
                     }
                 }
 
-                // Notify UI only if this colony actually had changes
                 if (colonyChanged)
                 {
                     RaiseColonyDataChanged(colonyUUID);
                 }
             }
 
-            // 5. Persist and notify (Req 11.1, 11.2, 11.3, 12.1, 12.3)
             if (mergeResult.HasChanges)
             {
                 WriteContext();
                 RaiseColonyDataChanged();
             }
 
-            // Req 5.7 — log merge outcome
             Log.Info(
                 "Colony sync complete for character {0}: {1} created, {2} updated, {3} skipped",
                 playerUUID,
@@ -709,14 +639,11 @@ namespace OE2EmpireTracker.Services
 
         /// <summary>
         /// Fetches asset locations from the game API, iterates each location with assets,
-        /// retrieves cargo details, and merges into the appropriate local model (colony, station, or ship).
-        /// Handles 401 (invalidate credentials + abort), 403 (log + skip), 404 (log + skip location),
-        /// malformed JSON (log + skip), and circuit breaker open (log + abort).
+        /// retrieves cargo details, and merges into the appropriate local model.
         /// </summary>
         /// <param name="playerUUID">The player UUID whose assets to sync.</param>
-        /// <param name="accessToken">The Bearer access token from token exchange.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        internal virtual async Task SyncAssetsAsync(string playerUUID, string accessToken)
+        internal virtual async Task SyncAssetsAsync(string playerUUID)
         {
             Log.Info("Asset sync starting for character {0}", playerUUID);
 
@@ -724,27 +651,27 @@ namespace OE2EmpireTracker.Services
             int itemsProcessed = 0;
             int errorsEncountered = 0;
 
-            // 1. Fetch asset locations list
-            var listResult = await _client.GetAssetLocationsAsync(_appId, accessToken).ConfigureAwait(false);
-
-            if (!listResult.Success)
+            AssetLocations locationsResponse;
+            try
             {
-                if (listResult.Json == "401")
-                {
-                    Log.Warn("Asset sync for character {0}: token rejected (HTTP 401), invalidating", playerUUID);
-                    _connectionMonitor.TransitionTo(
-                        GameApiConnectionMonitor.ConnectionState.DisconnectedInvalidKey,
-                        "Credentials are invalid (HTTP 401)");
-                    return;
-                }
-
-                if (listResult.Json == "403")
-                {
-                    Log.Info("Asset sync skipped: assets.locations.read scope not granted");
-                    return;
-                }
-
-                Log.Warn("Asset sync failed: could not fetch asset locations for character {0}", playerUUID);
+                locationsResponse = await _typedClient.GetAssetLocationsAsync().ConfigureAwait(false);
+            }
+            catch (ApiHttpException ex) when (ex.StatusCode == 401)
+            {
+                Log.Warn("Asset sync for character {0}: token rejected (HTTP 401)", playerUUID);
+                _connectionMonitor.TransitionTo(
+                    GameApiConnectionMonitor.ConnectionState.DisconnectedInvalidKey,
+                    "Credentials are invalid (HTTP 401)");
+                return;
+            }
+            catch (ApiHttpException ex) when (ex.StatusCode == 403)
+            {
+                Log.Info("Asset sync skipped: assets.locations.read scope not granted");
+                return;
+            }
+            catch (ApiHttpException ex)
+            {
+                Log.Warn("Asset sync failed for character {0}: HTTP {1}", playerUUID, ex.StatusCode);
                 errorsEncountered++;
                 Log.Info(
                     "Asset sync complete for character {0}: {1} locations synced, {2} items processed, {3} errors",
@@ -755,28 +682,12 @@ namespace OE2EmpireTracker.Services
                 return;
             }
 
-            // 2. Deserialize locations list
-            GameApiAssetLocationsResponse locationsResponse;
-            try
+            if (locationsResponse?.Locations == null)
             {
-                var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiAssetLocationsResponse>>(listResult.Json);
-                locationsResponse = envelope?.Data;
-                if (locationsResponse == null)
-                {
-                    Log.Warn("Asset sync for character {0}: deserialized locations response was null", playerUUID);
-                    return;
-                }
-            }
-            catch (JsonException ex)
-            {
-                string truncated = listResult.Json?.Length > 500
-                    ? listResult.Json.Substring(0, 500)
-                    : listResult.Json;
-                Log.Error(ex, "Asset sync: malformed JSON in locations response: {0}", truncated);
+                Log.Warn("Asset sync for character {0}: response or locations was null", playerUUID);
                 return;
             }
 
-            // 3. Filter to locations with assetCount > 0
             var activeLocations = locationsResponse.Locations.Where(l => l.AssetCount > 0).ToList();
             Log.Info(
                 "Asset sync: {0} total locations, {1} with assets for character {2}",
@@ -784,95 +695,28 @@ namespace OE2EmpireTracker.Services
                 activeLocations.Count,
                 playerUUID);
 
-            // Get local data references
             var localColonies = GetPlayerColonies(playerUUID);
             var localStations = GetPlayerStations(playerUUID);
             var localShips = GetPlayerShips(playerUUID);
             bool anyChanges = false;
 
-            // 4. Iterate each location with assets
             foreach (var location in activeLocations)
             {
                 try
                 {
-                    var detailResult = await _client.GetAssetLocationDetailAsync(
-                        _appId,
-                        accessToken,
+                    var detailResponse = await _typedClient.GetAssetLocationDetailAsync(
                         location.LocationId,
                         location.LocationType).ConfigureAwait(false);
 
-                    if (!detailResult.Success)
+                    if (detailResponse?.Cargo == null)
                     {
-                        if (detailResult.Json == "401")
-                        {
-                            Log.Warn(
-                                "Asset sync for character {0}: detail request for location {1} returned HTTP 401, aborting cycle",
-                                playerUUID,
-                                location.LocationId);
-                            _connectionMonitor.TransitionTo(
-                                GameApiConnectionMonitor.ConnectionState.DisconnectedInvalidKey,
-                                "Credentials are invalid (HTTP 401)");
-                            return;
-                        }
-
-                        if (detailResult.Json == "403")
-                        {
-                            Log.Info(
-                                "Asset sync: location {0} ({1}) returned HTTP 403, skipping",
-                                location.LocationId,
-                                location.LocationName);
-                            errorsEncountered++;
-                            continue;
-                        }
-
-                        if (detailResult.Json == "404")
-                        {
-                            Log.Warn(
-                                "Asset sync: location {0} ({1}) returned HTTP 404, skipping",
-                                location.LocationId,
-                                location.LocationName);
-                            errorsEncountered++;
-                            continue;
-                        }
-
                         Log.Warn(
-                            "Asset sync: failed to fetch detail for location {0} ({1}), skipping",
-                            location.LocationId,
-                            location.LocationName);
+                            "Asset sync: detail response was null for location {0}, skipping",
+                            location.LocationId);
                         errorsEncountered++;
                         continue;
                     }
 
-                    // Deserialize detail response
-                    GameApiAssetDetailResponse detailResponse;
-                    try
-                    {
-                        var detailEnvelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiAssetDetailResponse>>(detailResult.Json);
-                        detailResponse = detailEnvelope?.Data;
-                        if (detailResponse == null)
-                        {
-                            Log.Warn(
-                                "Asset sync: deserialized detail response was null for location {0}, skipping",
-                                location.LocationId);
-                            errorsEncountered++;
-                            continue;
-                        }
-                    }
-                    catch (JsonException ex)
-                    {
-                        string truncated = detailResult.Json?.Length > 500
-                            ? detailResult.Json.Substring(0, 500)
-                            : detailResult.Json;
-                        Log.Error(
-                            ex,
-                            "Asset sync: malformed JSON in detail response for location {0}: {1}",
-                            location.LocationId,
-                            truncated);
-                        errorsEncountered++;
-                        continue;
-                    }
-
-                    // Route to appropriate merge method based on location type
                     bool merged = RouteAssetMerge(
                         location,
                         detailResponse.Cargo,
@@ -889,6 +733,42 @@ namespace OE2EmpireTracker.Services
                     locationsSynced++;
                     itemsProcessed += detailResponse.Cargo.Count;
                 }
+                catch (ApiHttpException ex) when (ex.StatusCode == 401)
+                {
+                    Log.Warn(
+                        "Asset sync for character {0}: detail request for location {1} returned HTTP 401, aborting cycle",
+                        playerUUID,
+                        location.LocationId);
+                    _connectionMonitor.TransitionTo(
+                        GameApiConnectionMonitor.ConnectionState.DisconnectedInvalidKey,
+                        "Credentials are invalid (HTTP 401)");
+                    return;
+                }
+                catch (ApiHttpException ex) when (ex.StatusCode == 403)
+                {
+                    Log.Info(
+                        "Asset sync: location {0} ({1}) returned HTTP 403, skipping",
+                        location.LocationId,
+                        location.LocationName);
+                    errorsEncountered++;
+                }
+                catch (ApiHttpException ex) when (ex.StatusCode == 404)
+                {
+                    Log.Warn(
+                        "Asset sync: location {0} ({1}) returned HTTP 404, skipping",
+                        location.LocationId,
+                        location.LocationName);
+                    errorsEncountered++;
+                }
+                catch (ApiHttpException ex)
+                {
+                    Log.Warn(
+                        "Asset sync: failed to fetch detail for location {0} ({1}): HTTP {2}",
+                        location.LocationId,
+                        location.LocationName,
+                        ex.StatusCode);
+                    errorsEncountered++;
+                }
                 catch (BrokenCircuitException)
                 {
                     Log.Warn("Asset sync: circuit breaker open, aborting asset sync cycle");
@@ -897,14 +777,12 @@ namespace OE2EmpireTracker.Services
                 }
             }
 
-            // 5. Persist and notify if changes occurred
             if (anyChanges)
             {
                 WriteContext();
                 RaiseAssetDataChanged();
             }
 
-            // 6. Log summary
             Log.Info(
                 "Asset sync complete for character {0}: {1} locations synced, {2} items processed, {3} errors",
                 playerUUID,
@@ -914,9 +792,7 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
-        /// Performs a single round-robin sync cycle. Advances to the next character
-        /// and attempts to sync their profile. If the character fails, it is skipped
-        /// and will be retried on the next cycle.
+        /// Performs a single round-robin sync cycle.
         /// </summary>
         internal async Task PerformRoundRobinSyncAsync()
         {
@@ -927,7 +803,6 @@ namespace OE2EmpireTracker.Services
                 return;
             }
 
-            // Wrap index if characters were removed
             if (CurrentRoundRobinIndex >= playerUUIDs.Count)
             {
                 CurrentRoundRobinIndex = 0;
@@ -949,7 +824,6 @@ namespace OE2EmpireTracker.Services
                 Log.Warn("Round-robin sync failed for character {0}, will retry next cycle", playerUUID);
             }
 
-            // Advance to next character regardless of success/failure
             CurrentRoundRobinIndex = (CurrentRoundRobinIndex + 1) % playerUUIDs.Count;
 
             RaiseSyncStatusChanged(false, success, success ? null : string.Format("Sync failed for character {0}", playerUUID));
@@ -975,11 +849,7 @@ namespace OE2EmpireTracker.Services
 
         /// <summary>
         /// Parses the station name from the API locationName by stripping the system suffix.
-        /// API format: "StationName (SystemName)" → returns "StationName".
         /// </summary>
-        /// <param name="locationName">The raw location name from the API.</param>
-        /// <param name="systemName">The system name to strip from the suffix.</param>
-        /// <returns>The cleaned station name.</returns>
         private static string ParseStationName(string locationName, string systemName)
         {
             if (string.IsNullOrEmpty(locationName))
@@ -987,7 +857,6 @@ namespace OE2EmpireTracker.Services
                 return string.Empty;
             }
 
-            // Strip " (SystemName)" suffix if present
             string suffix = " (" + systemName + ")";
             if (!string.IsNullOrEmpty(systemName) &&
                 locationName.EndsWith(suffix, StringComparison.OrdinalIgnoreCase))
@@ -1000,11 +869,7 @@ namespace OE2EmpireTracker.Services
 
         /// <summary>
         /// Parses the ship name from the API locationName by stripping prefix and location suffix.
-        /// API formats: "Ship {Name} at {Station} ({System})" or "Ship {Name} in space in {System}".
-        /// Returns just the ship name.
         /// </summary>
-        /// <param name="locationName">The raw location name from the API.</param>
-        /// <returns>The cleaned ship name.</returns>
         private static string ParseShipName(string locationName)
         {
             if (string.IsNullOrEmpty(locationName))
@@ -1014,20 +879,17 @@ namespace OE2EmpireTracker.Services
 
             string name = locationName;
 
-            // Strip "Ship " prefix
             if (name.StartsWith("Ship ", StringComparison.OrdinalIgnoreCase))
             {
                 name = name.Substring(5);
             }
 
-            // Strip " at ..." suffix (ship docked at a station)
             int atIdx = name.IndexOf(" at ", StringComparison.OrdinalIgnoreCase);
             if (atIdx > 0)
             {
                 return name.Substring(0, atIdx).Trim();
             }
 
-            // Strip " in space in ..." suffix (ship in transit)
             int inSpaceIdx = name.IndexOf(" in space in ", StringComparison.OrdinalIgnoreCase);
             if (inSpaceIdx > 0)
             {
@@ -1039,18 +901,13 @@ namespace OE2EmpireTracker.Services
 
         /// <summary>
         /// Syncs banking transactions and balance for a character.
-        /// Called after asset sync within SyncCharacterAsync.
         /// </summary>
-        /// <param name="playerUUID">The player UUID whose banking data to sync.</param>
-        /// <param name="accessToken">The Bearer access token from token exchange.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        private async Task SyncBankingAsync(string playerUUID, string accessToken)
+        private async Task SyncBankingAsync(string playerUUID)
         {
             Log.Info("Banking sync starting for character {0}", playerUUID);
 
-            // 1. Import transactions
             BankingImportResult txResult = await BankingService.ImportTransactionsAsync(
-                _client, _appId, () => accessToken, GetPlayerContext()).ConfigureAwait(false);
+                _typedClient, GetPlayerContext()).ConfigureAwait(false);
 
             if (!txResult.Success)
             {
@@ -1067,9 +924,7 @@ namespace OE2EmpireTracker.Services
                     txResult.DuplicatesSkipped);
             }
 
-            // 2. Import balance (always attempt regardless of transaction result)
-            decimal? balance = await BankingService.ImportBalanceAsync(
-                _client, _appId, accessToken).ConfigureAwait(false);
+            decimal? balance = await BankingService.ImportBalanceAsync(_typedClient).ConfigureAwait(false);
 
             if (balance.HasValue)
             {
@@ -1086,18 +941,10 @@ namespace OE2EmpireTracker.Services
 
         /// <summary>
         /// Routes asset cargo items to the appropriate merge method based on location type.
-        /// For colonies, matches by ColonyId. For stations, matches by GameLocationId (creates if not found).
-        /// For ships, matches by GameLocationId (creates if not found).
         /// </summary>
-        /// <param name="location">The asset location entry with type and ID information.</param>
-        /// <param name="cargoItems">The list of cargo items to merge.</param>
-        /// <param name="localColonies">The local colony list (may be null).</param>
-        /// <param name="localStations">The local station list (may be null).</param>
-        /// <param name="localShips">The local ship list (may be null).</param>
-        /// <returns>True if any changes were made; false otherwise.</returns>
         private bool RouteAssetMerge(
-            GameApiAssetLocationEntry location,
-            List<GameApiAssetCargoItem> cargoItems,
+            AssetLocation location,
+            ICollection<AssetCargoItem> cargoItems,
             List<Colony> localColonies,
             List<Station> localStations,
             List<Ship> localShips,
@@ -1128,13 +975,9 @@ namespace OE2EmpireTracker.Services
         /// <summary>
         /// Merges asset cargo items into a colony matched by ColonyId.
         /// </summary>
-        /// <param name="location">The asset location entry.</param>
-        /// <param name="cargoItems">The cargo items to merge.</param>
-        /// <param name="localColonies">The local colony list.</param>
-        /// <returns>True if any changes were made; false otherwise.</returns>
         private bool MergeColonyLocation(
-            GameApiAssetLocationEntry location,
-            List<GameApiAssetCargoItem> cargoItems,
+            AssetLocation location,
+            ICollection<AssetCargoItem> cargoItems,
             List<Colony> localColonies)
         {
             if (localColonies == null)
@@ -1160,14 +1003,9 @@ namespace OE2EmpireTracker.Services
         /// Merges asset cargo items into a station matched by GameLocationId.
         /// Creates a new station if no match is found.
         /// </summary>
-        /// <param name="location">The asset location entry.</param>
-        /// <param name="cargoItems">The cargo items to merge.</param>
-        /// <param name="localStations">The local station list.</param>
-        /// <param name="playerUUID">The player UUID used as the hold key.</param>
-        /// <returns>True if any changes were made; false otherwise.</returns>
         private bool MergeStationLocation(
-            GameApiAssetLocationEntry location,
-            List<GameApiAssetCargoItem> cargoItems,
+            AssetLocation location,
+            ICollection<AssetCargoItem> cargoItems,
             List<Station> localStations,
             string playerUUID)
         {
@@ -1180,7 +1018,6 @@ namespace OE2EmpireTracker.Services
             var station = GetPlayerContext()?.FindStationByGameLocationId(location.LocationId);
             if (station == null)
             {
-                // Fallback: match by parsed name for pre-existing manually-created stations
                 string parsedName = ParseStationName(location.LocationName, location.SystemName);
                 station = localStations.FirstOrDefault(s =>
                     (s.GameLocationId == null || s.GameLocationId == 0) &&
@@ -1188,7 +1025,6 @@ namespace OE2EmpireTracker.Services
 
                 if (station != null)
                 {
-                    // Adopt the pre-existing station by setting its GameLocationId
                     station.GameLocationId = location.LocationId;
                     station.SystemName = location.SystemName;
                     station.SystemId = location.SystemId;
@@ -1235,13 +1071,9 @@ namespace OE2EmpireTracker.Services
         /// Merges asset cargo items into a ship matched by GameLocationId.
         /// Creates a new ship if no match is found.
         /// </summary>
-        /// <param name="location">The asset location entry.</param>
-        /// <param name="cargoItems">The cargo items to merge.</param>
-        /// <param name="localShips">The local ship list.</param>
-        /// <returns>True if any changes were made; false otherwise.</returns>
         private bool MergeShipLocation(
-            GameApiAssetLocationEntry location,
-            List<GameApiAssetCargoItem> cargoItems,
+            AssetLocation location,
+            ICollection<AssetCargoItem> cargoItems,
             List<Ship> localShips)
         {
             if (localShips == null)
@@ -1253,7 +1085,6 @@ namespace OE2EmpireTracker.Services
             var ship = GetPlayerContext()?.FindShipByGameLocationId(location.LocationId);
             if (ship == null)
             {
-                // Fallback: match by parsed name for pre-existing manually-created ships
                 string parsedName = ParseShipName(location.LocationName);
                 ship = localShips.FirstOrDefault(s =>
                     (s.GameLocationId == null || s.GameLocationId == 0) &&
@@ -1293,9 +1124,6 @@ namespace OE2EmpireTracker.Services
         /// <summary>
         /// Finds a mutable colony by UUID in the local colony list.
         /// </summary>
-        /// <param name="colonyUUID">The UUID of the colony to find.</param>
-        /// <param name="localColonies">The local colony list to search.</param>
-        /// <returns>The colony if found; otherwise null.</returns>
         private Colony FindMutableColony(string colonyUUID, List<Colony> localColonies)
         {
             return localColonies.FirstOrDefault(c =>
@@ -1328,8 +1156,7 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
-        /// Handles connection monitor status changes. Suspends polling when disconnected,
-        /// resumes with an immediate sync when reconnected.
+        /// Handles connection monitor status changes.
         /// </summary>
         private void OnConnectionStatusChanged(object sender, GameApiConnectionStatusChangedEventArgs e)
         {
@@ -1397,9 +1224,6 @@ namespace OE2EmpireTracker.Services
         /// <summary>
         /// Raises the SyncStatusChanged event with exception safety.
         /// </summary>
-        /// <param name="isSyncing">Whether a sync is currently in progress.</param>
-        /// <param name="success">Whether the last sync succeeded.</param>
-        /// <param name="errorMessage">The error message if the sync failed.</param>
         private void RaiseSyncStatusChanged(bool isSyncing, bool success, string errorMessage)
         {
             IsSyncing = isSyncing;

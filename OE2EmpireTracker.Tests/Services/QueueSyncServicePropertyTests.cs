@@ -5,7 +5,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using FsCheck;
@@ -28,9 +27,6 @@ namespace OE2EmpireTracker.Tests.Services
         // ---------------------------------------------------------------
         // Test Infrastructure
         // ---------------------------------------------------------------
-
-        private static readonly MethodInfo TruncateForLogMethod = typeof(QueueSyncService)
-            .GetMethod("TruncateForLog", BindingFlags.NonPublic | BindingFlags.Static);
 
         /// <summary>
         /// A testable QueueSyncService subclass that introduces a configurable
@@ -105,14 +101,6 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         /// <summary>
-        /// Invokes TruncateForLog via reflection.
-        /// </summary>
-        private static string InvokeTruncateForLog(string json, int maxLength = 500)
-        {
-            return (string)TruncateForLogMethod.Invoke(null, new object[] { json, maxLength });
-        }
-
-        /// <summary>
         /// Creates a PlayerContext with a player profile for testing.
         /// </summary>
         private static PlayerContext CreateTestContext(string playerUUID = null)
@@ -141,14 +129,6 @@ namespace OE2EmpireTracker.Tests.Services
                    from chars in Gen.ListOf(len, Gen.Elements(
                        'a', 'b', 'c', '{', '}', '"', ':', ',', ' ', '0', '1', '2',
                        '[', ']', 'n', 'u', 'l', 't', 'r', 'e', 'f'))
-                   select new string(chars.ToArray());
-        }
-
-        private static Gen<string> LargeJsonGen()
-        {
-            return from len in Gen.Choose(501, 2000)
-                   from chars in Gen.ListOf(len, Gen.Elements(
-                       'a', 'b', 'c', 'd', 'e', '0', '1', '2', '3', '4'))
                    select new string(chars.ToArray());
         }
 
@@ -455,86 +435,6 @@ namespace OE2EmpireTracker.Tests.Services
                     .Label($"eventFired={eventFired}, sawNewBalance={sawNewBalance}, " +
                            $"expected={newBalance}, observed={balanceAtEventTime}");
             });
-        }
-
-        // ---------------------------------------------------------------
-        // Property 6: Log Truncation
-        // Logged JSON bodies are always <= 500 characters.
-        // Tests TruncateForLog directly via reflection.
-        // **Validates: Req 12, Criteria 12.4**
-        // ---------------------------------------------------------------
-
-        /// <summary>
-        /// Property 6a: For any arbitrary string, TruncateForLog output
-        /// is always at most maxLength + suffix length characters, and
-        /// when the input is at or below maxLength the output equals the input.
-        /// **Validates: Requirements 12.4**
-        /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 200)]
-        public Property LogTruncation_OutputNeverExceedsMaxLength()
-        {
-            var inputGen =
-                from json in ArbitraryStringGen()
-                from maxLen in Gen.Choose(1, 1000)
-                select new { Json = json, MaxLen = maxLen };
-
-            return Prop.ForAll(inputGen.ToArbitrary(), (input) =>
-            {
-                var result = InvokeTruncateForLog(input.Json, input.MaxLen);
-
-                // The truncated suffix is "...(truncated)" = 14 chars
-                int maxResultLength = input.MaxLen + 14;
-                var withinLimit = result.Length <= maxResultLength;
-
-                // If input fits, output should be the input unchanged
-                bool correctForShort = true;
-                if (input.Json != null && input.Json.Length <= input.MaxLen)
-                {
-                    correctForShort = result == input.Json;
-                }
-
-                return (withinLimit && correctForShort)
-                    .Label($"withinLimit={withinLimit}, correctForShort={correctForShort}, " +
-                           $"inputLen={input.Json?.Length ?? 0}, maxLen={input.MaxLen}, " +
-                           $"resultLen={result.Length}");
-            });
-        }
-
-        /// <summary>
-        /// Property 6b: For strings longer than 500 characters, TruncateForLog
-        /// with the default maxLength produces output of at most 514 characters
-        /// (500 + "...(truncated)").
-        /// **Validates: Requirements 12.4**
-        /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
-        public Property LogTruncation_LargeJsonTruncatedToDefault500()
-        {
-            return Prop.ForAll(LargeJsonGen().ToArbitrary(), (largeJson) =>
-            {
-                var result = InvokeTruncateForLog(largeJson);
-
-                // Default maxLength is 500, suffix is "...(truncated)" = 14 chars
-                var withinLimit = result.Length <= 514;
-                var hasSuffix = result.EndsWith("...(truncated)");
-                var startsWith500 = result.StartsWith(largeJson.Substring(0, 500));
-
-                return (withinLimit && hasSuffix && startsWith500)
-                    .Label($"withinLimit={withinLimit}, hasSuffix={hasSuffix}, " +
-                           $"startsWith500={startsWith500}, resultLen={result.Length}");
-            });
-        }
-
-        /// <summary>
-        /// Property 6c: TruncateForLog handles null input gracefully by
-        /// returning a non-null placeholder string.
-        /// **Validates: Requirements 12.4**
-        /// </summary>
-        [Test]
-        public void LogTruncation_NullInputReturnsPlaceholder()
-        {
-            var result = InvokeTruncateForLog(null);
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result, Is.EqualTo("(null)"));
         }
 
         // ---------------------------------------------------------------

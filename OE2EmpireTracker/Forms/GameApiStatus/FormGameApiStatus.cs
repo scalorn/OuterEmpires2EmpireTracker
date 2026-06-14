@@ -405,21 +405,27 @@ namespace OE2EmpireTracker.Forms.GameApiStatus
                 string secret = SecureStringToPlainText(secureSecret);
                 secureSecret.Dispose();
 
-                var tokenResult = await context.Client.ExchangeTokenAsync(
-                    settings.AppId,
-                    settings.ClientId,
-                    secret).ConfigureAwait(true);
+                var typedClient = GameApiContext.Instance.TypedClient;
 
-                if (!tokenResult.Success)
+                try
                 {
-                    this.txtResponse.Text = "Token exchange failed: " + (tokenResult.ErrorMessage ?? "unknown");
+                    await typedClient.ExchangeTokenAsync(
+                        settings.AppId,
+                        settings.ClientId,
+                        secret).ConfigureAwait(true);
+                }
+                catch (OE2EmpireTracker.Common.Client.ApiHttpException ex)
+                {
+                    this.txtResponse.Text = "Token exchange failed: HTTP " + ex.StatusCode;
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    this.txtResponse.Text = "Token exchange failed: " + ex.Message;
                     return;
                 }
 
-                string appId = settings.AppId;
-                string token = tokenResult.Token.AccessToken;
-
-                var result = await this.RouteRequestAsync(endpoint, appId, token).ConfigureAwait(true);
+                var result = await this.RouteRequestAsync(endpoint, typedClient).ConfigureAwait(true);
 
                 if (result.Success)
                 {
@@ -451,97 +457,120 @@ namespace OE2EmpireTracker.Forms.GameApiStatus
 
         private async System.Threading.Tasks.Task<(bool Success, string Json)> RouteRequestAsync(
             ManualRequestEndpoint endpoint,
-            string appId,
-            string token)
+            OE2EmpireTracker.Common.Client.IGameApiTypedClient typedClient)
         {
-            var client = GameApiContext.Instance.Client;
-
-            switch (endpoint.DisplayName)
+            try
             {
-                case "Character":
-                    return await client.GetCharacterAsync(appId, token).ConfigureAwait(true);
-                case "Character Skills":
-                    return await client.GetCharacterSkillsAsync(appId, token).ConfigureAwait(true);
-                case "Colony List":
-                    return await client.GetColonyListAsync(appId, token).ConfigureAwait(true);
-                case "Colony Buildings":
-                    return await client.GetColonyBuildingsAsync(appId, token, int.Parse(this.txtId.Text.Trim())).ConfigureAwait(true);
-                case "Colony Warehouse":
-                    return await client.GetColonyWarehouseAsync(appId, token, int.Parse(this.txtId.Text.Trim())).ConfigureAwait(true);
-                case "Colony Workers":
-                    return await client.GetColonyWorkersAsync(appId, token, int.Parse(this.txtId.Text.Trim())).ConfigureAwait(true);
-                case "Colony Summary":
-                    return await client.GetColonySummaryAsync(appId, token, int.Parse(this.txtId.Text.Trim())).ConfigureAwait(true);
-                case "Banking Balance":
-                    return await client.GetBankingBalanceAsync(appId, token).ConfigureAwait(true);
-                case "Banking Transactions":
-                    return await client.GetBankingTransactionsAsync(appId, token).ConfigureAwait(true);
-                case "Accepted Jobs":
-                    return await client.GetAcceptedJobsAsync(appId, token).ConfigureAwait(true);
-                case "Asset Locations":
-                    return await client.GetAssetLocationsAsync(appId, token).ConfigureAwait(true);
-                case "Location Detail":
-                    return await client.GetAssetLocationDetailAsync(
-                        appId,
-                        token,
-                        int.Parse(this.txtId.Text.Trim()),
-                        this.cboLocationType.SelectedItem?.ToString() ?? AssetTypeCodes.Colony).ConfigureAwait(true);
-                case "Blueprint":
-                    return await client.GetAssetBlueprintAsync(appId, token, int.Parse(this.txtId.Text.Trim())).ConfigureAwait(true);
-                case "Survey":
-                    return await client.GetAssetSurveyAsync(appId, token, int.Parse(this.txtId.Text.Trim())).ConfigureAwait(true);
-                case "Crate":
-                    return await client.GetAssetCrateAsync(appId, token, int.Parse(this.txtId.Text.Trim())).ConfigureAwait(true);
-                case "Kill Mail List":
-                    return await client.GetKillMailListAsync(appId, token).ConfigureAwait(true);
-                case "Kill Mail Detail":
-                    return await client.GetKillMailDetailAsync(appId, token, int.Parse(this.txtId.Text.Trim())).ConfigureAwait(true);
-                case "Ship Configuration":
-                    return await client.GetShipConfigurationAsync(appId, token).ConfigureAwait(true);
-                case "Ship Cargo":
-                    return await client.GetShipCargoAsync(appId, token).ConfigureAwait(true);
-                case "Mail List":
-                    return await client.GetMailListAsync(appId, token).ConfigureAwait(true);
-                case "Mail Detail":
-                    return await client.GetMailDetailAsync(appId, token, int.Parse(this.txtId.Text.Trim())).ConfigureAwait(true);
-                case "Market Listings":
-                    return await client.GetMarketListingsAsync(
-                        appId,
-                        token,
-                        this.txtView.Text.Trim(),
-                        this.ParseNullableInt(this.txtRange.Text),
-                        this.NullIfEmpty(this.txtSearch.Text),
-                        this.NullIfEmpty(this.txtType.Text),
-                        this.NullIfEmpty(this.txtSubType.Text),
-                        this.ParseNullableInt(this.txtEvolution.Text),
-                        this.NullIfEmpty(this.txtOrderBy.Text)).ConfigureAwait(true);
-                case "Market Prices":
-                    return await client.GetMarketPricesAsync(
-                        appId,
-                        token,
-                        this.txtType.Text.Trim(),
-                        long.TryParse(this.txtId.Text.Trim(), out long priceTypeId) ? priceTypeId : 0).ConfigureAwait(true);
-                case "Market Items":
-                    return await client.GetMarketItemsAsync(
-                        appId,
-                        token,
-                        this.txtType.Text.Trim(),
-                        this.txtSearch.Text.Trim()).ConfigureAwait(true);
-                case "Market Ship Components":
-                    return await client.GetMarketShipComponentsAsync(
-                        appId,
-                        token,
-                        long.Parse(this.txtId.Text.Trim())).ConfigureAwait(true);
-                case "Market Buy Orders":
-                    return await client.GetMarketBuyOrdersAsync(appId, token).ConfigureAwait(true);
-                case "Market Sell Orders":
-                    return await client.GetMarketSellOrdersAsync(appId, token).ConfigureAwait(true);
-                case "Market Buy Competitors":
-                    return await client.GetMarketBuyCompetitorsAsync(appId, token, this.txtMarketIds.Text.Trim()).ConfigureAwait(true);
-                case "Market Sell Competitors":
-                    return await client.GetMarketSellCompetitorsAsync(appId, token, this.txtMarketIds.Text.Trim()).ConfigureAwait(true);
-                default:
-                    return (false, "Unknown endpoint: " + endpoint.DisplayName);
+                object dto;
+                switch (endpoint.DisplayName)
+                {
+                    case "Character":
+                        dto = await typedClient.GetCharacterAsync().ConfigureAwait(true);
+                        break;
+                    case "Character Skills":
+                        dto = await typedClient.GetCharacterSkillsAsync().ConfigureAwait(true);
+                        break;
+                    case "Colony List":
+                        dto = await typedClient.GetColonyListAsync().ConfigureAwait(true);
+                        break;
+                    case "Colony Buildings":
+                        dto = await typedClient.GetColonyBuildingsAsync(int.Parse(this.txtId.Text.Trim())).ConfigureAwait(true);
+                        break;
+                    case "Colony Warehouse":
+                        dto = await typedClient.GetColonyWarehouseAsync(int.Parse(this.txtId.Text.Trim())).ConfigureAwait(true);
+                        break;
+                    case "Colony Workers":
+                        dto = await typedClient.GetColonyWorkersAsync(int.Parse(this.txtId.Text.Trim())).ConfigureAwait(true);
+                        break;
+                    case "Colony Summary":
+                        dto = await typedClient.GetColonySummaryAsync(int.Parse(this.txtId.Text.Trim())).ConfigureAwait(true);
+                        break;
+                    case "Banking Balance":
+                        dto = await typedClient.GetBankingBalanceAsync().ConfigureAwait(true);
+                        break;
+                    case "Banking Transactions":
+                        dto = await typedClient.GetBankingTransactionsAsync().ConfigureAwait(true);
+                        break;
+                    case "Accepted Jobs":
+                        dto = await typedClient.GetAcceptedJobsAsync().ConfigureAwait(true);
+                        break;
+                    case "Asset Locations":
+                        dto = await typedClient.GetAssetLocationsAsync().ConfigureAwait(true);
+                        break;
+                    case "Location Detail":
+                        dto = await typedClient.GetAssetLocationDetailAsync(
+                            int.Parse(this.txtId.Text.Trim()),
+                            this.cboLocationType.SelectedItem?.ToString() ?? AssetTypeCodes.Colony).ConfigureAwait(true);
+                        break;
+                    case "Blueprint":
+                        dto = await typedClient.GetBlueprintDetailAsync(int.Parse(this.txtId.Text.Trim())).ConfigureAwait(true);
+                        break;
+                    case "Survey":
+                        dto = await typedClient.GetSurveyDetailAsync(int.Parse(this.txtId.Text.Trim())).ConfigureAwait(true);
+                        break;
+                    case "Crate":
+                        dto = await typedClient.GetCrateContentsAsync(int.Parse(this.txtId.Text.Trim())).ConfigureAwait(true);
+                        break;
+                    case "Kill Mail List":
+                        dto = await typedClient.GetKillMailListAsync().ConfigureAwait(true);
+                        break;
+                    case "Kill Mail Detail":
+                        dto = await typedClient.GetKillMailDetailAsync(int.Parse(this.txtId.Text.Trim())).ConfigureAwait(true);
+                        break;
+                    case "Ship Configuration":
+                        dto = await typedClient.GetShipConfigurationAsync().ConfigureAwait(true);
+                        break;
+                    case "Ship Cargo":
+                        dto = await typedClient.GetShipCargoAsync().ConfigureAwait(true);
+                        break;
+                    case "Mail List":
+                        dto = await typedClient.GetMailListAsync().ConfigureAwait(true);
+                        break;
+                    case "Mail Detail":
+                        dto = await typedClient.GetMailBodyAsync(int.Parse(this.txtId.Text.Trim())).ConfigureAwait(true);
+                        break;
+                    case "Market Listings":
+                        dto = await typedClient.GetMarketListingsAsync(
+                            this.txtView.Text.Trim(),
+                            this.ParseNullableInt(this.txtRange.Text),
+                            this.NullIfEmpty(this.txtSearch.Text)).ConfigureAwait(true);
+                        break;
+                    case "Market Prices":
+                        dto = await typedClient.GetMarketPricesAsync(
+                            this.txtType.Text.Trim(),
+                            long.TryParse(this.txtId.Text.Trim(), out long priceTypeId) ? priceTypeId : 0).ConfigureAwait(true);
+                        break;
+                    case "Market Items":
+                        dto = await typedClient.GetMarketItemsAsync(
+                            this.txtType.Text.Trim(),
+                            this.txtSearch.Text.Trim()).ConfigureAwait(true);
+                        break;
+                    case "Market Ship Components":
+                        dto = await typedClient.GetMarketShipComponentsAsync(
+                            long.Parse(this.txtId.Text.Trim())).ConfigureAwait(true);
+                        break;
+                    case "Market Buy Orders":
+                        dto = await typedClient.GetMarketBuyOrdersAsync().ConfigureAwait(true);
+                        break;
+                    case "Market Sell Orders":
+                        dto = await typedClient.GetMarketSellOrdersAsync().ConfigureAwait(true);
+                        break;
+                    case "Market Buy Competitors":
+                        dto = await typedClient.GetMarketBuyOrderCompetitorsAsync(this.txtMarketIds.Text.Trim()).ConfigureAwait(true);
+                        break;
+                    case "Market Sell Competitors":
+                        dto = await typedClient.GetMarketSellOrderCompetitorsAsync(this.txtMarketIds.Text.Trim()).ConfigureAwait(true);
+                        break;
+                    default:
+                        return (false, "Unknown endpoint: " + endpoint.DisplayName);
+                }
+
+                string json = Newtonsoft.Json.JsonConvert.SerializeObject(dto, Newtonsoft.Json.Formatting.Indented);
+                return (true, json);
+            }
+            catch (OE2EmpireTracker.Common.Client.ApiHttpException ex)
+            {
+                return (false, ex.StatusCode.ToString());
             }
         }
 

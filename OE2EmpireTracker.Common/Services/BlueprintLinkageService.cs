@@ -4,10 +4,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NLog;
-using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Client.Generated;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
+using Blueprint = OE2EmpireTracker.Models.Blueprint;
 
 namespace OE2EmpireTracker.Services
 {
@@ -42,7 +44,7 @@ namespace OE2EmpireTracker.Services
         /// <param name="localItem">The local warehouse item to link.</param>
         /// <param name="ownerUUID">The current player's UUID for ownership assignment.</param>
         /// <returns>True if a blueprint was created or updated; false if skipped.</returns>
-        public bool ProcessItem(GameApiAssetCargoItem apiItem, Item localItem, string ownerUUID)
+        public bool ProcessItem(AssetCargoItem apiItem, Item localItem, string ownerUUID)
         {
             // 1. Skip if no properties
             if (apiItem.Properties == null || apiItem.Properties.Count == 0)
@@ -115,7 +117,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         /// <param name="apiItem">The API cargo item.</param>
         /// <returns>A candidate Blueprint with Name, Evolution, and BluePrintType set.</returns>
-        internal Blueprint BuildCandidateBlueprint(GameApiAssetCargoItem apiItem)
+        internal Blueprint BuildCandidateBlueprint(AssetCargoItem apiItem)
         {
             var candidate = new Blueprint
             {
@@ -147,7 +149,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         /// <param name="apiItem">The API cargo item.</param>
         /// <returns>The classified BluePrintType string.</returns>
-        internal string ClassifyBlueprintType(GameApiAssetCargoItem apiItem)
+        internal string ClassifyBlueprintType(AssetCargoItem apiItem)
         {
             var shipPartType = (apiItem.ShipPartType ?? string.Empty).Trim();
             var resourceName = apiItem.ResourceName ?? string.Empty;
@@ -231,7 +233,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         /// <param name="blueprint">The existing blueprint to update.</param>
         /// <param name="apiProperties">The API properties to merge.</param>
-        private void MergeProperties(Blueprint blueprint, List<GameApiAssetItemProperty> apiProperties)
+        private void MergeProperties(Blueprint blueprint, ICollection<AssetCargoProperty> apiProperties)
         {
             // Full implementation in task 5.2
             if (blueprint.Properties == null)
@@ -260,7 +262,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         /// <param name="blueprint">The new blueprint to populate.</param>
         /// <param name="apiProperties">The API properties to set.</param>
-        private void BuildPropertyBag(Blueprint blueprint, List<GameApiAssetItemProperty> apiProperties)
+        private void BuildPropertyBag(Blueprint blueprint, ICollection<AssetCargoProperty> apiProperties)
         {
             // Full implementation in task 5.2
             blueprint.Properties = new PropertyBag();
@@ -284,7 +286,7 @@ namespace OE2EmpireTracker.Services
         /// Stub implementation — full logic will be added in task 5.2.
         /// </summary>
         /// <param name="apiProperties">The API properties containing type metadata.</param>
-        private void RegisterPropertyTypes(List<GameApiAssetItemProperty> apiProperties)
+        private void RegisterPropertyTypes(ICollection<AssetCargoProperty> apiProperties)
         {
             // Full implementation in task 5.2
             foreach (var prop in apiProperties)

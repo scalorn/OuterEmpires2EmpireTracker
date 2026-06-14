@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using NLog;
 using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Client;
 
 namespace OE2EmpireTracker.Services
 {
@@ -23,7 +24,7 @@ namespace OE2EmpireTracker.Services
 
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-        private readonly GameApiClient _client;
+        private readonly IGameApiTypedClient _typedClient;
         private readonly GameApiCredentialManager _credentialManager;
         private readonly string _playerUUID;
         private readonly string _appId;
@@ -37,19 +38,19 @@ namespace OE2EmpireTracker.Services
         /// <summary>
         /// Initializes a new instance of the <see cref="GameApiConnectionMonitor"/> class.
         /// </summary>
-        /// <param name="client">The game API client used for token exchange.</param>
+        /// <param name="typedClient">The typed game API client used for connectivity checks.</param>
         /// <param name="credentialManager">The credential manager for retrieving secrets.</param>
         /// <param name="playerUUID">The player UUID whose secret to use for connectivity checks.</param>
         /// <param name="appId">The registered application GUID.</param>
         /// <param name="clientId">The player's account identifier.</param>
         public GameApiConnectionMonitor(
-            GameApiClient client,
+            IGameApiTypedClient typedClient,
             GameApiCredentialManager credentialManager,
             string playerUUID,
             string appId,
             string clientId)
         {
-            _client = client ?? throw new ArgumentNullException(nameof(client));
+            _typedClient = typedClient ?? throw new ArgumentNullException(nameof(typedClient));
             _credentialManager = credentialManager ?? throw new ArgumentNullException(nameof(credentialManager));
             _playerUUID = playerUUID ?? throw new ArgumentNullException(nameof(playerUUID));
             _appId = appId ?? string.Empty;
@@ -250,6 +251,7 @@ namespace OE2EmpireTracker.Services
 
         /// <summary>
         /// Performs a connectivity check via token exchange and transitions state accordingly.
+        /// Checks circuit breaker state first, then attempts a test connection.
         /// </summary>
         private async Task PerformConnectivityCheckAsync()
         {
@@ -263,27 +265,32 @@ namespace OE2EmpireTracker.Services
             string secret = SecureStringToString(secureSecret);
             secureSecret.Dispose();
 
+            if (_typedClient.IsCircuitOpen)
+            {
+                TransitionTo(
+                    ConnectionState.DisconnectedCircuitOpen,
+                    "Circuit breaker is open \u2014 too many consecutive failures");
+                return;
+            }
+
             try
             {
-                if (_client.IsCircuitOpen)
-                {
-                    TransitionTo(
-                        ConnectionState.DisconnectedCircuitOpen,
-                        "Circuit breaker is open \u2014 too many consecutive failures");
-                    return;
-                }
+                bool connected = await _typedClient.TestConnectionAsync(
+                    _appId, _clientId, secret).ConfigureAwait(false);
 
-                var result = await _client.TestConnectionAsync(_appId, _clientId, secret).ConfigureAwait(false);
-
-                if (result.Success)
+                if (connected)
                 {
                     _currentBackoffMs = InitialBackoffMs;
-                    TransitionTo(ConnectionState.Connected, result.Message);
+                    TransitionTo(ConnectionState.Connected, "Token exchange succeeded");
                 }
                 else
                 {
-                    HandleConnectivityFailure(result.Message);
+                    HandleConnectivityFailure("Token exchange returned false");
                 }
+            }
+            catch (ApiHttpException ex) when (ex.StatusCode == 401)
+            {
+                TransitionTo(ConnectionState.DisconnectedInvalidKey, "Credentials are invalid (HTTP 401)");
             }
             catch (Exception ex)
             {
@@ -299,13 +306,7 @@ namespace OE2EmpireTracker.Services
         /// <param name="failureMessage">The failure reason message.</param>
         private void HandleConnectivityFailure(string failureMessage)
         {
-            if (failureMessage != null && failureMessage.Contains("401"))
-            {
-                TransitionTo(ConnectionState.DisconnectedInvalidKey, "Credentials are invalid (HTTP 401)");
-                return;
-            }
-
-            if (_client.IsCircuitOpen)
+            if (_typedClient.IsCircuitOpen)
             {
                 TransitionTo(
                     ConnectionState.DisconnectedCircuitOpen,

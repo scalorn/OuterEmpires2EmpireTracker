@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using NLog;
-using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Client.Generated;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Parsers;
@@ -185,7 +185,7 @@ namespace OE2EmpireTracker.Services
         /// <param name="apiItems">The list of cargo items from the asset API response.</param>
         /// <param name="colony">The target colony to merge items into.</param>
         /// <returns>True if any changes were made to the colony's items; false otherwise.</returns>
-        public static bool MergeColonyAssets(List<GameApiAssetCargoItem> apiItems, Colony colony)
+        public static bool MergeColonyAssets(ICollection<AssetCargoItem> apiItems, Colony colony)
         {
             if (colony == null)
             {
@@ -216,7 +216,7 @@ namespace OE2EmpireTracker.Services
         /// <param name="station">The target station to merge into.</param>
         /// <param name="targetHold">The item bag (hold) to merge cargo items into.</param>
         /// <returns>True if any changes were made to the station's hold; false otherwise.</returns>
-        public static bool MergeStationAssets(List<GameApiAssetCargoItem> apiItems, Station station, ItemBag targetHold)
+        public static bool MergeStationAssets(ICollection<AssetCargoItem> apiItems, Station station, ItemBag targetHold)
         {
             if (station == null || targetHold == null)
             {
@@ -246,7 +246,7 @@ namespace OE2EmpireTracker.Services
         /// <param name="apiItems">The list of cargo items from the asset API response.</param>
         /// <param name="ship">The target ship to merge cargo into.</param>
         /// <returns>True if any changes were made to the ship's cargo; false otherwise.</returns>
-        public static bool MergeShipAssets(List<GameApiAssetCargoItem> apiItems, Ship ship)
+        public static bool MergeShipAssets(ICollection<AssetCargoItem> apiItems, Ship ship)
         {
             if (ship == null)
             {
@@ -275,17 +275,17 @@ namespace OE2EmpireTracker.Services
         /// <param name="apiItem">The cargo item from the asset API response.</param>
         /// <param name="targetBag">The item bag to merge into.</param>
         /// <returns>True if any changes were made (item created or updated); false otherwise.</returns>
-        internal static bool ProcessSingleAssetItem(GameApiAssetCargoItem apiItem, ItemBag targetBag)
+        internal static bool ProcessSingleAssetItem(AssetCargoItem apiItem, ItemBag targetBag)
         {
             var mappedType = MapAssetTypeC(apiItem.TypeC);
 
-            var match = targetBag.Items.Values.FirstOrDefault(i => i.GameItemId == apiItem.CargoItemId);
+            var match = targetBag.Items.Values.FirstOrDefault(i => i.GameItemId == apiItem.Id);
 
             if (match != null)
             {
                 Log.Debug(
                     "AssetMerge: MATCHED cargoItemId={0} name='{1}' to local UUID={2} Name='{3}'",
-                    apiItem.CargoItemId,
+                    apiItem.Id,
                     apiItem.ResourceName,
                     match.UUID,
                     match.Name);
@@ -301,7 +301,7 @@ namespace OE2EmpireTracker.Services
 
             Log.Debug(
                 "AssetMerge: NO MATCH for cargoItemId={0} name='{1}' type={2} — creating new. Similar local items: [{3}]",
-                apiItem.CargoItemId,
+                apiItem.Id,
                 apiItem.ResourceName,
                 mappedType,
                 similarItems.Count > 0 ? string.Join("; ", similarItems) : "none");
@@ -315,17 +315,17 @@ namespace OE2EmpireTracker.Services
         /// Processes a single asset cargo item: matches by GameItemId or creates new.
         /// Returns the UUID of the item that was created or updated (for tracking touched items).
         /// </summary>
-        internal static string ProcessSingleAssetItemAndReturnUUID(GameApiAssetCargoItem apiItem, ItemBag targetBag)
+        internal static string ProcessSingleAssetItemAndReturnUUID(AssetCargoItem apiItem, ItemBag targetBag)
         {
             var mappedType = MapAssetTypeC(apiItem.TypeC);
 
-            var match = targetBag.Items.Values.FirstOrDefault(i => i.GameItemId == apiItem.CargoItemId);
+            var match = targetBag.Items.Values.FirstOrDefault(i => i.GameItemId == apiItem.Id);
 
             if (match != null)
             {
                 Log.Debug(
                     "AssetMerge: MATCHED cargoItemId={0} name='{1}' to local UUID={2} Name='{3}'",
-                    apiItem.CargoItemId,
+                    apiItem.Id,
                     apiItem.ResourceName,
                     match.UUID,
                     match.Name);
@@ -342,7 +342,7 @@ namespace OE2EmpireTracker.Services
 
             Log.Debug(
                 "AssetMerge: NO MATCH for cargoItemId={0} name='{1}' type={2} — creating new. Similar local items: [{3}]",
-                apiItem.CargoItemId,
+                apiItem.Id,
                 apiItem.ResourceName,
                 mappedType,
                 similarItems.Count > 0 ? string.Join("; ", similarItems) : "none");
@@ -359,7 +359,7 @@ namespace OE2EmpireTracker.Services
         /// <param name="local">The existing local item to update.</param>
         /// <param name="apiItem">The cargo item from the asset API response.</param>
         /// <returns>True if any field was actually changed; false if all fields already matched.</returns>
-        internal static bool UpdateExistingAssetItem(Item local, GameApiAssetCargoItem apiItem)
+        internal static bool UpdateExistingAssetItem(Item local, AssetCargoItem apiItem)
         {
             bool changed = false;
 
@@ -435,7 +435,7 @@ namespace OE2EmpireTracker.Services
         /// <param name="apiItem">The cargo item from the asset API response.</param>
         /// <param name="mappedType">The mapped item type from the TypeC code.</param>
         /// <returns>A new <see cref="Item"/> populated from the API data.</returns>
-        internal static Item CreateAssetItem(GameApiAssetCargoItem apiItem, ItemType.ItemTypeEnum mappedType)
+        internal static Item CreateAssetItem(AssetCargoItem apiItem, ItemType.ItemTypeEnum mappedType)
         {
             string name = apiItem.ResourceName;
             string purity = string.Empty;
@@ -510,7 +510,7 @@ namespace OE2EmpireTracker.Services
             var item = new Item
             {
                 UUID = Guid.NewGuid().ToString(),
-                GameItemId = apiItem.CargoItemId,
+                GameItemId = apiItem.Id,
                 ItemType = mappedType,
                 Name = name,
                 Quantity = apiItem.Amount,
@@ -631,7 +631,7 @@ namespace OE2EmpireTracker.Services
             return false;
         }
 
-        private static bool UpdateItemProperties(Item local, List<GameApiAssetItemProperty> apiProperties)
+        private static bool UpdateItemProperties(Item local, ICollection<AssetCargoProperty> apiProperties)
         {
             var newProps = MapProperties(apiProperties);
             if (ArePropertiesEqual(local.ItemProperties, newProps))
@@ -643,7 +643,7 @@ namespace OE2EmpireTracker.Services
             return true;
         }
 
-        private static List<ItemProperty> MapProperties(List<GameApiAssetItemProperty> apiProperties)
+        private static List<ItemProperty> MapProperties(ICollection<AssetCargoProperty> apiProperties)
         {
             if (apiProperties == null || apiProperties.Count == 0)
             {
