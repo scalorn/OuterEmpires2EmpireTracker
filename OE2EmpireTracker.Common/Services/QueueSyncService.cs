@@ -914,9 +914,12 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         /// <param name="gameLocationId">The game location identifier for the ship.</param>
         /// <param name="planetName">The planet name used for name-based fallback and as the default ship name.</param>
+        /// <param name="systemName">The star system name (used to strip suffix from API location name).</param>
         /// <returns>The matched or newly created ship.</returns>
-        private Ship FindOrCreateShip(int gameLocationId, string planetName)
+        private Ship FindOrCreateShip(int gameLocationId, string planetName, string systemName = null)
         {
+            string shipName = StripSystemNameSuffix(planetName, systemName);
+
             var ship = _playerContext.FindShipByGameLocationId(gameLocationId);
             if (ship != null)
             {
@@ -925,25 +928,32 @@ namespace OE2EmpireTracker.Services
 
             var ships = _playerContext.GetMutableShipsForOwner(_playerContext.CurrentPlayerUUID);
 
-            ship = ships.FirstOrDefault(s => string.Equals(s.Name, planetName, StringComparison.OrdinalIgnoreCase));
+            ship = ships.FirstOrDefault(s =>
+                string.Equals(s.Name, shipName, StringComparison.OrdinalIgnoreCase)
+                || string.Equals(s.Name, planetName, StringComparison.OrdinalIgnoreCase));
             if (ship != null)
             {
                 ship.GameLocationId = gameLocationId;
+                if (!string.Equals(ship.Name, shipName, StringComparison.Ordinal))
+                {
+                    ship.Name = shipName;
+                }
+
                 _playerContext.IndexShipByGameLocationId(ship);
-                Log.Info("FindOrCreateShip: matched ship '{0}' by name, set GameLocationId={1}.", planetName, gameLocationId);
+                Log.Info("FindOrCreateShip: matched ship '{0}' by name, set GameLocationId={1}.", shipName, gameLocationId);
                 return ship;
             }
 
             ship = new Ship
             {
                 UUID = Guid.NewGuid().ToString(),
-                Name = planetName ?? string.Empty,
+                Name = shipName,
                 OwnerUUID = _playerContext.CurrentPlayerUUID,
                 GameLocationId = gameLocationId,
             };
 
             _playerContext.AddShip(ship);
-            Log.Info("FindOrCreateShip: created new ship '{0}' with GameLocationId={1}.", planetName, gameLocationId);
+            Log.Info("FindOrCreateShip: created new ship '{0}' with GameLocationId={1}.", shipName, gameLocationId);
 
             return ship;
         }
@@ -2243,7 +2253,7 @@ namespace OE2EmpireTracker.Services
                                 break;
 
                             case AssetTypeCodes.Ship:
-                                var ship = FindOrCreateShip(id, planetName);
+                                var ship = FindOrCreateShip(id, planetName, systemName);
                                 AssetMergeService.MergeShipAssets(response.Cargo, ship);
                                 _playerContext.WriteContext();
                                 _playerContext.OnShipDataChanged(ship.UUID);
@@ -2370,6 +2380,9 @@ namespace OE2EmpireTracker.Services
         /// <returns>The matched or newly created station.</returns>
         private Station FindOrCreateStation(int gameLocationId, string planetName, string systemName)
         {
+            // Strip system name suffix from API location name (e.g. "Station Name (SystemName)" → "Station Name")
+            string stationName = StripSystemNameSuffix(planetName, systemName);
+
             // Step 1: Match by GameLocationId via index (O(1))
             var station = _playerContext.FindStationByGameLocationId(gameLocationId);
             if (station != null)
@@ -2383,12 +2396,18 @@ namespace OE2EmpireTracker.Services
             // Step 2: Name-based fallback for pre-existing manually-created stations
             station = localStations.FirstOrDefault(s =>
                 (s.GameLocationId == null || s.GameLocationId == 0) &&
-                string.Equals(s.Name, planetName, StringComparison.OrdinalIgnoreCase));
+                (string.Equals(s.Name, stationName, StringComparison.OrdinalIgnoreCase)
+                 || string.Equals(s.Name, planetName, StringComparison.OrdinalIgnoreCase)));
 
             if (station != null)
             {
                 station.GameLocationId = gameLocationId;
                 station.SystemName = systemName;
+                if (!string.Equals(station.Name, stationName, StringComparison.Ordinal))
+                {
+                    station.Name = stationName;
+                }
+
                 _playerContext.IndexStationByGameLocationId(station);
                 Log.Info(
                     "FindOrCreateStation: adopted existing station '{0}' UUID={1} (set GameLocationId={2})",
@@ -2402,7 +2421,7 @@ namespace OE2EmpireTracker.Services
             station = new Station
             {
                 UUID = Guid.NewGuid().ToString(),
-                Name = planetName,
+                Name = stationName,
                 GameLocationId = gameLocationId,
                 SystemName = systemName,
                 OwnerUUID = playerUUID,
@@ -2418,6 +2437,30 @@ namespace OE2EmpireTracker.Services
                 systemName);
 
             return station;
+        }
+
+        /// <summary>
+        /// Strips the system name suffix from an API location name.
+        /// The API returns names like "Station Name (System Name)" — this extracts just "Station Name".
+        /// If the name doesn't end with the expected suffix, returns the original name unchanged.
+        /// </summary>
+        /// <param name="locationName">The full location name from the API.</param>
+        /// <param name="systemName">The system name to strip.</param>
+        /// <returns>The location name without the system name suffix.</returns>
+        private string StripSystemNameSuffix(string locationName, string systemName)
+        {
+            if (string.IsNullOrEmpty(locationName) || string.IsNullOrEmpty(systemName))
+            {
+                return locationName ?? string.Empty;
+            }
+
+            string suffix = " (" + systemName + ")";
+            if (locationName.EndsWith(suffix, StringComparison.OrdinalIgnoreCase))
+            {
+                return locationName.Substring(0, locationName.Length - suffix.Length);
+            }
+
+            return locationName;
         }
 
         /// <summary>
