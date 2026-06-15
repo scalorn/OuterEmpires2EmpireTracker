@@ -376,7 +376,8 @@ namespace OE2EmpireTracker.Services
                     gameApiContext.TypedClient,
                     settings,
                     gameApiContext.CredentialManager,
-                    marketDataService);
+                    marketDataService,
+                    gridIndex);
                 Log.Info("BackgroundProcessor: QueueSyncService constructed");
             }
 

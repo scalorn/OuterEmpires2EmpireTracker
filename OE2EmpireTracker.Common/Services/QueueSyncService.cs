@@ -35,6 +35,7 @@ namespace OE2EmpireTracker.Services
         private readonly GameApiConnectionSettings _settings;
         private readonly GameApiCredentialManager _credentialManager;
         private readonly MarketDataService _marketDataService;
+        private readonly SystemGridIndex _gridIndex;
 
         private readonly object _syncLock = new object();
 
@@ -53,13 +54,15 @@ namespace OE2EmpireTracker.Services
         /// <param name="settings">The connection settings (TPS, AppId, etc.).</param>
         /// <param name="credentialManager">The credential manager for token refresh operations.</param>
         /// <param name="marketDataService">The market data service for persisting market listings.</param>
+        /// <param name="gridIndex">The spatial index for computing systems in range.</param>
         public QueueSyncService(
             PlayerContext playerContext,
             EmpireContext empireContext,
             IGameApiTypedClient typedClient,
             GameApiConnectionSettings settings,
             GameApiCredentialManager credentialManager,
-            MarketDataService marketDataService)
+            MarketDataService marketDataService,
+            SystemGridIndex gridIndex = null)
         {
             _playerContext = playerContext;
             _empireContext = empireContext;
@@ -67,6 +70,7 @@ namespace OE2EmpireTracker.Services
             _settings = settings;
             _credentialManager = credentialManager;
             _marketDataService = marketDataService;
+            _gridIndex = gridIndex;
         }
 
         /// <summary>
@@ -201,6 +205,66 @@ namespace OE2EmpireTracker.Services
             {
                 _isSyncRunning = false;
             }
+        }
+
+        /// <summary>
+        /// Runs a full market sync across all configured characters sequentially.
+        /// For each character: exchanges token, executes saved searches, fetches own
+        /// orders and competitors, updates sync metadata, and runs stale removal.
+        /// Writes context once at the end. Characters that fail token exchange are
+        /// skipped with a logged warning.
+        /// </summary>
+        /// <param name="ct">Cancellation token for cooperative cancellation.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task RunMarketSyncAsync(CancellationToken ct)
+        {
+            IReadOnlyList<string> playerUUIDs = _credentialManager.GetConfiguredPlayerUUIDs();
+            if (playerUUIDs.Count == 0)
+            {
+                Log.Warn("RunMarketSyncAsync: no configured characters, aborting.");
+                return;
+            }
+
+            Log.Info("RunMarketSyncAsync: starting sync for {0} character(s).", playerUUIDs.Count);
+
+            var perCharacterFreshIds = new Dictionary<string, HashSet<long>>();
+            var perCharacterMetadata = new Dictionary<string, CharacterSyncMetadata>();
+
+            foreach (string characterUUID in playerUUIDs)
+            {
+                ct.ThrowIfCancellationRequested();
+
+                try
+                {
+                    await SyncCharacterMarketDataAsync(
+                        characterUUID, perCharacterFreshIds, perCharacterMetadata, ct).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    Log.Warn(ex, "RunMarketSyncAsync: character {0} failed, continuing with next.", characterUUID);
+                }
+            }
+
+            // Run stale removal for each character that synced successfully
+            foreach (var kvp in perCharacterMetadata)
+            {
+                string characterUUID = kvp.Key;
+                CharacterSyncMetadata metadata = kvp.Value;
+
+                if (!perCharacterFreshIds.TryGetValue(characterUUID, out HashSet<long> freshIds))
+                {
+                    freshIds = new HashSet<long>();
+                }
+
+                _marketDataService.RemoveStaleOrders(freshIds, characterUUID, metadata);
+            }
+
+            _playerContext.WriteContext();
+            Log.Info("RunMarketSyncAsync: sync complete for {0} character(s).", perCharacterMetadata.Count);
         }
 
         /// <summary>
@@ -444,6 +508,386 @@ namespace OE2EmpireTracker.Services
             }
 
             return temp;
+        }
+
+        /// <summary>
+        /// Syncs market data for a single character: exchanges token, executes saved
+        /// searches, fetches own orders and competitors, and updates sync metadata.
+        /// </summary>
+        /// <param name="characterUUID">The character UUID to sync.</param>
+        /// <param name="perCharacterFreshIds">Accumulator for fresh market IDs per character.</param>
+        /// <param name="perCharacterMetadata">Accumulator for sync metadata per character.</param>
+        /// <param name="ct">Cancellation token.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        private async Task SyncCharacterMarketDataAsync(
+            string characterUUID,
+            Dictionary<string, HashSet<long>> perCharacterFreshIds,
+            Dictionary<string, CharacterSyncMetadata> perCharacterMetadata,
+            CancellationToken ct)
+        {
+            // Exchange token for this character
+            var secret = _credentialManager.GetKey(characterUUID);
+            if (secret == null)
+            {
+                Log.Warn("RunMarketSyncAsync: no secret for character {0}, skipping.", characterUUID);
+                return;
+            }
+
+            string plainSecret = SecureStringToPlain(secret);
+
+            Generated.TokenResponseDto tokenDto;
+            try
+            {
+                tokenDto = await _typedClient.ExchangeTokenAsync(
+                    _settings.AppId, _settings.ClientId, plainSecret, ct).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Log.Warn(ex, "RunMarketSyncAsync: token exchange failed for character {0}, skipping.", characterUUID);
+                return;
+            }
+
+            Log.Info("RunMarketSyncAsync: token exchanged for character {0}.", characterUUID);
+
+            // Determine scopes granted
+            var grantedScopes = new List<string>();
+            if (tokenDto.Scopes != null)
+            {
+                grantedScopes.AddRange(tokenDto.Scopes);
+            }
+
+            // Get enabled saved searches for this character
+            List<SavedMarketSearch> searches = GetEnabledSearches(characterUUID);
+            var freshIds = new HashSet<long>();
+
+            // Execute each saved search
+            foreach (SavedMarketSearch search in searches)
+            {
+                ct.ThrowIfCancellationRequested();
+                await ExecuteSavedSearchAsync(characterUUID, search, freshIds, ct).ConfigureAwait(false);
+            }
+
+            // Fetch own buy orders and cascade competitors
+            await FetchOwnBuyOrdersAsync(characterUUID, ct).ConfigureAwait(false);
+
+            // Fetch own sell orders and cascade competitors
+            await FetchOwnSellOrdersAsync(characterUUID, ct).ConfigureAwait(false);
+
+            // Determine character's system and range for metadata
+            int systemId = ResolveCharacterSystemId(characterUUID);
+            int rangeJas = ResolveCharacterTradeRange(characterUUID);
+            string systemName = ResolveSystemName(systemId);
+
+            // Compute systems in range
+            HashSet<int> systemsInRange = new HashSet<int>();
+            if (_gridIndex != null && systemId > 0)
+            {
+                systemsInRange = _gridIndex.ComputeSystemsInRange(systemId, rangeJas);
+            }
+
+            // Update CharacterSyncMetadata
+            var metadata = new CharacterSyncMetadata
+            {
+                CharacterUUID = characterUUID,
+                SystemId = systemId,
+                SystemName = systemName,
+                RangeJas = rangeJas,
+                SystemsInRange = systemsInRange,
+                LastSyncTimestamp = SystemClock.UtcNow.ToString("o"),
+                GrantedScopes = grantedScopes,
+            };
+
+            UpsertSyncMetadata(metadata);
+
+            perCharacterFreshIds[characterUUID] = freshIds;
+            perCharacterMetadata[characterUUID] = metadata;
+
+            Log.Info(
+                "RunMarketSyncAsync: character {0} synced — {1} searches, {2} fresh IDs, system={3} range={4}.",
+                characterUUID,
+                searches.Count,
+                freshIds.Count,
+                systemId,
+                rangeJas);
+        }
+
+        /// <summary>
+        /// Gets the enabled saved searches for a character from the player context.
+        /// </summary>
+        /// <param name="characterUUID">The character UUID.</param>
+        /// <returns>A list of enabled searches for the character.</returns>
+        private List<SavedMarketSearch> GetEnabledSearches(string characterUUID)
+        {
+            var result = new List<SavedMarketSearch>();
+            List<SavedMarketSearch> allSearches = _playerContext.MarketSyncData.SavedSearches;
+            if (allSearches == null)
+            {
+                return result;
+            }
+
+            foreach (SavedMarketSearch search in allSearches)
+            {
+                if (search.Enabled
+                    && string.Equals(search.CharacterUUID, characterUUID, StringComparison.OrdinalIgnoreCase))
+                {
+                    result.Add(search);
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Executes a single saved search against the API and processes the results.
+        /// </summary>
+        /// <param name="characterUUID">The character UUID executing the search.</param>
+        /// <param name="search">The saved search to execute.</param>
+        /// <param name="freshIds">Accumulator for fresh market IDs.</param>
+        /// <param name="ct">Cancellation token.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        private async Task ExecuteSavedSearchAsync(
+            string characterUUID,
+            SavedMarketSearch search,
+            HashSet<long> freshIds,
+            CancellationToken ct)
+        {
+            try
+            {
+                string typeCode = !string.IsNullOrEmpty(search.GameTypeCode) ? search.GameTypeCode : "all";
+                string searchText = !string.IsNullOrEmpty(search.SearchText) ? search.SearchText : null;
+
+                var listings = await _typedClient.GetMarketListingsAsync(
+                    typeCode, null, searchText, ct).ConfigureAwait(false);
+
+                if (listings?.Listings != null)
+                {
+                    foreach (var entry in listings.Listings)
+                    {
+                        freshIds.Add(entry.MarketId);
+                    }
+
+                    _marketDataService.ProcessMarketListings(listings, characterUUID, 0, 0);
+                }
+
+                search.LastExecutedTimestamp = SystemClock.UtcNow.ToString("o");
+                search.LastResultCount = listings?.Listings?.Count ?? 0;
+
+                Log.Debug(
+                    "RunMarketSyncAsync: search '{0}' returned {1} results.",
+                    search.Name,
+                    search.LastResultCount);
+            }
+            catch (ApiHttpException ex)
+            {
+                Log.Warn(
+                    "RunMarketSyncAsync: search '{0}' failed (HTTP {1}), continuing.",
+                    search.Name,
+                    ex.StatusCode);
+            }
+            catch (ApiBusinessException ex)
+            {
+                Log.Warn(
+                    "RunMarketSyncAsync: search '{0}' business error RC={1}, continuing.",
+                    search.Name,
+                    ex.ReturnCode);
+            }
+        }
+
+        /// <summary>
+        /// Fetches the character's own buy orders and cascades competitor retrieval.
+        /// </summary>
+        /// <param name="characterUUID">The character UUID.</param>
+        /// <param name="ct">Cancellation token.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        private async Task FetchOwnBuyOrdersAsync(string characterUUID, CancellationToken ct)
+        {
+            try
+            {
+                var buyOrders = await _typedClient.GetMarketBuyOrdersAsync(ct).ConfigureAwait(false);
+                _marketDataService.ProcessOwnBuyOrders(buyOrders, characterUUID);
+
+                var marketIds = new List<long>();
+                if (buyOrders.Orders != null)
+                {
+                    foreach (var order in buyOrders.Orders)
+                    {
+                        marketIds.Add(order.MarketId);
+                    }
+                }
+
+                if (marketIds.Count > 0)
+                {
+                    string joinedIds = string.Join(",", marketIds);
+                    await FetchBuyCompetitorsAsync(characterUUID, joinedIds, ct).ConfigureAwait(false);
+                }
+            }
+            catch (ApiHttpException ex)
+            {
+                Log.Warn("RunMarketSyncAsync: buy orders failed for {0} (HTTP {1}).", characterUUID, ex.StatusCode);
+            }
+            catch (ApiBusinessException ex)
+            {
+                Log.Warn("RunMarketSyncAsync: buy orders business error for {0} RC={1}.", characterUUID, ex.ReturnCode);
+            }
+        }
+
+        /// <summary>
+        /// Fetches the character's own sell orders and cascades competitor retrieval.
+        /// </summary>
+        /// <param name="characterUUID">The character UUID.</param>
+        /// <param name="ct">Cancellation token.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        private async Task FetchOwnSellOrdersAsync(string characterUUID, CancellationToken ct)
+        {
+            try
+            {
+                var sellOrders = await _typedClient.GetMarketSellOrdersAsync(ct).ConfigureAwait(false);
+                _marketDataService.ProcessOwnSellOrders(sellOrders, characterUUID);
+
+                var marketIds = new List<long>();
+                if (sellOrders.Orders != null)
+                {
+                    foreach (var order in sellOrders.Orders)
+                    {
+                        marketIds.Add(order.MarketId);
+                    }
+                }
+
+                if (marketIds.Count > 0)
+                {
+                    string joinedIds = string.Join(",", marketIds);
+                    await FetchSellCompetitorsAsync(characterUUID, joinedIds, ct).ConfigureAwait(false);
+                }
+            }
+            catch (ApiHttpException ex)
+            {
+                Log.Warn("RunMarketSyncAsync: sell orders failed for {0} (HTTP {1}).", characterUUID, ex.StatusCode);
+            }
+            catch (ApiBusinessException ex)
+            {
+                Log.Warn("RunMarketSyncAsync: sell orders business error for {0} RC={1}.", characterUUID, ex.ReturnCode);
+            }
+        }
+
+        /// <summary>
+        /// Fetches buy order competitors for the given market IDs.
+        /// </summary>
+        /// <param name="characterUUID">The character UUID.</param>
+        /// <param name="marketIds">Comma-separated market IDs.</param>
+        /// <param name="ct">Cancellation token.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        private async Task FetchBuyCompetitorsAsync(string characterUUID, string marketIds, CancellationToken ct)
+        {
+            try
+            {
+                var dto = await _typedClient.GetMarketBuyOrderCompetitorsAsync(marketIds, ct).ConfigureAwait(false);
+                _marketDataService.ProcessBuyCompetitors(dto, characterUUID);
+            }
+            catch (ApiHttpException ex)
+            {
+                Log.Warn("RunMarketSyncAsync: buy competitors failed for {0} (HTTP {1}).", characterUUID, ex.StatusCode);
+            }
+            catch (ApiBusinessException ex)
+            {
+                Log.Warn("RunMarketSyncAsync: buy competitors business error for {0} RC={1}.", characterUUID, ex.ReturnCode);
+            }
+        }
+
+        /// <summary>
+        /// Fetches sell order competitors for the given market IDs.
+        /// </summary>
+        /// <param name="characterUUID">The character UUID.</param>
+        /// <param name="marketIds">Comma-separated market IDs.</param>
+        /// <param name="ct">Cancellation token.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        private async Task FetchSellCompetitorsAsync(string characterUUID, string marketIds, CancellationToken ct)
+        {
+            try
+            {
+                var dto = await _typedClient.GetMarketSellOrderCompetitorsAsync(marketIds, ct).ConfigureAwait(false);
+                _marketDataService.ProcessSellCompetitors(dto, characterUUID);
+            }
+            catch (ApiHttpException ex)
+            {
+                Log.Warn("RunMarketSyncAsync: sell competitors failed for {0} (HTTP {1}).", characterUUID, ex.StatusCode);
+            }
+            catch (ApiBusinessException ex)
+            {
+                Log.Warn("RunMarketSyncAsync: sell competitors business error for {0} RC={1}.", characterUUID, ex.ReturnCode);
+            }
+        }
+
+        /// <summary>
+        /// Resolves the system ID for a character from their player profile.
+        /// Returns 0 if the system cannot be determined.
+        /// </summary>
+        /// <param name="characterUUID">The character UUID.</param>
+        /// <returns>The system ID, or 0 if unknown.</returns>
+        private int ResolveCharacterSystemId(string characterUUID)
+        {
+            // The character's current system is not yet tracked on PlayerProfile.
+            // Future enhancement: extract from ship location or character API.
+            return 0;
+        }
+
+        /// <summary>
+        /// Resolves the trade range in JAS for a character based on their trade skill level.
+        /// Base range is 150 JAS + 10 per Broker skill level.
+        /// Returns the default (150) if the skill cannot be determined.
+        /// </summary>
+        /// <param name="characterUUID">The character UUID.</param>
+        /// <returns>The trade range in JAS.</returns>
+        private int ResolveCharacterTradeRange(string characterUUID)
+        {
+            const int baseRange = 150;
+            const int rangePerLevel = 10;
+
+            PlayerProfile profile = _playerContext.FindMutablePlayerProfile(characterUUID);
+            if (profile == null)
+            {
+                return baseRange;
+            }
+
+            PlayerSkill tradeSkill = profile.GetSkill(SkillName.Broker);
+            int level = tradeSkill?.Level ?? 0;
+
+            return baseRange + (rangePerLevel * level);
+        }
+
+        /// <summary>
+        /// Resolves a system name from its ID using the empire context's system repository.
+        /// Returns an empty string if the system cannot be found.
+        /// </summary>
+        /// <param name="systemId">The system ID.</param>
+        /// <returns>The system name, or empty string.</returns>
+        private string ResolveSystemName(int systemId)
+        {
+            if (systemId <= 0)
+            {
+                return string.Empty;
+            }
+
+            StarSystem system = _empireContext.SystemRepository.FindById(systemId);
+            return system?.Name ?? string.Empty;
+        }
+
+        /// <summary>
+        /// Upserts sync metadata for a character into the MarketSyncData collection.
+        /// </summary>
+        /// <param name="metadata">The metadata to upsert.</param>
+        private void UpsertSyncMetadata(CharacterSyncMetadata metadata)
+        {
+            List<CharacterSyncMetadata> metadataList = _playerContext.MarketSyncData.SyncMetadata;
+            for (int i = 0; i < metadataList.Count; i++)
+            {
+                if (string.Equals(metadataList[i].CharacterUUID, metadata.CharacterUUID, StringComparison.OrdinalIgnoreCase))
+                {
+                    metadataList[i] = metadata;
+                    return;
+                }
+            }
+
+            metadataList.Add(metadata);
         }
 
         /// <summary>
