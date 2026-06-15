@@ -63,6 +63,9 @@ namespace OE2EmpireTracker.Models
         public string PlacedDT { get; set; } = string.Empty;
         public string ExpiresDT { get; set; } = string.Empty;
 
+        // Competitor linking (non-null means this listing is a competitor for the specified own order)
+        public long? CompetitorForMarketId { get; set; }
+
         // Sync tracking
         public string SyncedByCharacterUUID { get; set; } = string.Empty;
         public string SyncTimestamp { get; set; } = string.Empty;

@@ -5,8 +5,11 @@ using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using ApiMarketBuyOrder = OE2EmpireTracker.Common.Client.Generated.MarketBuyOrder;
 using ApiMarketBuyOrders = OE2EmpireTracker.Common.Client.Generated.MarketBuyOrders;
+using ApiMarketCompetitor = OE2EmpireTracker.Common.Client.Generated.MarketCompetitor;
+using ApiMarketCompetitorOrders = OE2EmpireTracker.Common.Client.Generated.MarketCompetitorOrders;
 using ApiMarketListing = OE2EmpireTracker.Common.Client.Generated.MarketListing;
 using ApiMarketListings = OE2EmpireTracker.Common.Client.Generated.MarketListings;
+using ApiMarketOrderCompetitors = OE2EmpireTracker.Common.Client.Generated.MarketOrderCompetitors;
 using ApiMarketSellOrder = OE2EmpireTracker.Common.Client.Generated.MarketSellOrder;
 using ApiMarketSellOrders = OE2EmpireTracker.Common.Client.Generated.MarketSellOrders;
 
@@ -294,6 +297,140 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Maps buy order competitor DTOs to MarketListing entries linked to the
+        /// player's own buy orders. Each competitor is an order that outbids the
+        /// player's buy order. Upserts by MarketId (same pattern as other process
+        /// methods). Sets CompetitorForMarketId to link to the own order being outbid.
+        /// </summary>
+        /// <param name="dto">The MarketCompetitorOrders DTO from the API.</param>
+        /// <param name="characterUUID">The character UUID whose orders are being outbid.</param>
+        public void ProcessBuyCompetitors(ApiMarketCompetitorOrders dto, string characterUUID)
+        {
+            if (dto == null)
+            {
+                throw new ArgumentNullException(nameof(dto));
+            }
+
+            if (string.IsNullOrEmpty(characterUUID))
+            {
+                throw new ArgumentNullException(nameof(characterUUID));
+            }
+
+            ICollection<ApiMarketOrderCompetitors> orders = dto.Orders;
+            if (orders == null || orders.Count == 0)
+            {
+                Log.Debug("ProcessBuyCompetitors: no orders in DTO for character {0}", characterUUID);
+                return;
+            }
+
+            string syncTimestamp = SystemClock.UtcNow.ToString("o");
+            int upserted = 0;
+            int created = 0;
+
+            foreach (ApiMarketOrderCompetitors orderGroup in orders)
+            {
+                long ownOrderMarketId = orderGroup.MarketId;
+                ICollection<ApiMarketCompetitor> competitors = orderGroup.Competitors;
+                if (competitors == null || competitors.Count == 0)
+                {
+                    continue;
+                }
+
+                foreach (ApiMarketCompetitor competitor in competitors)
+                {
+                    MarketListing existing = _playerContext.FindMarketListingByMarketId(competitor.MarketId);
+
+                    if (existing != null)
+                    {
+                        UpdateFromCompetitor(existing, competitor, ownOrderMarketId, true, characterUUID, syncTimestamp);
+                        upserted++;
+                    }
+                    else
+                    {
+                        MarketListing newListing = MapCompetitorToListing(competitor, ownOrderMarketId, true, characterUUID, syncTimestamp);
+                        _playerContext.AddMarketListing(newListing);
+                        created++;
+                    }
+                }
+            }
+
+            _playerContext.InvalidateMarketListingByMarketIdCache();
+
+            Log.Info(
+                "ProcessBuyCompetitors: character={0} — created={1} updated={2}",
+                characterUUID,
+                created,
+                upserted);
+        }
+
+        /// <summary>
+        /// Maps sell order competitor DTOs to MarketListing entries linked to the
+        /// player's own sell orders. Each competitor is an order that undercuts the
+        /// player's sell order. Upserts by MarketId (same pattern as other process
+        /// methods). Sets CompetitorForMarketId to link to the own order being undercut.
+        /// </summary>
+        /// <param name="dto">The MarketCompetitorOrders DTO from the API.</param>
+        /// <param name="characterUUID">The character UUID whose orders are being undercut.</param>
+        public void ProcessSellCompetitors(ApiMarketCompetitorOrders dto, string characterUUID)
+        {
+            if (dto == null)
+            {
+                throw new ArgumentNullException(nameof(dto));
+            }
+
+            if (string.IsNullOrEmpty(characterUUID))
+            {
+                throw new ArgumentNullException(nameof(characterUUID));
+            }
+
+            ICollection<ApiMarketOrderCompetitors> orders = dto.Orders;
+            if (orders == null || orders.Count == 0)
+            {
+                Log.Debug("ProcessSellCompetitors: no orders in DTO for character {0}", characterUUID);
+                return;
+            }
+
+            string syncTimestamp = SystemClock.UtcNow.ToString("o");
+            int upserted = 0;
+            int created = 0;
+
+            foreach (ApiMarketOrderCompetitors orderGroup in orders)
+            {
+                long ownOrderMarketId = orderGroup.MarketId;
+                ICollection<ApiMarketCompetitor> competitors = orderGroup.Competitors;
+                if (competitors == null || competitors.Count == 0)
+                {
+                    continue;
+                }
+
+                foreach (ApiMarketCompetitor competitor in competitors)
+                {
+                    MarketListing existing = _playerContext.FindMarketListingByMarketId(competitor.MarketId);
+
+                    if (existing != null)
+                    {
+                        UpdateFromCompetitor(existing, competitor, ownOrderMarketId, false, characterUUID, syncTimestamp);
+                        upserted++;
+                    }
+                    else
+                    {
+                        MarketListing newListing = MapCompetitorToListing(competitor, ownOrderMarketId, false, characterUUID, syncTimestamp);
+                        _playerContext.AddMarketListing(newListing);
+                        created++;
+                    }
+                }
+            }
+
+            _playerContext.InvalidateMarketListingByMarketIdCache();
+
+            Log.Info(
+                "ProcessSellCompetitors: character={0} — created={1} updated={2}",
+                characterUUID,
+                created,
+                upserted);
+        }
+
+        /// <summary>
         /// Maps an API DTO entry to a new MarketListing domain object.
         /// </summary>
         private static MarketListing MapToNewListing(
@@ -576,6 +713,56 @@ namespace OE2EmpireTracker.Services
             existing.BuyerName = entry.PrivateSaleToName ?? string.Empty;
             existing.PlacedDT = entry.PlacedDT.ToString("o");
             existing.ExpiresDT = entry.ExpiresDT.ToString("o");
+            existing.PricePerUnit = (decimal)entry.Price;
+            existing.Quantity = entry.AmountRemaining;
+            existing.SyncedByCharacterUUID = characterUUID;
+            existing.SyncTimestamp = syncTimestamp;
+        }
+
+        /// <summary>
+        /// Maps a competitor DTO to a new MarketListing domain object.
+        /// </summary>
+        private static MarketListing MapCompetitorToListing(
+            ApiMarketCompetitor entry,
+            long ownOrderMarketId,
+            bool isBuyCompetitor,
+            string characterUUID,
+            string syncTimestamp)
+        {
+            var listing = new MarketListing
+            {
+                UUID = Guid.NewGuid().ToString(),
+                MarketId = entry.MarketId,
+                BuyOrder = isBuyCompetitor,
+                CompetitorForMarketId = ownOrderMarketId,
+                LocationName = entry.LocationName ?? string.Empty,
+                AmountRemaining = entry.AmountRemaining,
+                SellerName = entry.PilotName ?? string.Empty,
+                PricePerUnit = (decimal)entry.Price,
+                Quantity = entry.AmountRemaining,
+                SyncedByCharacterUUID = characterUUID,
+                SyncTimestamp = syncTimestamp,
+            };
+
+            return listing;
+        }
+
+        /// <summary>
+        /// Updates an existing listing from a fresh competitor DTO.
+        /// </summary>
+        private static void UpdateFromCompetitor(
+            MarketListing existing,
+            ApiMarketCompetitor entry,
+            long ownOrderMarketId,
+            bool isBuyCompetitor,
+            string characterUUID,
+            string syncTimestamp)
+        {
+            existing.BuyOrder = isBuyCompetitor;
+            existing.CompetitorForMarketId = ownOrderMarketId;
+            existing.LocationName = entry.LocationName ?? string.Empty;
+            existing.AmountRemaining = entry.AmountRemaining;
+            existing.SellerName = entry.PilotName ?? string.Empty;
             existing.PricePerUnit = (decimal)entry.Price;
             existing.Quantity = entry.AmountRemaining;
             existing.SyncedByCharacterUUID = characterUUID;
