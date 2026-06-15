@@ -10,6 +10,7 @@ using ApiMarketCompetitorOrders = OE2EmpireTracker.Common.Client.Generated.Marke
 using ApiMarketListing = OE2EmpireTracker.Common.Client.Generated.MarketListing;
 using ApiMarketListings = OE2EmpireTracker.Common.Client.Generated.MarketListings;
 using ApiMarketOrderCompetitors = OE2EmpireTracker.Common.Client.Generated.MarketOrderCompetitors;
+using ApiMarketPriceStats = OE2EmpireTracker.Common.Client.Generated.MarketPriceStats;
 using ApiMarketSellOrder = OE2EmpireTracker.Common.Client.Generated.MarketSellOrder;
 using ApiMarketSellOrders = OE2EmpireTracker.Common.Client.Generated.MarketSellOrders;
 
@@ -431,6 +432,80 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Maps a price statistics DTO to a <see cref="StoredPriceStats"/> object and
+        /// upserts it into <see cref="MarketSyncData.PriceStats"/> keyed by composite
+        /// item identity (ItemType + BaseItemTypeID + ResourcePurity + GameTypeCode + OrderType).
+        /// </summary>
+        /// <param name="dto">The MarketPriceStats DTO from the API.</param>
+        /// <param name="characterUUID">The character who fetched the price data.</param>
+        /// <param name="itemName">The resolved item name for display.</param>
+        public void ProcessPriceStats(ApiMarketPriceStats dto, string characterUUID, string itemName)
+        {
+            if (dto == null)
+            {
+                throw new ArgumentNullException(nameof(dto));
+            }
+
+            if (string.IsNullOrEmpty(characterUUID))
+            {
+                throw new ArgumentNullException(nameof(characterUUID));
+            }
+
+            string gameTypeCode = dto.OrderType ?? string.Empty;
+            string orderType = dto.OrderType ?? string.Empty;
+
+            var stats = new StoredPriceStats
+            {
+                ItemType = MapGameTypeCodeToItemType(gameTypeCode),
+                BaseItemTypeID = itemName ?? string.Empty,
+                ItemName = itemName ?? string.Empty,
+                ResourcePurity = string.Empty,
+                GameTypeCode = gameTypeCode,
+                GameTypeId = 0,
+                LowPrice = dto.LowPrice.HasValue ? (decimal)dto.LowPrice.Value : (decimal?)null,
+                AvgPrice = dto.AvgPrice.HasValue ? (decimal)dto.AvgPrice.Value : (decimal?)null,
+                HighPrice = dto.HighPrice.HasValue ? (decimal)dto.HighPrice.Value : (decimal?)null,
+                SampleCount = dto.SampleCount,
+                SearchRadius = dto.SearchRadius ?? string.Empty,
+                DaysSearched = dto.DaysSearched,
+                OrderType = orderType,
+                FetchedTimestamp = SystemClock.UtcNow.ToString("o"),
+                FetchedByCharacterUUID = characterUUID,
+            };
+
+            UpsertPriceStats(stats);
+
+            Log.Info(
+                "ProcessPriceStats: character={0} item=\"{1}\" orderType={2} samples={3}",
+                characterUUID,
+                itemName,
+                orderType,
+                dto.SampleCount);
+        }
+
+        /// <summary>
+        /// Validates that the given type code and type ID are valid for a price lookup.
+        /// Returns true if valid (caller may proceed with the price fetch), false otherwise.
+        /// </summary>
+        /// <param name="typeCode">The Game API type code (e.g. "R", "C", "BP").</param>
+        /// <param name="typeId">The Game API type ID for the item.</param>
+        /// <returns>True if the parameters are valid for a price lookup; otherwise false.</returns>
+        public bool ResolveItemForPriceLookup(string typeCode, long typeId)
+        {
+            if (string.IsNullOrEmpty(typeCode))
+            {
+                return false;
+            }
+
+            if (typeId <= 0)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
         /// Maps an API DTO entry to a new MarketListing domain object.
         /// </summary>
         private static MarketListing MapToNewListing(
@@ -767,6 +842,31 @@ namespace OE2EmpireTracker.Services
             existing.Quantity = entry.AmountRemaining;
             existing.SyncedByCharacterUUID = characterUUID;
             existing.SyncTimestamp = syncTimestamp;
+        }
+
+        /// <summary>
+        /// Upserts a <see cref="StoredPriceStats"/> entry into the PriceStats collection.
+        /// Matches by composite key: ItemType + BaseItemTypeID + ResourcePurity + GameTypeCode + OrderType.
+        /// </summary>
+        private void UpsertPriceStats(StoredPriceStats stats)
+        {
+            List<StoredPriceStats> priceStats = _playerContext.MarketSyncData.PriceStats;
+
+            for (int i = 0; i < priceStats.Count; i++)
+            {
+                StoredPriceStats existing = priceStats[i];
+                if (existing.ItemType == stats.ItemType
+                    && existing.BaseItemTypeID == stats.BaseItemTypeID
+                    && existing.ResourcePurity == stats.ResourcePurity
+                    && existing.GameTypeCode == stats.GameTypeCode
+                    && existing.OrderType == stats.OrderType)
+                {
+                    priceStats[i] = stats;
+                    return;
+                }
+            }
+
+            priceStats.Add(stats);
         }
     }
 }
