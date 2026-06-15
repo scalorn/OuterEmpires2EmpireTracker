@@ -32,6 +32,7 @@ namespace OE2EmpireTracker.Services
             BankingTransaction = new BankingTransaction[0];
             BankingBalance = 0m;
             MailMessage = new MailMessage[0];
+            MarketSyncData = new MarketSyncData();
         }
 
         public int DataVersion { get; set; }
@@ -86,5 +87,7 @@ namespace OE2EmpireTracker.Services
 
         [JsonProperty("mailMessage")]
         public MailMessage[] MailMessage { get; set; }
+
+        public MarketSyncData MarketSyncData { get; set; }
     }
 }

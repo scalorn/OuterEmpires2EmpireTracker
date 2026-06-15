@@ -69,6 +69,8 @@ namespace OE2EmpireTracker.Services
         private Dictionary<string, BankingTransaction> _bankingTransactionCache;
         private List<MailMessage> _mailMessageList = new List<MailMessage>();
         private Dictionary<int, MailMessage> _mailMessageCache;
+        private MarketSyncData _marketSyncData = new MarketSyncData();
+        private Dictionary<long, MarketListing> _marketListingByMarketIdCache;
         private Dictionary<int, Blueprint> _blueprintByApiIdIndex = new Dictionary<int, Blueprint>();
         private Dictionary<int, Survey> _surveyByApiIdIndex = new Dictionary<int, Survey>();
         private Dictionary<int, Ship> _shipByGameLocationIdIndex = new Dictionary<int, Ship>();
@@ -104,6 +106,7 @@ namespace OE2EmpireTracker.Services
             InitAsteroids(playerRoot);
             InitBankingTransactions(playerRoot);
             InitMailMessages(playerRoot);
+            InitMarketSyncData(playerRoot);
             DataVersion = playerRoot.DataVersion;
 
             // Migrate and restore current player
@@ -157,6 +160,7 @@ namespace OE2EmpireTracker.Services
             InitAsteroids(playerRoot);
             InitBankingTransactions(playerRoot);
             InitMailMessages(playerRoot);
+            InitMarketSyncData(playerRoot);
             DataVersion = playerRoot.DataVersion;
 
             // Migrate and restore current player
@@ -384,6 +388,8 @@ namespace OE2EmpireTracker.Services
 
         public IReadOnlyList<MailMessage> MailMessageList => _mailMessageList;
 
+        public MarketSyncData MarketSyncData => _marketSyncData;
+
         public decimal BankingBalance { get; set; } = 0m;
 
         public IEnumerable<CountDownTimeReference> ActiveCountdowns => CollectionSortHelper.OrderCountdownsByTimeRemaining(
@@ -602,6 +608,7 @@ namespace OE2EmpireTracker.Services
                 playerRoot.BankingTransaction = _bankingTransactionList.ToArray();
                 playerRoot.BankingBalance = BankingBalance;
                 playerRoot.MailMessage = _mailMessageList.ToArray();
+                playerRoot.MarketSyncData = _marketSyncData;
             }
 
             playerRoot = SerializationSorter.SortPlayerRoot(playerRoot);
@@ -708,6 +715,7 @@ namespace OE2EmpireTracker.Services
                     InitFactions(playerRoot);
                     InitExternalCharacters(playerRoot);
                     InitAsteroids(playerRoot);
+                    InitMarketSyncData(playerRoot);
                     DataVersion = playerRoot.DataVersion;
                 }
 
@@ -1373,6 +1381,12 @@ namespace OE2EmpireTracker.Services
             }
 
             _marketListingList = deduped;
+            InvalidateMarketListingByMarketIdCache();
+        }
+
+        public void InitMarketSyncData(PlayerRoot playerRoot)
+        {
+            _marketSyncData = playerRoot.MarketSyncData ?? new MarketSyncData();
         }
 
         public void InitMarketTransactions(PlayerRoot playerRoot)
@@ -1983,6 +1997,7 @@ namespace OE2EmpireTracker.Services
                 _marketListingList.Add(item);
                 if (_marketListingCache != null && item.UUID != null)
                     _marketListingCache[item.UUID] = item;
+                _marketListingByMarketIdCache = null;
             }
         }
 
@@ -1993,6 +2008,7 @@ namespace OE2EmpireTracker.Services
                 _marketListingList.Remove(item);
                 if (_marketListingCache != null && item.UUID != null)
                     _marketListingCache.Remove(item.UUID);
+                _marketListingByMarketIdCache = null;
             }
         }
 
@@ -2597,6 +2613,43 @@ namespace OE2EmpireTracker.Services
             lock (_listLock)
             {
                 _marketListingCache = null;
+                _marketListingByMarketIdCache = null;
+            }
+        }
+
+        /// <summary>
+        /// Finds a MarketListing by its API MarketId using a dictionary cache for O(1) lookup.
+        /// Returns null if no listing with the given MarketId exists.
+        /// </summary>
+        public MarketListing FindMarketListingByMarketId(long marketId)
+        {
+            lock (_listLock)
+            {
+                if (_marketListingByMarketIdCache == null)
+                {
+                    _marketListingByMarketIdCache = new Dictionary<long, MarketListing>();
+                    foreach (var ml in _marketListingList)
+                    {
+                        if (ml.MarketId.HasValue && !_marketListingByMarketIdCache.ContainsKey(ml.MarketId.Value))
+                        {
+                            _marketListingByMarketIdCache[ml.MarketId.Value] = ml;
+                        }
+                    }
+                }
+
+                _marketListingByMarketIdCache.TryGetValue(marketId, out var match);
+                return match;
+            }
+        }
+
+        /// <summary>
+        /// Invalidates the MarketId-keyed lookup cache. Call when listings are added or removed.
+        /// </summary>
+        public void InvalidateMarketListingByMarketIdCache()
+        {
+            lock (_listLock)
+            {
+                _marketListingByMarketIdCache = null;
             }
         }
 
