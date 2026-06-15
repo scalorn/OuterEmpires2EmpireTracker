@@ -34,6 +34,7 @@ namespace OE2EmpireTracker.Services
         private readonly IGameApiTypedClient _typedClient;
         private readonly GameApiConnectionSettings _settings;
         private readonly GameApiCredentialManager _credentialManager;
+        private readonly MarketDataService _marketDataService;
 
         private readonly object _syncLock = new object();
 
@@ -51,18 +52,21 @@ namespace OE2EmpireTracker.Services
         /// <param name="typedClient">The typed game API client for HTTP communication.</param>
         /// <param name="settings">The connection settings (TPS, AppId, etc.).</param>
         /// <param name="credentialManager">The credential manager for token refresh operations.</param>
+        /// <param name="marketDataService">The market data service for persisting market listings.</param>
         public QueueSyncService(
             PlayerContext playerContext,
             EmpireContext empireContext,
             IGameApiTypedClient typedClient,
             GameApiConnectionSettings settings,
-            GameApiCredentialManager credentialManager)
+            GameApiCredentialManager credentialManager,
+            MarketDataService marketDataService)
         {
             _playerContext = playerContext;
             _empireContext = empireContext;
             _typedClient = typedClient;
             _settings = settings;
             _credentialManager = credentialManager;
+            _marketDataService = marketDataService;
         }
 
         /// <summary>
@@ -929,10 +933,14 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
-        /// Creates a work item that fetches the market listings from the game API.
+        /// Creates a work item that fetches the market listings from the game API
+        /// and persists them via <see cref="MarketDataService"/>.
         /// </summary>
-        /// <returns>A work item for market listings retrieval.</returns>
-        private WorkItem CreateMarketListingsItem()
+        /// <param name="typeCode">The game type code filter (e.g. "all", "R", "C").</param>
+        /// <param name="range">The trade range in JAS for the search, or null for default.</param>
+        /// <param name="searchText">Optional search text filter.</param>
+        /// <returns>A work item for market listings retrieval and persistence.</returns>
+        private WorkItem CreateMarketListingsItem(string typeCode = "all", int? range = null, string searchText = null)
         {
             return new WorkItem
             {
@@ -941,8 +949,20 @@ namespace OE2EmpireTracker.Services
                 {
                     try
                     {
-                        var listings = await _typedClient.GetMarketListingsAsync("all", ct: ct).ConfigureAwait(false);
-                        Log.Debug("MarketListings fetched successfully.");
+                        var listings = await _typedClient.GetMarketListingsAsync(typeCode, range, searchText, ct).ConfigureAwait(false);
+
+                        try
+                        {
+                            string characterUUID = _playerContext.CurrentPlayerUUID;
+                            int systemId = 0;
+                            int rangeJas = range ?? 0;
+                            _marketDataService.ProcessMarketListings(listings, characterUUID, systemId, rangeJas);
+                            Log.Debug("MarketListings processed: merged into dataset.");
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error(ex, "Failed to process market listings for character {0}", _playerContext.CurrentPlayerUUID);
+                        }
                     }
                     catch (ApiHttpException ex) when (ex.StatusCode == 401)
                     {

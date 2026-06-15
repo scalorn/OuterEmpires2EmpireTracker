@@ -366,12 +366,17 @@ namespace OE2EmpireTracker.Services
 
             if (_queueSyncService == null)
             {
+                var empireContext = EmpireContext.GetInstance();
+                var gridIndex = new SystemGridIndex(empireContext.SystemRepository);
+                var marketDataService = new MarketDataService(_playerContext, gridIndex);
+
                 _queueSyncService = new QueueSyncService(
                     _playerContext,
-                    EmpireContext.GetInstance(),
+                    empireContext,
                     gameApiContext.TypedClient,
                     settings,
-                    gameApiContext.CredentialManager);
+                    gameApiContext.CredentialManager,
+                    marketDataService);
                 Log.Info("BackgroundProcessor: QueueSyncService constructed");
             }
 

@@ -506,6 +506,104 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Returns all synced market listings visible to the given character.
+        /// Includes all public orders plus private orders where the character is
+        /// the seller or the named buyer. Excludes competitor entries.
+        /// </summary>
+        /// <param name="characterUUID">The character UUID to filter visibility for.</param>
+        /// <returns>A read-only list of visible market listings.</returns>
+        public IReadOnlyList<MarketListing> GetVisibleOrders(string characterUUID)
+        {
+            if (string.IsNullOrEmpty(characterUUID))
+            {
+                throw new ArgumentNullException(nameof(characterUUID));
+            }
+
+            string characterName = ResolveCharacterName(characterUUID);
+            List<MarketListing> allListings = _playerContext.SnapshotMarketListingList();
+            var visible = new List<MarketListing>();
+
+            foreach (MarketListing listing in allListings)
+            {
+                // Only include synced orders (non-null MarketId)
+                if (!listing.MarketId.HasValue)
+                {
+                    continue;
+                }
+
+                // Exclude competitor entries — they are shown separately
+                if (listing.CompetitorForMarketId.HasValue)
+                {
+                    continue;
+                }
+
+                // Public orders are visible to everyone
+                if (!listing.PrivateSale)
+                {
+                    visible.Add(listing);
+                    continue;
+                }
+
+                // Private sale: visible to the seller (OwnerUUID or SyncedByCharacterUUID match)
+                if (listing.OwnerUUID == characterUUID || listing.SyncedByCharacterUUID == characterUUID)
+                {
+                    visible.Add(listing);
+                    continue;
+                }
+
+                // Private sale: visible to the named buyer (by character name)
+                if (!string.IsNullOrEmpty(characterName)
+                    && !string.IsNullOrEmpty(listing.BuyerName)
+                    && string.Equals(listing.BuyerName, characterName, StringComparison.OrdinalIgnoreCase))
+                {
+                    visible.Add(listing);
+                }
+            }
+
+            return visible;
+        }
+
+        /// <summary>
+        /// Returns the character's own orders (listings where OwnerUUID matches).
+        /// Only includes synced orders (non-null MarketId). Excludes competitor entries.
+        /// </summary>
+        /// <param name="characterUUID">The character UUID whose orders to return.</param>
+        /// <returns>A read-only list of the character's own market listings.</returns>
+        public IReadOnlyList<MarketListing> GetOwnOrders(string characterUUID)
+        {
+            if (string.IsNullOrEmpty(characterUUID))
+            {
+                throw new ArgumentNullException(nameof(characterUUID));
+            }
+
+            List<MarketListing> allListings = _playerContext.SnapshotMarketListingList();
+            var ownOrders = new List<MarketListing>();
+
+            foreach (MarketListing listing in allListings)
+            {
+                // Only include synced orders (non-null MarketId)
+                if (!listing.MarketId.HasValue)
+                {
+                    continue;
+                }
+
+                // Exclude competitor entries
+                if (listing.CompetitorForMarketId.HasValue)
+                {
+                    continue;
+                }
+
+                // Must be owned by the character
+                if (listing.OwnerUUID == characterUUID)
+                {
+                    ownOrders.Add(listing);
+                }
+            }
+
+            return ownOrders;
+        }
+
+        /// <summary>
         /// Maps an API DTO entry to a new MarketListing domain object.
         /// </summary>
         private static MarketListing MapToNewListing(
@@ -842,6 +940,21 @@ namespace OE2EmpireTracker.Services
             existing.Quantity = entry.AmountRemaining;
             existing.SyncedByCharacterUUID = characterUUID;
             existing.SyncTimestamp = syncTimestamp;
+        }
+
+        /// <summary>
+        /// Resolves the character name for the given UUID by looking up the player profile.
+        /// Returns empty string if no profile is found.
+        /// </summary>
+        private string ResolveCharacterName(string characterUUID)
+        {
+            PlayerProfile profile = _playerContext.FindPlayerProfile(characterUUID);
+            if (profile != null && !string.IsNullOrEmpty(profile.Name))
+            {
+                return profile.Name;
+            }
+
+            return string.Empty;
         }
 
         /// <summary>
