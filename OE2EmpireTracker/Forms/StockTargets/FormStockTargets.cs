@@ -420,9 +420,17 @@ namespace OE2EmpireTracker.Forms.StockTargets
                         items.Add(new KeyValuePair<string, string>(c.UUID, c.ColonyName));
                     break;
                 case StockTargetScope.Station:
+                case StockTargetScope.Market:
+                case StockTargetScope.StationPlusMarket:
                     foreach (var s in CollectionSortHelper.OrderStations(playerContext.StationList))
                         items.Add(new KeyValuePair<string, string>(s.UUID, s.Name));
                     break;
+            }
+
+            if (scope == StockTargetScope.Market)
+            {
+                // Location is optional for Market scope — add "(Any)" option
+                items.Insert(0, new KeyValuePair<string, string>(string.Empty, "(Any Station)"));
             }
 
             if (items.Count > 0)
@@ -488,6 +496,8 @@ namespace OE2EmpireTracker.Forms.StockTargets
                     var colony = playerContext.ColonyList.FirstOrDefault(c => c.UUID == uuid);
                     return colony?.ColonyName ?? uuid;
                 case StockTargetScope.Station:
+                case StockTargetScope.Market:
+                case StockTargetScope.StationPlusMarket:
                     var station = playerContext.StationList.FirstOrDefault(s => s.UUID == uuid);
                     return station?.Name ?? uuid;
                 default:

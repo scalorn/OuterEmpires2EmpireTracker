@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NLog;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
@@ -486,6 +487,61 @@ namespace OE2EmpireTracker.Services
                 itemName,
                 orderType,
                 dto.SampleCount);
+        }
+
+        /// <summary>
+        /// Auto-populates a pricing plan's resource prices from stored price stats.
+        /// For each resource key in the pricing plan, finds matching StoredPriceStats
+        /// and uses AvgPrice. Returns a result showing which resources were updated
+        /// and which had no matching price data.
+        /// </summary>
+        /// <param name="pricingPlanUUID">The UUID of the pricing plan to populate.</param>
+        /// <param name="characterUUID">The character UUID requesting the auto-populate.</param>
+        /// <returns>A result indicating which resources were updated or missing data.</returns>
+        public MarketPricePopulationResult AutoPopulatePricingPlan(string pricingPlanUUID, string characterUUID)
+        {
+            if (string.IsNullOrEmpty(pricingPlanUUID))
+            {
+                throw new ArgumentNullException(nameof(pricingPlanUUID));
+            }
+
+            var result = new MarketPricePopulationResult();
+            PricingPlan plan = _playerContext.PricingPlanList.FirstOrDefault(p => p.UUID == pricingPlanUUID);
+            if (plan == null)
+            {
+                Log.Warn("AutoPopulatePricingPlan: plan not found UUID={0}", pricingPlanUUID);
+                return result;
+            }
+
+            List<StoredPriceStats> allStats = _playerContext.MarketSyncData.PriceStats;
+            var resourceKeys = new List<string>(plan.ResourcePrices.Keys);
+
+            foreach (string resourceKey in resourceKeys)
+            {
+                // Keys are "{ResourceName}|{Purity}" e.g. "Alkali Metals|Refined"
+                string[] parts = resourceKey.Split('|');
+                string resourceName = parts.Length > 0 ? parts[0] : string.Empty;
+                string purity = parts.Length > 1 ? parts[1] : string.Empty;
+
+                StoredPriceStats match = FindMatchingPriceStats(allStats, resourceName, purity);
+                if (match != null && match.AvgPrice.HasValue)
+                {
+                    plan.ResourcePrices[resourceKey] = match.AvgPrice.Value;
+                    result.UpdatedResources.Add(resourceKey);
+                }
+                else
+                {
+                    result.MissingResources.Add(resourceKey);
+                }
+            }
+
+            Log.Info(
+                "AutoPopulatePricingPlan: plan=\"{0}\" updated={1} missing={2}",
+                plan.Name,
+                result.UpdatedResources.Count,
+                result.MissingResources.Count);
+
+            return result;
         }
 
         /// <summary>
@@ -1124,6 +1180,54 @@ namespace OE2EmpireTracker.Services
             }
 
             return string.Empty;
+        }
+
+        /// <summary>
+        /// Finds stored price stats matching the given resource name and purity.
+        /// Searches by BaseItemTypeID (resource name) and ResourcePurity, preferring
+        /// more recent data.
+        /// </summary>
+        private StoredPriceStats FindMatchingPriceStats(
+            List<StoredPriceStats> allStats,
+            string resourceName,
+            string purity)
+        {
+            StoredPriceStats best = null;
+
+            foreach (StoredPriceStats stats in allStats)
+            {
+                if (!string.Equals(stats.BaseItemTypeID, resourceName, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                if (!string.Equals(stats.ResourcePurity, purity, StringComparison.OrdinalIgnoreCase)
+                    && !string.IsNullOrEmpty(purity)
+                    && !string.IsNullOrEmpty(stats.ResourcePurity))
+                {
+                    continue;
+                }
+
+                if (!stats.AvgPrice.HasValue)
+                {
+                    continue;
+                }
+
+                if (best == null)
+                {
+                    best = stats;
+                }
+                else
+                {
+                    // Prefer more recent data
+                    if (string.Compare(stats.FetchedTimestamp, best.FetchedTimestamp, StringComparison.Ordinal) > 0)
+                    {
+                        best = stats;
+                    }
+                }
+            }
+
+            return best;
         }
 
         /// <summary>

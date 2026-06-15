@@ -55,6 +55,7 @@ const ALLOWED_WRITE_CONTEXT = new Set([
     'FormColonyV2.cs',
     'FormShipTemplate.cs',
     'FormStockTargets.cs',
+    'FormMarket.cs',
     'BlueprintViewModel.cs',
 ]);
 // --- Check 2 & 3: Entity mutation patterns ---
