@@ -97,6 +97,83 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Removes stale orders from the merged dataset. An order is stale if:
+        /// - It has a non-null MarketId (synced, not manual)
+        /// - Its SystemId is in metadata.SystemsInRange (confirmably within range)
+        /// - Its MarketId is NOT in the freshMarketIds set (absent from latest results)
+        ///
+        /// Orders with null SystemId are ambiguous and always preserved.
+        /// Orders with null MarketId are manual entries and always preserved.
+        /// Orders outside the character's range are always preserved.
+        /// </summary>
+        /// <param name="freshMarketIds">Set of MarketIds present in the latest API results.</param>
+        /// <param name="characterUUID">The syncing character's UUID.</param>
+        /// <param name="metadata">Sync metadata containing SystemsInRange for stale detection.</param>
+        public void RemoveStaleOrders(HashSet<long> freshMarketIds, string characterUUID, CharacterSyncMetadata metadata)
+        {
+            if (freshMarketIds == null)
+            {
+                throw new ArgumentNullException(nameof(freshMarketIds));
+            }
+
+            if (string.IsNullOrEmpty(characterUUID))
+            {
+                throw new ArgumentNullException(nameof(characterUUID));
+            }
+
+            if (metadata == null)
+            {
+                throw new ArgumentNullException(nameof(metadata));
+            }
+
+            List<MarketListing> allListings = _playerContext.SnapshotMarketListingList();
+            var staleListings = new List<MarketListing>();
+
+            foreach (MarketListing listing in allListings)
+            {
+                // Manual entries (no MarketId) are never removed
+                if (!listing.MarketId.HasValue)
+                {
+                    continue;
+                }
+
+                // Ambiguous orders (no SystemId) are always preserved
+                if (!listing.SystemId.HasValue)
+                {
+                    continue;
+                }
+
+                // Orders outside the character's range are always preserved
+                if (!metadata.SystemsInRange.Contains(listing.SystemId.Value))
+                {
+                    continue;
+                }
+
+                // Order is within range but absent from fresh results — mark as stale
+                if (!freshMarketIds.Contains(listing.MarketId.Value))
+                {
+                    staleListings.Add(listing);
+                }
+            }
+
+            foreach (MarketListing stale in staleListings)
+            {
+                _playerContext.RemoveMarketListing(stale);
+            }
+
+            if (staleListings.Count > 0)
+            {
+                _playerContext.InvalidateMarketListingByMarketIdCache();
+            }
+
+            Log.Info(
+                "RemoveStaleOrders: character={0} freshIds={1} removed={2}",
+                characterUUID,
+                freshMarketIds.Count,
+                staleListings.Count);
+        }
+
+        /// <summary>
         /// Maps an API DTO entry to a new MarketListing domain object.
         /// </summary>
         private static MarketListing MapToNewListing(
