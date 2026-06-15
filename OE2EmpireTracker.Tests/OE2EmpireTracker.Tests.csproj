@@ -600,6 +600,10 @@
     <Compile Include="Services\TokenBucketRateLimiterTests.cs" />
     <Compile Include="Services\OverflowRuleExpansionPropertyTests.cs" />
     <Compile Include="Services\OverflowRuleExpansionTests.cs" />
+    <Compile Include="Services\MarketDataServicePropertyTests.cs" />
+    <Compile Include="Services\StockTargetMarketScopePropertyTests.cs" />
+    <Compile Include="Services\SystemGridIndexTests.cs" />
+    <Compile Include="Services\MarketAlertEvaluationTests.cs" />
     <Compile Include="TestHelper.cs" />
     <Compile Include="GlobalSetup.cs" />
     <None Include="app.config" />
