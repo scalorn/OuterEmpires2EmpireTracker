@@ -1029,8 +1029,17 @@ namespace OE2EmpireTracker.Services
                 {
                     try
                     {
-                        var orders = await _typedClient.GetMarketBuyOrdersAsync(ct).ConfigureAwait(false);
+                        var buyOrders = await _typedClient.GetMarketBuyOrdersAsync(ct).ConfigureAwait(false);
                         Log.Debug("MarketBuyOrders fetched successfully.");
+
+                        try
+                        {
+                            _marketDataService.ProcessOwnBuyOrders(buyOrders, _playerContext.CurrentPlayerUUID);
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error(ex, "Failed to process own buy orders for character {0}", _playerContext.CurrentPlayerUUID);
+                        }
                     }
                     catch (ApiHttpException ex) when (ex.StatusCode == 401)
                     {
@@ -1063,8 +1072,17 @@ namespace OE2EmpireTracker.Services
                 {
                     try
                     {
-                        var orders = await _typedClient.GetMarketSellOrdersAsync(ct).ConfigureAwait(false);
+                        var sellOrders = await _typedClient.GetMarketSellOrdersAsync(ct).ConfigureAwait(false);
                         Log.Debug("MarketSellOrders fetched successfully.");
+
+                        try
+                        {
+                            _marketDataService.ProcessOwnSellOrders(sellOrders, _playerContext.CurrentPlayerUUID);
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error(ex, "Failed to process own sell orders for character {0}", _playerContext.CurrentPlayerUUID);
+                        }
                     }
                     catch (ApiHttpException ex) when (ex.StatusCode == 401)
                     {
