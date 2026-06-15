@@ -58,8 +58,8 @@ This implementation plan covers the market integration feature — syncing marke
 
 ### Phase 2: Infrastructure
 
-- [-] 3.1 Add MarketSyncData storage to PlayerContext — Add MarketSyncData field to PlayerRoot. In PlayerContext: add _marketSyncData field, expose MarketSyncData property, initialize in InitMarketSyncData(playerRoot), include in WriteContext() serialization. Add FindMarketListingByMarketId(long) method with dictionary cache. Satisfies: Req 1 Criterion 2-3, Req 12 Criterion 1. Output: `OE2EmpireTracker.Common/Services/PlayerContext.cs`, `OE2EmpireTracker.Common/Models/PlayerRoot.cs`. Verification: getDiagnostics; existing tests pass.
-- [~] 4.1 Create SystemGridIndex for range queries — Constructor accepts SystemRepository, builds grid with 50 JAS cell size. ComputeSystemsInRange(int systemId, int rangeJas) returns HashSet<int> using bounding-box cell overlap then exact distance. IsInRange convenience method. Satisfies: Req 14 Criterion 1, 4. Output: `OE2EmpireTracker.Common/Services/SystemGridIndex.cs`. Verification: getDiagnostics.
+- [x] 3.1 Add MarketSyncData storage to PlayerContext — Add MarketSyncData field to PlayerRoot. In PlayerContext: add _marketSyncData field, expose MarketSyncData property, initialize in InitMarketSyncData(playerRoot), include in WriteContext() serialization. Add FindMarketListingByMarketId(long) method with dictionary cache. Satisfies: Req 1 Criterion 2-3, Req 12 Criterion 1. Output: `OE2EmpireTracker.Common/Services/PlayerContext.cs`, `OE2EmpireTracker.Common/Models/PlayerRoot.cs`. Verification: getDiagnostics; existing tests pass.
+- [-] 4.1 Create SystemGridIndex for range queries — Constructor accepts SystemRepository, builds grid with 50 JAS cell size. ComputeSystemsInRange(int systemId, int rangeJas) returns HashSet<int> using bounding-box cell overlap then exact distance. IsInRange convenience method. Satisfies: Req 14 Criterion 1, 4. Output: `OE2EmpireTracker.Common/Services/SystemGridIndex.cs`. Verification: getDiagnostics.
 
 ### Phase 3: Core Service
 
