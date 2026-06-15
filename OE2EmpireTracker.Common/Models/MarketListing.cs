@@ -55,6 +55,10 @@ namespace OE2EmpireTracker.Models
         public string BuyerName { get; set; } = string.Empty;
         public string BuyerFactionTag { get; set; } = string.Empty;
 
+        // Outbid / undercut flags (own orders)
+        public bool IsOutbid { get; set; }
+        public bool IsUndercut { get; set; }
+
         // Timing
         public string PlacedDT { get; set; } = string.Empty;
         public string ExpiresDT { get; set; } = string.Empty;
