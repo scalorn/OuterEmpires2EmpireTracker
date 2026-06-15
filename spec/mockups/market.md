@@ -90,6 +90,139 @@ Controls:
 - Summary tab: `cmbPricingPlan` (FilteredComboBox), date range, `cmbSumStation`, `cmdCompute`, `dgvSummary` (read-only DataGridView)
 - "Record Sale" opens a dialog to enter sale details (quantity, counterparty, notes) and auto-creates the transaction + decrements listing
 
+### FormMarket — Saved Searches Tab
+
+```
+│ ┌─ Listings ─┬─ Transactions ─┬─ Summary ─┬─ Saved Searches ─┬─ ...    │
+│ │                                                                      │
+│ │ Character:[All chars ▼] Name:[________] Type:[All  ▼]              │
+│ │ Item:[All items ▼] Purity:[All ▼] Order Type:[All ▼] [✓]RunOnSync │
+│ │                                                                      │
+│ │ ┌──────────────┬──────────┬─────────┐                                │
+│ │ │ Name         │ Type     │ Enabled │                                │
+│ │ ├──────────────┼──────────┼─────────┤  dgvSavedSearches              │
+│ │ │ All Ores     │ Resource │   ✓     │                                │
+│ │ │ Steel Buy    │ Commodity│   ✓     │                                │
+│ │ └──────────────┴──────────┴─────────┘                                │
+│ │                                                                      │
+│ │ ┌──────────────┬────────┬─────┬──────────┬──────────┐               │
+│ │ │ Item         │ Price  │ Qty │ Seller   │ Station  │               │
+│ │ ├──────────────┼────────┼─────┼──────────┼──────────┤ dgvTestResults│
+│ │ │ Iron (High)  │  12.50 │ 500 │ Bob      │ Stn A   │               │
+│ │ └──────────────┴────────┴─────┴──────────┴──────────┘               │
+│ │                                                                      │
+│ │ [Test Search] [Save] [Delete]                                        │
+│ └──────────────────────────────────────────────────────────────────────┘
+```
+
+Controls:
+- `cmbSearchCharacter` — character selector dropdown
+- `dgvSavedSearches` — list of saved searches (Name, Type, Enabled columns)
+- `txtSearchName` — search name input
+- `cmbSearchType` — item type filter
+- `cmbSearchItem` — specific item filter
+- `cmbSearchPurity` — purity filter
+- `cmbSearchOrderType` — buy/sell/all filter
+- `chkRunOnSync` — run on sync checkbox
+- `cmdTestSearch` — test search button
+- `cmdSaveSearch` — save search button
+- `cmdDeleteSearch` — delete search button
+- `dgvTestResults` — test results grid
+
+### FormMarket — My Orders Tab
+
+```
+│ ┌─ ... ─┬─ My Orders ─┬─ ...                                          │
+│ │                                                                      │
+│ │ Character:[All ▼] Type:[All ▼] Search:[________] Location:[All ▼]  │
+│ │                                                                      │
+│ │ Sell Orders                                                          │
+│ │ ┌──────────────┬──────┬────────┬──────────┬────────┐                │
+│ │ │ Item         │ Qty  │ Price  │ Station  │ Status │                │
+│ │ ├──────────────┼──────┼────────┼──────────┼────────┤ dgvSellOrders │
+│ │ │ Steel        │  500 │  45.00 │ Stn A    │ Active │                │
+│ │ └──────────────┴──────┴────────┴──────────┴────────┘                │
+│ │                                                                      │
+│ │ Buy Orders                                                           │
+│ │ ┌──────────────┬──────┬────────┬──────────┬────────┐                │
+│ │ │ Item         │ Qty  │ Price  │ Station  │ Status │                │
+│ │ ├──────────────┼──────┼────────┼──────────┼────────┤ dgvBuyOrders  │
+│ │ │ Titanium     │ 1000 │  10.00 │ Stn B    │ Active │                │
+│ │ └──────────────┴──────┴────────┴──────────┴────────┘                │
+│ └──────────────────────────────────────────────────────────────────────┘
+```
+
+Controls:
+- `cmbOrderCharacter` — character selector
+- `cmbOrderType` — item type filter
+- `txtOrderSearch` — text search filter
+- `cmbOrderLocation` — location filter
+- `dgvSellOrders` — sell orders grid (Item, Qty, Price, Station, Status)
+- `dgvBuyOrders` — buy orders grid (Item, Qty, Price, Station, Status)
+
+### FormMarket — Prices Tab
+
+```
+│ ┌─ ... ─┬─ Prices ─┬─ ...                                             │
+│ │                                                                      │
+│ │ Type:[All ▼] Item:[All ▼] Purity:[All ▼] Days:[30] [✓]BuyOrders  │
+│ │ [Fetch]                                                              │
+│ │                                                                      │
+│ │ ┌──────────────┬────────┬────────┬────────┬─────────┬─────────┐    │
+│ │ │ Item         │ Low    │ Avg    │ High   │ Samples │ Fetched │    │
+│ │ ├──────────────┼────────┼────────┼────────┼─────────┼─────────┤    │
+│ │ │ Iron (High)  │  10.00 │  12.50 │  15.00 │      42 │ 2025-01 │    │
+│ │ └──────────────┴────────┴────────┴────────┴─────────┴─────────┘    │
+│ │                                                       dgvPriceStats │
+│ │ Plan:[Standard Pricing ▼] [Auto-Populate]                          │
+│ └──────────────────────────────────────────────────────────────────────┘
+```
+
+Controls:
+- `cmbPriceType` — item type filter
+- `cmbPriceItem` — specific item filter
+- `cmbPricePurity` — purity filter
+- `numDaysBack` — days back numeric input
+- `chkBuyOrderPrices` — include buy orders checkbox
+- `cmdFetchPrices` — fetch prices button
+- `dgvPriceStats` — price stats grid (Item, Low, Avg, High, Samples, Fetched)
+- `cmdAutoPopulate` — auto-populate pricing plan button
+- `cmbAutoPopPlan` — pricing plan selector
+
+### FormMarket — Alerts Tab
+
+```
+│ ┌─ ... ─┬─ Alerts ─┬─ ...                                             │
+│ │                                                                      │
+│ │ Name:[________] Alert Type:[Sell Appears ▼] Item Type:[All ▼]      │
+│ │ Item:[All ▼] Purity:[All ▼] Condition:[Any ▼] Threshold:[______]  │
+│ │ Location:[All ▼] [✓]Enabled                                        │
+│ │                                                                      │
+│ │ ┌──────────┬──────────┬──────────┬───────────┬─────────┬──────────┐│
+│ │ │ Name     │ Type     │ Item     │ Condition │ Enabled │ LastTrig ││
+│ │ ├──────────┼──────────┼──────────┼───────────┼─────────┼──────────┤│
+│ │ │ Cheap Ore│ Sell App │ Iron     │ ≤ 10.00   │   ✓     │ Jan 15   ││
+│ │ └──────────┴──────────┴──────────┴───────────┴─────────┴──────────┘│
+│ │                                                        dgvAlerts    │
+│ │ [Add] [Edit] [Delete]                                               │
+│ └──────────────────────────────────────────────────────────────────────┘
+```
+
+Controls:
+- `dgvAlerts` — alerts grid (Name, Type, Item, Condition, Enabled, LastTriggered)
+- `txtAlertName` — alert name input
+- `cmbAlertType` — alert type selector (SellOrderAppears/BuyOrderAppears)
+- `cmbAlertItemType` — item type filter
+- `cmbAlertItem` — specific item filter
+- `cmbAlertPurity` — purity filter
+- `cmbPriceCondition` — price condition selector
+- `txtPriceThreshold` — price threshold input
+- `cmbAlertLocation` — location filter
+- `cmdAddAlert` — add alert button
+- `cmdEditAlert` — edit alert button
+- `cmdDeleteAlert` — delete alert button
+- `chkAlertEnabled` — enabled checkbox
+
 ### FormListingEdit
 
 `FormListingEdit` is a modal dialog for editing an existing market listing's quantity, price, and station assignment.

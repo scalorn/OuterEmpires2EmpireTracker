@@ -6,11 +6,9 @@ using System;
 using System.Linq;
 using FsCheck;
 using NUnit.Framework;
-using OE2EmpireTracker.Common.Client.Generated;
 using OE2EmpireTracker.Client;
 using OE2EmpireTracker.Common.Client.Generated;
 using OE2EmpireTracker.Models;
-using OE2EmpireTracker.Common.Client.Generated;
 using OE2EmpireTracker.Services;
 using Survey = OE2EmpireTracker.Models.Survey;
 

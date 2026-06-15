@@ -88,8 +88,29 @@ const SECTION_MAP = {
     ],
     'market.md': [
         {
-            header: /^###\s+FormMarket\b/,
+            header: /^###\s+FormMarket\s*\(Iteration/,
             form: 'Market/FormMarket',
+            partial: true,
+        },
+        {
+            header: /^###\s+FormMarket\s+.*Saved Searches/,
+            form: 'Market/FormMarket',
+            partial: true,
+        },
+        {
+            header: /^###\s+FormMarket\s+.*My Orders/,
+            form: 'Market/FormMarket',
+            partial: true,
+        },
+        {
+            header: /^###\s+FormMarket\s+.*Prices/,
+            form: 'Market/FormMarket',
+            partial: true,
+        },
+        {
+            header: /^###\s+FormMarket\s+.*Alerts/,
+            form: 'Market/FormMarket',
+            partial: true,
         },
     ],
     'stock-targets.md': [

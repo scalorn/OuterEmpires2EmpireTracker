@@ -2480,7 +2480,6 @@ namespace OE2EmpireTracker.Tests.Services
         }
     }
 
-
     /// <summary>
     /// Extension methods for typed API DTOs to provide backward-compatible .Success and .Json properties
     /// for the [Explicit] discovery test. These simulate the old response wrapper behavior.
