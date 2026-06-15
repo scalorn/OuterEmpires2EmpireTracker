@@ -41,6 +41,11 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Occurs when a market alert is triggered by matching orders.
+        /// </summary>
+        public event EventHandler<MarketAlertTriggeredEventArgs> MarketAlertTriggered;
+
+        /// <summary>
         /// Maps DTO entries to MarketListing domain objects, upserts by MarketId,
         /// and deduplicates. Does NOT handle stale removal (separate task).
         /// </summary>
@@ -601,6 +606,170 @@ namespace OE2EmpireTracker.Services
             }
 
             return ownOrders;
+        }
+
+        /// <summary>
+        /// Evaluates all enabled market alerts against freshly-synced orders.
+        /// For each enabled alert, filters fresh orders by alert type, item composite key,
+        /// station, and price condition. Excludes orders already seen (matching
+        /// LastTriggeredMarketId). Fires <see cref="MarketAlertTriggered"/> for each
+        /// alert with matching orders and updates tracking fields.
+        /// </summary>
+        /// <param name="freshOrders">The newly-synced or updated orders to evaluate.</param>
+        public void EvaluateAlerts(IReadOnlyList<MarketListing> freshOrders)
+        {
+            if (freshOrders == null)
+            {
+                throw new ArgumentNullException(nameof(freshOrders));
+            }
+
+            if (freshOrders.Count == 0)
+            {
+                return;
+            }
+
+            List<MarketAlert> alerts = _playerContext.MarketSyncData.Alerts;
+            if (alerts == null || alerts.Count == 0)
+            {
+                return;
+            }
+
+            foreach (MarketAlert alert in alerts)
+            {
+                if (!alert.Enabled)
+                {
+                    continue;
+                }
+
+                List<MarketListing> matches = FindMatchingOrders(alert, freshOrders);
+                if (matches.Count == 0)
+                {
+                    continue;
+                }
+
+                // Update tracking fields
+                MarketListing lastMatch = matches[matches.Count - 1];
+                alert.LastTriggeredTimestamp = SystemClock.UtcNow.ToString("o");
+                if (lastMatch.MarketId.HasValue)
+                {
+                    alert.LastTriggeredMarketId = lastMatch.MarketId.Value;
+                }
+
+                // Fire the event
+                OnMarketAlertTriggered(new MarketAlertTriggeredEventArgs(alert, matches));
+
+                Log.Info(
+                    "EvaluateAlerts: alert \"{0}\" triggered with {1} matching order(s)",
+                    alert.Name,
+                    matches.Count);
+            }
+        }
+
+        /// <summary>
+        /// Raises the <see cref="MarketAlertTriggered"/> event.
+        /// </summary>
+        /// <param name="e">The event arguments.</param>
+        protected virtual void OnMarketAlertTriggered(MarketAlertTriggeredEventArgs e)
+        {
+            MarketAlertTriggered?.Invoke(this, e);
+        }
+
+        /// <summary>
+        /// Finds orders from the fresh list that match the given alert's criteria.
+        /// Filters by alert type (buy/sell), item composite key, optional station,
+        /// price condition, and excludes already-triggered market IDs.
+        /// </summary>
+        private static List<MarketListing> FindMatchingOrders(
+            MarketAlert alert,
+            IReadOnlyList<MarketListing> freshOrders)
+        {
+            var matches = new List<MarketListing>();
+
+            // Determine expected BuyOrder value based on AlertType
+            bool expectedBuyOrder = alert.AlertType == MarketAlertType.BuyOrderAppears;
+
+            foreach (MarketListing order in freshOrders)
+            {
+                // Filter by AlertType: SellOrderAppears → BuyOrder=false, BuyOrderAppears → BuyOrder=true
+                if (order.BuyOrder != expectedBuyOrder)
+                {
+                    continue;
+                }
+
+                // Filter by item composite key (ItemType + BaseItemTypeID + ResourcePurity)
+                if (order.ItemType != alert.ItemType)
+                {
+                    continue;
+                }
+
+                if (!string.Equals(order.BaseItemTypeID, alert.BaseItemTypeID, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                if (!string.Equals(order.ResourcePurity, alert.ResourcePurity, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                // Filter by StationUUID (optional — only if alert specifies one)
+                if (!string.IsNullOrEmpty(alert.StationUUID))
+                {
+                    if (!string.Equals(order.StationUUID, alert.StationUUID, StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+                }
+
+                // Evaluate price condition
+                if (!EvaluatePriceCondition(alert, order))
+                {
+                    continue;
+                }
+
+                // Exclude orders already seen (MarketId == LastTriggeredMarketId)
+                if (alert.LastTriggeredMarketId.HasValue
+                    && order.MarketId.HasValue
+                    && order.MarketId.Value == alert.LastTriggeredMarketId.Value)
+                {
+                    continue;
+                }
+
+                matches.Add(order);
+            }
+
+            return matches;
+        }
+
+        /// <summary>
+        /// Evaluates whether an order meets the alert's price condition.
+        /// </summary>
+        private static bool EvaluatePriceCondition(MarketAlert alert, MarketListing order)
+        {
+            switch (alert.PriceCondition)
+            {
+                case PriceCondition.AnyPrice:
+                    return true;
+
+                case PriceCondition.AtOrBelow:
+                    if (!alert.PriceThreshold.HasValue)
+                    {
+                        return true;
+                    }
+
+                    return order.PricePerUnit <= alert.PriceThreshold.Value;
+
+                case PriceCondition.AtOrAbove:
+                    if (!alert.PriceThreshold.HasValue)
+                    {
+                        return true;
+                    }
+
+                    return order.PricePerUnit >= alert.PriceThreshold.Value;
+
+                default:
+                    return true;
+            }
         }
 
         /// <summary>
