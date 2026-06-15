@@ -53,6 +53,7 @@ namespace OE2EmpireTracker.Models
         /// <summary>
         /// Returns the total quantity of all items in the bag that match
         /// the given ItemType and BaseItemTypeID. Sums across multiple stacks.
+        /// Recursively includes items inside crate Contents bags.
         /// </summary>
         public int CountByType(Models.ItemType.ItemTypeEnum itemType, string baseItemTypeID)
         {
@@ -60,7 +61,18 @@ namespace OE2EmpireTracker.Models
             {
                 EnsureTypeIndex();
                 var key = (itemType, baseItemTypeID ?? string.Empty);
-                return _typeIndex.TryGetValue(key, out var list) ? list.Sum(i => i.Quantity) : 0;
+                int total = _typeIndex.TryGetValue(key, out var list) ? list.Sum(i => i.Quantity) : 0;
+
+                // Recurse into crate contents
+                foreach (var kvp in Items)
+                {
+                    if (kvp.Value.Contents != null)
+                    {
+                        total += kvp.Value.Contents.CountByType(itemType, baseItemTypeID);
+                    }
+                }
+
+                return total;
             }
         }
 
