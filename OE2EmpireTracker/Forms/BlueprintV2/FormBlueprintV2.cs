@@ -950,6 +950,11 @@ namespace OE2EmpireTracker
                 {
                     var result = CrateImporter.ImportFromFile(ofd.FileName, playerContext, empireContext);
 
+                    if (result.Created > 0 || result.Updated > 0)
+                    {
+                        BlueprintService.PersistCrateImport(playerContext, empireContext);
+                    }
+
                     if (result.Errors.Count > 0 && result.Created == 0 && result.Updated == 0)
                     {
                         MessageBox.Show(

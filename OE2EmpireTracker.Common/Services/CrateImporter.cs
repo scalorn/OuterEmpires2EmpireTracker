@@ -125,11 +125,9 @@ namespace OE2EmpireTracker.Services
                 }
             }
 
-            // Persist once at the end (not per-entry)
+            // Notify listeners that blueprint data changed (persistence is caller's responsibility)
             if (result.Created > 0 || result.Updated > 0)
             {
-                playerContext.WriteContext();
-                empireContext.WriteContext();
                 playerContext.OnBlueprintDataChanged(null);
             }
 

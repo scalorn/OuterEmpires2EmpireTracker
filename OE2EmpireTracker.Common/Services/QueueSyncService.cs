@@ -2677,6 +2677,10 @@ namespace OE2EmpireTracker.Services
                                     blueprint.UUID);
                             }
                         }
+
+                        // Persist after import + API ID assignment so data survives mid-sync exit
+                        _playerContext.WriteContext();
+                        _empireContext.WriteContext();
                     }
                     catch (ApiHttpException ex) when (ex.StatusCode == 401)
                     {

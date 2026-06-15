@@ -693,6 +693,19 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Persists both player and empire context after a crate import.
+        /// Called by the form after <see cref="CrateImporter.ImportFromFile"/> returns
+        /// a result with created or updated blueprints.
+        /// </summary>
+        /// <param name="playerContext">The player context to persist.</param>
+        /// <param name="empireContext">The empire context to persist (for global blueprints).</param>
+        internal static void PersistCrateImport(PlayerContext playerContext, EmpireContext empireContext)
+        {
+            playerContext.WriteContext();
+            empireContext.WriteContext();
+        }
+
+        /// <summary>
         /// Merges resources and non-protected properties from incoming into target,
         /// preserving all existing scalar fields and protected properties.
         /// </summary>
