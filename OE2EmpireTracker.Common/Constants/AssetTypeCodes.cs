@@ -55,6 +55,17 @@ namespace OE2EmpireTracker.Constants
         /// <summary>Ship Hull ("SH") — observed in real API data. Case-sensitive: both uppercase.</summary>
         public const string ShipHull = "SH";
 
+        // --- Market Listing TypeC Codes (market API uses different codes than cargo API) ---
+
+        /// <summary>Blueprint on market ("BP") — market listings endpoint uses uppercase BP.</summary>
+        public const string MarketBlueprint = "BP";
+
+        /// <summary>Ship Hull on market ("H") — market listings endpoint uses "H" for hulls.</summary>
+        public const string MarketHull = "H";
+
+        /// <summary>Ship Part on market ("P") — market listings endpoint uses "P" for parts.</summary>
+        public const string MarketPart = "P";
+
         // --- Location TypeC Codes ---
 
         /// <summary>Colony location ("Co") — location type from asset API.</summary>
