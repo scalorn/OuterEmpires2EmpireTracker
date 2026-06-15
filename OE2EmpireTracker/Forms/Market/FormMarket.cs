@@ -149,10 +149,10 @@ namespace OE2EmpireTracker.Forms.Market
                     stationName,
                     listing.ItemName,
                     listing.ItemType.ToString(),
-                    listing.Quantity.ToString(),
-                    listing.PricePerUnit.ToString("N2"),
+                    listing.Quantity,
+                    listing.PricePerUnit,
                     condition,
-                    refs.ToString());
+                    refs);
                 dgvListings.Rows[rowIdx].Tag = listing;
             }
 
@@ -701,8 +701,8 @@ namespace OE2EmpireTracker.Forms.Market
                     if (order.IsOutbid) status = "OUTBID";
                     int rowIdx = dgvBuyOrders.Rows.Add(
                         order.ItemName,
-                        (order.AmountRemaining ?? order.Quantity).ToString(),
-                        order.PricePerUnit.ToString("N2"),
+                        order.AmountRemaining ?? order.Quantity,
+                        order.PricePerUnit,
                         order.LocationName,
                         status);
                     dgvBuyOrders.Rows[rowIdx].Tag = order;
@@ -714,8 +714,8 @@ namespace OE2EmpireTracker.Forms.Market
                     if (order.IsUndercut) status = "UNDERCUT";
                     int rowIdx = dgvSellOrders.Rows.Add(
                         order.ItemName,
-                        (order.AmountRemaining ?? order.Quantity).ToString(),
-                        order.PricePerUnit.ToString("N2"),
+                        order.AmountRemaining ?? order.Quantity,
+                        order.PricePerUnit,
                         order.LocationName,
                         status);
                     dgvSellOrders.Rows[rowIdx].Tag = order;

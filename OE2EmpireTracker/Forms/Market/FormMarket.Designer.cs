@@ -133,6 +133,7 @@ namespace OE2EmpireTracker.Forms.Market
             this.lblSearchOrderType = new System.Windows.Forms.Label();
 
             // My Orders tab controls (10.3)
+            this.splitMyOrders = new System.Windows.Forms.SplitContainer();
             this.cmbOrderCharacter = new System.Windows.Forms.ComboBox();
             this.cmbOrderType = new System.Windows.Forms.ComboBox();
             this.txtOrderSearch = new System.Windows.Forms.TextBox();
@@ -222,6 +223,8 @@ namespace OE2EmpireTracker.Forms.Market
             this.tabSummary.SuspendLayout();
             this.tabSavedSearches.SuspendLayout();
             this.tabMyOrders.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitMyOrders)).BeginInit();
+            this.splitMyOrders.SuspendLayout();
             this.tabPrices.SuspendLayout();
             this.tabAlerts.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvListings)).BeginInit();
@@ -291,10 +294,13 @@ namespace OE2EmpireTracker.Forms.Market
             this.colListQty.Name = "colListQty";
             this.colListQty.ReadOnly = true;
             this.colListQty.Width = 70;
+            this.colListQty.ValueType = typeof(int);
             this.colListPrice.HeaderText = "Price/Unit";
             this.colListPrice.Name = "colListPrice";
             this.colListPrice.ReadOnly = true;
             this.colListPrice.Width = 90;
+            this.colListPrice.ValueType = typeof(decimal);
+            this.colListPrice.DefaultCellStyle.Format = "N2";
             this.colListCondition.HeaderText = "Condition";
             this.colListCondition.Name = "colListCondition";
             this.colListCondition.ReadOnly = true;
@@ -303,6 +309,7 @@ namespace OE2EmpireTracker.Forms.Market
             this.colListRefs.Name = "colListRefs";
             this.colListRefs.ReadOnly = true;
             this.colListRefs.Width = 50;
+            this.colListRefs.ValueType = typeof(int);
 
             // flpListingCommands
             this.flpListingCommands.AutoSize = true;
@@ -789,10 +796,7 @@ namespace OE2EmpireTracker.Forms.Market
             this.colTestStation.Width = 120;
 
             // tabMyOrders
-            this.tabMyOrders.Controls.Add(this.dgvBuyOrders);
-            this.tabMyOrders.Controls.Add(this.lblBuyOrders);
-            this.tabMyOrders.Controls.Add(this.dgvSellOrders);
-            this.tabMyOrders.Controls.Add(this.lblSellOrders);
+            this.tabMyOrders.Controls.Add(this.splitMyOrders);
             this.tabMyOrders.Controls.Add(this.flpOrderFilters);
             this.tabMyOrders.Location = new System.Drawing.Point(4, 22);
             this.tabMyOrders.Name = "tabMyOrders";
@@ -801,6 +805,16 @@ namespace OE2EmpireTracker.Forms.Market
             this.tabMyOrders.TabIndex = 4;
             this.tabMyOrders.Text = "My Orders";
             this.tabMyOrders.UseVisualStyleBackColor = true;
+
+            // splitMyOrders
+            this.splitMyOrders.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitMyOrders.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            this.splitMyOrders.Name = "splitMyOrders";
+            this.splitMyOrders.SplitterDistance = 260;
+            this.splitMyOrders.Panel1.Controls.Add(this.dgvSellOrders);
+            this.splitMyOrders.Panel1.Controls.Add(this.lblSellOrders);
+            this.splitMyOrders.Panel2.Controls.Add(this.dgvBuyOrders);
+            this.splitMyOrders.Panel2.Controls.Add(this.lblBuyOrders);
 
             // flpOrderFilters
             this.flpOrderFilters.AutoSize = true;
@@ -860,11 +874,10 @@ namespace OE2EmpireTracker.Forms.Market
             this.dgvSellOrders.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
                 this.colSellItem, this.colSellQty, this.colSellPrice,
                 this.colSellStation, this.colSellStatus});
-            this.dgvSellOrders.Dock = System.Windows.Forms.DockStyle.Top;
+            this.dgvSellOrders.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvSellOrders.Name = "dgvSellOrders";
             this.dgvSellOrders.ReadOnly = true;
             this.dgvSellOrders.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvSellOrders.Size = new System.Drawing.Size(936, 220);
 
             this.colSellItem.HeaderText = "Item";
             this.colSellItem.Name = "colSellItem";
@@ -874,10 +887,13 @@ namespace OE2EmpireTracker.Forms.Market
             this.colSellQty.Name = "colSellQty";
             this.colSellQty.ReadOnly = true;
             this.colSellQty.Width = 70;
+            this.colSellQty.ValueType = typeof(int);
             this.colSellPrice.HeaderText = "Price";
             this.colSellPrice.Name = "colSellPrice";
             this.colSellPrice.ReadOnly = true;
             this.colSellPrice.Width = 90;
+            this.colSellPrice.ValueType = typeof(decimal);
+            this.colSellPrice.DefaultCellStyle.Format = "N2";
             this.colSellStation.HeaderText = "Station";
             this.colSellStation.Name = "colSellStation";
             this.colSellStation.ReadOnly = true;
@@ -915,10 +931,13 @@ namespace OE2EmpireTracker.Forms.Market
             this.colBuyQty.Name = "colBuyQty";
             this.colBuyQty.ReadOnly = true;
             this.colBuyQty.Width = 70;
+            this.colBuyQty.ValueType = typeof(int);
             this.colBuyPrice.HeaderText = "Price";
             this.colBuyPrice.Name = "colBuyPrice";
             this.colBuyPrice.ReadOnly = true;
             this.colBuyPrice.Width = 90;
+            this.colBuyPrice.ValueType = typeof(decimal);
+            this.colBuyPrice.DefaultCellStyle.Format = "N2";
             this.colBuyStation.HeaderText = "Station";
             this.colBuyStation.Name = "colBuyStation";
             this.colBuyStation.ReadOnly = true;
@@ -1243,6 +1262,8 @@ namespace OE2EmpireTracker.Forms.Market
             this.tabSavedSearches.PerformLayout();
             this.tabMyOrders.ResumeLayout(false);
             this.tabMyOrders.PerformLayout();
+            this.splitMyOrders.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitMyOrders)).EndInit();
             this.tabPrices.ResumeLayout(false);
             this.tabPrices.PerformLayout();
             this.tabAlerts.ResumeLayout(false);
@@ -1379,6 +1400,7 @@ namespace OE2EmpireTracker.Forms.Market
         private System.Windows.Forms.Label lblSearchOrderType;
 
         // My Orders tab
+        private System.Windows.Forms.SplitContainer splitMyOrders;
         private System.Windows.Forms.ComboBox cmbOrderCharacter;
         private System.Windows.Forms.ComboBox cmbOrderType;
         private System.Windows.Forms.TextBox txtOrderSearch;
