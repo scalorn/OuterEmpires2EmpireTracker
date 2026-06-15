@@ -24,7 +24,8 @@ namespace OE2EmpireTracker.Services
             Func<string, ShipTemplate> templateFinder,
             Func<string, ReadOnlyBlueprint> blueprintFinder,
             IEnumerable<Colony> allColonies,
-            IEnumerable<Station> allStations)
+            IEnumerable<Station> allStations,
+            IEnumerable<MarketListing> marketListings = null)
         {
             var shortfalls = new List<StockShortfall>();
             if (plans == null) return shortfalls;
@@ -32,6 +33,7 @@ namespace OE2EmpireTracker.Services
             var activePlans = plans.Where(p => p.IsActive).ToList();
             var colonies = allColonies?.ToList() ?? new List<Colony>();
             var stations = allStations?.ToList() ?? new List<Station>();
+            var listings = marketListings?.ToList() ?? new List<MarketListing>();
 
             foreach (var plan in activePlans)
             {
@@ -47,7 +49,8 @@ namespace OE2EmpireTracker.Services
                         templateFinder,
                         blueprintFinder,
                         colonies,
-                        stations);
+                        stations,
+                        listings);
 
                     int shortfall = target.TargetQuantity - currentQty;
                     if (shortfall <= 0) continue;
@@ -134,7 +137,8 @@ namespace OE2EmpireTracker.Services
             Func<string, ShipTemplate> templateFinder,
             Func<string, ReadOnlyBlueprint> blueprintFinder,
             List<Colony> allColonies,
-            List<Station> allStations)
+            List<Station> allStations,
+            List<MarketListing> marketListings)
         {
             // For ship template targets, we count the minimum across all components
             // (the bottleneck determines how many complete ships we can build)
@@ -148,7 +152,8 @@ namespace OE2EmpireTracker.Services
                     templateFinder,
                     blueprintFinder,
                     allColonies,
-                    allStations);
+                    allStations,
+                    marketListings);
             }
 
             // For simple item targets, count directly
@@ -158,7 +163,8 @@ namespace OE2EmpireTracker.Services
                 colonyFinder,
                 stationFinder,
                 allColonies,
-                allStations);
+                allStations,
+                marketListings);
         }
 
         private static int CountItemStock(
@@ -167,7 +173,8 @@ namespace OE2EmpireTracker.Services
             Func<string, Colony> colonyFinder,
             Func<string, Station> stationFinder,
             List<Colony> allColonies,
-            List<Station> allStations)
+            List<Station> allStations,
+            List<MarketListing> marketListings)
         {
             int total = 0;
 
@@ -205,6 +212,22 @@ namespace OE2EmpireTracker.Services
                     }
 
                     break;
+
+                case StockTargetScope.Market:
+                    total = CountMarketStock(target, currentPlayerUUID, marketListings);
+                    break;
+
+                case StockTargetScope.StationPlusMarket:
+                    var stationForCombo = stationFinder(target.LocationUUID);
+                    if (stationForCombo != null)
+                    {
+                        ItemBag holdCombo;
+                        if (stationForCombo.Holds.TryGetValue(currentPlayerUUID, out holdCombo) && holdCombo != null)
+                            total = holdCombo.CountByType(target.ItemType, target.ItemReferenceID);
+                    }
+
+                    total += CountMarketStock(target, currentPlayerUUID, marketListings);
+                    break;
             }
 
             return total;
@@ -218,7 +241,8 @@ namespace OE2EmpireTracker.Services
             Func<string, ShipTemplate> templateFinder,
             Func<string, ReadOnlyBlueprint> blueprintFinder,
             List<Colony> allColonies,
-            List<Station> allStations)
+            List<Station> allStations,
+            List<MarketListing> marketListings)
         {
             var template = templateFinder(target.ShipTemplateUUID);
             if (template == null) return 0;
@@ -244,7 +268,8 @@ namespace OE2EmpireTracker.Services
                     colonyFinder,
                     stationFinder,
                     allColonies,
-                    allStations);
+                    allStations,
+                    marketListings);
                 if (hullCount < minAvailable) minAvailable = hullCount;
             }
 
@@ -266,11 +291,46 @@ namespace OE2EmpireTracker.Services
                     colonyFinder,
                     stationFinder,
                     allColonies,
-                    allStations);
+                    allStations,
+                    marketListings);
                 if (compCount < minAvailable) minAvailable = compCount;
             }
 
             return minAvailable == int.MaxValue ? 0 : minAvailable;
+        }
+
+        private static int CountMarketStock(
+            StockTarget target,
+            string currentPlayerUUID,
+            List<MarketListing> marketListings)
+        {
+            if (marketListings == null || marketListings.Count == 0)
+                return 0;
+
+            int total = 0;
+            foreach (var listing in marketListings)
+            {
+                // Filter to own sell orders (synced, not manual)
+                if (listing.OwnerUUID != currentPlayerUUID) continue;
+                if (listing.BuyOrder) continue;
+                if (!listing.MarketId.HasValue) continue;
+
+                // Match item composite key
+                if (listing.ItemType != target.ItemType) continue;
+                if (!string.Equals(listing.BaseItemTypeID, target.ItemReferenceID, StringComparison.Ordinal))
+                    continue;
+
+                // Optional station filter
+                if (!string.IsNullOrEmpty(target.LocationUUID))
+                {
+                    if (!string.Equals(listing.StationUUID, target.LocationUUID, StringComparison.Ordinal))
+                        continue;
+                }
+
+                total += listing.AmountRemaining ?? 0;
+            }
+
+            return total;
         }
 
         private static BuildItemType MapToBuildItemType(ItemType.ItemTypeEnum itemType)

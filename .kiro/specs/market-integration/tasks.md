@@ -79,10 +79,10 @@ This implementation plan covers the market integration feature — syncing marke
 
 ### Phase 5: Alerts and Stock Targets
 
-- [-] 7.1 Implement market alert evaluation in MarketDataService — EvaluateAlerts(freshOrders) filters by AlertType, item key, station, price condition. Excludes already-triggered MarketIds. Fires MarketAlertTriggeredEvent. Updates tracking fields. Satisfies: Design Alert Evaluation. Output: `OE2EmpireTracker.Common/Services/MarketDataService.cs`. Verification: getDiagnostics.
-- [~] 8.1 Add Market and StationPlusMarket to StockTargetScope enum — Add two new values to existing enum. Satisfies: Req 7 Criterion 1. Output: `OE2EmpireTracker.Common/Models/StockTarget.cs`. Verification: getDiagnostics.
-- [~] 8.2 Implement Market scope counting in StockTargetService — Handle StockTargetScope.Market: filter to own sell orders (OwnerUUID match, BuyOrder=false, MarketId not null), match item composite key, optional station filter. Sum AmountRemaining. Subtract in-production items. Satisfies: Req 7 Criterion 2-3, Req 8 Criterion 1-2. Output: `OE2EmpireTracker.Common/Services/StockTargetService.cs`. Verification: getDiagnostics.
-- [~] 8.3 Implement StationPlusMarket scope counting — Compute station warehouse qty (existing Station logic) + market qty (Market logic filtered to same station). Return sum. Satisfies: Req 8 Criterion 1-2. Output: `OE2EmpireTracker.Common/Services/StockTargetService.cs`. Verification: getDiagnostics.
+- [x] 7.1 Implement market alert evaluation in MarketDataService — EvaluateAlerts(freshOrders) filters by AlertType, item key, station, price condition. Excludes already-triggered MarketIds. Fires MarketAlertTriggeredEvent. Updates tracking fields. Satisfies: Design Alert Evaluation. Output: `OE2EmpireTracker.Common/Services/MarketDataService.cs`. Verification: getDiagnostics.
+- [x] 8.1 Add Market and StationPlusMarket to StockTargetScope enum — Add two new values to existing enum. Satisfies: Req 7 Criterion 1. Output: `OE2EmpireTracker.Common/Models/StockTarget.cs`. Verification: getDiagnostics.
+- [x] 8.2 Implement Market scope counting in StockTargetService — Handle StockTargetScope.Market: filter to own sell orders (OwnerUUID match, BuyOrder=false, MarketId not null), match item composite key, optional station filter. Sum AmountRemaining. Subtract in-production items. Satisfies: Req 7 Criterion 2-3, Req 8 Criterion 1-2. Output: `OE2EmpireTracker.Common/Services/StockTargetService.cs`. Verification: getDiagnostics.
+- [x] 8.3 Implement StationPlusMarket scope counting — Compute station warehouse qty (existing Station logic) + market qty (Market logic filtered to same station). Return sum. Satisfies: Req 8 Criterion 1-2. Output: `OE2EmpireTracker.Common/Services/StockTargetService.cs`. Verification: getDiagnostics.
 
 ### Phase 6: Property Tests
 

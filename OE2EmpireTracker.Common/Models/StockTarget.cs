@@ -7,7 +7,9 @@ namespace OE2EmpireTracker.Models
     {
         EmpireWide,
         Colony,
-        Station
+        Station,
+        Market,
+        StationPlusMarket
     }
 
     public class StockTarget
