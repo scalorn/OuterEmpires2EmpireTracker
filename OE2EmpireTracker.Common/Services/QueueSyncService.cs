@@ -1018,6 +1018,7 @@ namespace OE2EmpireTracker.Services
 
         /// <summary>
         /// Creates a work item that fetches the market buy orders from the game API.
+        /// After processing, cascades a competitor fetch for any returned market IDs.
         /// </summary>
         /// <returns>A work item for market buy orders retrieval.</returns>
         private WorkItem CreateMarketBuyOrdersItem()
@@ -1040,6 +1041,13 @@ namespace OE2EmpireTracker.Services
                         {
                             Log.Error(ex, "Failed to process own buy orders for character {0}", _playerContext.CurrentPlayerUUID);
                         }
+
+                        var marketIds = buyOrders.Orders?.Select(o => o.MarketId).ToList() ?? new List<long>();
+                        if (marketIds.Count > 0)
+                        {
+                            string joinedIds = string.Join(",", marketIds);
+                            return new[] { CreateMarketBuyCompetitorsItem(joinedIds) };
+                        }
                     }
                     catch (ApiHttpException ex) when (ex.StatusCode == 401)
                     {
@@ -1061,6 +1069,7 @@ namespace OE2EmpireTracker.Services
 
         /// <summary>
         /// Creates a work item that fetches the market sell orders from the game API.
+        /// After processing, cascades a competitor fetch for any returned market IDs.
         /// </summary>
         /// <returns>A work item for market sell orders retrieval.</returns>
         private WorkItem CreateMarketSellOrdersItem()
@@ -1083,6 +1092,13 @@ namespace OE2EmpireTracker.Services
                         {
                             Log.Error(ex, "Failed to process own sell orders for character {0}", _playerContext.CurrentPlayerUUID);
                         }
+
+                        var marketIds = sellOrders.Orders?.Select(o => o.MarketId).ToList() ?? new List<long>();
+                        if (marketIds.Count > 0)
+                        {
+                            string joinedIds = string.Join(",", marketIds);
+                            return new[] { CreateMarketSellCompetitorsItem(joinedIds) };
+                        }
                     }
                     catch (ApiHttpException ex) when (ex.StatusCode == 401)
                     {
@@ -1095,6 +1111,96 @@ namespace OE2EmpireTracker.Services
                     catch (ApiBusinessException ex)
                     {
                         Log.Error("MarketSellOrders: business error RC={0}: {1}", ex.ReturnCode, ex.ReturnString);
+                    }
+
+                    return Array.Empty<WorkItem>();
+                },
+            };
+        }
+
+        /// <summary>
+        /// Creates a work item that fetches buy order competitors from the game API.
+        /// Cascaded from <see cref="CreateMarketBuyOrdersItem"/> after own buy orders are processed.
+        /// </summary>
+        /// <param name="marketIds">Comma-separated market IDs of the player's own buy orders.</param>
+        /// <returns>A work item for buy order competitor retrieval.</returns>
+        private WorkItem CreateMarketBuyCompetitorsItem(string marketIds)
+        {
+            return new WorkItem
+            {
+                Label = "MarketBuyCompetitors",
+                ExecuteAsync = async ct =>
+                {
+                    try
+                    {
+                        var dto = await _typedClient.GetMarketBuyOrderCompetitorsAsync(marketIds, ct).ConfigureAwait(false);
+                        Log.Debug("MarketBuyCompetitors fetched successfully.");
+
+                        try
+                        {
+                            _marketDataService.ProcessBuyCompetitors(dto, _playerContext.CurrentPlayerUUID);
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error(ex, "Failed to process buy competitors for character {0}", _playerContext.CurrentPlayerUUID);
+                        }
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
+                    {
+                        await HandleUnauthorizedAsync("MarketBuyCompetitors", ct).ConfigureAwait(false);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 429)
+                    {
+                        HandleRateLimited("MarketBuyCompetitors");
+                    }
+                    catch (ApiBusinessException ex)
+                    {
+                        Log.Error("MarketBuyCompetitors: business error RC={0}: {1}", ex.ReturnCode, ex.ReturnString);
+                    }
+
+                    return Array.Empty<WorkItem>();
+                },
+            };
+        }
+
+        /// <summary>
+        /// Creates a work item that fetches sell order competitors from the game API.
+        /// Cascaded from <see cref="CreateMarketSellOrdersItem"/> after own sell orders are processed.
+        /// </summary>
+        /// <param name="marketIds">Comma-separated market IDs of the player's own sell orders.</param>
+        /// <returns>A work item for sell order competitor retrieval.</returns>
+        private WorkItem CreateMarketSellCompetitorsItem(string marketIds)
+        {
+            return new WorkItem
+            {
+                Label = "MarketSellCompetitors",
+                ExecuteAsync = async ct =>
+                {
+                    try
+                    {
+                        var dto = await _typedClient.GetMarketSellOrderCompetitorsAsync(marketIds, ct).ConfigureAwait(false);
+                        Log.Debug("MarketSellCompetitors fetched successfully.");
+
+                        try
+                        {
+                            _marketDataService.ProcessSellCompetitors(dto, _playerContext.CurrentPlayerUUID);
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error(ex, "Failed to process sell competitors for character {0}", _playerContext.CurrentPlayerUUID);
+                        }
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
+                    {
+                        await HandleUnauthorizedAsync("MarketSellCompetitors", ct).ConfigureAwait(false);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 429)
+                    {
+                        HandleRateLimited("MarketSellCompetitors");
+                    }
+                    catch (ApiBusinessException ex)
+                    {
+                        Log.Error("MarketSellCompetitors: business error RC={0}: {1}", ex.ReturnCode, ex.ReturnString);
                     }
 
                     return Array.Empty<WorkItem>();
