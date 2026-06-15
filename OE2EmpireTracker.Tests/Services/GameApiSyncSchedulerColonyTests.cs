@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Client.Generated;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
 
@@ -110,15 +111,15 @@ namespace OE2EmpireTracker.Tests.Services
             var localColonies = new List<Colony>();
             _scheduler.ColoniesToReturn = localColonies;
 
-            var colonyListResponse = new GameApiServiceResponse<GameApiColonyListResponse>
+            var colonyListResponse = new GameApiServiceResponse<ColonyList>
             {
                 Success = true,
                 ReturnCode = 0,
-                Data = new GameApiColonyListResponse
+                Data = new ColonyList
                 {
-                    Colonies = new List<GameApiColonyListItem>
+                    Colonies = new List<ColonyListItem>
                     {
-                        new GameApiColonyListItem
+                        new ColonyListItem
                         {
                             ColonyId = 42,
                             ColonyName = "Test Colony",
@@ -135,7 +136,7 @@ namespace OE2EmpireTracker.Tests.Services
             string json = JsonConvert.SerializeObject(colonyListResponse);
             SetupSingleResponse(HttpStatusCode.OK, json);
 
-            await _scheduler.CallSyncColoniesAsync(PlayerUUID, AccessToken);
+            await _scheduler.CallSyncColoniesAsync(PlayerUUID);
 
             Assert.That(localColonies.Count, Is.EqualTo(1));
             Assert.That(localColonies[0].ColonyName, Is.EqualTo("Test Colony"));
@@ -157,7 +158,7 @@ namespace OE2EmpireTracker.Tests.Services
 
             SetupSingleResponse(HttpStatusCode.Unauthorized, string.Empty);
 
-            await _scheduler.CallSyncColoniesAsync(PlayerUUID, AccessToken);
+            await _scheduler.CallSyncColoniesAsync(PlayerUUID);
 
             Assert.That(
                 _monitor.CurrentState,
@@ -177,7 +178,7 @@ namespace OE2EmpireTracker.Tests.Services
 
             SetupSingleResponse(HttpStatusCode.Forbidden, string.Empty);
 
-            await _scheduler.CallSyncColoniesAsync(PlayerUUID, AccessToken);
+            await _scheduler.CallSyncColoniesAsync(PlayerUUID);
 
             Assert.That(_scheduler.WriteContextCallCount, Is.EqualTo(0));
             Assert.That(_scheduler.RaiseColonyDataChangedCallCount, Is.EqualTo(0));
@@ -209,7 +210,7 @@ namespace OE2EmpireTracker.Tests.Services
             string malformedJson = "{ this is not valid json at all!!!";
             SetupSingleResponse(HttpStatusCode.OK, malformedJson);
 
-            await _scheduler.CallSyncColoniesAsync(PlayerUUID, AccessToken);
+            await _scheduler.CallSyncColoniesAsync(PlayerUUID);
 
             // Local data should be unchanged
             Assert.That(localColonies.Count, Is.EqualTo(1));
@@ -230,15 +231,15 @@ namespace OE2EmpireTracker.Tests.Services
             var localColonies = new List<Colony>();
             _scheduler.ColoniesToReturn = localColonies;
 
-            var colonyListResponse = new GameApiServiceResponse<GameApiColonyListResponse>
+            var colonyListResponse = new GameApiServiceResponse<ColonyList>
             {
                 Success = true,
                 ReturnCode = 0,
-                Data = new GameApiColonyListResponse
+                Data = new ColonyList
                 {
-                    Colonies = new List<GameApiColonyListItem>
+                    Colonies = new List<ColonyListItem>
                     {
-                        new GameApiColonyListItem
+                        new ColonyListItem
                         {
                             ColonyId = 1,
                             ColonyName = "Colony One",
@@ -247,7 +248,7 @@ namespace OE2EmpireTracker.Tests.Services
                             SystemId = 1,
                             RemoteAccess = 1,
                         },
-                        new GameApiColonyListItem
+                        new ColonyListItem
                         {
                             ColonyId = 2,
                             ColonyName = "Colony Two",
@@ -276,7 +277,7 @@ namespace OE2EmpireTracker.Tests.Services
                 return (HttpStatusCode.Forbidden, string.Empty);
             });
 
-            await _scheduler.CallSyncColoniesAsync(PlayerUUID, AccessToken);
+            await _scheduler.CallSyncColoniesAsync(PlayerUUID);
 
             // Colonies should still be created from the list data
             Assert.That(localColonies.Count, Is.EqualTo(2));
@@ -311,15 +312,15 @@ namespace OE2EmpireTracker.Tests.Services
             var localColonies = new List<Colony> { existingColony };
             _scheduler.ColoniesToReturn = localColonies;
 
-            var colonyListResponse = new GameApiServiceResponse<GameApiColonyListResponse>
+            var colonyListResponse = new GameApiServiceResponse<ColonyList>
             {
                 Success = true,
                 ReturnCode = 0,
-                Data = new GameApiColonyListResponse
+                Data = new ColonyList
                 {
-                    Colonies = new List<GameApiColonyListItem>
+                    Colonies = new List<ColonyListItem>
                     {
-                        new GameApiColonyListItem
+                        new ColonyListItem
                         {
                             ColonyId = 42,
                             ColonyName = "Test Colony",
@@ -336,7 +337,7 @@ namespace OE2EmpireTracker.Tests.Services
             string json = JsonConvert.SerializeObject(colonyListResponse);
             SetupSingleResponse(HttpStatusCode.OK, json);
 
-            await _scheduler.CallSyncColoniesAsync(PlayerUUID, AccessToken);
+            await _scheduler.CallSyncColoniesAsync(PlayerUUID);
 
             // No changes means no persistence or notification
             Assert.That(_scheduler.WriteContextCallCount, Is.EqualTo(0));
@@ -353,15 +354,15 @@ namespace OE2EmpireTracker.Tests.Services
         {
             _scheduler.ColoniesToReturn = null;
 
-            var colonyListResponse = new GameApiServiceResponse<GameApiColonyListResponse>
+            var colonyListResponse = new GameApiServiceResponse<ColonyList>
             {
                 Success = true,
                 ReturnCode = 0,
-                Data = new GameApiColonyListResponse
+                Data = new ColonyList
                 {
-                    Colonies = new List<GameApiColonyListItem>
+                    Colonies = new List<ColonyListItem>
                     {
-                        new GameApiColonyListItem
+                        new ColonyListItem
                         {
                             ColonyId = 42,
                             ColonyName = "Test Colony",
@@ -375,7 +376,7 @@ namespace OE2EmpireTracker.Tests.Services
             string json = JsonConvert.SerializeObject(colonyListResponse);
             SetupSingleResponse(HttpStatusCode.OK, json);
 
-            await _scheduler.CallSyncColoniesAsync(PlayerUUID, AccessToken);
+            await _scheduler.CallSyncColoniesAsync(PlayerUUID);
 
             Assert.That(_scheduler.WriteContextCallCount, Is.EqualTo(0));
             Assert.That(_scheduler.RaiseColonyDataChangedCallCount, Is.EqualTo(0));
@@ -508,9 +509,9 @@ namespace OE2EmpireTracker.Tests.Services
             /// <param name="playerUUID">The player UUID.</param>
             /// <param name="accessToken">The access token.</param>
             /// <returns>A task representing the async operation.</returns>
-            public Task CallSyncColoniesAsync(string playerUUID, string accessToken)
+            public Task CallSyncColoniesAsync(string playerUUID)
             {
-                return SyncColoniesAsync(playerUUID, accessToken);
+                return SyncColoniesAsync(playerUUID);
             }
 
             /// <inheritdoc/>

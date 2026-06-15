@@ -9,6 +9,7 @@ using FsCheck;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Client.Generated;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
@@ -85,14 +86,14 @@ namespace OE2EmpireTracker.Tests.Services
         /// Generates a random GameApiAssetItemProperty.
         /// </summary>
         /// <returns>A generator for item properties.</returns>
-        private static Gen<GameApiAssetItemProperty> PropertyGen()
+        private static Gen<AssetCargoProperty> PropertyGen()
         {
             return from modTypeId in Gen.Choose(1, 50)
                    from propValue in Gen.Choose(1, 1000)
                    from origValue in Gen.Choose(1, 500)
                    from resPositive in Arb.Generate<bool>()
                    from canResearch in Arb.Generate<bool>()
-                   select new GameApiAssetItemProperty
+                   select new AssetCargoProperty
                    {
                        ModTypeId = modTypeId,
                        PropertyName = "prop_" + modTypeId,
@@ -110,7 +111,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// Includes optional properties for Blueprint items.
         /// </summary>
         /// <returns>A generator for cargo items.</returns>
-        private static Gen<GameApiAssetCargoItem> CargoItemGen()
+        private static Gen<AssetCargoItem> CargoItemGen()
         {
             return from id in Gen.Choose(1, 999999)
                    from typeCIdx in Gen.Choose(0, NonCrateTypeCCodes.Length - 1)
@@ -124,9 +125,9 @@ namespace OE2EmpireTracker.Tests.Services
                    let name = typeC == AssetTypeCodes.Resource
                        ? "Resource_" + id + " (High Purity)"
                        : "Item_" + id
-                   select new GameApiAssetCargoItem
+                   select new AssetCargoItem
                    {
-                       CargoItemId = id,
+                       Id = id,
                        TypeC = typeC,
                        ResourceName = name,
                        Amount = amount,
@@ -142,11 +143,11 @@ namespace OE2EmpireTracker.Tests.Services
         /// Generates a GameApiAssetDetailResponse with 0-50 random cargo items.
         /// </summary>
         /// <returns>A generator for crate API responses.</returns>
-        private static Gen<GameApiAssetDetailResponse> CrateResponseGen()
+        private static Gen<AssetCrateContents> CrateResponseGen()
         {
             return from count in Gen.Choose(0, 50)
                    from items in Gen.ListOf(count, CargoItemGen())
-                   select new GameApiAssetDetailResponse
+                   select new AssetCrateContents
                    {
                        Cargo = items.ToList(),
                    };
@@ -185,7 +186,7 @@ namespace OE2EmpireTracker.Tests.Services
                     var visited = new HashSet<int>();
                     int crateId = 99999;
 
-                    var result = importer.Import(json, crateId, parentBag, "owner", visited);
+                    var result = importer.Import(response, crateId, parentBag, "owner", visited);
 
                     // Get the crate item's Contents
                     Item crateItem = null;
@@ -302,7 +303,7 @@ namespace OE2EmpireTracker.Tests.Services
                     var visited = new HashSet<int>();
                     int crateId = 88888;
 
-                    var result = importer.Import(json, crateId, parentBag, "owner", visited);
+                    var result = importer.Import(response, crateId, parentBag, "owner", visited);
 
                     // Locate the crate item
                     Item crateItem = null;
@@ -484,14 +485,14 @@ namespace OE2EmpireTracker.Tests.Services
                         }
 
                         // Build a response for this crate containing nested refs
-                        var cargo = new List<GameApiAssetCargoItem>();
+                        var cargo = new List<AssetCargoItem>();
                         if (graphLookup.ContainsKey(currentId))
                         {
                             foreach (int nestedId in graphLookup[currentId])
                             {
-                                cargo.Add(new GameApiAssetCargoItem
+                                cargo.Add(new AssetCargoItem
                                 {
-                                    CargoItemId = nestedId,
+                                    Id = nestedId,
                                     TypeC = AssetTypeCodes.Crate,
                                     ResourceName = "Nested_" + nestedId,
                                     Amount = 1,
@@ -500,20 +501,19 @@ namespace OE2EmpireTracker.Tests.Services
                         }
 
                         // Add a normal item so the crate isn't empty
-                        cargo.Add(new GameApiAssetCargoItem
+                        cargo.Add(new AssetCargoItem
                         {
-                            CargoItemId = currentId + 100000,
+                            Id = currentId + 100000,
                             TypeC = AssetTypeCodes.Resource,
                             ResourceName = "Iron (High Purity)",
                             Amount = 100,
                         });
 
-                        var response = new GameApiAssetDetailResponse { Cargo = cargo };
+                        var response = new AssetCrateContents { Cargo = cargo };
                         string json = WrapInEnvelope(response);
                         var parentBag = new ItemBag();
 
-                        var result = importer.Import(
-                            json, currentId, parentBag, "owner", visited);
+                        var result = importer.Import(response, currentId, parentBag, "owner", visited);
 
                         processedCrates.Add(currentId);
 
@@ -563,13 +563,13 @@ namespace OE2EmpireTracker.Tests.Services
         /// plus random other items.
         /// </summary>
         /// <returns>A generator for responses with blueprints.</returns>
-        private static Gen<GameApiAssetDetailResponse> BlueprintResponseGen()
+        private static Gen<AssetCrateContents> BlueprintResponseGen()
         {
             return from bpCount in Gen.Choose(1, 5)
                    from otherCount in Gen.Choose(0, 10)
                    from bpItems in Gen.ListOf(bpCount, BlueprintCargoItemGen())
                    from otherItems in Gen.ListOf(otherCount, NonBlueprintCargoItemGen())
-                   select new GameApiAssetDetailResponse
+                   select new AssetCrateContents
                    {
                        Cargo = bpItems.Concat(otherItems).ToList(),
                    };
@@ -579,15 +579,15 @@ namespace OE2EmpireTracker.Tests.Services
         /// Generates a blueprint cargo item with at least one property.
         /// </summary>
         /// <returns>A generator for blueprint cargo items.</returns>
-        private static Gen<GameApiAssetCargoItem> BlueprintCargoItemGen()
+        private static Gen<AssetCargoItem> BlueprintCargoItemGen()
         {
             return from id in Gen.Choose(1, 999999)
                    from evolution in Gen.Choose(0, 5)
                    from propCount in Gen.Choose(1, 3)
                    from props in Gen.ListOf(propCount, PropertyGen())
-                   select new GameApiAssetCargoItem
+                   select new AssetCargoItem
                    {
-                       CargoItemId = id,
+                       Id = id,
                        TypeC = AssetTypeCodes.Blueprint,
                        ResourceName = "Blueprint_" + id,
                        Amount = 1,
@@ -603,7 +603,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// Generates a non-blueprint cargo item.
         /// </summary>
         /// <returns>A generator for non-blueprint cargo items.</returns>
-        private static Gen<GameApiAssetCargoItem> NonBlueprintCargoItemGen()
+        private static Gen<AssetCargoItem> NonBlueprintCargoItemGen()
         {
             var nonBpCodes = NonCrateTypeCCodes
                 .Where(c => c != AssetTypeCodes.Blueprint)
@@ -616,9 +616,9 @@ namespace OE2EmpireTracker.Tests.Services
                    let name = typeC == AssetTypeCodes.Resource
                        ? "Resource_" + id + " (High Purity)"
                        : "Item_" + id
-                   select new GameApiAssetCargoItem
+                   select new AssetCargoItem
                    {
-                       CargoItemId = id,
+                       Id = id,
                        TypeC = typeC,
                        ResourceName = name,
                        Amount = amount,
@@ -652,7 +652,7 @@ namespace OE2EmpireTracker.Tests.Services
                     var visited = new HashSet<int>();
                     int crateId = 77777;
 
-                    var result = importer.Import(json, crateId, parentBag, "test-player-uuid", visited);
+                    var result = importer.Import(response, crateId, parentBag, "test-player-uuid", visited);
 
                     // Locate the crate
                     Item crateItem = null;

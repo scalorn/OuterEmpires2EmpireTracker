@@ -272,7 +272,7 @@ Migrate all production consumers from the legacy `GameApiClient` to `IGameApiTyp
   - Build full solution with zero errors and zero warnings.
 
 
-- [ ] 8. Phase 5: Legacy Client Cleanup
+- [x] 8. Phase 5: Legacy Client Cleanup
   - [x] 8.1 Delete GameApiClient.cs and GameApiServiceResponse envelope class
     - Delete `OE2EmpireTracker.Common/Client/GameApiClient.cs`
     - Delete the `GameApiServiceResponse<T>` envelope class file
@@ -324,14 +324,14 @@ Migrate all production consumers from the legacy `GameApiClient` to `IGameApiTyp
     - _Output: Deleted files_
     - _Verification: Full solution build with zero errors_
 
-- [~] 9. Checkpoint — Cleanup complete
+- [x] 9. Checkpoint — Cleanup complete
   - Ensure all tests pass, ask the user if questions arise.
   - Full solution build: zero errors, zero warnings.
   - Verify no references to old client or hand-written models remain in codebase.
 
 
-- [ ] 10. Phase 6: Test Migration
-  - [~] 10.1 Update QueueSyncService property tests for typed exception handling
+- [x] 10. Phase 6: Test Migration
+  - [x] 10.1 Update QueueSyncService property tests for typed exception handling
     - Update `QueueSyncServicePropertyTests` to verify `ApiHttpException` catch patterns
     - Replace `result.Json == "401"` test patterns with typed exception assertions
     - Update `CrateContentImporterTests` to work with typed DTOs (or remove if JSON helpers deleted)
@@ -340,7 +340,7 @@ Migrate all production consumers from the legacy `GameApiClient` to `IGameApiTyp
     - _Output: Updated test files_
     - _Verification: dotnet test / vstest.console pass_
 
-  - [~] 10.2 Update ColonyMergeService tests for generated DTOs
+  - [x] 10.2 Update ColonyMergeService tests for generated DTOs
     - Update `ColonyMergeBuildingsPreservationTests` to use generated DTOs (`ColonyBuildings`) instead of `GameApiColonyBuilding`
     - Update any test builders/generators to produce generated DTO instances
     - _Requirements: 12.3, 12.5_
@@ -348,7 +348,7 @@ Migrate all production consumers from the legacy `GameApiClient` to `IGameApiTyp
     - _Output: Updated test file_
     - _Verification: vstest.console pass_
 
-  - [~] 10.3 Update GameApiSyncScheduler tests for typed client
+  - [x] 10.3 Update GameApiSyncScheduler tests for typed client
     - Update `GameApiSyncSchedulerBankingTests` to construct `GameApiTypedClient` (or mock `IGameApiTypedClient`) instead of `GameApiClient` against HttpListener
     - Update `GameApiConnectionMonitor` construction in tests to pass typed client
     - _Requirements: 12.1, 12.2, 12.5_
@@ -356,7 +356,7 @@ Migrate all production consumers from the legacy `GameApiClient` to `IGameApiTyp
     - _Output: Updated test file_
     - _Verification: vstest.console pass_
 
-  - [~] 10.4 Write integration test verifying end-to-end typed client flow
+  - [x] 10.4 Write integration test verifying end-to-end typed client flow
     - Create a test that exercises `QueueSyncService.RunSyncAsync` with a mocked `IGameApiTypedClient`
     - Verify token exchange, work item execution, and merge service calls
     - Verify 401/429 error handling triggers correct behavior
@@ -365,7 +365,7 @@ Migrate all production consumers from the legacy `GameApiClient` to `IGameApiTyp
     - _Output: New test file in OE2EmpireTracker.Tests/Services/_
     - _Verification: vstest.console pass_
 
-- [~] 11. Final Checkpoint
+- [x] 11. Final Checkpoint
   - Ensure all tests pass, ask the user if questions arise.
   - Full solution build: zero errors, zero warnings.
   - Run audit: `node .kiro/tools/audit.js` reports zero findings.

@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Client.Generated;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
 
@@ -116,25 +117,20 @@ namespace OE2EmpireTracker.Tests.Client
         [Order(1)]
         public async Task PullColonyList()
         {
-            var result = await this.client.GetColonyListAsync(this.appId, this.accessToken).ConfigureAwait(false);
+            var colonyList = await this.client.GetColonyListAsync().ConfigureAwait(false);
 
-            Assert.That(result.Success, Is.True, "GetColonyListAsync failed. Json: " + (result.Json ?? "(null)"));
-            Assert.That(result.Json, Is.Not.Null.And.Not.Empty, "Colony list JSON is empty");
+            Assert.That(colonyList, Is.Not.Null, "GetColonyListAsync returned null");
+            Assert.That(colonyList.Colonies, Is.Not.Null.And.Not.Empty, "Colony list is empty");
 
+            string json = JsonConvert.SerializeObject(colonyList, Formatting.Indented);
             string outputPath = Path.Combine(TestResultsDir, "colony-list-raw.json");
-            File.WriteAllText(outputPath, FormatJson(result.Json), Encoding.UTF8);
+            File.WriteAllText(outputPath, json, Encoding.UTF8);
 
             TestContext.WriteLine("Colony list written to: " + outputPath);
-            TestContext.WriteLine("Response length: " + result.Json.Length + " characters");
+            TestContext.WriteLine("Response length: " + json.Length + " characters");
 
-            // Quick sanity check — deserialize to verify structure
-            var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiColonyListResponse>>(result.Json);
-            Assert.That(envelope, Is.Not.Null, "Failed to deserialize colony list envelope");
-            Assert.That(envelope.Success, Is.True, "API returned success=false: " + envelope.ReturnString);
-            Assert.That(envelope.Data, Is.Not.Null, "Colony list data is null");
-
-            TestContext.WriteLine("Colonies returned: " + envelope.Data.Colonies.Count);
-            foreach (var colony in envelope.Data.Colonies)
+            TestContext.WriteLine("Colonies returned: " + colonyList.Colonies.Count);
+            foreach (var colony in colonyList.Colonies)
             {
                 TestContext.WriteLine(
                     "  [{0}] {1} on {2} in {3} (RemoteAccess={4})",
@@ -160,23 +156,26 @@ namespace OE2EmpireTracker.Tests.Client
 
             foreach (var colony in colonies)
             {
-                var result = await this.client.GetColonyBuildingsAsync(this.appId, this.accessToken, colony.ColonyId).ConfigureAwait(false);
-                if (!result.Success)
+                ColonyBuildings buildingsDto;
+                try
                 {
-                    TestContext.WriteLine("  SKIPPED [{0}] {1}: {2}", colony.ColonyId, colony.ColonyName, result.Json ?? "failed");
+                    buildingsDto = await this.client.GetColonyBuildingsAsync(colony.ColonyId).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    TestContext.WriteLine("  SKIPPED [{0}] {1}: {2}", colony.ColonyId, colony.ColonyName, ex.Message);
                     continue;
                 }
 
-                var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiColonyBuildingsResponse>>(result.Json);
-                if (envelope?.Data?.Buildings == null)
+                if (buildingsDto?.Buildings == null)
                 {
                     continue;
                 }
 
-                allBuildings.Add(new { colony.ColonyId, colony.ColonyName, Buildings = envelope.Data.Buildings });
-                totalBuildings += envelope.Data.Buildings.Count;
+                allBuildings.Add(new { colony.ColonyId, colony.ColonyName, Buildings = buildingsDto.Buildings });
+                totalBuildings += buildingsDto.Buildings.Count;
 
-                TestContext.WriteLine("  [{0}] {1}: {2} buildings", colony.ColonyId, colony.ColonyName, envelope.Data.Buildings.Count);
+                TestContext.WriteLine("  [{0}] {1}: {2} buildings", colony.ColonyId, colony.ColonyName, buildingsDto.Buildings.Count);
             }
 
             string outputPath = Path.Combine(TestResultsDir, "colony-buildings-all.json");
@@ -195,28 +194,31 @@ namespace OE2EmpireTracker.Tests.Client
         public async Task PullColonyWarehouse()
         {
             var colonies = await GetAllRemoteAccessColonies().ConfigureAwait(false);
-            var allItems = new List<GameApiAssetCargoItem>();
+            var allItems = new List<AssetCargoItem>();
             int colonyCount = 0;
 
             foreach (var colony in colonies)
             {
-                var result = await this.client.GetColonyWarehouseAsync(this.appId, this.accessToken, colony.ColonyId).ConfigureAwait(false);
-                if (!result.Success)
+                ColonyWarehouse warehouseDto;
+                try
                 {
-                    TestContext.WriteLine("  SKIPPED [{0}] {1}: {2}", colony.ColonyId, colony.ColonyName, result.Json ?? "failed");
+                    warehouseDto = await this.client.GetColonyWarehouseAsync(colony.ColonyId).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    TestContext.WriteLine("  SKIPPED [{0}] {1}: {2}", colony.ColonyId, colony.ColonyName, ex.Message);
                     continue;
                 }
 
-                var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiColonyWarehouseResponse>>(result.Json);
-                if (envelope?.Data?.Contents == null)
+                if (warehouseDto?.Contents == null)
                 {
                     continue;
                 }
 
-                allItems.AddRange(envelope.Data.Contents);
+                allItems.AddRange(warehouseDto.Contents);
                 colonyCount++;
 
-                TestContext.WriteLine("  [{0}] {1}: {2} items", colony.ColonyId, colony.ColonyName, envelope.Data.Contents.Count);
+                TestContext.WriteLine("  [{0}] {1}: {2} items", colony.ColonyId, colony.ColonyName, warehouseDto.Contents.Count);
             }
 
             string outputPath = Path.Combine(TestResultsDir, "colony-warehouse-all.json");
@@ -246,20 +248,20 @@ namespace OE2EmpireTracker.Tests.Client
             string buildingsJson = File.ReadAllText(buildingsPath);
             string warehouseJson = File.ReadAllText(warehousePath);
 
-            var colonyEnvelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiColonyListResponse>>(colonyListJson);
+            var colonyEnvelope = JsonConvert.DeserializeObject<ColonyList>(colonyListJson);
 
             // Buildings file is an array of {ColonyId, ColonyName, Buildings} objects
             var buildingsData = JsonConvert.DeserializeObject<List<ColonyBuildingsBundle>>(buildingsJson);
-            var allBuildings = new GameApiColonyBuildingsResponse
+            var allBuildings = new ColonyBuildings
             {
-                Buildings = buildingsData?.SelectMany(b => b.Buildings ?? new List<GameApiColonyBuilding>()).ToList()
-                    ?? new List<GameApiColonyBuilding>()
+                Buildings = buildingsData?.SelectMany(b => b.Buildings ?? new List<ColonyBuilding>()).ToList()
+                    ?? new List<ColonyBuilding>()
             };
 
-            // Warehouse file is a direct List<GameApiAssetCargoItem>
-            var allWarehouseItems = JsonConvert.DeserializeObject<List<GameApiAssetCargoItem>>(warehouseJson)
-                ?? new List<GameApiAssetCargoItem>();
-            var warehouseData = new GameApiColonyWarehouseResponse { Contents = allWarehouseItems };
+            // Warehouse file is a direct List<AssetCargoItem>
+            var allWarehouseItems = JsonConvert.DeserializeObject<List<AssetCargoItem>>(warehouseJson)
+                ?? new List<AssetCargoItem>();
+            var warehouseData = new ColonyWarehouse { Contents = allWarehouseItems };
 
             var report = new StringBuilder();
             report.AppendLine("# API Mapping Report");
@@ -311,26 +313,24 @@ namespace OE2EmpireTracker.Tests.Client
             return colony.ColonyId;
         }
 
-        private async Task<List<GameApiColonyListItem>> GetAllRemoteAccessColonies()
+        private async Task<List<ColonyListItem>> GetAllRemoteAccessColonies()
         {
             string colonyListPath = Path.Combine(TestResultsDir, "colony-list-raw.json");
 
-            string json;
+            ColonyList colonyList;
             if (File.Exists(colonyListPath))
             {
-                json = File.ReadAllText(colonyListPath);
+                string json = File.ReadAllText(colonyListPath);
+                colonyList = JsonConvert.DeserializeObject<ColonyList>(json);
             }
             else
             {
-                var result = await this.client.GetColonyListAsync(this.appId, this.accessToken).ConfigureAwait(false);
-                Assert.That(result.Success, Is.True, "GetColonyListAsync failed");
-                json = result.Json;
+                colonyList = await this.client.GetColonyListAsync().ConfigureAwait(false);
             }
 
-            var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiColonyListResponse>>(json);
-            Assert.That(envelope?.Data?.Colonies, Is.Not.Null.And.Not.Empty, "No colonies in response");
+            Assert.That(colonyList?.Colonies, Is.Not.Null.And.Not.Empty, "No colonies in response");
 
-            var colonies = envelope.Data.Colonies.Where(c => c.RemoteAccess > 0).ToList();
+            var colonies = colonyList.Colonies.Where(c => c.RemoteAccess > 0).ToList();
             Assert.That(colonies, Is.Not.Empty, "No colony with RemoteAccess > 0 found");
 
             TestContext.WriteLine("Found {0} colonies with RemoteAccess > 0", colonies.Count);
@@ -350,7 +350,7 @@ namespace OE2EmpireTracker.Tests.Client
             }
         }
 
-        private static void AppendTypeCSection(StringBuilder report, GameApiColonyWarehouseResponse warehouse)
+        private static void AppendTypeCSection(StringBuilder report, ColonyWarehouse warehouse)
         {
             report.AppendLine("## TypeC Values Discovered");
             report.AppendLine();
@@ -380,7 +380,7 @@ namespace OE2EmpireTracker.Tests.Client
             report.AppendLine();
         }
 
-        private static void AppendStatusIdSection(StringBuilder report, GameApiColonyBuildingsResponse buildings)
+        private static void AppendStatusIdSection(StringBuilder report, ColonyBuildings buildings)
         {
             report.AppendLine("## StatusId Values Discovered");
             report.AppendLine();
@@ -409,7 +409,7 @@ namespace OE2EmpireTracker.Tests.Client
             report.AppendLine();
         }
 
-        private static void AppendBuildingTypeIdSection(StringBuilder report, GameApiColonyBuildingsResponse buildings)
+        private static void AppendBuildingTypeIdSection(StringBuilder report, ColonyBuildings buildings)
         {
             report.AppendLine("## ColonyBuildingTypeId Values Discovered");
             report.AppendLine();
@@ -466,7 +466,7 @@ namespace OE2EmpireTracker.Tests.Client
                 .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
             // Get DTO properties for comparison
-            var dtoProps = typeof(GameApiColonyListItem).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            var dtoProps = typeof(ColonyListItem).GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .ToDictionary(p => p.Name, p => p, StringComparer.OrdinalIgnoreCase);
 
             report.AppendLine("### API Fields (from raw JSON)");
@@ -528,7 +528,7 @@ namespace OE2EmpireTracker.Tests.Client
 
             var apiFields = GetAllFieldNames(buildingsArray[0] as JObject);
 
-            var dtoProps = typeof(GameApiColonyBuilding).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            var dtoProps = typeof(ColonyBuilding).GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .ToDictionary(p => p.Name, p => p, StringComparer.OrdinalIgnoreCase);
 
             var localProps = typeof(ColonyStructure).GetProperties(BindingFlags.Public | BindingFlags.Instance)
@@ -596,7 +596,7 @@ namespace OE2EmpireTracker.Tests.Client
 
             var apiFields = GetAllFieldNames(contentsArray[0] as JObject);
 
-            var dtoProps = typeof(GameApiAssetCargoItem).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            var dtoProps = typeof(AssetCargoItem).GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .ToDictionary(p => p.Name, p => p, StringComparer.OrdinalIgnoreCase);
 
             var localProps = typeof(Item).GetProperties(BindingFlags.Public | BindingFlags.Instance)
@@ -829,6 +829,6 @@ namespace OE2EmpireTracker.Tests.Client
 
         public string ColonyName { get; set; } = string.Empty;
 
-        public List<GameApiColonyBuilding> Buildings { get; set; } = new List<GameApiColonyBuilding>();
+        public List<ColonyBuilding> Buildings { get; set; } = new List<ColonyBuilding>();
     }
 }

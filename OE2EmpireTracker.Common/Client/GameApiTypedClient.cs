@@ -83,7 +83,7 @@ namespace OE2EmpireTracker.Common.Client
         /// <param name="appId">The application ID for header injection.</param>
         /// <param name="tps">The target transactions per second for the rate limiter.</param>
         public GameApiTypedClient(string serverUrl, string appId, double tps)
-            : this(new HttpClient { BaseAddress = new Uri(serverUrl) }, appId, tps)
+            : this(new HttpClient(new MetricsTrackingHandler()) { BaseAddress = new Uri(serverUrl) }, appId, tps)
         {
         }
 
@@ -517,6 +517,7 @@ namespace OE2EmpireTracker.Common.Client
         /// Executes an action through the resilience pipeline (circuit breaker check,
         /// rate limiter acquire, Polly policy wrap). Catches NSwag-generated
         /// <see cref="Generated.ApiException"/> and converts to typed exceptions.
+        /// Metrics are reported by <see cref="MetricsTrackingHandler"/> at the HTTP level.
         /// </summary>
         /// <typeparam name="T">The return type of the action.</typeparam>
         /// <param name="action">The async action to execute.</param>

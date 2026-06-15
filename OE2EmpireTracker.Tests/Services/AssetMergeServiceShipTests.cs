@@ -5,7 +5,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Client.Generated;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
 
@@ -25,9 +25,9 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void MergeShipAssets_NullShip_ReturnsFalse()
         {
-            var apiItems = new List<GameApiAssetCargoItem>
+            var apiItems = new List<AssetCargoItem>
             {
-                new GameApiAssetCargoItem { CargoItemId = 1, ResourceName = "Iron", TypeC = "R", Amount = 10 },
+                new AssetCargoItem { Id = 1, ResourceName = "Iron", TypeC = "R", Amount = 10 },
             };
 
             bool result = AssetMergeService.MergeShipAssets(apiItems, null);
@@ -58,7 +58,7 @@ namespace OE2EmpireTracker.Tests.Services
         {
             var ship = new Ship { UUID = "ship-2", GameLocationId = 200 };
 
-            bool result = AssetMergeService.MergeShipAssets(new List<GameApiAssetCargoItem>(), ship);
+            bool result = AssetMergeService.MergeShipAssets(new List<AssetCargoItem>(), ship);
 
             Assert.That(result, Is.False);
         }
@@ -71,20 +71,20 @@ namespace OE2EmpireTracker.Tests.Services
         public void MergeShipAssets_NewItems_CreatesInCargo()
         {
             var ship = new Ship { UUID = "ship-3", GameLocationId = 300 };
-            var apiItems = new List<GameApiAssetCargoItem>
+            var apiItems = new List<AssetCargoItem>
             {
-                new GameApiAssetCargoItem
+                new AssetCargoItem
                 {
-                    CargoItemId = 501,
+                    Id = 501,
                     ResourceName = "Titanium",
                     TypeC = "R",
                     Amount = 25,
                     Mass = 1.5,
                     Volume = 3,
                 },
-                new GameApiAssetCargoItem
+                new AssetCargoItem
                 {
-                    CargoItemId = 502,
+                    Id = 502,
                     ResourceName = "Plasma Cannon",
                     TypeC = "A",
                     Amount = 2,
@@ -128,11 +128,11 @@ namespace OE2EmpireTracker.Tests.Services
             };
             ship.Cargo.AddItem(existingItem);
 
-            var apiItems = new List<GameApiAssetCargoItem>
+            var apiItems = new List<AssetCargoItem>
             {
-                new GameApiAssetCargoItem
+                new AssetCargoItem
                 {
-                    CargoItemId = 601,
+                    Id = 601,
                     ResourceName = "Steel Plates",
                     TypeC = "C",
                     Amount = 50,
@@ -174,11 +174,11 @@ namespace OE2EmpireTracker.Tests.Services
             };
             ship.Cargo.AddItem(existingItem);
 
-            var apiItems = new List<GameApiAssetCargoItem>
+            var apiItems = new List<AssetCargoItem>
             {
-                new GameApiAssetCargoItem
+                new AssetCargoItem
                 {
-                    CargoItemId = 701,
+                    Id = 701,
                     ResourceName = "Fuel Cells",
                     TypeC = "C",
                     Amount = 100,

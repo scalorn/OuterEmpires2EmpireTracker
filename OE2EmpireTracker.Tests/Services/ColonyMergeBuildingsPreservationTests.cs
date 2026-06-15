@@ -8,7 +8,7 @@ using System.Linq;
 using FsCheck;
 using NUnit.Framework;
 using OE2EmpireTracker.Client;
-using OE2EmpireTracker.Common.Models;
+using OE2EmpireTracker.Common.Client.Generated;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
@@ -92,7 +92,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// <summary>
         /// Generates a single built API building with a specific BuildingId.
         /// </summary>
-        private static Gen<GameApiColonyBuilding> BuiltApiBuildingGen(int buildingId, int typeId)
+        private static Gen<ColonyBuilding> BuiltApiBuildingGen(int buildingId, int typeId)
         {
             return from resourceId in ResourceIdGen()
                    from resourceIcon in ResourceIconGen()
@@ -100,14 +100,14 @@ namespace OE2EmpireTracker.Tests.Services
                    from mfgAmount in ManufactureAmountGen()
                    from durabilityCur in DurabilityGen()
                    from durabilityMax in DurabilityGen()
-                   select new GameApiColonyBuilding
+                   select new ColonyBuilding
                    {
                        BuildingId = buildingId,
                        ColonyBuildingTypeId = typeId,
                        BlueprintDesignName = "Blueprint_" + typeId,
                        BuildingOnline = true,
                        StatusId = 1,
-                       ConstructingBuildingFinish = FrozenTime.AddHours(-1),
+                       ConstructingBuildingFinish = new DateTimeOffset(FrozenTime.AddHours(-1), TimeSpan.Zero),
                        ResourceId = resourceId,
                        ResourceIcon = resourceIcon,
                        ResourceName = resourceName,
@@ -120,7 +120,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// <summary>
         /// Generates an API building for new-structure creation (no pool match).
         /// </summary>
-        private static Gen<GameApiColonyBuilding> NewStructureApiBuildingGen()
+        private static Gen<ColonyBuilding> NewStructureApiBuildingGen()
         {
             return from buildingId in PositiveBuildingIdGen()
                    from typeId in Gen.Choose(900, 999)
@@ -129,14 +129,14 @@ namespace OE2EmpireTracker.Tests.Services
                    from mfgAmount in ManufactureAmountGen()
                    from durabilityCur in DurabilityGen()
                    from durabilityMax in DurabilityGen()
-                   select new GameApiColonyBuilding
+                   select new ColonyBuilding
                    {
                        BuildingId = buildingId,
                        ColonyBuildingTypeId = typeId,
                        BlueprintDesignName = "NewBlueprint_" + typeId,
                        BuildingOnline = true,
                        StatusId = 1,
-                       ConstructingBuildingFinish = FrozenTime.AddHours(-2),
+                       ConstructingBuildingFinish = new DateTimeOffset(FrozenTime.AddHours(-2), TimeSpan.Zero),
                        ResourceId = resourceId,
                        ResourceIcon = resourceIcon,
                        ResourceName = string.Empty,
@@ -149,6 +149,14 @@ namespace OE2EmpireTracker.Tests.Services
         // ---------------------------------------------------------------
         // Helpers
         // ---------------------------------------------------------------
+
+        private static ColonyBuildings WrapBuildings(params ColonyBuilding[] buildings)
+        {
+            return new ColonyBuildings
+            {
+                Buildings = buildings.ToList(),
+            };
+        }
 
         private static Colony CreateSingleStructureColony(ColonyStructure structure)
         {
@@ -210,9 +218,8 @@ namespace OE2EmpireTracker.Tests.Services
                 structure.Properties.SetProperty(GameConstants.PropBuilt, false);
 
                 var colony = CreateSingleStructureColony(structure);
-                var apiBuildings = new List<GameApiColonyBuilding> { data.ApiBuilding };
 
-                ColonyMergeService.MergeBuildings(apiBuildings, colony);
+                ColonyMergeService.MergeBuildings(WrapBuildings(data.ApiBuilding), colony);
 
                 bool resourceIdOk = structure.ResourceId == data.ApiBuilding.ResourceId;
                 bool resourceIconOk = structure.ResourceIcon == (data.ApiBuilding.ResourceIcon ?? string.Empty);
@@ -268,8 +275,7 @@ namespace OE2EmpireTracker.Tests.Services
                     Items = new ItemBag(),
                 };
 
-                var apiBuildings = new List<GameApiColonyBuilding> { data.ApiBuilding };
-                ColonyMergeService.MergeBuildings(apiBuildings, colony);
+                ColonyMergeService.MergeBuildings(WrapBuildings(data.ApiBuilding), colony);
 
                 bool matchedGotApiData = matchedStructure.ResourceId == data.ApiBuilding.ResourceId;
                 bool buildingIdKept = matchedStructure.BuildingID == data.BuildingId;
@@ -311,9 +317,8 @@ namespace OE2EmpireTracker.Tests.Services
                 structure.Properties.SetProperty(GameConstants.PropBuilt, false);
 
                 var colony = CreateSingleStructureColony(structure);
-                var apiBuildings = new List<GameApiColonyBuilding> { data.ApiBuilding };
 
-                ColonyMergeService.MergeBuildings(apiBuildings, colony);
+                ColonyMergeService.MergeBuildings(WrapBuildings(data.ApiBuilding), colony);
 
                 bool buildingIdAssigned = structure.BuildingID == data.BuildingId;
                 bool resourceIdMerged = structure.ResourceId == data.ApiBuilding.ResourceId;
@@ -354,9 +359,8 @@ namespace OE2EmpireTracker.Tests.Services
                 existingStructure.Properties.SetProperty(GameConstants.PropBuilt, true);
 
                 var colony = CreateSingleStructureColony(existingStructure);
-                var apiBuildings = new List<GameApiColonyBuilding> { data.ApiBuilding };
 
-                ColonyMergeService.MergeBuildings(apiBuildings, colony);
+                ColonyMergeService.MergeBuildings(WrapBuildings(data.ApiBuilding), colony);
 
                 if (colony.Structures.Count != 2)
                 {
@@ -414,14 +418,14 @@ namespace OE2EmpireTracker.Tests.Services
                     ? FrozenTime.AddHours(data.HoursOffset)
                     : FrozenTime.AddHours(-data.HoursOffset);
 
-                var apiBuilding = new GameApiColonyBuilding
+                var apiBuilding = new ColonyBuilding
                 {
                     BuildingId = data.BuildingId,
                     ColonyBuildingTypeId = data.TypeId,
                     BlueprintDesignName = "Blueprint_" + data.TypeId,
                     BuildingOnline = !data.IsFuture,
                     StatusId = 1,
-                    ConstructingBuildingFinish = finishTime,
+                    ConstructingBuildingFinish = new DateTimeOffset(finishTime, TimeSpan.Zero),
                     ResourceId = data.ResourceId,
                     ResourceIcon = string.Empty,
                     ResourceName = string.Empty,
@@ -442,8 +446,7 @@ namespace OE2EmpireTracker.Tests.Services
                 structure.Properties.SetProperty(GameConstants.PropBuilt, false);
 
                 var colony = CreateSingleStructureColony(structure);
-                ColonyMergeService.MergeBuildings(
-                    new List<GameApiColonyBuilding> { apiBuilding }, colony);
+                ColonyMergeService.MergeBuildings(WrapBuildings(apiBuilding), colony);
 
                 bool builtValue;
                 structure.Properties.GetBoolean(GameConstants.PropBuilt, false, out builtValue);
@@ -483,14 +486,14 @@ namespace OE2EmpireTracker.Tests.Services
 
             Prop.ForAll(gen.ToArbitrary(), data =>
             {
-                var apiBuilding = new GameApiColonyBuilding
+                var apiBuilding = new ColonyBuilding
                 {
                     BuildingId = data.BuildingId,
                     ColonyBuildingTypeId = data.TypeId,
                     BlueprintDesignName = "Mining_" + data.TypeId,
                     BuildingOnline = true,
                     StatusId = 1,
-                    ConstructingBuildingFinish = FrozenTime.AddHours(-1),
+                    ConstructingBuildingFinish = new DateTimeOffset(FrozenTime.AddHours(-1), TimeSpan.Zero),
                     ResourceId = 1,
                     ResourceIcon = "ore.png",
                     ResourceName = data.ResourceName,
@@ -511,8 +514,7 @@ namespace OE2EmpireTracker.Tests.Services
                 structure.Properties.SetProperty(GameConstants.PropBuilt, true);
 
                 var colony = CreateSingleStructureColony(structure);
-                ColonyMergeService.MergeBuildings(
-                    new List<GameApiColonyBuilding> { apiBuilding }, colony);
+                ColonyMergeService.MergeBuildings(WrapBuildings(apiBuilding), colony);
 
                 return (structure.MiningSurveyResource == data.ResourceName).ToProperty();
             }).QuickCheckThrowOnFailure();
@@ -538,8 +540,7 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 var colony = CreateEmptyColony();
 
-                ColonyMergeService.MergeBuildings(
-                    new List<GameApiColonyBuilding> { apiBuilding }, colony);
+                ColonyMergeService.MergeBuildings(WrapBuildings(apiBuilding), colony);
 
                 if (colony.Structures.Count != 1)
                 {
@@ -583,14 +584,14 @@ namespace OE2EmpireTracker.Tests.Services
 
             Prop.ForAll(gen.ToArbitrary(), data =>
             {
-                var apiBuilding = new GameApiColonyBuilding
+                var apiBuilding = new ColonyBuilding
                 {
                     BuildingId = data.BuildingId,
                     ColonyBuildingTypeId = data.ApiTypeId,
                     BlueprintDesignName = "Blueprint_" + data.ApiTypeId,
                     BuildingOnline = true,
                     StatusId = 1,
-                    ConstructingBuildingFinish = FrozenTime.AddHours(-1),
+                    ConstructingBuildingFinish = new DateTimeOffset(FrozenTime.AddHours(-1), TimeSpan.Zero),
                     ResourceId = data.ResourceId,
                     ResourceIcon = string.Empty,
                     ResourceName = string.Empty,
@@ -610,8 +611,7 @@ namespace OE2EmpireTracker.Tests.Services
                 structure.Properties.SetProperty(GameConstants.PropBuilt, true);
 
                 var colony = CreateSingleStructureColony(structure);
-                ColonyMergeService.MergeBuildings(
-                    new List<GameApiColonyBuilding> { apiBuilding }, colony);
+                ColonyMergeService.MergeBuildings(WrapBuildings(apiBuilding), colony);
 
                 return (structure.ColonyBuildingTypeId == data.ApiTypeId).ToProperty();
             }).QuickCheckThrowOnFailure();

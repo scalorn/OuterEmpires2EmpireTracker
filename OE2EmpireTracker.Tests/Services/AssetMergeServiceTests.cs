@@ -5,7 +5,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Client.Generated;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
@@ -27,9 +27,9 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void MergeColonyAssets_NullColony_ReturnsFalse()
         {
-            var apiItems = new List<GameApiAssetCargoItem>
+            var apiItems = new List<AssetCargoItem>
             {
-                new GameApiAssetCargoItem { CargoItemId = 1, Amount = 10, ResourceName = "Iron", TypeC = AssetTypeCodes.Resource },
+                new AssetCargoItem { Id = 1, Amount = 10, ResourceName = "Iron", TypeC = AssetTypeCodes.Resource },
             };
 
             bool result = AssetMergeService.MergeColonyAssets(apiItems, null);
@@ -57,7 +57,7 @@ namespace OE2EmpireTracker.Tests.Services
         {
             var colony = new Colony { ColonyId = 100 };
 
-            bool result = AssetMergeService.MergeColonyAssets(new List<GameApiAssetCargoItem>(), colony);
+            bool result = AssetMergeService.MergeColonyAssets(new List<AssetCargoItem>(), colony);
 
             Assert.That(result, Is.False);
         }
@@ -71,11 +71,11 @@ namespace OE2EmpireTracker.Tests.Services
         public void MergeColonyAssets_NewItem_CreatesInColonyItems()
         {
             var colony = new Colony { ColonyId = 42 };
-            var apiItems = new List<GameApiAssetCargoItem>
+            var apiItems = new List<AssetCargoItem>
             {
-                new GameApiAssetCargoItem
+                new AssetCargoItem
                 {
-                    CargoItemId = 999,
+                    Id = 999,
                     TypeId = 5,
                     Amount = 50,
                     ResourceName = "Iron",
@@ -117,11 +117,11 @@ namespace OE2EmpireTracker.Tests.Services
             };
             colony.Items.AddItem(existingItem);
 
-            var apiItems = new List<GameApiAssetCargoItem>
+            var apiItems = new List<AssetCargoItem>
             {
-                new GameApiAssetCargoItem
+                new AssetCargoItem
                 {
-                    CargoItemId = 500,
+                    Id = 500,
                     TypeId = 5,
                     Amount = 75,
                     ResourceName = "Iron",
@@ -161,11 +161,11 @@ namespace OE2EmpireTracker.Tests.Services
             };
             colony.Items.AddItem(existingItem);
 
-            var apiItems = new List<GameApiAssetCargoItem>
+            var apiItems = new List<AssetCargoItem>
             {
-                new GameApiAssetCargoItem
+                new AssetCargoItem
                 {
-                    CargoItemId = 600,
+                    Id = 600,
                     TypeId = 6,
                     Amount = 100,
                     ResourceName = "Copper",
@@ -205,11 +205,11 @@ namespace OE2EmpireTracker.Tests.Services
             };
             colony.Items.AddItem(existingItem);
 
-            var apiItems = new List<GameApiAssetCargoItem>
+            var apiItems = new List<AssetCargoItem>
             {
-                new GameApiAssetCargoItem
+                new AssetCargoItem
                 {
-                    CargoItemId = 700,
+                    Id = 700,
                     TypeId = 8,
                     Amount = 30,
                     ResourceName = "Titanium",
@@ -238,11 +238,11 @@ namespace OE2EmpireTracker.Tests.Services
             };
             colony.Items.AddItem(existingItem);
 
-            var apiItems = new List<GameApiAssetCargoItem>
+            var apiItems = new List<AssetCargoItem>
             {
-                new GameApiAssetCargoItem
+                new AssetCargoItem
                 {
-                    CargoItemId = 800,
+                    Id = 800,
                     TypeId = 9,
                     Amount = 50,
                     ResourceName = "Gold",

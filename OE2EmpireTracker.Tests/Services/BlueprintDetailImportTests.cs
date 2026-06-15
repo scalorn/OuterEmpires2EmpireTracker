@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Client.Generated;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
@@ -53,7 +54,7 @@ namespace OE2EmpireTracker.Tests.Services
             foreach (var file in AllBlueprintFiles())
             {
                 string json = File.ReadAllText(file);
-                var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiBlueprintDetailResponse>>(json);
+                var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<AssetBlueprint>>(json);
                 var bpType = envelope?.Data?.Blueprint?.Type ?? string.Empty;
 
                 if (!seen.Contains(bpType))
@@ -111,7 +112,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// Builds the CrateImporter-compatible JSON entry from a blueprint detail response,
         /// replicating the logic in QueueSyncService.CreateBlueprintDetailItem.
         /// </summary>
-        private static JObject BuildImportEntry(GameApiBlueprintDetailResponse response)
+        private static JObject BuildImportEntry(AssetBlueprint response)
         {
             var bpInfo = response.Blueprint;
 
@@ -190,7 +191,7 @@ namespace OE2EmpireTracker.Tests.Services
             playerContext.CurrentPlayerUUID = "test-player-uuid";
 
             string json = File.ReadAllText(filePath);
-            var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiBlueprintDetailResponse>>(json);
+            var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<AssetBlueprint>>(json);
             var response = envelope.Data;
 
             var entry = BuildImportEntry(response);
@@ -242,7 +243,7 @@ namespace OE2EmpireTracker.Tests.Services
             var blueprint = ImportAndResolve(filePath);
 
             string json = File.ReadAllText(filePath);
-            var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiBlueprintDetailResponse>>(json);
+            var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<AssetBlueprint>>(json);
             var response = envelope.Data;
 
             // Name must be non-empty
@@ -287,7 +288,7 @@ namespace OE2EmpireTracker.Tests.Services
             var blueprint = ImportAndResolve(filePath);
 
             string json = File.ReadAllText(filePath);
-            var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiBlueprintDetailResponse>>(json);
+            var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<AssetBlueprint>>(json);
             var response = envelope.Data;
 
             // BluePrintType must always be resolved
@@ -327,7 +328,7 @@ namespace OE2EmpireTracker.Tests.Services
             foreach (var file in AllBlueprintFiles())
             {
                 string json = File.ReadAllText(file);
-                var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiBlueprintDetailResponse>>(json);
+                var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<AssetBlueprint>>(json);
                 var icon = envelope?.Data?.Blueprint?.PartTypeIcon;
                 if (!string.IsNullOrEmpty(icon))
                 {
@@ -363,7 +364,7 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(files, Is.Not.Empty, "No blueprint test data files found");
 
             string json = File.ReadAllText(files[0]);
-            var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiBlueprintDetailResponse>>(json);
+            var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<AssetBlueprint>>(json);
             var response = envelope.Data;
 
             var entry = BuildImportEntry(response);
@@ -404,7 +405,7 @@ namespace OE2EmpireTracker.Tests.Services
             foreach (var file in AllBlueprintFiles())
             {
                 string json = File.ReadAllText(file);
-                var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiBlueprintDetailResponse>>(json);
+                var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<AssetBlueprint>>(json);
                 var bpType = envelope?.Data?.Blueprint?.Type ?? "(null)";
 
                 if (!typeToFiles.ContainsKey(bpType))

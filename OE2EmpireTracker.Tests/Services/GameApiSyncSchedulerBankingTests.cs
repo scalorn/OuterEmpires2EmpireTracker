@@ -259,15 +259,16 @@ namespace OE2EmpireTracker.Tests.Services
                         }
                         else if (path.Contains("/v1/character"))
                         {
-                            var charResponse = new GameApiServiceResponse<GameApiProfileResponse>
+                            var charResponse = new GameApiServiceResponse<object>
                             {
                                 Success = true,
                                 ReturnCode = 0,
-                                Data = new GameApiProfileResponse
+                                Data = new
                                 {
-                                    UUID = PlayerUUID,
-                                    Name = "TestPlayer",
-                                    Faction = "TestFaction",
+                                    characterId = 1,
+                                    firstName = "Test",
+                                    lastName = "Player",
+                                    activeTimeMinutes = 0,
                                 },
                             };
                             body = JsonConvert.SerializeObject(charResponse);
@@ -331,15 +332,16 @@ namespace OE2EmpireTracker.Tests.Services
                 },
             });
 
-            string characterJson = JsonConvert.SerializeObject(new GameApiServiceResponse<GameApiProfileResponse>
+            string characterJson = JsonConvert.SerializeObject(new GameApiServiceResponse<object>
             {
                 Success = true,
                 ReturnCode = 0,
-                Data = new GameApiProfileResponse
+                Data = new
                 {
-                    Faction = "TestFaction",
-                    CitizenId = "CIT-001",
-                    SkillPoints = 100,
+                    characterId = 1,
+                    firstName = "Test",
+                    lastName = "Player",
+                    activeTimeMinutes = 0,
                 },
             });
 
@@ -579,11 +581,17 @@ namespace OE2EmpireTracker.Tests.Services
                         else if (path.Contains("/v1/character"))
                         {
                             callOrder.Add("profile");
-                            body = JsonConvert.SerializeObject(new GameApiServiceResponse<GameApiProfileResponse>
+                            body = JsonConvert.SerializeObject(new GameApiServiceResponse<object>
                             {
                                 Success = true,
                                 ReturnCode = 0,
-                                Data = new GameApiProfileResponse(),
+                                Data = new
+                                {
+                                    characterId = 1,
+                                    firstName = "Test",
+                                    lastName = "Player",
+                                    activeTimeMinutes = 0,
+                                },
                             });
                         }
                         else if (path.Contains("/v1/colonies"))

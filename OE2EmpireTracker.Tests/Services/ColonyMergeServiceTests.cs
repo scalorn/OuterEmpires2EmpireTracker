@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Client.Generated;
 using OE2EmpireTracker.Common.Models;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
@@ -45,9 +45,9 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void MergeColonyList_NewColony_CreatesWithAllFields()
         {
-            var apiColonies = new List<GameApiColonyListItem>
+            var apiColonies = new List<ColonyListItem>
             {
-                new GameApiColonyListItem
+                new ColonyListItem
                 {
                     ColonyId = 42,
                     ColonyName = "My Colony",
@@ -68,7 +68,7 @@ namespace OE2EmpireTracker.Tests.Services
             };
             var localColonies = new List<Colony>();
 
-            var result = ColonyMergeService.MergeColonyList(apiColonies, localColonies, OwnerUUID);
+            var result = ColonyMergeService.MergeColonyList(new ColonyList { Colonies = apiColonies }, localColonies, OwnerUUID);
 
             Assert.That(result.Created, Is.EqualTo(1));
             Assert.That(result.Updated, Is.EqualTo(0));
@@ -125,9 +125,9 @@ namespace OE2EmpireTracker.Tests.Services
             };
             var localColonies = new List<Colony> { existingColony };
 
-            var apiColonies = new List<GameApiColonyListItem>
+            var apiColonies = new List<ColonyListItem>
             {
-                new GameApiColonyListItem
+                new ColonyListItem
                 {
                     ColonyId = 99,
                     ColonyName = "New Name",
@@ -147,7 +147,7 @@ namespace OE2EmpireTracker.Tests.Services
                 },
             };
 
-            var result = ColonyMergeService.MergeColonyList(apiColonies, localColonies, OwnerUUID);
+            var result = ColonyMergeService.MergeColonyList(new ColonyList { Colonies = apiColonies }, localColonies, OwnerUUID);
 
             Assert.That(result.Updated, Is.EqualTo(1));
             Assert.That(result.Created, Is.EqualTo(0));
@@ -179,9 +179,9 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void MergeColonyList_DuplicateApiData_NoDoubleCreation()
         {
-            var apiColonies = new List<GameApiColonyListItem>
+            var apiColonies = new List<ColonyListItem>
             {
-                new GameApiColonyListItem
+                new ColonyListItem
                 {
                     ColonyId = 10,
                     ColonyName = "Colony One",
@@ -195,12 +195,12 @@ namespace OE2EmpireTracker.Tests.Services
             var localColonies = new List<Colony>();
 
             // First merge — creates the colony
-            var result1 = ColonyMergeService.MergeColonyList(apiColonies, localColonies, OwnerUUID);
+            var result1 = ColonyMergeService.MergeColonyList(new ColonyList { Colonies = apiColonies }, localColonies, OwnerUUID);
             Assert.That(result1.Created, Is.EqualTo(1));
             Assert.That(localColonies.Count, Is.EqualTo(1));
 
             // Second merge — should match existing, not create duplicate
-            var result2 = ColonyMergeService.MergeColonyList(apiColonies, localColonies, OwnerUUID);
+            var result2 = ColonyMergeService.MergeColonyList(new ColonyList { Colonies = apiColonies }, localColonies, OwnerUUID);
             Assert.That(result2.Created, Is.EqualTo(0));
             Assert.That(localColonies.Count, Is.EqualTo(1));
         }
@@ -222,9 +222,9 @@ namespace OE2EmpireTracker.Tests.Services
                 ColonyName = "Existing Colony",
             };
             var localColonies = new List<Colony> { existingColony };
-            var apiColonies = new List<GameApiColonyListItem>();
+            var apiColonies = new List<ColonyListItem>();
 
-            var result = ColonyMergeService.MergeColonyList(apiColonies, localColonies, OwnerUUID);
+            var result = ColonyMergeService.MergeColonyList(new ColonyList { Colonies = apiColonies }, localColonies, OwnerUUID);
 
             Assert.That(result.Created, Is.EqualTo(0));
             Assert.That(result.Updated, Is.EqualTo(0));
@@ -242,9 +242,9 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void MergeColonyList_NullSystemObjectName_SkipsEntry()
         {
-            var apiColonies = new List<GameApiColonyListItem>
+            var apiColonies = new List<ColonyListItem>
             {
-                new GameApiColonyListItem
+                new ColonyListItem
                 {
                     ColonyId = 20,
                     ColonyName = "Bad Colony",
@@ -254,7 +254,7 @@ namespace OE2EmpireTracker.Tests.Services
             };
             var localColonies = new List<Colony>();
 
-            var result = ColonyMergeService.MergeColonyList(apiColonies, localColonies, OwnerUUID);
+            var result = ColonyMergeService.MergeColonyList(new ColonyList { Colonies = apiColonies }, localColonies, OwnerUUID);
 
             Assert.That(result.Skipped, Is.EqualTo(1));
             Assert.That(result.Created, Is.EqualTo(0));
@@ -279,9 +279,9 @@ namespace OE2EmpireTracker.Tests.Services
             };
             var localColonies = new List<Colony> { otherPlayerColony };
 
-            var apiColonies = new List<GameApiColonyListItem>
+            var apiColonies = new List<ColonyListItem>
             {
-                new GameApiColonyListItem
+                new ColonyListItem
                 {
                     ColonyId = 30,
                     ColonyName = "My Colony",
@@ -292,7 +292,7 @@ namespace OE2EmpireTracker.Tests.Services
                 },
             };
 
-            var result = ColonyMergeService.MergeColonyList(apiColonies, localColonies, OwnerUUID);
+            var result = ColonyMergeService.MergeColonyList(new ColonyList { Colonies = apiColonies }, localColonies, OwnerUUID);
 
             // Should create a new colony, not match the other player's colony
             Assert.That(result.Created, Is.EqualTo(1));
@@ -321,9 +321,9 @@ namespace OE2EmpireTracker.Tests.Services
             };
             var localColonies = new List<Colony> { existingColony };
 
-            var apiColonies = new List<GameApiColonyListItem>
+            var apiColonies = new List<ColonyListItem>
             {
-                new GameApiColonyListItem
+                new ColonyListItem
                 {
                     ColonyId = 40,
                     ColonyName = string.Empty,
@@ -333,7 +333,7 @@ namespace OE2EmpireTracker.Tests.Services
                 },
             };
 
-            ColonyMergeService.MergeColonyList(apiColonies, localColonies, OwnerUUID);
+            ColonyMergeService.MergeColonyList(new ColonyList { Colonies = apiColonies }, localColonies, OwnerUUID);
 
             Assert.That(existingColony.ColonyName, Is.EqualTo("Original Name"));
             Assert.That(existingColony.HexValue, Is.EqualTo("112233"));
@@ -359,9 +359,9 @@ namespace OE2EmpireTracker.Tests.Services
             };
             var localColonies = new List<Colony> { existingColony };
 
-            var apiColonies = new List<GameApiColonyListItem>
+            var apiColonies = new List<ColonyListItem>
             {
-                new GameApiColonyListItem
+                new ColonyListItem
                 {
                     ColonyId = 50,
                     ColonyName = "Zeta Colony",
@@ -372,7 +372,7 @@ namespace OE2EmpireTracker.Tests.Services
                 },
             };
 
-            ColonyMergeService.MergeColonyList(apiColonies, localColonies, OwnerUUID);
+            ColonyMergeService.MergeColonyList(new ColonyList { Colonies = apiColonies }, localColonies, OwnerUUID);
 
             Assert.That(existingColony.ContentmentIndex, Is.EqualTo(0));
             Assert.That(existingColony.WorkerCurrentAttitude, Is.EqualTo(0));
@@ -398,9 +398,9 @@ namespace OE2EmpireTracker.Tests.Services
                 Structures = new List<ColonyStructure>(),
             };
 
-            var apiBuildings = new List<GameApiColonyBuilding>
+            var apiBuildings = new List<ColonyBuilding>
             {
-                new GameApiColonyBuilding
+                new ColonyBuilding
                 {
                     BuildingId = 101,
                     ColonyBuildingTypeId = 5,
@@ -410,7 +410,7 @@ namespace OE2EmpireTracker.Tests.Services
                 },
             };
 
-            bool changed = ColonyMergeService.MergeBuildings(apiBuildings, colony);
+            bool changed = ColonyMergeService.MergeBuildings(new ColonyBuildings { Buildings = apiBuildings }, colony);
 
             Assert.That(changed, Is.True);
             Assert.That(colony.Structures.Count, Is.EqualTo(1));
@@ -453,9 +453,9 @@ namespace OE2EmpireTracker.Tests.Services
                 Structures = new List<ColonyStructure> { existingStructure },
             };
 
-            var apiBuildings = new List<GameApiColonyBuilding>
+            var apiBuildings = new List<ColonyBuilding>
             {
-                new GameApiColonyBuilding
+                new ColonyBuilding
                 {
                     BuildingId = 200,
                     ColonyBuildingTypeId = 3,
@@ -465,7 +465,7 @@ namespace OE2EmpireTracker.Tests.Services
                 },
             };
 
-            bool changed = ColonyMergeService.MergeBuildings(apiBuildings, colony);
+            bool changed = ColonyMergeService.MergeBuildings(new ColonyBuildings { Buildings = apiBuildings }, colony);
 
             Assert.That(changed, Is.True);
             Assert.That(colony.Structures.Count, Is.EqualTo(1));
@@ -511,32 +511,32 @@ namespace OE2EmpireTracker.Tests.Services
                 Structures = new List<ColonyStructure> { existingStructure },
             };
 
-            var apiBuildings = new List<GameApiColonyBuilding>
+            var apiBuildings = new List<ColonyBuilding>
             {
-                new GameApiColonyBuilding
+                new ColonyBuilding
                 {
                     BuildingId = 300,
                     ColonyBuildingTypeId = 7,
                     BlueprintDesignName = "Factory",
                     BuildingOnline = true,
                     StatusId = 1,
-                    OpsStatusEffects = new List<GameApiBuildingStatusEffect>
+                    OpsStatusEffects = new List<ColonyBuildingStatusEffect>
                     {
-                        new GameApiBuildingStatusEffect { StatusId = 2, ModTypeId = 3, Change = 1.5 },
-                        new GameApiBuildingStatusEffect { StatusId = 3, ModTypeId = 4, Change = 2.0 },
+                        new ColonyBuildingStatusEffect { StatusId = 2, ModTypeId = 3, Change = 1.5 },
+                        new ColonyBuildingStatusEffect { StatusId = 3, ModTypeId = 4, Change = 2.0 },
                     },
-                    Industries = new List<GameApiBuildingIndustry>
+                    Industries = new List<ColonyBuildingIndustry>
                     {
-                        new GameApiBuildingIndustry { Id = 20, Name = "New Industry" },
+                        new ColonyBuildingIndustry { Id = 20, Name = "New Industry" },
                     },
-                    BuildingAttributes = new List<GameApiBuildingAttribute>
+                    BuildingAttributes = new List<ColonyBuildingAttribute>
                     {
-                        new GameApiBuildingAttribute { ModTypeId = 5, PropertyName = "NewProp", PropertyValue = "Val" },
+                        new ColonyBuildingAttribute { ModTypeId = 5, PropertyName = "NewProp", PropertyValue = 0 },
                     },
                 },
             };
 
-            bool changed = ColonyMergeService.MergeBuildings(apiBuildings, colony);
+            bool changed = ColonyMergeService.MergeBuildings(new ColonyBuildings { Buildings = apiBuildings }, colony);
 
             Assert.That(changed, Is.True);
 
@@ -582,9 +582,9 @@ namespace OE2EmpireTracker.Tests.Services
                 Structures = new List<ColonyStructure> { existingStructure },
             };
 
-            var apiBuildings = new List<GameApiColonyBuilding>
+            var apiBuildings = new List<ColonyBuilding>
             {
-                new GameApiColonyBuilding
+                new ColonyBuilding
                 {
                     BuildingId = 400,
                     ColonyBuildingTypeId = 2,
@@ -594,7 +594,7 @@ namespace OE2EmpireTracker.Tests.Services
                 },
             };
 
-            ColonyMergeService.MergeBuildings(apiBuildings, colony);
+            ColonyMergeService.MergeBuildings(new ColonyBuildings { Buildings = apiBuildings }, colony);
 
             Assert.That(existingStructure.ManufacturingBlueprintUUID, Is.EqualTo("bp-uuid-999"));
             Assert.That(existingStructure.BuildQueueSequence, Is.EqualTo(1));
@@ -626,9 +626,9 @@ namespace OE2EmpireTracker.Tests.Services
             };
 
             // API returns a different building — local structure 500 is not in the response
-            var apiBuildings = new List<GameApiColonyBuilding>
+            var apiBuildings = new List<ColonyBuilding>
             {
-                new GameApiColonyBuilding
+                new ColonyBuilding
                 {
                     BuildingId = 600,
                     ColonyBuildingTypeId = 9,
@@ -638,7 +638,7 @@ namespace OE2EmpireTracker.Tests.Services
                 },
             };
 
-            ColonyMergeService.MergeBuildings(apiBuildings, colony);
+            ColonyMergeService.MergeBuildings(new ColonyBuildings { Buildings = apiBuildings }, colony);
 
             // Local structure still present, plus the new one
             Assert.That(colony.Structures.Count, Is.EqualTo(2));
@@ -671,9 +671,9 @@ namespace OE2EmpireTracker.Tests.Services
                 Structures = new List<ColonyStructure> { existingStructure },
             };
 
-            var apiBuildings = new List<GameApiColonyBuilding>
+            var apiBuildings = new List<ColonyBuilding>
             {
-                new GameApiColonyBuilding
+                new ColonyBuilding
                 {
                     BuildingId = 700,
                     ColonyBuildingTypeId = 4,
@@ -684,16 +684,16 @@ namespace OE2EmpireTracker.Tests.Services
                 },
             };
 
-            ColonyMergeService.MergeBuildings(apiBuildings, colony);
+            ColonyMergeService.MergeBuildings(new ColonyBuildings { Buildings = apiBuildings }, colony);
 
             Assert.That(existingStructure.MiningSurveyResource, Is.EqualTo("Lanthanides"));
 
             // Now verify it does NOT overwrite if local already has a value
             existingStructure.MiningSurveyResource = "Iron";
 
-            var apiBuildings2 = new List<GameApiColonyBuilding>
+            var apiBuildings2 = new List<ColonyBuilding>
             {
-                new GameApiColonyBuilding
+                new ColonyBuilding
                 {
                     BuildingId = 700,
                     ColonyBuildingTypeId = 4,
@@ -704,7 +704,7 @@ namespace OE2EmpireTracker.Tests.Services
                 },
             };
 
-            ColonyMergeService.MergeBuildings(apiBuildings2, colony);
+            ColonyMergeService.MergeBuildings(new ColonyBuildings { Buildings = apiBuildings2 }, colony);
 
             Assert.That(existingStructure.MiningSurveyResource, Is.EqualTo("Iron"));
         }
@@ -735,20 +735,20 @@ namespace OE2EmpireTracker.Tests.Services
             };
 
             var finishTime = FrozenTime.AddHours(2);
-            var apiBuildings = new List<GameApiColonyBuilding>
+            var apiBuildings = new List<ColonyBuilding>
             {
-                new GameApiColonyBuilding
+                new ColonyBuilding
                 {
                     BuildingId = 800,
                     ColonyBuildingTypeId = 6,
                     BlueprintDesignName = "Commodity Factory",
                     BuildingOnline = false,
                     StatusId = 0,
-                    ConstructingBuildingFinish = finishTime,
+                    ConstructingBuildingFinish = new DateTimeOffset(finishTime),
                 },
             };
 
-            ColonyMergeService.MergeBuildings(apiBuildings, colony);
+            ColonyMergeService.MergeBuildings(new ColonyBuildings { Buildings = apiBuildings }, colony);
 
             Assert.That(existingStructure.BuildCompletionTime, Is.Not.Null);
             Assert.That(existingStructure.BuildCompletionTime.TimeRemaining, Is.EqualTo(7200));
@@ -756,9 +756,9 @@ namespace OE2EmpireTracker.Tests.Services
             // Now verify it does NOT overwrite if local already has a timer
             var existingTimer = existingStructure.BuildCompletionTime;
 
-            var apiBuildings2 = new List<GameApiColonyBuilding>
+            var apiBuildings2 = new List<ColonyBuilding>
             {
-                new GameApiColonyBuilding
+                new ColonyBuilding
                 {
                     BuildingId = 800,
                     ColonyBuildingTypeId = 6,
@@ -769,7 +769,7 @@ namespace OE2EmpireTracker.Tests.Services
                 },
             };
 
-            ColonyMergeService.MergeBuildings(apiBuildings2, colony);
+            ColonyMergeService.MergeBuildings(new ColonyBuildings { Buildings = apiBuildings2 }, colony);
 
             // Should still be the original timer, not overwritten
             Assert.That(existingStructure.BuildCompletionTime, Is.SameAs(existingTimer));
@@ -795,18 +795,18 @@ namespace OE2EmpireTracker.Tests.Services
                 Items = new ItemBag(),
             };
 
-            var apiItems = new List<GameApiAssetCargoItem>
+            var apiItems = new List<AssetCargoItem>
             {
-                new GameApiAssetCargoItem
+                new AssetCargoItem
                 {
                     ResourceName = "Iron",
                     TypeC = AssetTypeCodes.Resource,
                     Amount = 500,
-                    CargoItemId = 42,
+                    Id = 42,
                 },
             };
 
-            var result = ColonyMergeService.MergeWarehouse(apiItems, colony);
+            var result = ColonyMergeService.MergeWarehouse(new ColonyWarehouse { Contents = apiItems }, colony);
 
             Assert.That(result, Is.True);
             Assert.That(colony.Items.Count(), Is.EqualTo(1));
@@ -842,18 +842,18 @@ namespace OE2EmpireTracker.Tests.Services
             };
             colony.Items.AddItem(existingItem);
 
-            var apiItems = new List<GameApiAssetCargoItem>
+            var apiItems = new List<AssetCargoItem>
             {
-                new GameApiAssetCargoItem
+                new AssetCargoItem
                 {
                     ResourceName = "Iron",
                     TypeC = AssetTypeCodes.Resource,
                     Amount = 750,
-                    CargoItemId = 101,
+                    Id = 101,
                 },
             };
 
-            var result = ColonyMergeService.MergeWarehouse(apiItems, colony);
+            var result = ColonyMergeService.MergeWarehouse(new ColonyWarehouse { Contents = apiItems }, colony);
 
             Assert.That(result, Is.True);
             Assert.That(colony.Items.Count(), Is.EqualTo(1));
@@ -884,18 +884,18 @@ namespace OE2EmpireTracker.Tests.Services
             };
             colony.Items.AddItem(existingItem);
 
-            var apiItems = new List<GameApiAssetCargoItem>
+            var apiItems = new List<AssetCargoItem>
             {
-                new GameApiAssetCargoItem
+                new AssetCargoItem
                 {
                     ResourceName = "Copper",
                     TypeC = AssetTypeCodes.Resource,
                     Amount = 0,
-                    CargoItemId = 102,
+                    Id = 102,
                 },
             };
 
-            var result = ColonyMergeService.MergeWarehouse(apiItems, colony);
+            var result = ColonyMergeService.MergeWarehouse(new ColonyWarehouse { Contents = apiItems }, colony);
 
             Assert.That(result, Is.True);
             Assert.That(colony.Items.Count(), Is.EqualTo(1));
@@ -926,18 +926,18 @@ namespace OE2EmpireTracker.Tests.Services
             colony.Items.AddItem(existingItem);
 
             // API returns a different item — Gold is not in the response
-            var apiItems = new List<GameApiAssetCargoItem>
+            var apiItems = new List<AssetCargoItem>
             {
-                new GameApiAssetCargoItem
+                new AssetCargoItem
                 {
-                    CargoItemId = 9999,
+                    Id = 9999,
                     ResourceName = "Silver",
                     TypeC = AssetTypeCodes.Resource,
                     Amount = 300,
                 },
             };
 
-            ColonyMergeService.MergeWarehouse(apiItems, colony);
+            ColonyMergeService.MergeWarehouse(new ColonyWarehouse { Contents = apiItems }, colony);
 
             // Gold should be removed (game API is authoritative)
             Assert.That(colony.Items.Items.ContainsKey("item-uuid-003"), Is.False);
@@ -960,9 +960,9 @@ namespace OE2EmpireTracker.Tests.Services
                 Items = new ItemBag(),
             };
 
-            var apiItems = new List<GameApiAssetCargoItem>
+            var apiItems = new List<AssetCargoItem>
             {
-                new GameApiAssetCargoItem
+                new AssetCargoItem
                 {
                     ResourceName = "Mystery Item",
                     TypeC = "ZZ",
@@ -970,7 +970,7 @@ namespace OE2EmpireTracker.Tests.Services
                 },
             };
 
-            ColonyMergeService.MergeWarehouse(apiItems, colony);
+            ColonyMergeService.MergeWarehouse(new ColonyWarehouse { Contents = apiItems }, colony);
 
             var item = colony.Items.Items.Values.First();
             Assert.That(item.ItemType, Is.EqualTo(ItemType.ItemTypeEnum.None));
@@ -999,9 +999,9 @@ namespace OE2EmpireTracker.Tests.Services
                 Items = new ItemBag(),
             };
 
-            var apiItems = new List<GameApiAssetCargoItem>
+            var apiItems = new List<AssetCargoItem>
             {
-                new GameApiAssetCargoItem
+                new AssetCargoItem
                 {
                     ResourceName = "Test Item " + typeC,
                     TypeC = typeC,
@@ -1009,7 +1009,7 @@ namespace OE2EmpireTracker.Tests.Services
                 },
             };
 
-            ColonyMergeService.MergeWarehouse(apiItems, colony);
+            ColonyMergeService.MergeWarehouse(new ColonyWarehouse { Contents = apiItems }, colony);
 
             var item = colony.Items.Items.Values.First();
             Assert.That(item.ItemType, Is.EqualTo(expectedType));

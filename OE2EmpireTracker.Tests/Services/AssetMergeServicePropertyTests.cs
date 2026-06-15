@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FsCheck;
 using NUnit.Framework;
-using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Client.Generated;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Parsers;
@@ -213,16 +213,16 @@ namespace OE2EmpireTracker.Tests.Services
         // Generators for merge property tests
         // ---------------------------------------------------------------
 
-        private static Gen<GameApiAssetCargoItem> CargoItemGen()
+        private static Gen<AssetCargoItem> CargoItemGen()
         {
             return from cargoItemId in Gen.Choose(1, 100000)
                    from typeC in KnownTypeCGen()
                    from amount in Gen.Choose(1, 9999)
                    from typeId in Gen.Choose(1, 500)
                    from resourceName in BaseResourceNameGen()
-                   select new GameApiAssetCargoItem
+                   select new AssetCargoItem
                    {
-                       CargoItemId = cargoItemId,
+                       Id = cargoItemId,
                        TypeC = typeC,
                        Amount = amount,
                        TypeId = typeId,
@@ -230,19 +230,19 @@ namespace OE2EmpireTracker.Tests.Services
                    };
         }
 
-        private static Gen<List<GameApiAssetCargoItem>> CargoItemListGen()
+        private static Gen<List<AssetCargoItem>> CargoItemListGen()
         {
             return from count in Gen.Choose(1, 20)
                    from items in Gen.ListOf(count, CargoItemGen())
                    select items.ToList();
         }
 
-        private static Gen<List<GameApiAssetCargoItem>> UniqueCargoItemListGen()
+        private static Gen<List<AssetCargoItem>> UniqueCargoItemListGen()
         {
             return from count in Gen.Choose(1, 20)
                    from items in Gen.ListOf(count, CargoItemGen())
                    let uniqueItems = items
-                       .GroupBy(i => i.CargoItemId)
+                       .GroupBy(i => i.Id)
                        .Select(g => g.First())
                        .ToList()
                    where uniqueItems.Count > 0

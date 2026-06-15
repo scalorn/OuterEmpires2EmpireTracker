@@ -4,13 +4,13 @@
 
 This design integrates live market data from the OE2 Public API into the Empire Tracker desktop application. The system syncs public market orders, own orders, competitor data, and price statistics from all configured characters into a unified local dataset. Players browse this merged data offline with filtering and sorting, and the stock target replenishment system can count market sell orders as inventory.
 
-The design adds a new `MarketSyncService` that orchestrates API calls, token lifecycle, and data persistence. It builds on the existing `GameApiRequestQueue` for rate limiting and circuit breaking, and the existing `CredentialStore` for DPAPI-encrypted secret storage. The existing `FormMarket` gains new tabs for synced data alongside the existing manual Listings, Transactions, and Summary tabs.
+The design adds a new `MarketDataService` that handles domain mapping, merge logic, and data persistence. It builds on the existing `IGameApiTypedClient` for API communication (typed DTOs with built-in resilience), the existing `GameApiRequestQueue` for concurrency control, and the existing `CredentialStore` for DPAPI-encrypted secret storage. The existing `FormMarket` gains new tabs for synced data alongside the existing manual Listings, Transactions, and Summary tabs.
 
 ### Key Design Decisions
 
 1. **Merged dataset with per-character sync metadata** — Public orders from all characters merge into one collection keyed by `marketId`. Sync metadata tracks each character's system/range/timestamp so stale order removal only acts on orders confirmably within range.
 
-2. **Reuse existing infrastructure** — `GameApiRequestQueue` handles rate limiting, retry, and circuit breaking. `CredentialStore` handles DPAPI encryption. `DistanceCalculator` and `SystemRepository` handle JAS distance computations for stale order detection.
+2. **Reuse existing infrastructure** — `IGameApiTypedClient` handles API communication with built-in resilience (retry, circuit breaker, rate limiting). `GameApiRequestQueue` handles concurrency control. `CredentialStore` handles DPAPI encryption. `DistanceCalculator` and `SystemRepository` handle JAS distance computations for stale order detection.
 
 3. **Separate API models from manual models** — Synced orders (`SyncedMarketOrder`) are distinct from manual `MarketListing`/`MarketTransaction` entities. No mixing of user-entered data with API-sourced data.
 
@@ -28,12 +28,13 @@ The market integration builds on top of existing infrastructure that already han
 
 | Component | Role | Location |
 |-----------|------|----------|
-| `GameApiClient` | HTTP client with all market endpoints (`GetMarketListingsAsync`, `GetMarketBuyOrdersAsync`, etc.) | `OE2EmpireTracker.Common/Client/` |
-| `GameApiContext` | Singleton owning client, credential manager, connection monitor, sync scheduler | `OE2EmpireTracker.Common/Client/` |
+| `IGameApiTypedClient` / `GameApiTypedClient` | HTTP client with all market endpoints (`GetMarketListingsAsync`, `GetMarketBuyOrdersAsync`, etc.) — returns typed DTOs directly (no raw JSON, no tuple returns, no manual deserialization) | `OE2EmpireTracker.Common/Client/` |
+| `GameApiContext` | Singleton owning `IGameApiTypedClient TypedClient`, credential manager, connection monitor, sync scheduler | `OE2EmpireTracker.Common/Client/` |
 | `GameApiCredentialManager` | DPAPI-encrypted per-character secret storage | `OE2EmpireTracker.Common/Services/` |
-| `GameApiRequestQueue` | Rate limiting, retry with exponential backoff, circuit breaker (Polly) | `OE2EmpireTracker.Common/Services/` |
+| `GameApiRequestQueue` | Concurrency control (maxInflight) and dispatch pacing | `OE2EmpireTracker.Common/Services/` |
 | `QueueSyncService` | Work item orchestration — already creates market work items | `OE2EmpireTracker.Common/Services/` |
-| `GameApiMarketListingsResponse` | DTO for deserializing `/v1/market/listings` responses | `OE2EmpireTracker.Common/Models/` |
+
+> **Note:** `IGameApiTypedClient` already provides built-in resilience: Polly retry (3 retries with exponential backoff for 5xx), circuit breaker (3 failures → 30s open), TokenBucketRateLimiter (0.9 TPS), and HTTP 429 handling with Retry-After header parsing. The `GameApiRequestQueue` controls concurrency (maxInflight) and dispatch pacing. No additional rate limiting code is needed in MarketDataService.
 
 ### New/Modified Components
 
@@ -48,7 +49,7 @@ The market integration builds on top of existing infrastructure that already han
 ```mermaid
 graph TB
     subgraph "Existing Infrastructure (unchanged)"
-        GAC[GameApiClient]
+        GAC[IGameApiTypedClient]
         GACtx[GameApiContext]
         GACM[GameApiCredentialManager]
         GARQ[GameApiRequestQueue]
@@ -67,7 +68,7 @@ graph TB
     end
 
     QSS -->|"fetches market data"| GAC
-    QSS -->|"passes response JSON"| MDS
+    QSS -->|"passes typed DTOs"| MDS
     MDS -->|"maps to domain, merges, persists"| PC
     STS -->|"reads own sell orders"| PC
     FM -->|"reads merged dataset"| PC
@@ -83,39 +84,39 @@ graph TB
 sequenceDiagram
     participant BP as BackgroundProcessor
     participant QSS as QueueSyncService
-    participant GAC as GameApiClient
+    participant GAC as IGameApiTypedClient
     participant API as Game API
     participant MDS as MarketDataService
     participant PC as PlayerContext
 
     BP->>QSS: RunSyncAsync()
-    Note over QSS: Existing token exchange already handled
+    Note over QSS: Token cached internally by typed client after ExchangeTokenAsync
 
-    QSS->>GAC: GetMarketListingsAsync(appId, token, "all")
+    QSS->>GAC: GetMarketListingsAsync("all", range, null, ct)
     GAC->>API: GET /v1/market/listings
     API-->>GAC: JSON response
-    GAC-->>QSS: (Success, Json)
+    GAC-->>QSS: MarketListings DTO
 
-    QSS->>MDS: ProcessMarketListings(json, characterUUID, systemId, range)
-    MDS->>MDS: Deserialize, map to domain model
+    QSS->>MDS: ProcessMarketListings(dto, characterUUID, systemId, range)
+    MDS->>MDS: Map to domain model
     MDS->>MDS: Merge into dataset, remove stale orders
     MDS->>PC: Update MarketSyncData
     PC->>PC: WriteContext()
 
-    QSS->>GAC: GetMarketBuyOrdersAsync(appId, token)
+    QSS->>GAC: GetMarketBuyOrdersAsync(ct)
     GAC->>API: GET /v1/market/orders/buy
     API-->>GAC: JSON response
-    GAC-->>QSS: (Success, Json)
+    GAC-->>QSS: MarketBuyOrders DTO
 
-    QSS->>MDS: ProcessOwnBuyOrders(json, characterUUID)
+    QSS->>MDS: ProcessOwnBuyOrders(dto, characterUUID)
     MDS->>PC: Update OwnOrders
 
-    QSS->>GAC: GetMarketSellOrdersAsync(appId, token)
-    QSS->>GAC: GetMarketBuyCompetitorsAsync(appId, token, marketIds)
-    QSS->>GAC: GetMarketSellCompetitorsAsync(appId, token, marketIds)
+    QSS->>GAC: GetMarketSellOrdersAsync(ct)
+    QSS->>GAC: GetMarketBuyCompetitorsAsync(marketIds, ct)
+    QSS->>GAC: GetMarketSellCompetitorsAsync(marketIds, ct)
     Note over QSS: Competitor fetches cascade from own order results
 
-    QSS->>MDS: ProcessCompetitors(json, characterUUID)
+    QSS->>MDS: ProcessCompetitors(dto, characterUUID)
     MDS->>PC: Update Competitors
     PC-->>QSS: Done
 ```
@@ -125,27 +126,27 @@ sequenceDiagram
 
 ### MarketDataService (New)
 
-Handles domain mapping, merge logic, and stale order removal. Called by the existing `QueueSyncService` work items after they fetch raw JSON from the API. Does NOT make API calls itself — that's `GameApiClient`'s job.
+Handles domain mapping, merge logic, and stale order removal. Called by the existing `QueueSyncService` work items after they receive typed DTOs from `IGameApiTypedClient`. Does NOT make API calls itself — that's the typed client's job.
 
 ```csharp
 public class MarketDataService
 {
-    // Maps API JSON to domain model, merges into dataset, removes stale orders
+    // Maps typed DTO to domain model, merges into dataset, removes stale orders
     public void ProcessMarketListings(
-        string json, string characterUUID, int systemId, int rangeJas);
+        MarketListings dto, string characterUUID, int systemId, int rangeJas);
 
-    // Maps own buy order JSON to domain model, stores per-character
-    public void ProcessOwnBuyOrders(string json, string characterUUID);
+    // Maps own buy order DTO to domain model, stores per-character
+    public void ProcessOwnBuyOrders(MarketBuyOrders dto, string characterUUID);
 
-    // Maps own sell order JSON to domain model, stores per-character
-    public void ProcessOwnSellOrders(string json, string characterUUID);
+    // Maps own sell order DTO to domain model, stores per-character
+    public void ProcessOwnSellOrders(MarketSellOrders dto, string characterUUID);
 
-    // Maps competitor JSON and links to own orders
-    public void ProcessBuyCompetitors(string json, string characterUUID);
-    public void ProcessSellCompetitors(string json, string characterUUID);
+    // Maps competitor DTO and links to own orders
+    public void ProcessBuyCompetitors(MarketCompetitorOrders dto, string characterUUID);
+    public void ProcessSellCompetitors(MarketCompetitorOrders dto, string characterUUID);
 
     // Price lookup results
-    public void ProcessPriceStats(string json, string characterUUID, string itemName);
+    public void ProcessPriceStats(MarketPriceStats dto, string characterUUID, string itemName);
 
     // Returns the merged dataset filtered for the given character (including private sale visibility)
     public IReadOnlyList<ReadOnlySyncedMarketOrder> GetVisibleOrders(string characterUUID);
@@ -161,20 +162,21 @@ public class MarketDataService
 
 ### QueueSyncService Modifications
 
-The existing market work items (`CreateMarketListingsItem`, `CreateMarketBuyOrdersItem`, `CreateMarketSellOrdersItem`) are modified to pass response JSON to `MarketDataService` instead of just logging. Competitor fetches cascade from own order results (need the market IDs).
+The existing market work items (`CreateMarketListingsItem`, `CreateMarketBuyOrdersItem`, `CreateMarketSellOrdersItem`) are modified to pass typed DTOs to `MarketDataService` instead of just logging. Competitor fetches cascade from own order results (need the market IDs).
+
+Error handling uses `try/catch` for `ApiHttpException` (401, 429, 5xx) and `ApiBusinessException`, leveraging the existing `HandleUnauthorizedAsync` and `HandleRateLimited` patterns already in `QueueSyncService`.
 
 ```csharp
 // Before (existing — just logs):
-if (result.Success) { Log.Debug("MarketListings fetched successfully."); }
+Log.Debug("MarketListings fetched successfully.");
 
-// After (passes to MarketDataService):
-if (result.Success)
-{
-    _marketDataService.ProcessMarketListings(
-        result.Json, _currentPlayerUUID, _currentSystemId, _currentTradeRange);
-    Log.Debug("MarketListings processed: merged into dataset.");
-}
+// After (passes DTO to MarketDataService):
+var listings = await _typedClient.GetMarketListingsAsync("all", range, null, ct).ConfigureAwait(false);
+_marketDataService.ProcessMarketListings(listings, _currentPlayerUUID, _currentSystemId, _currentTradeRange);
+Log.Debug("MarketListings processed: merged into dataset.");
 ```
+
+> **Token management:** The typed client caches tokens internally after `ExchangeTokenAsync`. Subsequent API calls automatically attach the Bearer token. No explicit token passing needed — no `appId` or `accessToken` parameters on individual API calls.
 
 
 ### Market Alert System
@@ -270,10 +272,11 @@ The existing `QueueSyncService.RunSyncAsync` syncs only the current player. Mark
 Algorithm:
   1. Get all configured character UUIDs from GameApiCredentialManager.GetConfiguredPlayerUUIDs()
   2. For each character (sequentially, to respect rate limits):
-     a. Exchange token for that character
+     a. Call ExchangeTokenAsync on the typed client for that character
      b. Get that character's enabled SavedSearches
      c. For each enabled search: call GetMarketListingsAsync with the search parameters
-     d. Pass each response to MarketDataService to map and merge into MarketListings
+        (typed client attaches Bearer token automatically — no appId/accessToken params needed)
+     d. Pass each DTO result to MarketDataService to map and merge into MarketListings
      e. Call GetMarketBuyOrdersAsync / GetMarketSellOrdersAsync for own order detail
      f. Update CharacterSyncMetadata (system, range, SystemsInRange, timestamp)
   3. Run stale order removal across all listings
@@ -355,7 +358,7 @@ Synced market data populates the **existing `MarketListing` model**, extended wi
 - Market order details (MarketId, buy/sell, seller info, system/station, expiry)
 - Sync tracking (which character synced it, when)
 
-The `MarketSyncService` (now `MarketDataService`) maps API responses into `MarketListing` entries — creating new ones for orders not yet seen, updating existing ones on re-sync, and removing stale ones.
+The `MarketDataService` maps API DTOs into `MarketListing` entries — creating new ones for orders not yet seen, updating existing ones on re-sync, and removing stale ones.
 
 The sync is **search-driven**: each character has saved searches that define what data to pull from the API. On sync, each saved search executes against the API and results are merged into the listings.
 
@@ -964,16 +967,19 @@ Retry delays increase monotonically with each consecutive 429 response. Formally
 
 Most error handling is already implemented in the existing infrastructure:
 
-- **Rate limiting (429)**: `GameApiClient.ExecuteWithPoliciesAsync` already handles retry with exponential backoff via Polly
-- **Circuit breaker**: Already configured in `GameApiClient` (opens after consecutive failures)
-- **Token exchange failures**: Already handled by `QueueSyncService.ThrowIfUnauthorizedAsync`
-- **Network timeouts**: Already handled by Polly retry policies in `GameApiClient`
+- **Rate limiting (429)**: `IGameApiTypedClient` handles retry with exponential backoff via Polly (3 retries), plus Retry-After header parsing
+- **Circuit breaker**: Already configured in `IGameApiTypedClient` (3 failures → 30s open)
+- **Token exchange failures**: Already handled by `QueueSyncService.HandleUnauthorizedAsync`
+- **Network timeouts**: Already handled by Polly retry policies in `IGameApiTypedClient`
+- **Token bucket rate limiting**: `IGameApiTypedClient` enforces 0.9 TPS via `TokenBucketRateLimiter`
+
+Callers use `try/catch` for `ApiHttpException` (HTTP status errors) and `ApiBusinessException` (API business logic errors). The existing `QueueSyncService` patterns (`HandleUnauthorizedAsync`, `HandleRateLimited`) handle 401 and 429 scenarios.
 
 ### New Error Handling (MarketDataService)
 
 | Error | Handling |
 |-------|----------|
-| JSON deserialization failure | Log error with raw JSON snippet, skip this endpoint's data, continue sync |
+| DTO mapping failure (unexpected null or missing field) | Log error with DTO type and field, skip this endpoint's data, continue sync |
 | Domain mapping failure (unknown item type) | Log warning, store with `ItemType = None` and raw API values preserved |
 | Station UUID lookup miss (unknown GameLocationId) | Store with `StationUUID = ""`, `GameLocationId` preserved for future resolution |
 | Stale removal with missing system coordinates | Skip stale removal for orders with unknown SystemId, log warning |
@@ -1003,7 +1009,7 @@ Each correctness property maps to a property-based test:
 | CP-5: Deduplication | `MarketMergePropertyTests` | Generate overlapping order sets with duplicate marketIds, verify uniqueness |
 | CP-6: Private Sale Isolation | `PrivateSalePropertyTests` | Generate private/public orders, verify visibility constraints |
 | CP-7: Shortfall Non-Negative | `StockTargetMarketPropertyTests` | Generate random targets/orders/in-production counts, verify non-negative |
-| CP-8: Token Refresh | Covered by existing `GameApiClient` tests | Already tested in request queue property tests |
+| CP-8: Token Refresh | Covered by existing `IGameApiTypedClient` tests | Already tested in request queue property tests |
 | CP-9: Circuit Breaker | Covered by existing `GameApiRequestQueuePropertyTests` | Already tested |
 | CP-10: Backoff Monotonicity | Covered by existing `GameApiRequestQueueRateLimitTests` | Already tested |
 
@@ -1018,7 +1024,7 @@ Each correctness property maps to a property-based test:
 
 - Tests use `SystemClock.FreezeAt(...)` for deterministic time in sync metadata timestamps
 - `MarketDataService` tests inject a mock `PlayerContext` with known stations/systems
-- Existing `GameApiClient` and `QueueSyncService` tests already cover the API communication layer
+- Existing `IGameApiTypedClient` and `QueueSyncService` tests already cover the API communication layer
 
 ### Test Data Fixtures
 

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FsCheck;
 using NUnit.Framework;
-using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Client.Generated;
 using OE2EmpireTracker.Common.Models;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
@@ -132,7 +132,7 @@ namespace OE2EmpireTracker.Tests.Services
             }
 
             // Create API buildings matching pool types by index
-            var apiBuildings = new List<GameApiColonyBuilding>();
+            var apiBuildingsList = new List<ColonyBuilding>();
             int effectiveApiCount = Math.Min(apiCount, structureCount);
             for (int i = 0; i < effectiveApiCount; i++)
             {
@@ -144,14 +144,14 @@ namespace OE2EmpireTracker.Tests.Services
                     ? FrozenTime.AddHours(2)
                     : FrozenTime.AddHours(-(effectiveApiCount - i));
 
-                apiBuildings.Add(new GameApiColonyBuilding
+                apiBuildingsList.Add(new ColonyBuilding
                 {
                     BuildingId = 100 + i,
                     ColonyBuildingTypeId = typeId,
                     BlueprintDesignName = "Structure-Type-" + typeId,
                     StatusId = 1,
                     BuildingOnline = !isFuture,
-                    ConstructingBuildingFinish = completionDate,
+                    ConstructingBuildingFinish = new DateTimeOffset(completionDate, TimeSpan.Zero),
                     DurabilityCurrent = 100.0,
                     DurabilityMax = 100.0,
                 });
@@ -186,7 +186,7 @@ namespace OE2EmpireTracker.Tests.Services
             return new ColonyTestInput
             {
                 Colony = colony,
-                ApiBuildings = apiBuildings,
+                ApiBuildings = new ColonyBuildings { Buildings = apiBuildingsList },
             };
         }
 
@@ -503,7 +503,7 @@ namespace OE2EmpireTracker.Tests.Services
         {
             public Colony Colony { get; set; }
 
-            public List<GameApiColonyBuilding> ApiBuildings { get; set; }
+            public ColonyBuildings ApiBuildings { get; set; }
         }
     }
 }

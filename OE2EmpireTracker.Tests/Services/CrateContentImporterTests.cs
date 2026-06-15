@@ -38,42 +38,24 @@ namespace OE2EmpireTracker.Tests.Services
             importer = new CrateContentImporter(playerContext, empireContext, blueprintLinkageService);
         }
 
-        /// <summary>
-        /// Wraps a response object in the standard GameApiServiceResponse envelope
-        /// that all game API endpoints return.
-        /// </summary>
-        private static string WrapInEnvelope<T>(T data)
-        {
-            var envelope = new GameApiServiceResponse<T>
-            {
-                Success = true,
-                ReturnCode = 200,
-                ReturnString = "OK",
-                Data = data,
-            };
-            return JsonConvert.SerializeObject(envelope);
-        }
-
         // -------------------------------------------------------------------
-        // Test: Malformed JSON returns empty result with Success=false
-        // Validates: Req 9 AC4 (malformed JSON no exception)
+        // Test: Null DTO returns empty result
+        // Validates: Req 9 AC4 (null input no exception)
         // -------------------------------------------------------------------
 
         /// <summary>
-        /// Verifies that malformed JSON does not throw an exception and returns
-        /// an empty result with Success set to false.
+        /// Verifies that a null DTO does not throw an exception and returns
+        /// an empty result.
         /// </summary>
         [Test]
-        public void CrateContentImporter_MalformedJson_NoException()
+        public void CrateContentImporter_NullDto_NoException()
         {
             var parentBag = new ItemBag();
             var visited = new HashSet<int>();
 
-            var result = importer.Import("not valid json {{{{", 999, parentBag, "owner-uuid", visited);
+            var result = importer.Import(null, 999, parentBag, "owner-uuid", visited);
 
             Assert.That(result, Is.Not.Null);
-            Assert.That(result.Success, Is.False);
-            Assert.That(result.Errors, Has.Count.GreaterThan(0));
             Assert.That(result.TotalItems, Is.EqualTo(0));
             Assert.That(result.Imported, Is.EqualTo(0));
         }
@@ -90,16 +72,17 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void CrateContentImporter_EmptyResponse_ReturnsEmptyBag()
         {
-            var response = new GameApiAssetDetailResponse { Cargo = new List<GameApiAssetCargoItem>() };
-            string json = WrapInEnvelope(response);
+            var crateContents = new Generated.AssetCrateContents
+            {
+                Cargo = new List<Generated.AssetCargoItem>(),
+            };
 
             var parentBag = new ItemBag();
             var visited = new HashSet<int>();
 
-            var result = importer.Import(json, 888, parentBag, "owner-uuid", visited);
+            var result = importer.Import(crateContents, 888, parentBag, "owner-uuid", visited);
 
             Assert.That(result, Is.Not.Null);
-            Assert.That(result.Success, Is.True);
             Assert.That(result.TotalItems, Is.EqualTo(0));
             Assert.That(result.Imported, Is.EqualTo(0));
             Assert.That(result.Failed, Is.EqualTo(0));
@@ -134,7 +117,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void CrateContentImporter_AllItemTypes_Mapped()
         {
-            var cargoItems = new List<GameApiAssetCargoItem>
+            var cargoItems = new List<Generated.AssetCargoItem>
             {
                 MakeCargoItem(1, "Bp", "Laser Mk2"),
                 MakeCargoItem(2, "R", "Iron (High Purity)"),
@@ -150,33 +133,31 @@ namespace OE2EmpireTracker.Tests.Services
                 MakeCargoItem(12, "Sc", "Planet Survey"),
             };
 
-            var response = new GameApiAssetDetailResponse { Cargo = cargoItems };
-            string json = WrapInEnvelope(response);
+            var crateContents = new Generated.AssetCrateContents { Cargo = cargoItems };
 
             var parentBag = new ItemBag();
             var visited = new HashSet<int>();
 
-            var result = importer.Import(json, 100, parentBag, "owner-uuid", visited);
+            var result = importer.Import(crateContents, 100, parentBag, "owner-uuid", visited);
 
-            Assert.That(result.Success, Is.True);
             Assert.That(result.TotalItems, Is.EqualTo(12));
             Assert.That(result.Imported, Is.EqualTo(12));
             Assert.That(result.Failed, Is.EqualTo(0));
 
             // Verify type counts — codes with known mappings
-            Assert.That(result.CountsByType[ItemType.ItemTypeEnum.Blueprint], Is.EqualTo(1), "Bp → Blueprint");
-            Assert.That(result.CountsByType[ItemType.ItemTypeEnum.Resource], Is.EqualTo(1), "R → Resource");
-            Assert.That(result.CountsByType[ItemType.ItemTypeEnum.Commodity], Is.EqualTo(1), "C → Commodity");
-            Assert.That(result.CountsByType[ItemType.ItemTypeEnum.ShipPart], Is.EqualTo(1), "S → ShipPart");
-            Assert.That(result.CountsByType[ItemType.ItemTypeEnum.ShipHull], Is.EqualTo(1), "SH → ShipHull");
-            Assert.That(result.CountsByType[ItemType.ItemTypeEnum.Munition], Is.EqualTo(1), "A → Munition");
-            Assert.That(result.CountsByType[ItemType.ItemTypeEnum.Flatpack], Is.EqualTo(1), "F → Flatpack");
-            Assert.That(result.CountsByType[ItemType.ItemTypeEnum.WorkDetail], Is.EqualTo(1), "W → WorkDetail");
-            Assert.That(result.CountsByType[ItemType.ItemTypeEnum.Share], Is.EqualTo(1), "Sh → Share");
-            Assert.That(result.CountsByType[ItemType.ItemTypeEnum.Survey], Is.EqualTo(1), "Sc → Survey");
+            Assert.That(result.CountsByType[ItemType.ItemTypeEnum.Blueprint], Is.EqualTo(1), "Bp -> Blueprint");
+            Assert.That(result.CountsByType[ItemType.ItemTypeEnum.Resource], Is.EqualTo(1), "R -> Resource");
+            Assert.That(result.CountsByType[ItemType.ItemTypeEnum.Commodity], Is.EqualTo(1), "C -> Commodity");
+            Assert.That(result.CountsByType[ItemType.ItemTypeEnum.ShipPart], Is.EqualTo(1), "S -> ShipPart");
+            Assert.That(result.CountsByType[ItemType.ItemTypeEnum.ShipHull], Is.EqualTo(1), "SH -> ShipHull");
+            Assert.That(result.CountsByType[ItemType.ItemTypeEnum.Munition], Is.EqualTo(1), "A -> Munition");
+            Assert.That(result.CountsByType[ItemType.ItemTypeEnum.Flatpack], Is.EqualTo(1), "F -> Flatpack");
+            Assert.That(result.CountsByType[ItemType.ItemTypeEnum.WorkDetail], Is.EqualTo(1), "W -> WorkDetail");
+            Assert.That(result.CountsByType[ItemType.ItemTypeEnum.Share], Is.EqualTo(1), "Sh -> Share");
+            Assert.That(result.CountsByType[ItemType.ItemTypeEnum.Survey], Is.EqualTo(1), "Sc -> Survey");
 
-            // "L" (CommodityL) and "D" (Deployable) have no mapping in MapAssetTypeC → None
-            Assert.That(result.CountsByType[ItemType.ItemTypeEnum.None], Is.EqualTo(2), "L and D → None (unmapped)");
+            // "L" (CommodityL) and "D" (Deployable) have no mapping in MapAssetTypeC -> None
+            Assert.That(result.CountsByType[ItemType.ItemTypeEnum.None], Is.EqualTo(2), "L and D -> None (unmapped)");
         }
 
         // -------------------------------------------------------------------
@@ -216,24 +197,21 @@ namespace OE2EmpireTracker.Tests.Services
             var parentBag = new ItemBag();
             parentBag.AddItem(crateItem);
 
-            // Build a response with new items
-            var cargoItems = new List<GameApiAssetCargoItem>
+            // Build a DTO with new items
+            var cargoItems = new List<Generated.AssetCargoItem>
             {
                 MakeCargoItem(1001, "R", "Titanium (High Purity)"),
                 MakeCargoItem(1002, "C", "Electronics"),
                 MakeCargoItem(1003, "A", "Plasma Rounds"),
             };
 
-            var response = new GameApiAssetDetailResponse { Cargo = cargoItems };
-            string json = WrapInEnvelope(response);
-
+            var crateContents = new Generated.AssetCrateContents { Cargo = cargoItems };
             var visited = new HashSet<int>();
 
             // Act
-            var result = importer.Import(json, crateGameItemId, parentBag, "owner-uuid", visited);
+            var result = importer.Import(crateContents, crateGameItemId, parentBag, "owner-uuid", visited);
 
             // Assert
-            Assert.That(result.Success, Is.True);
             Assert.That(result.Imported, Is.EqualTo(3));
 
             // The crate should still be the same item in the parent bag
@@ -264,20 +242,18 @@ namespace OE2EmpireTracker.Tests.Services
             // Parent bag has no item with GameItemId=777
             var parentBag = new ItemBag();
 
-            var cargoItems = new List<GameApiAssetCargoItem>
+            var cargoItems = new List<Generated.AssetCargoItem>
             {
                 MakeCargoItem(2001, "R", "Iron (High Purity)"),
             };
 
-            var response = new GameApiAssetDetailResponse { Cargo = cargoItems };
-            string json = WrapInEnvelope(response);
+            var crateContents = new Generated.AssetCrateContents { Cargo = cargoItems };
             var visited = new HashSet<int>();
 
             // Act
-            var result = importer.Import(json, crateGameItemId, parentBag, "owner-uuid", visited);
+            var result = importer.Import(crateContents, crateGameItemId, parentBag, "owner-uuid", visited);
 
             // Assert
-            Assert.That(result.Success, Is.True);
             Assert.That(result.Imported, Is.EqualTo(1));
 
             // A new crate Item should have been created in parentBag
@@ -315,30 +291,27 @@ namespace OE2EmpireTracker.Tests.Services
         public void CrateContentImporter_WriteContextFailure_RetainsInMemory()
         {
             // Clear the file path so WriteContext effectively skips persistence
-            // (simulates a scenario where persistence cannot complete)
             string originalPath = PlayerContext.FilePath;
             PlayerContext.FilePath = string.Empty;
 
             int crateGameItemId = 600;
 
-            var cargoItems = new List<GameApiAssetCargoItem>
+            var cargoItems = new List<Generated.AssetCargoItem>
             {
                 MakeCargoItem(3001, "R", "Iron (High Purity)"),
                 MakeCargoItem(3002, "C", "Electronics"),
                 MakeCargoItem(3003, "A", "Rail Slugs"),
             };
 
-            var response = new GameApiAssetDetailResponse { Cargo = cargoItems };
-            string json = WrapInEnvelope(response);
+            var crateContents = new Generated.AssetCrateContents { Cargo = cargoItems };
 
             var parentBag = new ItemBag();
             var visited = new HashSet<int>();
 
             // Act
-            var result = importer.Import(json, crateGameItemId, parentBag, "owner-uuid", visited);
+            var result = importer.Import(crateContents, crateGameItemId, parentBag, "owner-uuid", visited);
 
             // Assert — import succeeded and in-memory state is correct
-            Assert.That(result.Success, Is.True);
             Assert.That(result.Imported, Is.EqualTo(3));
 
             // Find the crate in the parent bag
@@ -362,7 +335,7 @@ namespace OE2EmpireTracker.Tests.Services
 
         // -------------------------------------------------------------------
         // Test: Unknown TypeC code assigns ItemType.None
-        // Validates: Req 2 AC5 (unknown TypeC → None)
+        // Validates: Req 2 AC5 (unknown TypeC -> None)
         // -------------------------------------------------------------------
 
         /// <summary>
@@ -372,20 +345,18 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void CrateContentImporter_UnknownTypeC_AssignsNone()
         {
-            var cargoItems = new List<GameApiAssetCargoItem>
+            var cargoItems = new List<Generated.AssetCargoItem>
             {
                 MakeCargoItem(7001, "ZZ", "Unknown Widget"),
             };
 
-            var response = new GameApiAssetDetailResponse { Cargo = cargoItems };
-            string json = WrapInEnvelope(response);
+            var crateContents = new Generated.AssetCrateContents { Cargo = cargoItems };
 
             var parentBag = new ItemBag();
             var visited = new HashSet<int>();
 
-            var result = importer.Import(json, 900, parentBag, "owner-uuid", visited);
+            var result = importer.Import(crateContents, 900, parentBag, "owner-uuid", visited);
 
-            Assert.That(result.Success, Is.True);
             Assert.That(result.Imported, Is.EqualTo(1));
             Assert.That(result.Failed, Is.EqualTo(0));
             Assert.That(result.CountsByType[ItemType.ItemTypeEnum.None], Is.EqualTo(1));
@@ -423,11 +394,11 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void CrateContentImporter_MissingDamageFields_Accepted()
         {
-            var cargoItems = new List<GameApiAssetCargoItem>
+            var cargoItems = new List<Generated.AssetCargoItem>
             {
-                new GameApiAssetCargoItem
+                new Generated.AssetCargoItem
                 {
-                    CargoItemId = 8001,
+                    Id = 8001,
                     TypeC = "S",
                     ResourceName = "Shield Generator Mk2",
                     Amount = 1,
@@ -439,15 +410,13 @@ namespace OE2EmpireTracker.Tests.Services
                 },
             };
 
-            var response = new GameApiAssetDetailResponse { Cargo = cargoItems };
-            string json = WrapInEnvelope(response);
+            var crateContents = new Generated.AssetCrateContents { Cargo = cargoItems };
 
             var parentBag = new ItemBag();
             var visited = new HashSet<int>();
 
-            var result = importer.Import(json, 901, parentBag, "owner-uuid", visited);
+            var result = importer.Import(crateContents, 901, parentBag, "owner-uuid", visited);
 
-            Assert.That(result.Success, Is.True);
             Assert.That(result.Imported, Is.EqualTo(1));
             Assert.That(result.Failed, Is.EqualTo(0));
             Assert.That(result.CountsByType[ItemType.ItemTypeEnum.ShipPart], Is.EqualTo(1));
@@ -475,11 +444,11 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(shipPart.ShipPartType, Is.EqualTo("Cg"));
         }
 
-        private static GameApiAssetCargoItem MakeCargoItem(int id, string typeC, string name)
+        private static Generated.AssetCargoItem MakeCargoItem(int id, string typeC, string name)
         {
-            return new GameApiAssetCargoItem
+            return new Generated.AssetCargoItem
             {
-                CargoItemId = id,
+                Id = id,
                 TypeC = typeC,
                 ResourceName = name,
                 Amount = 1,
@@ -504,11 +473,11 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void CrateContentImporter_Blueprint_DualTracked()
         {
-            var cargoItems = new List<GameApiAssetCargoItem>
+            var cargoItems = new List<Generated.AssetCargoItem>
             {
-                new GameApiAssetCargoItem
+                new Generated.AssetCargoItem
                 {
-                    CargoItemId = 501,
+                    Id = 501,
                     TypeC = "Bp",
                     ResourceName = "Laser Mk2",
                     Amount = 1,
@@ -516,15 +485,15 @@ namespace OE2EmpireTracker.Tests.Services
                     ShipPartType = "Cg",
                     Mass = 0.5,
                     Volume = 0.2,
-                    Properties = new List<GameApiAssetItemProperty>
+                    Properties = new List<Generated.AssetCargoProperty>
                     {
-                        new GameApiAssetItemProperty
+                        new Generated.AssetCargoProperty
                         {
                             ModTypeId = 1,
                             PropertyName = "damage",
                             FriendlyPropertyName = "Damage",
-                            PropertyValue = 15.0m,
-                            OriginalPropertyValue = 10.0m,
+                            PropertyValue = 15.0,
+                            OriginalPropertyValue = 10.0,
                             Unit = "HP",
                             Evolution = 2,
                             ResearchPositive = true,
@@ -532,9 +501,9 @@ namespace OE2EmpireTracker.Tests.Services
                         },
                     },
                 },
-                new GameApiAssetCargoItem
+                new Generated.AssetCargoItem
                 {
-                    CargoItemId = 502,
+                    Id = 502,
                     TypeC = "R",
                     ResourceName = "Iron (High)",
                     Amount = 500,
@@ -543,8 +512,7 @@ namespace OE2EmpireTracker.Tests.Services
                 },
             };
 
-            var response = new GameApiAssetDetailResponse { Cargo = cargoItems };
-            string json = WrapInEnvelope(response);
+            var crateContents = new Generated.AssetCrateContents { Cargo = cargoItems };
 
             // Create a parent bag with an existing crate item
             var crateItem = new Item(ItemType.ItemTypeEnum.Crate, "Test Crate")
@@ -560,10 +528,9 @@ namespace OE2EmpireTracker.Tests.Services
             playerContext.BlueprintDataChanged += (s, e) => eventFired = true;
 
             var visited = new HashSet<int>();
-            var result = importer.Import(json, 200, parentBag, "test-player-uuid", visited);
+            var result = importer.Import(crateContents, 200, parentBag, "test-player-uuid", visited);
 
             // Verify import success
-            Assert.That(result.Success, Is.True);
             Assert.That(result.TotalItems, Is.EqualTo(2));
             Assert.That(result.Imported, Is.EqualTo(2));
             Assert.That(result.BlueprintsLinked, Is.EqualTo(1));
@@ -606,23 +573,21 @@ namespace OE2EmpireTracker.Tests.Services
             int parentCrateId = 1000;
             int nestedCrateId = 2000;
 
-            // Build a response containing a nested crate and a normal resource
-            var cargoItems = new List<GameApiAssetCargoItem>
+            // Build a DTO containing a nested crate and a normal resource
+            var cargoItems = new List<Generated.AssetCargoItem>
             {
                 MakeCargoItem(nestedCrateId, "Cr", "Nested Crate"),
                 MakeCargoItem(3001, "R", "Iron (High Purity)"),
             };
 
-            var response = new GameApiAssetDetailResponse { Cargo = cargoItems };
-            string json = WrapInEnvelope(response);
+            var crateContents = new Generated.AssetCrateContents { Cargo = cargoItems };
 
             var parentBag = new ItemBag();
             var visited = new HashSet<int>();
 
             // First import: nested crate should be detected and added to NestedCrateIds
-            var result = importer.Import(json, parentCrateId, parentBag, "owner-uuid", visited);
+            var result = importer.Import(crateContents, parentCrateId, parentBag, "owner-uuid", visited);
 
-            Assert.That(result.Success, Is.True);
             Assert.That(result.Imported, Is.EqualTo(2));
             Assert.That(result.NestedCrateIds, Has.Count.EqualTo(1));
             Assert.That(result.NestedCrateIds[0], Is.EqualTo(nestedCrateId));
@@ -651,21 +616,19 @@ namespace OE2EmpireTracker.Tests.Services
 
             // Second import: simulate importing the nested crate whose cargo
             // references the parent crate (creating a cycle)
-            var cyclicCargo = new List<GameApiAssetCargoItem>
+            var cyclicCargo = new List<Generated.AssetCargoItem>
             {
                 MakeCargoItem(parentCrateId, "Cr", "Parent Crate (cyclic)"),
                 MakeCargoItem(4001, "C", "Electronics"),
             };
 
-            var cyclicResponse = new GameApiAssetDetailResponse { Cargo = cyclicCargo };
-            string cyclicJson = WrapInEnvelope(cyclicResponse);
+            var cyclicCrateContents = new Generated.AssetCrateContents { Cargo = cyclicCargo };
 
             var nestedParentBag = new ItemBag();
 
             // Import the nested crate — parentCrateId is already in visited, should be skipped
-            var result2 = importer.Import(cyclicJson, nestedCrateId, nestedParentBag, "owner-uuid", visited);
+            var result2 = importer.Import(cyclicCrateContents, nestedCrateId, nestedParentBag, "owner-uuid", visited);
 
-            Assert.That(result2.Success, Is.True);
             Assert.That(result2.Imported, Is.EqualTo(2));
 
             // The cyclic reference (parentCrateId) should NOT be in NestedCrateIds

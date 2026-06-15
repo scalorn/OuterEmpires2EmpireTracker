@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Client.Generated;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
@@ -118,7 +119,7 @@ namespace OE2EmpireTracker.Tests.Services
         {
             SetupSingleResponse(HttpStatusCode.Unauthorized, string.Empty);
 
-            await _scheduler.CallSyncAssetsAsync(PlayerUUID, AccessToken);
+            await _scheduler.CallSyncAssetsAsync(PlayerUUID);
 
             Assert.That(
                 _monitor.CurrentState,
@@ -153,7 +154,7 @@ namespace OE2EmpireTracker.Tests.Services
                 return (HttpStatusCode.Unauthorized, string.Empty);
             });
 
-            await _scheduler.CallSyncAssetsAsync(PlayerUUID, AccessToken);
+            await _scheduler.CallSyncAssetsAsync(PlayerUUID);
 
             Assert.That(
                 _monitor.CurrentState,
@@ -178,7 +179,7 @@ namespace OE2EmpireTracker.Tests.Services
         {
             SetupSingleResponse(HttpStatusCode.Forbidden, string.Empty);
 
-            await _scheduler.CallSyncAssetsAsync(PlayerUUID, AccessToken);
+            await _scheduler.CallSyncAssetsAsync(PlayerUUID);
 
             Assert.That(
                 _monitor.CurrentState,
@@ -205,17 +206,17 @@ namespace OE2EmpireTracker.Tests.Services
 
             string locationsJson = JsonConvert.SerializeObject(locationsResponse);
 
-            var detailResponse = new GameApiServiceResponse<GameApiAssetDetailResponse>
+            var detailResponse = new GameApiServiceResponse<AssetLocationDetail>
             {
                 Success = true,
                 ReturnCode = 0,
-                Data = new GameApiAssetDetailResponse
+                Data = new AssetLocationDetail
                 {
-                    Cargo = new List<GameApiAssetCargoItem>
+                    Cargo = new List<AssetCargoItem>
                     {
-                        new GameApiAssetCargoItem
+                        new AssetCargoItem
                         {
-                            CargoItemId = 100,
+                            Id = 100,
                             ResourceName = "Iron",
                             TypeC = AssetTypeCodes.Resource,
                             Amount = 50,
@@ -244,7 +245,7 @@ namespace OE2EmpireTracker.Tests.Services
                 return (HttpStatusCode.OK, detailJson);
             });
 
-            await _scheduler.CallSyncAssetsAsync(PlayerUUID, AccessToken);
+            await _scheduler.CallSyncAssetsAsync(PlayerUUID);
 
             // Should have processed 3 requests: list + detail(403) + detail(OK)
             Assert.That(requestCount, Is.EqualTo(3));
@@ -287,7 +288,7 @@ namespace OE2EmpireTracker.Tests.Services
                 return (HttpStatusCode.InternalServerError, string.Empty);
             });
 
-            await _scheduler.CallSyncAssetsAsync(PlayerUUID, AccessToken);
+            await _scheduler.CallSyncAssetsAsync(PlayerUUID);
 
             // The scheduler should complete without throwing.
             // No data should be persisted since all details failed.
@@ -319,17 +320,17 @@ namespace OE2EmpireTracker.Tests.Services
 
             string locationsJson = JsonConvert.SerializeObject(locationsResponse);
 
-            var detailResponse = new GameApiServiceResponse<GameApiAssetDetailResponse>
+            var detailResponse = new GameApiServiceResponse<AssetLocationDetail>
             {
                 Success = true,
                 ReturnCode = 0,
-                Data = new GameApiAssetDetailResponse
+                Data = new AssetLocationDetail
                 {
-                    Cargo = new List<GameApiAssetCargoItem>
+                    Cargo = new List<AssetCargoItem>
                     {
-                        new GameApiAssetCargoItem
+                        new AssetCargoItem
                         {
-                            CargoItemId = 200,
+                            Id = 200,
                             ResourceName = "Copper",
                             TypeC = AssetTypeCodes.Resource,
                             Amount = 25,
@@ -358,7 +359,7 @@ namespace OE2EmpireTracker.Tests.Services
                 return (HttpStatusCode.OK, validDetailJson);
             });
 
-            await _scheduler.CallSyncAssetsAsync(PlayerUUID, AccessToken);
+            await _scheduler.CallSyncAssetsAsync(PlayerUUID);
 
             // Should have processed all 3 requests
             Assert.That(requestCount, Is.EqualTo(3));
@@ -377,7 +378,7 @@ namespace OE2EmpireTracker.Tests.Services
         {
             SetupSingleResponse(HttpStatusCode.OK, "{ not valid json at all }}}");
 
-            await _scheduler.CallSyncAssetsAsync(PlayerUUID, AccessToken);
+            await _scheduler.CallSyncAssetsAsync(PlayerUUID);
 
             Assert.That(_scheduler.WriteContextCallCount, Is.EqualTo(0));
             Assert.That(_scheduler.RaiseAssetDataChangedCallCount, Is.EqualTo(0));
@@ -407,17 +408,17 @@ namespace OE2EmpireTracker.Tests.Services
 
             string locationsJson = JsonConvert.SerializeObject(locationsResponse);
 
-            var detailResponse = new GameApiServiceResponse<GameApiAssetDetailResponse>
+            var detailResponse = new GameApiServiceResponse<AssetLocationDetail>
             {
                 Success = true,
                 ReturnCode = 0,
-                Data = new GameApiAssetDetailResponse
+                Data = new AssetLocationDetail
                 {
-                    Cargo = new List<GameApiAssetCargoItem>
+                    Cargo = new List<AssetCargoItem>
                     {
-                        new GameApiAssetCargoItem
+                        new AssetCargoItem
                         {
-                            CargoItemId = 300,
+                            Id = 300,
                             ResourceName = "Gold",
                             TypeC = AssetTypeCodes.Resource,
                             Amount = 10,
@@ -440,7 +441,7 @@ namespace OE2EmpireTracker.Tests.Services
                 return (HttpStatusCode.OK, detailJson);
             });
 
-            await _scheduler.CallSyncAssetsAsync(PlayerUUID, AccessToken);
+            await _scheduler.CallSyncAssetsAsync(PlayerUUID);
 
             // Only 2 requests: locations list + 1 detail (Colony B with assetCount=3)
             // The two zero-count locations should NOT trigger detail requests
@@ -460,13 +461,13 @@ namespace OE2EmpireTracker.Tests.Services
             return port;
         }
 
-        private static GameApiServiceResponse<GameApiAssetLocationsResponse> BuildLocationsResponse(
+        private static GameApiServiceResponse<AssetLocations> BuildLocationsResponse(
             params LocationDef[] locations)
         {
-            var entries = new List<GameApiAssetLocationEntry>();
+            var entries = new List<AssetLocation>();
             foreach (var loc in locations)
             {
-                entries.Add(new GameApiAssetLocationEntry
+                entries.Add(new AssetLocation
                 {
                     LocationId = loc.Id,
                     LocationType = loc.Type,
@@ -477,11 +478,11 @@ namespace OE2EmpireTracker.Tests.Services
                 });
             }
 
-            return new GameApiServiceResponse<GameApiAssetLocationsResponse>
+            return new GameApiServiceResponse<AssetLocations>
             {
                 Success = true,
                 ReturnCode = 0,
-                Data = new GameApiAssetLocationsResponse { Locations = entries },
+                Data = new AssetLocations { Locations = entries },
             };
         }
 
@@ -628,9 +629,9 @@ namespace OE2EmpireTracker.Tests.Services
             /// <param name="playerUUID">The player UUID.</param>
             /// <param name="accessToken">The access token.</param>
             /// <returns>A task representing the async operation.</returns>
-            public Task CallSyncAssetsAsync(string playerUUID, string accessToken)
+            public Task CallSyncAssetsAsync(string playerUUID)
             {
-                return SyncAssetsAsync(playerUUID, accessToken);
+                return SyncAssetsAsync(playerUUID);
             }
 
             /// <inheritdoc/>

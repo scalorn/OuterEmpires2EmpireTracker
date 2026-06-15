@@ -11,8 +11,9 @@ using OE2EmpireTracker.Services;
 namespace OE2EmpireTracker.Common.Client
 {
     /// <summary>
-    /// Token-bucket rate limiter enforcing 0.9 TPS throughput and 9 max concurrent requests.
-    /// Thread-safe: uses a lock to protect token bucket state and a SemaphoreSlim for concurrency.
+    /// Token-bucket rate limiter enforcing throughput (default 0.9 TPS).
+    /// Concurrency is controlled externally by <see cref="GameApiRequestQueue"/>.
+    /// Thread-safe: uses a lock to protect token bucket state.
     /// </summary>
     internal class TokenBucketRateLimiter
     {
@@ -28,7 +29,6 @@ namespace OE2EmpireTracker.Common.Client
 
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-        private readonly SemaphoreSlim _concurrency;
         private readonly double _tokensPerSecond;
         private readonly object _lock = new object();
 
@@ -51,22 +51,19 @@ namespace OE2EmpireTracker.Common.Client
         /// <param name="tokensPerSecond">The target throughput in tokens per second.</param>
         public TokenBucketRateLimiter(double tokensPerSecond)
         {
-            _concurrency = new SemaphoreSlim(9, 9);
             _tokensPerSecond = tokensPerSecond > 0 ? tokensPerSecond : 0.9;
             _tokens = 1.0;
             _lastRefill = SystemClock.UtcNow;
         }
 
         /// <summary>
-        /// Acquires a rate limiter slot. Waits for a concurrency slot (max 9 inflight)
-        /// and then waits for a throughput token (0.9 TPS ≈ 1 token every 1.11 seconds).
+        /// Acquires a throughput token. Waits until a token is available (0.9 TPS
+        /// means one token every ~1.11 seconds).
         /// </summary>
         /// <param name="ct">Cancellation token.</param>
-        /// <returns>A task that completes when both concurrency and throughput are available.</returns>
+        /// <returns>A task that completes when a throughput token is available.</returns>
         public async Task AcquireAsync(CancellationToken ct)
         {
-            await _concurrency.WaitAsync(ct).ConfigureAwait(false);
-
             while (true)
             {
                 ct.ThrowIfCancellationRequested();
@@ -93,12 +90,10 @@ namespace OE2EmpireTracker.Common.Client
         }
 
         /// <summary>
-        /// Releases a concurrency slot back to the rate limiter.
-        /// Must be called after each successful <see cref="AcquireAsync"/> in a finally block.
+        /// No-op retained for API compatibility. Concurrency is managed externally.
         /// </summary>
         public void Release()
         {
-            _concurrency.Release();
         }
 
         /// <summary>

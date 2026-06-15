@@ -8,6 +8,7 @@ using System.Linq;
 using FsCheck;
 using NUnit.Framework;
 using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Client.Generated;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
 
@@ -43,21 +44,21 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void ProcessItem_WithBlueprintProperties_CreatesNewBlueprint()
         {
-            var apiItem = new GameApiAssetCargoItem
+            var apiItem = new AssetCargoItem
             {
                 TypeC = "Bp",
                 ResourceName = "Test Blueprint",
                 Evolution = 1,
                 ShipPartType = "Sh",
-                Properties = new List<GameApiAssetItemProperty>
+                Properties = new List<AssetCargoProperty>
                 {
-                    new GameApiAssetItemProperty
+                    new AssetCargoProperty
                     {
                         ModTypeId = 1,
                         PropertyName = "defence",
                         FriendlyPropertyName = "Defence",
-                        PropertyValue = 45.5m,
-                        OriginalPropertyValue = 30.0m,
+                        PropertyValue = 45.5,
+                        OriginalPropertyValue = 30.0,
                         Unit = "%",
                         ResearchPositive = true,
                         CanResearch = true,
@@ -96,21 +97,21 @@ namespace OE2EmpireTracker.Tests.Services
             existing.Properties.SetProperty("Defence", "20.0");
             playerContext.AddBlueprint(existing);
 
-            var apiItem = new GameApiAssetCargoItem
+            var apiItem = new AssetCargoItem
             {
                 TypeC = "Bp",
                 ResourceName = "Test Blueprint",
                 Evolution = 1,
                 ShipPartType = "Sh",
-                Properties = new List<GameApiAssetItemProperty>
+                Properties = new List<AssetCargoProperty>
                 {
-                    new GameApiAssetItemProperty
+                    new AssetCargoProperty
                     {
                         ModTypeId = 1,
                         PropertyName = "defence",
                         FriendlyPropertyName = "Defence",
-                        PropertyValue = 55.0m,
-                        OriginalPropertyValue = 30.0m,
+                        PropertyValue = 55.0,
+                        OriginalPropertyValue = 30.0,
                         Unit = "%",
                         ResearchPositive = true,
                         CanResearch = true,
@@ -135,13 +136,13 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void ProcessItem_WithEmptyProperties_ReturnsFalseNoCreation()
         {
-            var apiItem = new GameApiAssetCargoItem
+            var apiItem = new AssetCargoItem
             {
                 TypeC = "Bp",
                 ResourceName = "Empty Blueprint",
                 Evolution = 1,
                 ShipPartType = "Sh",
-                Properties = new List<GameApiAssetItemProperty>(),
+                Properties = new List<AssetCargoProperty>(),
             };
             var localItem = new Item { UUID = "local-item-003", Name = "Empty Blueprint" };
 
@@ -162,21 +163,21 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void ProcessItem_SetsBaseItemTypeID_ToCreatedBlueprintUUID()
         {
-            var apiItem = new GameApiAssetCargoItem
+            var apiItem = new AssetCargoItem
             {
                 TypeC = "Bp",
                 ResourceName = "Linked Blueprint",
                 Evolution = 1,
                 ShipPartType = "Re",
-                Properties = new List<GameApiAssetItemProperty>
+                Properties = new List<AssetCargoProperty>
                 {
-                    new GameApiAssetItemProperty
+                    new AssetCargoProperty
                     {
                         ModTypeId = 2,
                         PropertyName = "power",
                         FriendlyPropertyName = "Power",
-                        PropertyValue = 100.0m,
-                        OriginalPropertyValue = 80.0m,
+                        PropertyValue = 100.0,
+                        OriginalPropertyValue = 80.0,
                         Unit = "MW",
                         ResearchPositive = true,
                         CanResearch = true,
@@ -201,21 +202,21 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void ProcessItem_ShipPart_MapsShipPartTypeCorrectly()
         {
-            var apiItem = new GameApiAssetCargoItem
+            var apiItem = new AssetCargoItem
             {
                 TypeC = "S",
                 ResourceName = "Advanced Shield",
                 Evolution = 1,
                 ShipPartType = "Sh",
-                Properties = new List<GameApiAssetItemProperty>
+                Properties = new List<AssetCargoProperty>
                 {
-                    new GameApiAssetItemProperty
+                    new AssetCargoProperty
                     {
                         ModTypeId = 10,
                         PropertyName = "defence",
                         FriendlyPropertyName = "Defence",
-                        PropertyValue = 60.0m,
-                        OriginalPropertyValue = 40.0m,
+                        PropertyValue = 60.0,
+                        OriginalPropertyValue = 40.0,
                         Unit = "%",
                         ResearchPositive = true,
                         CanResearch = true,
@@ -241,21 +242,21 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void ProcessItem_Hull_ClassifiesAsHullType()
         {
-            var apiItem = new GameApiAssetCargoItem
+            var apiItem = new AssetCargoItem
             {
                 TypeC = "S",
                 ResourceName = "Heavy Cruiser Hull",
                 Evolution = 1,
                 ShipPartType = "Hu",
-                Properties = new List<GameApiAssetItemProperty>
+                Properties = new List<AssetCargoProperty>
                 {
-                    new GameApiAssetItemProperty
+                    new AssetCargoProperty
                     {
                         ModTypeId = 11,
                         PropertyName = "slots",
                         FriendlyPropertyName = "Slots",
-                        PropertyValue = 8.0m,
-                        OriginalPropertyValue = 6.0m,
+                        PropertyValue = 8.0,
+                        OriginalPropertyValue = 6.0,
                         Unit = string.Empty,
                         ResearchPositive = true,
                         CanResearch = true,
@@ -281,21 +282,21 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void ProcessItem_UnknownShipPartType_UsesRawValueAndLogsWarning()
         {
-            var apiItem = new GameApiAssetCargoItem
+            var apiItem = new AssetCargoItem
             {
                 TypeC = "S",
                 ResourceName = "Mystery Component",
                 Evolution = 1,
                 ShipPartType = "Zz",
-                Properties = new List<GameApiAssetItemProperty>
+                Properties = new List<AssetCargoProperty>
                 {
-                    new GameApiAssetItemProperty
+                    new AssetCargoProperty
                     {
                         ModTypeId = 12,
                         PropertyName = "power",
                         FriendlyPropertyName = "Power",
-                        PropertyValue = 50.0m,
-                        OriginalPropertyValue = 30.0m,
+                        PropertyValue = 50.0,
+                        OriginalPropertyValue = 30.0,
                         Unit = "MW",
                         ResearchPositive = true,
                         CanResearch = true,
@@ -321,20 +322,20 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void ProcessItem_Flatpack_ClassifiesAsFlatpackType()
         {
-            var apiItem = new GameApiAssetCargoItem
+            var apiItem = new AssetCargoItem
             {
                 TypeC = "Bp",
                 ResourceName = "Mining Rig Flatpack",
                 Evolution = 1,
-                Properties = new List<GameApiAssetItemProperty>
+                Properties = new List<AssetCargoProperty>
                 {
-                    new GameApiAssetItemProperty
+                    new AssetCargoProperty
                     {
                         ModTypeId = 13,
                         PropertyName = "efficiency",
                         FriendlyPropertyName = "Efficiency",
-                        PropertyValue = 75.0m,
-                        OriginalPropertyValue = 50.0m,
+                        PropertyValue = 75.0,
+                        OriginalPropertyValue = 50.0,
                         Unit = "%",
                         ResearchPositive = true,
                         CanResearch = true,
@@ -360,21 +361,21 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void ProcessItem_Evo0_CreatesGlobalBlueprint()
         {
-            var apiItem = new GameApiAssetCargoItem
+            var apiItem = new AssetCargoItem
             {
                 TypeC = "Bp",
                 ResourceName = "Global Shield Blueprint",
                 Evolution = 0,
                 ShipPartType = "Sh",
-                Properties = new List<GameApiAssetItemProperty>
+                Properties = new List<AssetCargoProperty>
                 {
-                    new GameApiAssetItemProperty
+                    new AssetCargoProperty
                     {
                         ModTypeId = 10,
                         PropertyName = "defence",
                         FriendlyPropertyName = "Defence",
-                        PropertyValue = 20.0m,
-                        OriginalPropertyValue = 20.0m,
+                        PropertyValue = 20.0,
+                        OriginalPropertyValue = 20.0,
                         Unit = "%",
                         ResearchPositive = true,
                         CanResearch = true,
@@ -406,21 +407,21 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void ProcessItem_EvoGreaterThan0_CreatesPlayerBlueprint()
         {
-            var apiItem = new GameApiAssetCargoItem
+            var apiItem = new AssetCargoItem
             {
                 TypeC = "Bp",
                 ResourceName = "Player Reactor Blueprint",
                 Evolution = 2,
                 ShipPartType = "Re",
-                Properties = new List<GameApiAssetItemProperty>
+                Properties = new List<AssetCargoProperty>
                 {
-                    new GameApiAssetItemProperty
+                    new AssetCargoProperty
                     {
                         ModTypeId = 11,
                         PropertyName = "power",
                         FriendlyPropertyName = "Power",
-                        PropertyValue = 150.0m,
-                        OriginalPropertyValue = 100.0m,
+                        PropertyValue = 150.0,
+                        OriginalPropertyValue = 100.0,
                         Unit = "MW",
                         ResearchPositive = true,
                         CanResearch = true,
@@ -452,21 +453,21 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void ProcessItem_RegistersPropertyTypes_InRegistry()
         {
-            var apiItem = new GameApiAssetCargoItem
+            var apiItem = new AssetCargoItem
             {
                 TypeC = "Bp",
                 ResourceName = "Registry Test Blueprint",
                 Evolution = 1,
                 ShipPartType = "Sh",
-                Properties = new List<GameApiAssetItemProperty>
+                Properties = new List<AssetCargoProperty>
                 {
-                    new GameApiAssetItemProperty
+                    new AssetCargoProperty
                     {
                         ModTypeId = 42,
                         PropertyName = "armour",
                         FriendlyPropertyName = "Armour",
-                        PropertyValue = 75.0m,
-                        OriginalPropertyValue = 50.0m,
+                        PropertyValue = 75.0,
+                        OriginalPropertyValue = 50.0,
                         Unit = "pts",
                         ResearchPositive = true,
                         CanResearch = false,
@@ -508,21 +509,21 @@ namespace OE2EmpireTracker.Tests.Services
             playerContext.AddBlueprint(existing);
 
             // API response only has Defence, not CustomProp
-            var apiItem = new GameApiAssetCargoItem
+            var apiItem = new AssetCargoItem
             {
                 TypeC = "Bp",
                 ResourceName = "Preserve Props Blueprint",
                 Evolution = 1,
                 ShipPartType = "Sh",
-                Properties = new List<GameApiAssetItemProperty>
+                Properties = new List<AssetCargoProperty>
                 {
-                    new GameApiAssetItemProperty
+                    new AssetCargoProperty
                     {
                         ModTypeId = 1,
                         PropertyName = "defence",
                         FriendlyPropertyName = "Defence",
-                        PropertyValue = 60.0m,
-                        OriginalPropertyValue = 30.0m,
+                        PropertyValue = 60.0,
+                        OriginalPropertyValue = 30.0,
                         Unit = "%",
                         ResearchPositive = true,
                         CanResearch = true,
@@ -562,21 +563,21 @@ namespace OE2EmpireTracker.Tests.Services
             localPlayerContext.CurrentPlayerUUID = "test-player-uuid";
             var localService = new BlueprintLinkageService(localPlayerContext, localEmpireContext);
 
-            var apiItem = new GameApiAssetCargoItem
+            var apiItem = new AssetCargoItem
             {
                 TypeC = "Bp",
                 ResourceName = "Idempotent Blueprint",
                 Evolution = 1,
                 ShipPartType = "Sh",
-                Properties = new List<GameApiAssetItemProperty>
+                Properties = new List<AssetCargoProperty>
                 {
-                    new GameApiAssetItemProperty
+                    new AssetCargoProperty
                     {
                         ModTypeId = 1,
                         PropertyName = "defence",
                         FriendlyPropertyName = "Defence",
-                        PropertyValue = 45.5m,
-                        OriginalPropertyValue = 30.0m,
+                        PropertyValue = 45.5,
+                        OriginalPropertyValue = 30.0,
                         Unit = "%",
                         ResearchPositive = true,
                         CanResearch = true,
@@ -631,21 +632,21 @@ namespace OE2EmpireTracker.Tests.Services
             localPlayerContext.AddBlueprint(existing);
 
             // API response only has Defence — ExtraAlpha and ExtraBeta are not present
-            var apiItem = new GameApiAssetCargoItem
+            var apiItem = new AssetCargoItem
             {
                 TypeC = "Bp",
                 ResourceName = "Preservation Test BP",
                 Evolution = 1,
                 ShipPartType = "Sh",
-                Properties = new List<GameApiAssetItemProperty>
+                Properties = new List<AssetCargoProperty>
                 {
-                    new GameApiAssetItemProperty
+                    new AssetCargoProperty
                     {
                         ModTypeId = 1,
                         PropertyName = "defence",
                         FriendlyPropertyName = "Defence",
-                        PropertyValue = 55.0m,
-                        OriginalPropertyValue = 30.0m,
+                        PropertyValue = 55.0,
+                        OriginalPropertyValue = 30.0,
                         Unit = "%",
                         ResearchPositive = true,
                         CanResearch = true,
@@ -692,21 +693,21 @@ namespace OE2EmpireTracker.Tests.Services
             var localService = new BlueprintLinkageService(localPlayerContext, localEmpireContext);
 
             string bpName = "Ownership BP Evo" + evolution;
-            var apiItem = new GameApiAssetCargoItem
+            var apiItem = new AssetCargoItem
             {
                 TypeC = "Bp",
                 ResourceName = bpName,
                 Evolution = evolution,
                 ShipPartType = "Sh",
-                Properties = new List<GameApiAssetItemProperty>
+                Properties = new List<AssetCargoProperty>
                 {
-                    new GameApiAssetItemProperty
+                    new AssetCargoProperty
                     {
                         ModTypeId = 1,
                         PropertyName = "defence",
                         FriendlyPropertyName = "Defence",
-                        PropertyValue = 40.0m,
-                        OriginalPropertyValue = 30.0m,
+                        PropertyValue = 40.0,
+                        OriginalPropertyValue = 30.0,
                         Unit = "%",
                         ResearchPositive = true,
                         CanResearch = true,
@@ -757,43 +758,43 @@ namespace OE2EmpireTracker.Tests.Services
             int modTypeId2 = modTypeId1 + 1;
             int modTypeId3 = modTypeId1 + 2;
 
-            var apiItem = new GameApiAssetCargoItem
+            var apiItem = new AssetCargoItem
             {
                 TypeC = "Bp",
                 ResourceName = "Registry Completeness BP " + modTypeId1,
                 Evolution = 1,
                 ShipPartType = "Sh",
-                Properties = new List<GameApiAssetItemProperty>
+                Properties = new List<AssetCargoProperty>
                 {
-                    new GameApiAssetItemProperty
+                    new AssetCargoProperty
                     {
                         ModTypeId = modTypeId1,
                         PropertyName = "prop_a",
                         FriendlyPropertyName = "Prop A",
-                        PropertyValue = 10.0m,
-                        OriginalPropertyValue = 5.0m,
+                        PropertyValue = 10.0,
+                        OriginalPropertyValue = 5.0,
                         Unit = "%",
                         ResearchPositive = true,
                         CanResearch = true,
                     },
-                    new GameApiAssetItemProperty
+                    new AssetCargoProperty
                     {
                         ModTypeId = modTypeId2,
                         PropertyName = "prop_b",
                         FriendlyPropertyName = "Prop B",
-                        PropertyValue = 20.0m,
-                        OriginalPropertyValue = 15.0m,
+                        PropertyValue = 20.0,
+                        OriginalPropertyValue = 15.0,
                         Unit = "MW",
                         ResearchPositive = false,
                         CanResearch = true,
                     },
-                    new GameApiAssetItemProperty
+                    new AssetCargoProperty
                     {
                         ModTypeId = modTypeId3,
                         PropertyName = "prop_c",
                         FriendlyPropertyName = "Prop C",
-                        PropertyValue = 30.0m,
-                        OriginalPropertyValue = 25.0m,
+                        PropertyValue = 30.0,
+                        OriginalPropertyValue = 25.0,
                         Unit = "pts",
                         ResearchPositive = true,
                         CanResearch = false,

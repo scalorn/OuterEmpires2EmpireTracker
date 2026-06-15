@@ -3,7 +3,6 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
@@ -13,8 +12,8 @@ using OE2EmpireTracker.Services;
 namespace OE2EmpireTracker.Tests.Services
 {
     /// <summary>
-    /// Unit tests for <see cref="TokenBucketRateLimiter"/> covering throughput enforcement,
-    /// concurrency limiting, and PauseFor behavior.
+    /// Unit tests for <see cref="TokenBucketRateLimiter"/> covering throughput enforcement
+    /// and PauseFor behavior.
     /// </summary>
     [TestFixture]
     public class TokenBucketRateLimiterTests
@@ -91,114 +90,6 @@ namespace OE2EmpireTracker.Tests.Services
             TimeSpan elapsed = SystemClock.UtcNow - baseTime;
             Assert.That(elapsed.TotalSeconds, Is.EqualTo(2.0 / 0.9).Within(0.2),
                 "Three sequential acquires should space ~2.22s total (0 + 1.11 + 1.11)");
-        }
-
-        // ===== 11.2: Concurrency limit =====
-
-        [Test]
-        public async Task AcquireAsync_ConcurrencyLimit_Only9Of12AcquireSimultaneously()
-        {
-            var baseTime = new DateTime(2024, 1, 1, 12, 0, 0, DateTimeKind.Utc);
-            SystemClock.FreezeAt(baseTime);
-            SystemClock.EnableInstantDelay();
-
-            var limiter = new TokenBucketRateLimiter();
-
-            // Pre-fill the token bucket by advancing time so we have enough tokens
-            // for concurrency testing (9 tokens needed). Advance 10s = 9 tokens at 0.9 TPS.
-            SystemClock.AdvanceBy(TimeSpan.FromSeconds(10));
-
-            int acquired = 0;
-            var acquiredSignal = new TaskCompletionSource<bool>();
-            var holdSignal = new TaskCompletionSource<bool>();
-            var tasks = new List<Task>();
-
-            for (int i = 0; i < 12; i++)
-            {
-                tasks.Add(Task.Run(async () =>
-                {
-                    await limiter.AcquireAsync(CancellationToken.None);
-                    int count = Interlocked.Increment(ref acquired);
-                    if (count == 9)
-                    {
-                        acquiredSignal.TrySetResult(true);
-                    }
-
-                    // Hold the slot until released
-                    await holdSignal.Task;
-                    limiter.Release();
-                }));
-            }
-
-            // Wait for 9 to acquire (with a timeout to prevent hanging)
-            var completed = await Task.WhenAny(acquiredSignal.Task, Task.Delay(5000));
-            Assert.That(completed, Is.EqualTo(acquiredSignal.Task),
-                "9 tasks should acquire within timeout");
-
-            // Give a brief moment for any extras to sneak through
-            await Task.Delay(200);
-
-            // Verify only 9 acquired (the other 3 are waiting on semaphore)
-            int currentAcquired = Volatile.Read(ref acquired);
-            Assert.That(currentAcquired, Is.EqualTo(9),
-                "Only 9 concurrent tasks should acquire; 3 should be waiting");
-
-            // Release all held slots so tasks can complete
-            holdSignal.SetResult(true);
-            await Task.WhenAll(tasks);
-        }
-
-        [Test]
-        public async Task AcquireAsync_AfterRelease_WaitingTasksCanProceed()
-        {
-            var baseTime = new DateTime(2024, 1, 1, 12, 0, 0, DateTimeKind.Utc);
-            SystemClock.FreezeAt(baseTime);
-            SystemClock.EnableInstantDelay();
-
-            var limiter = new TokenBucketRateLimiter();
-
-            // Advance time to fill bucket for 9 tokens
-            SystemClock.AdvanceBy(TimeSpan.FromSeconds(10));
-
-            var holders = new List<Task>();
-            var holdSignal = new TaskCompletionSource<bool>();
-
-            // Acquire 9 slots
-            for (int i = 0; i < 9; i++)
-            {
-                holders.Add(Task.Run(async () =>
-                {
-                    await limiter.AcquireAsync(CancellationToken.None);
-                    await holdSignal.Task;
-                    limiter.Release();
-                }));
-            }
-
-            // Wait for all 9 to be acquired
-            await Task.Delay(500);
-
-            // Start a 10th task that will wait for a slot
-            int extraAcquired = 0;
-            var extraTask = Task.Run(async () =>
-            {
-                await limiter.AcquireAsync(CancellationToken.None);
-                Interlocked.Increment(ref extraAcquired);
-                limiter.Release();
-            });
-
-            // Brief wait — extra should NOT have acquired yet
-            await Task.Delay(200);
-            Assert.That(Volatile.Read(ref extraAcquired), Is.EqualTo(0),
-                "10th task should be waiting for a concurrency slot");
-
-            // Release all held slots
-            holdSignal.SetResult(true);
-            await Task.WhenAll(holders);
-
-            // Now the extra task should proceed
-            await extraTask;
-            Assert.That(Volatile.Read(ref extraAcquired), Is.EqualTo(1),
-                "10th task should acquire after slots are released");
         }
 
         // ===== 11.3: PauseFor =====

@@ -11,9 +11,11 @@ using FsCheck;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Client.Generated;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
+using Survey = OE2EmpireTracker.Models.Survey;
 
 namespace OE2EmpireTracker.Tests.Services
 {
@@ -233,7 +235,7 @@ namespace OE2EmpireTracker.Tests.Services
 
                 try
                 {
-                    var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiProfileResponse>>(invalidJson);
+                    var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<PublicCharacter>>(invalidJson);
                     if (envelope?.Data != null)
                     {
                         // Only merge and WriteContext if deserialization actually succeeds
@@ -744,9 +746,9 @@ namespace OE2EmpireTracker.Tests.Services
             return Prop.ForAll(inputGen.ToArbitrary(), (crateIds) =>
             {
                 // Build a cargo list with only Crate entries
-                var cargo = crateIds.Select(id => new GameApiAssetCargoItem
+                var cargo = crateIds.Select(id => new AssetCargoItem
                 {
-                    CargoItemId = id,
+                    Id = id,
                     TypeC = AssetTypeCodes.Crate,
                 }).ToList();
 
@@ -756,7 +758,7 @@ namespace OE2EmpireTracker.Tests.Services
                 {
                     if (entry.TypeC == AssetTypeCodes.Crate)
                     {
-                        items.Add("CrateDetail:" + entry.CargoItemId);
+                        items.Add("CrateDetail:" + entry.Id);
                     }
                 }
 
@@ -897,7 +899,7 @@ namespace OE2EmpireTracker.Tests.Services
             var cargoEntryGen =
                 from typeC in cargoTypeGen
                 from id in PositiveIntGen()
-                select new GameApiAssetCargoItem { CargoItemId = id, TypeC = typeC };
+                select new AssetCargoItem { Id = id, TypeC = typeC };
 
             var inputGen =
                 from count in Gen.Choose(1, 15)
@@ -928,7 +930,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// Blueprint and Survey entries are not skipped here (no local data present),
         /// matching the behavior when no local blueprint/survey exists.
         /// </summary>
-        private static List<string> SimulateCascade(List<GameApiAssetCargoItem> cargo)
+        private static List<string> SimulateCascade(List<AssetCargoItem> cargo)
         {
             var items = new List<string>();
             foreach (var entry in cargo)
@@ -936,15 +938,15 @@ namespace OE2EmpireTracker.Tests.Services
                 switch (entry.TypeC)
                 {
                     case AssetTypeCodes.Crate:
-                        items.Add("CrateDetail:" + entry.CargoItemId);
+                        items.Add("CrateDetail:" + entry.Id);
                         break;
                     case AssetTypeCodes.Blueprint:
                         // No local blueprint exists = not fresh = cascade
-                        items.Add("BlueprintDetail:" + entry.CargoItemId);
+                        items.Add("BlueprintDetail:" + entry.Id);
                         break;
                     case AssetTypeCodes.ShipPart:
                         // No local survey exists = not fresh = cascade
-                        items.Add("SurveyDetail:" + entry.CargoItemId);
+                        items.Add("SurveyDetail:" + entry.Id);
                         break;
                 }
             }

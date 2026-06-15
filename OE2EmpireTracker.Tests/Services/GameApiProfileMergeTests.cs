@@ -5,7 +5,7 @@
 using System.Collections.Generic;
 using FsCheck;
 using NUnit.Framework;
-using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Client.Generated;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
 
@@ -51,16 +51,18 @@ namespace OE2EmpireTracker.Tests.Services
                        new List<string>(groupNames));
         }
 
-        private static Gen<GameApiProfileResponse> RemoteProfileGen()
+        private static Gen<PublicCharacter> RemoteProfileGen()
         {
-            return from faction in NonNullStringGen()
-                   from citizenId in NonNullStringGen()
-                   from skillPoints in SkillPointsGen()
-                   select new GameApiProfileResponse
+            return from characterId in Gen.Choose(1, 99999)
+                   from firstName in NonNullStringGen()
+                   from lastName in NonNullStringGen()
+                   from activeMinutes in Gen.Choose(0, 100000)
+                   select new PublicCharacter
                    {
-                       Faction = faction,
-                       CitizenId = citizenId,
-                       SkillPoints = skillPoints,
+                       CharacterId = characterId,
+                       FirstName = firstName,
+                       LastName = lastName,
+                       ActiveTimeMinutes = activeMinutes,
                    };
         }
 
@@ -102,12 +104,12 @@ namespace OE2EmpireTracker.Tests.Services
                 {
                     GameApiSyncScheduler.MergeProfileData(local, remote);
 
-                    return (local.Faction == remote.Faction)
-                        .Label("Faction overwritten")
-                        .And(local.CitizenId == remote.CitizenId)
-                        .Label("CitizenId overwritten")
-                        .And(local.SkillPoints == remote.SkillPoints)
-                        .Label("SkillPoints overwritten");
+                    return (local.CharacterId == remote.CharacterId)
+                        .Label("CharacterId overwritten")
+                        .And(local.FirstName == remote.FirstName)
+                        .Label("FirstName overwritten")
+                        .And(local.LastName == remote.LastName)
+                        .Label("LastName overwritten");
                 });
         }
 
@@ -165,21 +167,21 @@ namespace OE2EmpireTracker.Tests.Services
                     GameApiSyncScheduler.MergeProfileData(local, remote);
 
                     // Capture state after first merge
-                    string factionAfterFirst = local.Faction;
-                    string citizenIdAfterFirst = local.CitizenId;
-                    int skillPointsAfterFirst = local.SkillPoints;
+                    string firstNameAfterFirst = local.FirstName;
+                    string lastNameAfterFirst = local.LastName;
+                    int charIdAfterFirst = local.CharacterId;
 
                     // Second merge with same remote data
                     bool changedOnSecond = GameApiSyncScheduler.MergeProfileData(local, remote);
 
                     return (!changedOnSecond)
                         .Label("Second merge reports no changes")
-                        .And(local.Faction == factionAfterFirst)
-                        .Label("Faction unchanged on second merge")
-                        .And(local.CitizenId == citizenIdAfterFirst)
-                        .Label("CitizenId unchanged on second merge")
-                        .And(local.SkillPoints == skillPointsAfterFirst)
-                        .Label("SkillPoints unchanged on second merge");
+                        .And(local.FirstName == firstNameAfterFirst)
+                        .Label("FirstName unchanged on second merge")
+                        .And(local.LastName == lastNameAfterFirst)
+                        .Label("LastName unchanged on second merge")
+                        .And(local.CharacterId == charIdAfterFirst)
+                        .Label("CharacterId unchanged on second merge");
                 });
         }
 
@@ -195,22 +197,22 @@ namespace OE2EmpireTracker.Tests.Services
                 Arb.From(NonNullStringGen().Select(f => new PlayerProfile
                 {
                     UUID = "test-uuid",
-                    Faction = f,
-                    CitizenId = "OLD-CID",
-                    SkillPoints = 100,
+                    FirstName = f,
+                    LastName = "OLD-LAST",
+                    CharacterId = 100,
                 })),
                 Arb.From(NonNullStringGen()
-                    .Where(f => f != "OLD-CID")
-                    .Select(cid => new GameApiProfileResponse
+                    .Where(f => f != "OLD-LAST")
+                    .Select(ln => new PublicCharacter
                     {
-                        Faction = null,
-                        CitizenId = cid,
-                        SkillPoints = 100,
+                        FirstName = null,
+                        LastName = ln,
+                        CharacterId = 100,
                     })),
                 (local, remote) =>
                 {
                     bool changed = GameApiSyncScheduler.MergeProfileData(local, remote);
-                    return changed.Label("Merge returns true when CitizenId differs");
+                    return changed.Label("Merge returns true when LastName differs");
                 });
         }
 
@@ -224,16 +226,18 @@ namespace OE2EmpireTracker.Tests.Services
             var local = new PlayerProfile
             {
                 UUID = "test-uuid",
-                Faction = "TestFaction",
-                CitizenId = "CID-123",
-                SkillPoints = 500,
+                CharacterId = 500,
+                FirstName = "TestFirst",
+                LastName = "TestLast",
+                ActiveTimeMinutes = 1000,
             };
 
-            var remote = new GameApiProfileResponse
+            var remote = new PublicCharacter
             {
-                Faction = "TestFaction",
-                CitizenId = "CID-123",
-                SkillPoints = 500,
+                CharacterId = 500,
+                FirstName = "TestFirst",
+                LastName = "TestLast",
+                ActiveTimeMinutes = 1000,
             };
 
             bool changed = GameApiSyncScheduler.MergeProfileData(local, remote);
@@ -249,7 +253,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void MergeReturnsfalseForNullInputs()
         {
             var local = new PlayerProfile { UUID = "test" };
-            var remote = new GameApiProfileResponse { Faction = "X" };
+            var remote = new PublicCharacter { FirstName = "X" };
 
             Assert.That(GameApiSyncScheduler.MergeProfileData(null, remote), Is.False);
             Assert.That(GameApiSyncScheduler.MergeProfileData(local, null), Is.False);

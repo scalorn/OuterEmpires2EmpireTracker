@@ -151,16 +151,16 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         /// <summary>
-        /// Writes _metadata.json with run summary and disposes both clients.
+        /// Writes _metadata.GetJson() with run summary and disposes both clients.
         /// </summary>
         [OneTimeTearDown]
         public void OneTimeTearDown()
         {
             if (this.results != null && this.outputDir != null)
             {
-                int succeeded = this.results.Count(r => r.Success);
-                int skipped = this.results.Count(r => !r.Success && !string.IsNullOrEmpty(r.SkipReason));
-                int failed = this.results.Count(r => !r.Success && string.IsNullOrEmpty(r.SkipReason));
+                int succeeded = this.results.Count(r => r.GetSuccess());
+                int skipped = this.results.Count(r => !r.GetSuccess() && !string.IsNullOrEmpty(r.SkipReason));
+                int failed = this.results.Count(r => !r.GetSuccess() && string.IsNullOrEmpty(r.SkipReason));
 
                 var metadata = new
                 {
@@ -176,7 +176,7 @@ namespace OE2EmpireTracker.Tests.Services
                     {
                         category = r.Category,
                         endpoint = r.Endpoint,
-                        success = r.Success,
+                        success = r.GetSuccess(),
                         httpStatus = r.HttpStatus,
                         reason = r.SkipReason,
                         timestamp = r.Timestamp.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
@@ -271,7 +271,6 @@ namespace OE2EmpireTracker.Tests.Services
 
             // Set the client's internal rate limiter high enough that it doesn't
             // independently throttle — the queue controls dispatch rate.
-            this.client.SetRateLimit(60);
 
             // === Task 15.1: Character, banking, jobs, ship seed items ===
             await queue.EnqueueAsync(new WorkItem
@@ -279,22 +278,22 @@ namespace OE2EmpireTracker.Tests.Services
                 Label = "character/profile",
                 ExecuteAsync = async ct =>
                 {
-                    var result = await this.client.GetCharacterAsync(this.appId, this.accessToken).ConfigureAwait(false);
-                    if (!result.Success && result.Json == "401")
+                    var result = await this.client.GetCharacterAsync().ConfigureAwait(false);
+                    if (!result.GetSuccess() && result.GetJson() == "401")
                     {
                         await this.RefreshTokenAsync().ConfigureAwait(false);
-                        result = await this.client.GetCharacterAsync(this.appId, this.accessToken).ConfigureAwait(false);
+                        result = await this.client.GetCharacterAsync().ConfigureAwait(false);
                     }
 
-                    if (result.Success)
+                    if (result.GetSuccess())
                     {
                         string filePath = Path.Combine(this.outputDir, "character", "profile.json");
-                        File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                        File.WriteAllText(filePath, FormatJson(result.GetJson()), Encoding.UTF8);
                         RecordSuccess("character", "profile");
                     }
                     else
                     {
-                        RecordSkipped("character", "profile", result.Json ?? "Request failed");
+                        RecordSkipped("character", "profile", result.GetJson() ?? "Request failed");
                     }
 
                     return Array.Empty<WorkItem>();
@@ -306,22 +305,22 @@ namespace OE2EmpireTracker.Tests.Services
                 Label = "character/skills",
                 ExecuteAsync = async ct =>
                 {
-                    var result = await this.client.GetCharacterSkillsAsync(this.appId, this.accessToken).ConfigureAwait(false);
-                    if (!result.Success && result.Json == "401")
+                    var result = await this.client.GetCharacterSkillsAsync().ConfigureAwait(false);
+                    if (!result.GetSuccess() && result.GetJson() == "401")
                     {
                         await this.RefreshTokenAsync().ConfigureAwait(false);
-                        result = await this.client.GetCharacterSkillsAsync(this.appId, this.accessToken).ConfigureAwait(false);
+                        result = await this.client.GetCharacterSkillsAsync().ConfigureAwait(false);
                     }
 
-                    if (result.Success)
+                    if (result.GetSuccess())
                     {
                         string filePath = Path.Combine(this.outputDir, "character", "skills.json");
-                        File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                        File.WriteAllText(filePath, FormatJson(result.GetJson()), Encoding.UTF8);
                         RecordSuccess("character", "skills");
                     }
                     else
                     {
-                        RecordSkipped("character", "skills", result.Json ?? "Request failed");
+                        RecordSkipped("character", "skills", result.GetJson() ?? "Request failed");
                     }
 
                     return Array.Empty<WorkItem>();
@@ -333,22 +332,22 @@ namespace OE2EmpireTracker.Tests.Services
                 Label = "banking/balance",
                 ExecuteAsync = async ct =>
                 {
-                    var result = await this.client.GetBankingBalanceAsync(this.appId, this.accessToken).ConfigureAwait(false);
-                    if (!result.Success && result.Json == "401")
+                    var result = await this.client.GetBankingBalanceAsync().ConfigureAwait(false);
+                    if (!result.GetSuccess() && result.GetJson() == "401")
                     {
                         await this.RefreshTokenAsync().ConfigureAwait(false);
-                        result = await this.client.GetBankingBalanceAsync(this.appId, this.accessToken).ConfigureAwait(false);
+                        result = await this.client.GetBankingBalanceAsync().ConfigureAwait(false);
                     }
 
-                    if (result.Success)
+                    if (result.GetSuccess())
                     {
                         string filePath = Path.Combine(this.outputDir, "banking", "balance.json");
-                        File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                        File.WriteAllText(filePath, FormatJson(result.GetJson()), Encoding.UTF8);
                         RecordSuccess("banking", "balance");
                     }
                     else
                     {
-                        RecordSkipped("banking", "balance", result.Json ?? "Request failed");
+                        RecordSkipped("banking", "balance", result.GetJson() ?? "Request failed");
                     }
 
                     return Array.Empty<WorkItem>();
@@ -362,22 +361,22 @@ namespace OE2EmpireTracker.Tests.Services
                 Label = "jobs/accepted",
                 ExecuteAsync = async ct =>
                 {
-                    var result = await this.client.GetAcceptedJobsAsync(this.appId, this.accessToken).ConfigureAwait(false);
-                    if (!result.Success && result.Json == "401")
+                    var result = await this.client.GetAcceptedJobsAsync().ConfigureAwait(false);
+                    if (!result.GetSuccess() && result.GetJson() == "401")
                     {
                         await this.RefreshTokenAsync().ConfigureAwait(false);
-                        result = await this.client.GetAcceptedJobsAsync(this.appId, this.accessToken).ConfigureAwait(false);
+                        result = await this.client.GetAcceptedJobsAsync().ConfigureAwait(false);
                     }
 
-                    if (result.Success)
+                    if (result.GetSuccess())
                     {
                         string filePath = Path.Combine(this.outputDir, "jobs", "accepted.json");
-                        File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                        File.WriteAllText(filePath, FormatJson(result.GetJson()), Encoding.UTF8);
                         RecordSuccess("jobs", "accepted");
                     }
                     else
                     {
-                        RecordSkipped("jobs", "accepted", result.Json ?? "Request failed");
+                        RecordSkipped("jobs", "accepted", result.GetJson() ?? "Request failed");
                     }
 
                     return Array.Empty<WorkItem>();
@@ -389,22 +388,22 @@ namespace OE2EmpireTracker.Tests.Services
                 Label = "ship/configuration",
                 ExecuteAsync = async ct =>
                 {
-                    var result = await this.client.GetShipConfigurationAsync(this.appId, this.accessToken).ConfigureAwait(false);
-                    if (!result.Success && result.Json == "401")
+                    var result = await this.client.GetShipConfigurationAsync().ConfigureAwait(false);
+                    if (!result.GetSuccess() && result.GetJson() == "401")
                     {
                         await this.RefreshTokenAsync().ConfigureAwait(false);
-                        result = await this.client.GetShipConfigurationAsync(this.appId, this.accessToken).ConfigureAwait(false);
+                        result = await this.client.GetShipConfigurationAsync().ConfigureAwait(false);
                     }
 
-                    if (result.Success)
+                    if (result.GetSuccess())
                     {
                         string filePath = Path.Combine(this.outputDir, "ship", "configuration.json");
-                        File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                        File.WriteAllText(filePath, FormatJson(result.GetJson()), Encoding.UTF8);
                         RecordSuccess("ship", "configuration");
                     }
                     else
                     {
-                        RecordSkipped("ship", "configuration", result.Json ?? "Request failed");
+                        RecordSkipped("ship", "configuration", result.GetJson() ?? "Request failed");
                     }
 
                     return Array.Empty<WorkItem>();
@@ -416,22 +415,22 @@ namespace OE2EmpireTracker.Tests.Services
                 Label = "ship/cargo",
                 ExecuteAsync = async ct =>
                 {
-                    var result = await this.client.GetShipCargoAsync(this.appId, this.accessToken).ConfigureAwait(false);
-                    if (!result.Success && result.Json == "401")
+                    var result = await this.client.GetShipCargoAsync().ConfigureAwait(false);
+                    if (!result.GetSuccess() && result.GetJson() == "401")
                     {
                         await this.RefreshTokenAsync().ConfigureAwait(false);
-                        result = await this.client.GetShipCargoAsync(this.appId, this.accessToken).ConfigureAwait(false);
+                        result = await this.client.GetShipCargoAsync().ConfigureAwait(false);
                     }
 
-                    if (result.Success)
+                    if (result.GetSuccess())
                     {
                         string filePath = Path.Combine(this.outputDir, "ship", "cargo.json");
-                        File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                        File.WriteAllText(filePath, FormatJson(result.GetJson()), Encoding.UTF8);
                         RecordSuccess("ship", "cargo");
                     }
                     else
                     {
-                        RecordSkipped("ship", "cargo", result.Json ?? "Request failed");
+                        RecordSkipped("ship", "cargo", result.GetJson() ?? "Request failed");
                     }
 
                     return Array.Empty<WorkItem>();
@@ -444,24 +443,24 @@ namespace OE2EmpireTracker.Tests.Services
                 Label = "market/listings",
                 ExecuteAsync = async ct =>
                 {
-                    var result = await this.client.GetMarketListingsAsync(this.appId, this.accessToken, "all").ConfigureAwait(false);
-                    if (!result.Success && result.Json == "401")
+                    var result = await this.client.GetMarketListingsAsync("all").ConfigureAwait(false);
+                    if (!result.GetSuccess() && result.GetJson() == "401")
                     {
                         await this.RefreshTokenAsync().ConfigureAwait(false);
-                        result = await this.client.GetMarketListingsAsync(this.appId, this.accessToken, "all").ConfigureAwait(false);
+                        result = await this.client.GetMarketListingsAsync("all").ConfigureAwait(false);
                     }
 
-                    if (!result.Success)
+                    if (!result.GetSuccess())
                     {
-                        RecordSkipped("market", "listings", result.Json ?? "Request failed");
+                        RecordSkipped("market", "listings", result.GetJson() ?? "Request failed");
                         return Array.Empty<WorkItem>();
                     }
 
                     string filePath = Path.Combine(this.outputDir, "market", "listings.json");
-                    File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                    File.WriteAllText(filePath, FormatJson(result.GetJson()), Encoding.UTF8);
                     RecordSuccess("market", "listings");
 
-                    var envelope = JObject.Parse(result.Json);
+                    var envelope = JObject.Parse(result.GetJson());
                     var listings = envelope["data"]?["listings"] as JArray;
                     if (listings == null || listings.Count == 0)
                     {
@@ -485,22 +484,22 @@ namespace OE2EmpireTracker.Tests.Services
                             Label = "market/prices",
                             ExecuteAsync = async ct2 =>
                             {
-                                var r = await this.client.GetMarketPricesAsync(this.appId, this.accessToken, capturedType, capturedTypeId).ConfigureAwait(false);
-                                if (!r.Success && r.Json == "401")
+                                var r = await this.client.GetMarketPricesAsync(capturedType, capturedTypeId).ConfigureAwait(false);
+                                if (!r.GetSuccess() && r.GetJson() == "401")
                                 {
                                     await this.RefreshTokenAsync().ConfigureAwait(false);
-                                    r = await this.client.GetMarketPricesAsync(this.appId, this.accessToken, capturedType, capturedTypeId).ConfigureAwait(false);
+                                    r = await this.client.GetMarketPricesAsync(capturedType, capturedTypeId).ConfigureAwait(false);
                                 }
 
-                                if (r.Success)
+                                if (r.GetSuccess())
                                 {
                                     string pricePath = Path.Combine(this.outputDir, "market", "prices.json");
-                                    File.WriteAllText(pricePath, FormatJson(r.Json), Encoding.UTF8);
+                                    File.WriteAllText(pricePath, FormatJson(r.GetJson()), Encoding.UTF8);
                                     RecordSuccess("market", "prices");
                                 }
                                 else
                                 {
-                                    RecordSkipped("market", "prices", r.Json ?? "Request failed");
+                                    RecordSkipped("market", "prices", r.GetJson() ?? "Request failed");
                                 }
 
                                 return Array.Empty<WorkItem>();
@@ -522,22 +521,22 @@ namespace OE2EmpireTracker.Tests.Services
                                 Label = "market/ship-components",
                                 ExecuteAsync = async ct2 =>
                                 {
-                                    var r = await this.client.GetMarketShipComponentsAsync(this.appId, this.accessToken, capturedShipMarketId).ConfigureAwait(false);
-                                    if (!r.Success && r.Json == "401")
+                                    var r = await this.client.GetMarketShipComponentsAsync(capturedShipMarketId).ConfigureAwait(false);
+                                    if (!r.GetSuccess() && r.GetJson() == "401")
                                     {
                                         await this.RefreshTokenAsync().ConfigureAwait(false);
-                                        r = await this.client.GetMarketShipComponentsAsync(this.appId, this.accessToken, capturedShipMarketId).ConfigureAwait(false);
+                                        r = await this.client.GetMarketShipComponentsAsync(capturedShipMarketId).ConfigureAwait(false);
                                     }
 
-                                    if (r.Success)
+                                    if (r.GetSuccess())
                                     {
                                         string compPath = Path.Combine(this.outputDir, "market", "ship-components.json");
-                                        File.WriteAllText(compPath, FormatJson(r.Json), Encoding.UTF8);
+                                        File.WriteAllText(compPath, FormatJson(r.GetJson()), Encoding.UTF8);
                                         RecordSuccess("market", "ship-components");
                                     }
                                     else
                                     {
-                                        RecordSkipped("market", "ship-components", r.Json ?? "Request failed");
+                                        RecordSkipped("market", "ship-components", r.GetJson() ?? "Request failed");
                                     }
 
                                     return Array.Empty<WorkItem>();
@@ -555,22 +554,22 @@ namespace OE2EmpireTracker.Tests.Services
                 Label = "market/items",
                 ExecuteAsync = async ct =>
                 {
-                    var result = await this.client.GetMarketItemsAsync(this.appId, this.accessToken, "R", "Halogens").ConfigureAwait(false);
-                    if (!result.Success && result.Json == "401")
+                    var result = await this.client.GetMarketItemsAsync("R", "Halogens").ConfigureAwait(false);
+                    if (!result.GetSuccess() && result.GetJson() == "401")
                     {
                         await this.RefreshTokenAsync().ConfigureAwait(false);
-                        result = await this.client.GetMarketItemsAsync(this.appId, this.accessToken, "R", "Halogens").ConfigureAwait(false);
+                        result = await this.client.GetMarketItemsAsync("R", "Halogens").ConfigureAwait(false);
                     }
 
-                    if (result.Success)
+                    if (result.GetSuccess())
                     {
                         string filePath = Path.Combine(this.outputDir, "market", "items.json");
-                        File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                        File.WriteAllText(filePath, FormatJson(result.GetJson()), Encoding.UTF8);
                         RecordSuccess("market", "items");
                     }
                     else
                     {
-                        RecordSkipped("market", "items", result.Json ?? "Request failed");
+                        RecordSkipped("market", "items", result.GetJson() ?? "Request failed");
                     }
 
                     return Array.Empty<WorkItem>();
@@ -582,24 +581,24 @@ namespace OE2EmpireTracker.Tests.Services
                 Label = "market/buy-orders",
                 ExecuteAsync = async ct =>
                 {
-                    var result = await this.client.GetMarketBuyOrdersAsync(this.appId, this.accessToken).ConfigureAwait(false);
-                    if (!result.Success && result.Json == "401")
+                    var result = await this.client.GetMarketBuyOrdersAsync().ConfigureAwait(false);
+                    if (!result.GetSuccess() && result.GetJson() == "401")
                     {
                         await this.RefreshTokenAsync().ConfigureAwait(false);
-                        result = await this.client.GetMarketBuyOrdersAsync(this.appId, this.accessToken).ConfigureAwait(false);
+                        result = await this.client.GetMarketBuyOrdersAsync().ConfigureAwait(false);
                     }
 
-                    if (!result.Success)
+                    if (!result.GetSuccess())
                     {
-                        RecordSkipped("market", "buy-orders", result.Json ?? "Request failed");
+                        RecordSkipped("market", "buy-orders", result.GetJson() ?? "Request failed");
                         return Array.Empty<WorkItem>();
                     }
 
                     string filePath = Path.Combine(this.outputDir, "market", "buy-orders.json");
-                    File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                    File.WriteAllText(filePath, FormatJson(result.GetJson()), Encoding.UTF8);
                     RecordSuccess("market", "buy-orders");
 
-                    var envelope = JObject.Parse(result.Json);
+                    var envelope = JObject.Parse(result.GetJson());
                     var orders = envelope["data"]?["orders"] as JArray;
                     if (orders == null || orders.Count == 0)
                     {
@@ -626,22 +625,22 @@ namespace OE2EmpireTracker.Tests.Services
                             Label = "market/buy-competitors",
                             ExecuteAsync = async ct2 =>
                             {
-                                var r = await this.client.GetMarketBuyCompetitorsAsync(this.appId, this.accessToken, joinedIds).ConfigureAwait(false);
-                                if (!r.Success && r.Json == "401")
+                                var r = await this.client.GetMarketBuyOrderCompetitorsAsync(joinedIds).ConfigureAwait(false);
+                                if (!r.GetSuccess() && r.GetJson() == "401")
                                 {
                                     await this.RefreshTokenAsync().ConfigureAwait(false);
-                                    r = await this.client.GetMarketBuyCompetitorsAsync(this.appId, this.accessToken, joinedIds).ConfigureAwait(false);
+                                    r = await this.client.GetMarketBuyOrderCompetitorsAsync(joinedIds).ConfigureAwait(false);
                                 }
 
-                                if (r.Success)
+                                if (r.GetSuccess())
                                 {
                                     string compPath = Path.Combine(this.outputDir, "market", "buy-competitors.json");
-                                    File.WriteAllText(compPath, FormatJson(r.Json), Encoding.UTF8);
+                                    File.WriteAllText(compPath, FormatJson(r.GetJson()), Encoding.UTF8);
                                     RecordSuccess("market", "buy-competitors");
                                 }
                                 else
                                 {
-                                    RecordSkipped("market", "buy-competitors", r.Json ?? "Request failed");
+                                    RecordSkipped("market", "buy-competitors", r.GetJson() ?? "Request failed");
                                 }
 
                                 return Array.Empty<WorkItem>();
@@ -656,24 +655,24 @@ namespace OE2EmpireTracker.Tests.Services
                 Label = "market/sell-orders",
                 ExecuteAsync = async ct =>
                 {
-                    var result = await this.client.GetMarketSellOrdersAsync(this.appId, this.accessToken).ConfigureAwait(false);
-                    if (!result.Success && result.Json == "401")
+                    var result = await this.client.GetMarketSellOrdersAsync().ConfigureAwait(false);
+                    if (!result.GetSuccess() && result.GetJson() == "401")
                     {
                         await this.RefreshTokenAsync().ConfigureAwait(false);
-                        result = await this.client.GetMarketSellOrdersAsync(this.appId, this.accessToken).ConfigureAwait(false);
+                        result = await this.client.GetMarketSellOrdersAsync().ConfigureAwait(false);
                     }
 
-                    if (!result.Success)
+                    if (!result.GetSuccess())
                     {
-                        RecordSkipped("market", "sell-orders", result.Json ?? "Request failed");
+                        RecordSkipped("market", "sell-orders", result.GetJson() ?? "Request failed");
                         return Array.Empty<WorkItem>();
                     }
 
                     string filePath = Path.Combine(this.outputDir, "market", "sell-orders.json");
-                    File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                    File.WriteAllText(filePath, FormatJson(result.GetJson()), Encoding.UTF8);
                     RecordSuccess("market", "sell-orders");
 
-                    var envelope = JObject.Parse(result.Json);
+                    var envelope = JObject.Parse(result.GetJson());
                     var orders = envelope["data"]?["orders"] as JArray;
                     if (orders == null || orders.Count == 0)
                     {
@@ -700,22 +699,22 @@ namespace OE2EmpireTracker.Tests.Services
                             Label = "market/sell-competitors",
                             ExecuteAsync = async ct2 =>
                             {
-                                var r = await this.client.GetMarketSellCompetitorsAsync(this.appId, this.accessToken, joinedIds).ConfigureAwait(false);
-                                if (!r.Success && r.Json == "401")
+                                var r = await this.client.GetMarketSellOrderCompetitorsAsync(joinedIds).ConfigureAwait(false);
+                                if (!r.GetSuccess() && r.GetJson() == "401")
                                 {
                                     await this.RefreshTokenAsync().ConfigureAwait(false);
-                                    r = await this.client.GetMarketSellCompetitorsAsync(this.appId, this.accessToken, joinedIds).ConfigureAwait(false);
+                                    r = await this.client.GetMarketSellOrderCompetitorsAsync(joinedIds).ConfigureAwait(false);
                                 }
 
-                                if (r.Success)
+                                if (r.GetSuccess())
                                 {
                                     string compPath = Path.Combine(this.outputDir, "market", "sell-competitors.json");
-                                    File.WriteAllText(compPath, FormatJson(r.Json), Encoding.UTF8);
+                                    File.WriteAllText(compPath, FormatJson(r.GetJson()), Encoding.UTF8);
                                     RecordSuccess("market", "sell-competitors");
                                 }
                                 else
                                 {
-                                    RecordSkipped("market", "sell-competitors", r.Json ?? "Request failed");
+                                    RecordSkipped("market", "sell-competitors", r.GetJson() ?? "Request failed");
                                 }
 
                                 return Array.Empty<WorkItem>();
@@ -731,24 +730,24 @@ namespace OE2EmpireTracker.Tests.Services
                 Label = "colonies/list",
                 ExecuteAsync = async ct =>
                 {
-                    var result = await this.client.GetColonyListAsync(this.appId, this.accessToken).ConfigureAwait(false);
-                    if (!result.Success && result.Json == "401")
+                    var result = await this.client.GetColonyListAsync().ConfigureAwait(false);
+                    if (!result.GetSuccess() && result.GetJson() == "401")
                     {
                         await this.RefreshTokenAsync().ConfigureAwait(false);
-                        result = await this.client.GetColonyListAsync(this.appId, this.accessToken).ConfigureAwait(false);
+                        result = await this.client.GetColonyListAsync().ConfigureAwait(false);
                     }
 
-                    if (!result.Success)
+                    if (!result.GetSuccess())
                     {
-                        RecordSkipped("colonies", "list", result.Json ?? "Request failed");
+                        RecordSkipped("colonies", "list", result.GetJson() ?? "Request failed");
                         return Array.Empty<WorkItem>();
                     }
 
                     string filePath = Path.Combine(this.outputDir, "colonies", "list.json");
-                    File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                    File.WriteAllText(filePath, FormatJson(result.GetJson()), Encoding.UTF8);
                     RecordSuccess("colonies", "list");
 
-                    var envelope = JObject.Parse(result.Json);
+                    var envelope = JObject.Parse(result.GetJson());
                     var colonies = envelope["data"]?["colonies"] as JArray;
                     if (colonies == null || colonies.Count == 0)
                     {
@@ -774,21 +773,21 @@ namespace OE2EmpireTracker.Tests.Services
                             Label = $"colonies/{capturedId}/summary",
                             ExecuteAsync = async ct2 =>
                             {
-                                var r = await this.client.GetColonySummaryAsync(this.appId, this.accessToken, capturedId).ConfigureAwait(false);
-                                if (!r.Success && r.Json == "401")
+                                var r = await this.client.GetColonySummaryAsync(capturedId).ConfigureAwait(false);
+                                if (!r.GetSuccess() && r.GetJson() == "401")
                                 {
                                     await this.RefreshTokenAsync().ConfigureAwait(false);
-                                    r = await this.client.GetColonySummaryAsync(this.appId, this.accessToken, capturedId).ConfigureAwait(false);
+                                    r = await this.client.GetColonySummaryAsync(capturedId).ConfigureAwait(false);
                                 }
 
-                                if (r.Success)
+                                if (r.GetSuccess())
                                 {
-                                    File.WriteAllText(Path.Combine(colonyDir, "summary.json"), FormatJson(r.Json), Encoding.UTF8);
+                                    File.WriteAllText(Path.Combine(colonyDir, "summary.json"), FormatJson(r.GetJson()), Encoding.UTF8);
                                     RecordSuccess("colonies", $"{capturedId}/summary");
                                 }
                                 else
                                 {
-                                    RecordSkipped("colonies", $"{capturedId}/summary", r.Json ?? "Request failed");
+                                    RecordSkipped("colonies", $"{capturedId}/summary", r.GetJson() ?? "Request failed");
                                 }
 
                                 return Array.Empty<WorkItem>();
@@ -800,21 +799,21 @@ namespace OE2EmpireTracker.Tests.Services
                             Label = $"colonies/{capturedId}/buildings",
                             ExecuteAsync = async ct2 =>
                             {
-                                var r = await this.client.GetColonyBuildingsAsync(this.appId, this.accessToken, capturedId).ConfigureAwait(false);
-                                if (!r.Success && r.Json == "401")
+                                var r = await this.client.GetColonyBuildingsAsync(capturedId).ConfigureAwait(false);
+                                if (!r.GetSuccess() && r.GetJson() == "401")
                                 {
                                     await this.RefreshTokenAsync().ConfigureAwait(false);
-                                    r = await this.client.GetColonyBuildingsAsync(this.appId, this.accessToken, capturedId).ConfigureAwait(false);
+                                    r = await this.client.GetColonyBuildingsAsync(capturedId).ConfigureAwait(false);
                                 }
 
-                                if (r.Success)
+                                if (r.GetSuccess())
                                 {
-                                    File.WriteAllText(Path.Combine(colonyDir, "buildings.json"), FormatJson(r.Json), Encoding.UTF8);
+                                    File.WriteAllText(Path.Combine(colonyDir, "buildings.json"), FormatJson(r.GetJson()), Encoding.UTF8);
                                     RecordSuccess("colonies", $"{capturedId}/buildings");
                                 }
                                 else
                                 {
-                                    RecordSkipped("colonies", $"{capturedId}/buildings", r.Json ?? "Request failed");
+                                    RecordSkipped("colonies", $"{capturedId}/buildings", r.GetJson() ?? "Request failed");
                                 }
 
                                 return Array.Empty<WorkItem>();
@@ -826,21 +825,21 @@ namespace OE2EmpireTracker.Tests.Services
                             Label = $"colonies/{capturedId}/warehouse",
                             ExecuteAsync = async ct2 =>
                             {
-                                var r = await this.client.GetColonyWarehouseAsync(this.appId, this.accessToken, capturedId).ConfigureAwait(false);
-                                if (!r.Success && r.Json == "401")
+                                var r = await this.client.GetColonyWarehouseAsync(capturedId).ConfigureAwait(false);
+                                if (!r.GetSuccess() && r.GetJson() == "401")
                                 {
                                     await this.RefreshTokenAsync().ConfigureAwait(false);
-                                    r = await this.client.GetColonyWarehouseAsync(this.appId, this.accessToken, capturedId).ConfigureAwait(false);
+                                    r = await this.client.GetColonyWarehouseAsync(capturedId).ConfigureAwait(false);
                                 }
 
-                                if (r.Success)
+                                if (r.GetSuccess())
                                 {
-                                    File.WriteAllText(Path.Combine(colonyDir, "warehouse.json"), FormatJson(r.Json), Encoding.UTF8);
+                                    File.WriteAllText(Path.Combine(colonyDir, "warehouse.json"), FormatJson(r.GetJson()), Encoding.UTF8);
                                     RecordSuccess("colonies", $"{capturedId}/warehouse");
                                 }
                                 else
                                 {
-                                    RecordSkipped("colonies", $"{capturedId}/warehouse", r.Json ?? "Request failed");
+                                    RecordSkipped("colonies", $"{capturedId}/warehouse", r.GetJson() ?? "Request failed");
                                 }
 
                                 return Array.Empty<WorkItem>();
@@ -852,21 +851,21 @@ namespace OE2EmpireTracker.Tests.Services
                             Label = $"colonies/{capturedId}/workers",
                             ExecuteAsync = async ct2 =>
                             {
-                                var r = await this.client.GetColonyWorkersAsync(this.appId, this.accessToken, capturedId).ConfigureAwait(false);
-                                if (!r.Success && r.Json == "401")
+                                var r = await this.client.GetColonyWorkersAsync(capturedId).ConfigureAwait(false);
+                                if (!r.GetSuccess() && r.GetJson() == "401")
                                 {
                                     await this.RefreshTokenAsync().ConfigureAwait(false);
-                                    r = await this.client.GetColonyWorkersAsync(this.appId, this.accessToken, capturedId).ConfigureAwait(false);
+                                    r = await this.client.GetColonyWorkersAsync(capturedId).ConfigureAwait(false);
                                 }
 
-                                if (r.Success)
+                                if (r.GetSuccess())
                                 {
-                                    File.WriteAllText(Path.Combine(colonyDir, "workers.json"), FormatJson(r.Json), Encoding.UTF8);
+                                    File.WriteAllText(Path.Combine(colonyDir, "workers.json"), FormatJson(r.GetJson()), Encoding.UTF8);
                                     RecordSuccess("colonies", $"{capturedId}/workers");
                                 }
                                 else
                                 {
-                                    RecordSkipped("colonies", $"{capturedId}/workers", r.Json ?? "Request failed");
+                                    RecordSkipped("colonies", $"{capturedId}/workers", r.GetJson() ?? "Request failed");
                                 }
 
                                 return Array.Empty<WorkItem>();
@@ -883,25 +882,25 @@ namespace OE2EmpireTracker.Tests.Services
                 Label = "assets/locations",
                 ExecuteAsync = async ct =>
                 {
-                    var result = await this.client.GetAssetLocationsAsync(this.appId, this.accessToken).ConfigureAwait(false);
-                    if (!result.Success && result.Json == "401")
+                    var result = await this.client.GetAssetLocationsAsync().ConfigureAwait(false);
+                    if (!result.GetSuccess() && result.GetJson() == "401")
                     {
                         await this.RefreshTokenAsync().ConfigureAwait(false);
-                        result = await this.client.GetAssetLocationsAsync(this.appId, this.accessToken).ConfigureAwait(false);
+                        result = await this.client.GetAssetLocationsAsync().ConfigureAwait(false);
                     }
 
-                    if (!result.Success)
+                    if (!result.GetSuccess())
                     {
-                        RecordSkipped("assets", "locations", result.Json ?? "Request failed");
+                        RecordSkipped("assets", "locations", result.GetJson() ?? "Request failed");
                         return Array.Empty<WorkItem>();
                     }
 
                     string filePath = Path.Combine(this.outputDir, "assets", "locations.json");
-                    File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                    File.WriteAllText(filePath, FormatJson(result.GetJson()), Encoding.UTF8);
                     RecordSuccess("assets", "locations");
-                    this.assetLocationsJson = result.Json;
+                    this.assetLocationsJson = result.GetJson();
 
-                    var envelope = JObject.Parse(result.Json);
+                    var envelope = JObject.Parse(result.GetJson());
                     var locations = envelope["data"]?["locations"] as JArray;
                     if (locations == null || locations.Count == 0)
                     {
@@ -927,24 +926,24 @@ namespace OE2EmpireTracker.Tests.Services
                             Label = $"assets/{capturedType}-{capturedId}",
                             ExecuteAsync = async ct2 =>
                             {
-                                var r = await this.client.GetAssetLocationDetailAsync(this.appId, this.accessToken, capturedId, capturedType).ConfigureAwait(false);
-                                if (!r.Success && r.Json == "401")
+                                var r = await this.client.GetAssetLocationDetailAsync(capturedId, capturedType).ConfigureAwait(false);
+                                if (!r.GetSuccess() && r.GetJson() == "401")
                                 {
                                     await this.RefreshTokenAsync().ConfigureAwait(false);
-                                    r = await this.client.GetAssetLocationDetailAsync(this.appId, this.accessToken, capturedId, capturedType).ConfigureAwait(false);
+                                    r = await this.client.GetAssetLocationDetailAsync(capturedId, capturedType).ConfigureAwait(false);
                                 }
 
-                                if (!r.Success)
+                                if (!r.GetSuccess())
                                 {
-                                    RecordSkipped("assets", $"{capturedType}-{capturedId}", r.Json ?? "Request failed");
+                                    RecordSkipped("assets", $"{capturedType}-{capturedId}", r.GetJson() ?? "Request failed");
                                     return Array.Empty<WorkItem>();
                                 }
 
                                 string detailPath = Path.Combine(this.outputDir, "assets", $"{capturedType}-{capturedId}.json");
-                                File.WriteAllText(detailPath, FormatJson(r.Json), Encoding.UTF8);
+                                File.WriteAllText(detailPath, FormatJson(r.GetJson()), Encoding.UTF8);
                                 RecordSuccess("assets", $"{capturedType}-{capturedId}");
 
-                                var detail = JObject.Parse(r.Json);
+                                var detail = JObject.Parse(r.GetJson());
                                 var cargo = detail["data"]?["cargo"] as JArray;
                                 if (cargo == null || cargo.Count == 0)
                                 {
@@ -970,25 +969,25 @@ namespace OE2EmpireTracker.Tests.Services
                                             Label = $"assets/crate-{capturedItemId}",
                                             ExecuteAsync = async ct3 =>
                                             {
-                                                var cr = await this.client.GetAssetCrateAsync(this.appId, this.accessToken, capturedItemId).ConfigureAwait(false);
-                                                if (!cr.Success && cr.Json == "401")
+                                                var cr = await this.client.GetCrateContentsAsync(capturedItemId).ConfigureAwait(false);
+                                                if (!cr.GetSuccess() && cr.GetJson() == "401")
                                                 {
                                                     await this.RefreshTokenAsync().ConfigureAwait(false);
-                                                    cr = await this.client.GetAssetCrateAsync(this.appId, this.accessToken, capturedItemId).ConfigureAwait(false);
+                                                    cr = await this.client.GetCrateContentsAsync(capturedItemId).ConfigureAwait(false);
                                                 }
 
-                                                if (!cr.Success)
+                                                if (!cr.GetSuccess())
                                                 {
-                                                    RecordSkipped("assets", $"crate-{capturedItemId}", cr.Json ?? "Request failed");
+                                                    RecordSkipped("assets", $"crate-{capturedItemId}", cr.GetJson() ?? "Request failed");
                                                     return Array.Empty<WorkItem>();
                                                 }
 
                                                 string cratePath = Path.Combine(this.outputDir, "assets", $"crate-{capturedItemId}.json");
-                                                File.WriteAllText(cratePath, FormatJson(cr.Json), Encoding.UTF8);
+                                                File.WriteAllText(cratePath, FormatJson(cr.GetJson()), Encoding.UTF8);
                                                 RecordSuccess("assets", $"crate-{capturedItemId}");
 
                                                 // Cascade: parse crate contents for nested blueprints/surveys
-                                                var crateEnvelope = JObject.Parse(cr.Json);
+                                                var crateEnvelope = JObject.Parse(cr.GetJson());
                                                 var crateCargo = crateEnvelope["data"]?["cargo"] as JArray;
                                                 if (crateCargo == null || crateCargo.Count == 0)
                                                 {
@@ -1014,22 +1013,22 @@ namespace OE2EmpireTracker.Tests.Services
                                                             Label = $"assets/blueprint-{capturedCrateItemId}",
                                                             ExecuteAsync = async ct4 =>
                                                             {
-                                                                var bp2 = await this.client.GetAssetBlueprintAsync(this.appId, this.accessToken, capturedCrateItemId).ConfigureAwait(false);
-                                                                if (!bp2.Success && bp2.Json == "401")
+                                                                var bp2 = await this.client.GetBlueprintDetailAsync(capturedCrateItemId).ConfigureAwait(false);
+                                                                if (!bp2.GetSuccess() && bp2.GetJson() == "401")
                                                                 {
                                                                     await this.RefreshTokenAsync().ConfigureAwait(false);
-                                                                    bp2 = await this.client.GetAssetBlueprintAsync(this.appId, this.accessToken, capturedCrateItemId).ConfigureAwait(false);
+                                                                    bp2 = await this.client.GetBlueprintDetailAsync(capturedCrateItemId).ConfigureAwait(false);
                                                                 }
 
-                                                                if (bp2.Success)
+                                                                if (bp2.GetSuccess())
                                                                 {
                                                                     string bpPath2 = Path.Combine(this.outputDir, "assets", $"blueprint-{capturedCrateItemId}.json");
-                                                                    File.WriteAllText(bpPath2, FormatJson(bp2.Json), Encoding.UTF8);
+                                                                    File.WriteAllText(bpPath2, FormatJson(bp2.GetJson()), Encoding.UTF8);
                                                                     RecordSuccess("assets", $"blueprint-{capturedCrateItemId}");
                                                                 }
                                                                 else
                                                                 {
-                                                                    RecordSkipped("assets", $"blueprint-{capturedCrateItemId}", bp2.Json ?? "Request failed");
+                                                                    RecordSkipped("assets", $"blueprint-{capturedCrateItemId}", bp2.GetJson() ?? "Request failed");
                                                                 }
 
                                                                 return Array.Empty<WorkItem>();
@@ -1043,22 +1042,22 @@ namespace OE2EmpireTracker.Tests.Services
                                                             Label = $"assets/survey-{capturedCrateItemId}",
                                                             ExecuteAsync = async ct4 =>
                                                             {
-                                                                var sr2 = await this.client.GetAssetSurveyAsync(this.appId, this.accessToken, capturedCrateItemId).ConfigureAwait(false);
-                                                                if (!sr2.Success && sr2.Json == "401")
+                                                                var sr2 = await this.client.GetSurveyDetailAsync(capturedCrateItemId).ConfigureAwait(false);
+                                                                if (!sr2.GetSuccess() && sr2.GetJson() == "401")
                                                                 {
                                                                     await this.RefreshTokenAsync().ConfigureAwait(false);
-                                                                    sr2 = await this.client.GetAssetSurveyAsync(this.appId, this.accessToken, capturedCrateItemId).ConfigureAwait(false);
+                                                                    sr2 = await this.client.GetSurveyDetailAsync(capturedCrateItemId).ConfigureAwait(false);
                                                                 }
 
-                                                                if (sr2.Success)
+                                                                if (sr2.GetSuccess())
                                                                 {
                                                                     string surveyPath2 = Path.Combine(this.outputDir, "assets", $"survey-{capturedCrateItemId}.json");
-                                                                    File.WriteAllText(surveyPath2, FormatJson(sr2.Json), Encoding.UTF8);
+                                                                    File.WriteAllText(surveyPath2, FormatJson(sr2.GetJson()), Encoding.UTF8);
                                                                     RecordSuccess("assets", $"survey-{capturedCrateItemId}");
                                                                 }
                                                                 else
                                                                 {
-                                                                    RecordSkipped("assets", $"survey-{capturedCrateItemId}", sr2.Json ?? "Request failed");
+                                                                    RecordSkipped("assets", $"survey-{capturedCrateItemId}", sr2.GetJson() ?? "Request failed");
                                                                 }
 
                                                                 return Array.Empty<WorkItem>();
@@ -1078,22 +1077,22 @@ namespace OE2EmpireTracker.Tests.Services
                                             Label = $"assets/survey-{capturedItemId}",
                                             ExecuteAsync = async ct3 =>
                                             {
-                                                var sr = await this.client.GetAssetSurveyAsync(this.appId, this.accessToken, capturedItemId).ConfigureAwait(false);
-                                                if (!sr.Success && sr.Json == "401")
+                                                var sr = await this.client.GetSurveyDetailAsync(capturedItemId).ConfigureAwait(false);
+                                                if (!sr.GetSuccess() && sr.GetJson() == "401")
                                                 {
                                                     await this.RefreshTokenAsync().ConfigureAwait(false);
-                                                    sr = await this.client.GetAssetSurveyAsync(this.appId, this.accessToken, capturedItemId).ConfigureAwait(false);
+                                                    sr = await this.client.GetSurveyDetailAsync(capturedItemId).ConfigureAwait(false);
                                                 }
 
-                                                if (sr.Success)
+                                                if (sr.GetSuccess())
                                                 {
                                                     string surveyPath = Path.Combine(this.outputDir, "assets", $"survey-{capturedItemId}.json");
-                                                    File.WriteAllText(surveyPath, FormatJson(sr.Json), Encoding.UTF8);
+                                                    File.WriteAllText(surveyPath, FormatJson(sr.GetJson()), Encoding.UTF8);
                                                     RecordSuccess("assets", $"survey-{capturedItemId}");
                                                 }
                                                 else
                                                 {
-                                                    RecordSkipped("assets", $"survey-{capturedItemId}", sr.Json ?? "Request failed");
+                                                    RecordSkipped("assets", $"survey-{capturedItemId}", sr.GetJson() ?? "Request failed");
                                                 }
 
                                                 return Array.Empty<WorkItem>();
@@ -1107,22 +1106,22 @@ namespace OE2EmpireTracker.Tests.Services
                                             Label = $"assets/blueprint-{capturedItemId}",
                                             ExecuteAsync = async ct3 =>
                                             {
-                                                var bp = await this.client.GetAssetBlueprintAsync(this.appId, this.accessToken, capturedItemId).ConfigureAwait(false);
-                                                if (!bp.Success && bp.Json == "401")
+                                                var bp = await this.client.GetBlueprintDetailAsync(capturedItemId).ConfigureAwait(false);
+                                                if (!bp.GetSuccess() && bp.GetJson() == "401")
                                                 {
                                                     await this.RefreshTokenAsync().ConfigureAwait(false);
-                                                    bp = await this.client.GetAssetBlueprintAsync(this.appId, this.accessToken, capturedItemId).ConfigureAwait(false);
+                                                    bp = await this.client.GetBlueprintDetailAsync(capturedItemId).ConfigureAwait(false);
                                                 }
 
-                                                if (bp.Success)
+                                                if (bp.GetSuccess())
                                                 {
                                                     string bpPath = Path.Combine(this.outputDir, "assets", $"blueprint-{capturedItemId}.json");
-                                                    File.WriteAllText(bpPath, FormatJson(bp.Json), Encoding.UTF8);
+                                                    File.WriteAllText(bpPath, FormatJson(bp.GetJson()), Encoding.UTF8);
                                                     RecordSuccess("assets", $"blueprint-{capturedItemId}");
                                                 }
                                                 else
                                                 {
-                                                    RecordSkipped("assets", $"blueprint-{capturedItemId}", bp.Json ?? "Request failed");
+                                                    RecordSkipped("assets", $"blueprint-{capturedItemId}", bp.GetJson() ?? "Request failed");
                                                 }
 
                                                 return Array.Empty<WorkItem>();
@@ -1145,24 +1144,24 @@ namespace OE2EmpireTracker.Tests.Services
                 Label = "killmails/list",
                 ExecuteAsync = async ct =>
                 {
-                    var result = await this.client.GetKillMailListAsync(this.appId, this.accessToken).ConfigureAwait(false);
-                    if (!result.Success && result.Json == "401")
+                    var result = await this.client.GetKillMailListAsync().ConfigureAwait(false);
+                    if (!result.GetSuccess() && result.GetJson() == "401")
                     {
                         await this.RefreshTokenAsync().ConfigureAwait(false);
-                        result = await this.client.GetKillMailListAsync(this.appId, this.accessToken).ConfigureAwait(false);
+                        result = await this.client.GetKillMailListAsync().ConfigureAwait(false);
                     }
 
-                    if (!result.Success)
+                    if (!result.GetSuccess())
                     {
-                        RecordSkipped("killmails", "list", result.Json ?? "Request failed");
+                        RecordSkipped("killmails", "list", result.GetJson() ?? "Request failed");
                         return Array.Empty<WorkItem>();
                     }
 
                     string filePath = Path.Combine(this.outputDir, "killmails", "list.json");
-                    File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                    File.WriteAllText(filePath, FormatJson(result.GetJson()), Encoding.UTF8);
                     RecordSuccess("killmails", "list");
 
-                    var envelope = JObject.Parse(result.Json);
+                    var envelope = JObject.Parse(result.GetJson());
                     var killMails = envelope["data"]?["killMails"] as JArray;
                     if (killMails == null || killMails.Count == 0)
                     {
@@ -1185,22 +1184,22 @@ namespace OE2EmpireTracker.Tests.Services
                             Label = $"killmails/{capturedKmId}",
                             ExecuteAsync = async ct2 =>
                             {
-                                var r = await this.client.GetKillMailDetailAsync(this.appId, this.accessToken, capturedKmId).ConfigureAwait(false);
-                                if (!r.Success && r.Json == "401")
+                                var r = await this.client.GetKillMailDetailAsync(capturedKmId).ConfigureAwait(false);
+                                if (!r.GetSuccess() && r.GetJson() == "401")
                                 {
                                     await this.RefreshTokenAsync().ConfigureAwait(false);
-                                    r = await this.client.GetKillMailDetailAsync(this.appId, this.accessToken, capturedKmId).ConfigureAwait(false);
+                                    r = await this.client.GetKillMailDetailAsync(capturedKmId).ConfigureAwait(false);
                                 }
 
-                                if (r.Success)
+                                if (r.GetSuccess())
                                 {
                                     string kmPath = Path.Combine(this.outputDir, "killmails", $"{capturedKmId}.json");
-                                    File.WriteAllText(kmPath, FormatJson(r.Json), Encoding.UTF8);
+                                    File.WriteAllText(kmPath, FormatJson(r.GetJson()), Encoding.UTF8);
                                     RecordSuccess("killmails", capturedKmId.ToString());
                                 }
                                 else
                                 {
-                                    RecordSkipped("killmails", capturedKmId.ToString(), r.Json ?? "Request failed");
+                                    RecordSkipped("killmails", capturedKmId.ToString(), r.GetJson() ?? "Request failed");
                                 }
 
                                 return Array.Empty<WorkItem>();
@@ -1242,25 +1241,25 @@ namespace OE2EmpireTracker.Tests.Services
                 Label = $"banking/transactions-page-{page}",
                 ExecuteAsync = async ct =>
                 {
-                    var result = await this.client.GetBankingTransactionsAsync(this.appId, this.accessToken, page * 50, 50).ConfigureAwait(false);
-                    if (!result.Success && result.Json == "401")
+                    var result = await this.client.GetBankingTransactionsAsync(page * 50, 50).ConfigureAwait(false);
+                    if (!result.GetSuccess() && result.GetJson() == "401")
                     {
                         await this.RefreshTokenAsync().ConfigureAwait(false);
-                        result = await this.client.GetBankingTransactionsAsync(this.appId, this.accessToken, page * 50, 50).ConfigureAwait(false);
+                        result = await this.client.GetBankingTransactionsAsync(page * 50, 50).ConfigureAwait(false);
                     }
 
-                    if (!result.Success)
+                    if (!result.GetSuccess())
                     {
-                        RecordSkipped("banking", $"transactions-page-{page}", result.Json ?? "Request failed");
+                        RecordSkipped("banking", $"transactions-page-{page}", result.GetJson() ?? "Request failed");
                         return Array.Empty<WorkItem>();
                     }
 
                     string filePath = Path.Combine(this.outputDir, "banking", $"transactions-page-{page}.json");
-                    File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                    File.WriteAllText(filePath, FormatJson(result.GetJson()), Encoding.UTF8);
                     RecordSuccess("banking", $"transactions-page-{page}");
                     this.bankingTransactionPages.Add(filePath);
 
-                    var envelope = JObject.Parse(result.Json);
+                    var envelope = JObject.Parse(result.GetJson());
                     var transactions = envelope["data"]?["transactions"] as JArray;
                     if (transactions == null || transactions.Count == 0)
                     {
@@ -1273,7 +1272,7 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         /// <summary>
-        /// Combines all fetched banking transaction pages into a single transactions-all.json file.
+        /// Combines all fetched banking transaction pages into a single transactions-all.GetJson() file.
         /// </summary>
         private void CombineBankingTransactionPages()
         {
@@ -1308,7 +1307,7 @@ namespace OE2EmpireTracker.Tests.Services
 
             string allPath = Path.Combine(this.outputDir, "banking", "transactions-all.json");
             File.WriteAllText(allPath, JsonConvert.SerializeObject(combined, Formatting.Indented), Encoding.UTF8);
-            TestContext.WriteLine("[COMBINED] banking/transactions-all.json ({0} transactions)", allTransactions.Count);
+            TestContext.WriteLine("[COMBINED] banking/transactions-all.GetJson() ({0} transactions)", allTransactions.Count);
         }
 
         /// <summary>
@@ -1323,24 +1322,24 @@ namespace OE2EmpireTracker.Tests.Services
                 Label = $"mail/list-p{page}",
                 ExecuteAsync = async ct =>
                 {
-                    var result = await this.client.GetMailListAsync(this.appId, this.accessToken, page * 50, 50).ConfigureAwait(false);
-                    if (!result.Success && result.Json == "401")
+                    var result = await this.client.GetMailListAsync(page * 50, 50).ConfigureAwait(false);
+                    if (!result.GetSuccess() && result.GetJson() == "401")
                     {
                         await this.RefreshTokenAsync().ConfigureAwait(false);
-                        result = await this.client.GetMailListAsync(this.appId, this.accessToken, page * 50, 50).ConfigureAwait(false);
+                        result = await this.client.GetMailListAsync(page * 50, 50).ConfigureAwait(false);
                     }
 
-                    if (!result.Success)
+                    if (!result.GetSuccess())
                     {
-                        RecordSkipped("mail", $"list-p{page}", result.Json ?? "Request failed");
+                        RecordSkipped("mail", $"list-p{page}", result.GetJson() ?? "Request failed");
                         return Array.Empty<WorkItem>();
                     }
 
                     string filePath = Path.Combine(this.outputDir, "mail", $"list-p{page}.json");
-                    File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                    File.WriteAllText(filePath, FormatJson(result.GetJson()), Encoding.UTF8);
                     RecordSuccess("mail", $"list-p{page}");
 
-                    var envelope = JObject.Parse(result.Json);
+                    var envelope = JObject.Parse(result.GetJson());
                     var mails = envelope["data"]?["mail"] as JArray;
                     if (mails == null || mails.Count == 0)
                     {
@@ -1364,22 +1363,22 @@ namespace OE2EmpireTracker.Tests.Services
                             Label = $"mail/{capturedMailId}",
                             ExecuteAsync = async ct2 =>
                             {
-                                var r = await this.client.GetMailDetailAsync(this.appId, this.accessToken, capturedMailId).ConfigureAwait(false);
-                                if (!r.Success && r.Json == "401")
+                                var r = await this.client.GetMailBodyAsync(capturedMailId).ConfigureAwait(false);
+                                if (!r.GetSuccess() && r.GetJson() == "401")
                                 {
                                     await this.RefreshTokenAsync().ConfigureAwait(false);
-                                    r = await this.client.GetMailDetailAsync(this.appId, this.accessToken, capturedMailId).ConfigureAwait(false);
+                                    r = await this.client.GetMailBodyAsync(capturedMailId).ConfigureAwait(false);
                                 }
 
-                                if (r.Success)
+                                if (r.GetSuccess())
                                 {
                                     string mailPath = Path.Combine(this.outputDir, "mail", $"{capturedMailId}.json");
-                                    File.WriteAllText(mailPath, FormatJson(r.Json), Encoding.UTF8);
+                                    File.WriteAllText(mailPath, FormatJson(r.GetJson()), Encoding.UTF8);
                                     RecordSuccess("mail", capturedMailId.ToString());
                                 }
                                 else
                                 {
-                                    RecordSkipped("mail", capturedMailId.ToString(), r.Json ?? "Request failed");
+                                    RecordSkipped("mail", capturedMailId.ToString(), r.GetJson() ?? "Request failed");
                                 }
 
                                 return Array.Empty<WorkItem>();
@@ -1398,7 +1397,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// Runs the typed-client asset crawl path through a rate-limited queue.
         /// Seed: GetAssetLocationsAsync → cascades to location detail per location →
         /// cascades to crate/blueprint/survey detail per asset found.
-        /// The typed client's internal TokenBucketRateLimiter enforces 0.9 TPS and 9 concurrent.
+        /// The typed client's internal TokenBucketRateLimiter enforces 0.9 TPS throughput.
         /// The queue TPS is set generous (10) so the client's own limiter governs throughput.
         /// Sub-task 14.1: cascading pattern implementation.
         /// Sub-task 14.2: 0.5 TPS and 30 concurrent limits validated by typed client internals.
@@ -2034,8 +2033,8 @@ namespace OE2EmpireTracker.Tests.Services
                 .Select(g => new
                 {
                     Category = g.Key,
-                    Succeeded = g.Count(r => r.Success),
-                    Failed = g.Count(r => !r.Success),
+                    Succeeded = g.Count(r => r.GetSuccess()),
+                    Failed = g.Count(r => !r.GetSuccess()),
                 });
 
             TestContext.WriteLine("\n=== Typed Full Discovery Summary ===");
@@ -2408,14 +2407,14 @@ namespace OE2EmpireTracker.Tests.Services
                 try
                 {
                     var detailResult = this.client.GetAssetLocationDetailAsync(
-                        this.appId, this.accessToken, locationId, locationType).GetAwaiter().GetResult();
+                        locationId, locationType).GetAwaiter().GetResult();
 
-                    if (!detailResult.Success)
+                    if (!detailResult.GetSuccess())
                     {
                         continue;
                     }
 
-                    var detail = JObject.Parse(detailResult.Json);
+                    var detail = JObject.Parse(detailResult.GetJson());
                     var cargo = detail["data"]?["cargo"] as JArray;
                     if (cargo == null)
                     {
@@ -2479,5 +2478,19 @@ namespace OE2EmpireTracker.Tests.Services
             /// </summary>
             public DateTime Timestamp { get; set; }
         }
+    }
+
+
+    /// <summary>
+    /// Extension methods for typed API DTOs to provide backward-compatible .Success and .Json properties
+    /// for the [Explicit] discovery test. These simulate the old response wrapper behavior.
+    /// </summary>
+    internal static class DiscoveryResponseExtensions
+    {
+        /// <summary>Gets whether the response was successful (always true for typed client - throws on failure).</summary>
+        internal static bool GetSuccess(this object dto) { return dto != null; }
+
+        /// <summary>Serializes the DTO to JSON for output.</summary>
+        internal static string GetJson(this object dto) { return Newtonsoft.Json.JsonConvert.SerializeObject(dto, Newtonsoft.Json.Formatting.Indented); }
     }
 }

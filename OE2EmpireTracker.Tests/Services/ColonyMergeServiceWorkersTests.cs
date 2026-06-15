@@ -5,7 +5,7 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Client.Generated;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
 
@@ -49,23 +49,23 @@ namespace OE2EmpireTracker.Tests.Services
         public void MergeWorkers_MapsCommodityDemandsToCommodityRequestedList()
         {
             var needBy = new DateTime(2025, 3, 15, 10, 0, 0, DateTimeKind.Utc);
-            var apiWorkers = new GameApiColonyWorkersResponse
+            var apiWorkers = new ColonyWorkers
             {
                 WorkerCurrentAttitude = 50,
-                WorkforceCommodityDemands = new List<GameApiCommodityDemand>
+                WorkforceCommodityDemands = new List<ColonyCommodityDemand>
                 {
-                    new GameApiCommodityDemand
+                    new ColonyCommodityDemand
                     {
                         TypeName = "Food Rations",
                         Amount = 100,
-                        RequiredBy = needBy,
+                        RequiredBy = new DateTimeOffset(needBy),
                         Fulfilled = false,
                     },
-                    new GameApiCommodityDemand
+                    new ColonyCommodityDemand
                     {
                         TypeName = "Luxury Goods",
                         Amount = 50,
-                        RequiredBy = needBy.AddDays(1),
+                        RequiredBy = new DateTimeOffset(needBy.AddDays(1)),
                         Fulfilled = true,
                     },
                 },
@@ -96,23 +96,23 @@ namespace OE2EmpireTracker.Tests.Services
         public void MergeWorkers_SetsDeliveredToAmountWhenFulfilledTrue()
         {
             var needBy = new DateTime(2025, 3, 15, 10, 0, 0, DateTimeKind.Utc);
-            var apiWorkers = new GameApiColonyWorkersResponse
+            var apiWorkers = new ColonyWorkers
             {
                 WorkerCurrentAttitude = 50,
-                WorkforceCommodityDemands = new List<GameApiCommodityDemand>
+                WorkforceCommodityDemands = new List<ColonyCommodityDemand>
                 {
-                    new GameApiCommodityDemand
+                    new ColonyCommodityDemand
                     {
                         TypeName = "Fulfilled Item",
                         Amount = 200,
-                        RequiredBy = needBy,
+                        RequiredBy = new DateTimeOffset(needBy),
                         Fulfilled = true,
                     },
-                    new GameApiCommodityDemand
+                    new ColonyCommodityDemand
                     {
                         TypeName = "Unfulfilled Item",
                         Amount = 75,
-                        RequiredBy = needBy,
+                        RequiredBy = new DateTimeOffset(needBy),
                         Fulfilled = false,
                     },
                 },
@@ -144,10 +144,10 @@ namespace OE2EmpireTracker.Tests.Services
                 },
             };
 
-            var apiWorkers = new GameApiColonyWorkersResponse
+            var apiWorkers = new ColonyWorkers
             {
                 WorkerCurrentAttitude = 50,
-                WorkforceCommodityDemands = new List<GameApiCommodityDemand>(),
+                WorkforceCommodityDemands = new List<ColonyCommodityDemand>(),
             };
 
             bool changed = ColonyMergeService.MergeWorkers(apiWorkers, _colony);
@@ -186,10 +186,10 @@ namespace OE2EmpireTracker.Tests.Services
                 },
             };
 
-            var apiWorkers = new GameApiColonyWorkersResponse
+            var apiWorkers = new ColonyWorkers
             {
                 WorkerCurrentAttitude = 80,
-                WorkforceOverview = new GameApiWorkforceOverview
+                WorkforceOverview = new ColonyWorkforceOverview
                 {
                     BlueCollarAllocated = 10,
                     BlueCollarUnallocated = 5,
@@ -198,17 +198,17 @@ namespace OE2EmpireTracker.Tests.Services
                     SpecialistAllocated = 1,
                     SpecialistUnallocated = 0,
                 },
-                Wages = new GameApiColonyWages
+                Wages = new ColonyWages
                 {
                     CurrentWagePercentage = 120,
                 },
-                WorkforceCommodityDemands = new List<GameApiCommodityDemand>
+                WorkforceCommodityDemands = new List<ColonyCommodityDemand>
                 {
-                    new GameApiCommodityDemand
+                    new ColonyCommodityDemand
                     {
                         TypeName = "Food Rations",
                         Amount = 100,
-                        RequiredBy = needBy,
+                        RequiredBy = new DateTimeOffset(needBy),
                         Fulfilled = false,
                     },
                 },
@@ -229,10 +229,10 @@ namespace OE2EmpireTracker.Tests.Services
         {
             _colony.WorkerCurrentAttitude = 50;
 
-            var apiWorkers = new GameApiColonyWorkersResponse
+            var apiWorkers = new ColonyWorkers
             {
                 WorkerCurrentAttitude = 95,
-                WorkforceCommodityDemands = new List<GameApiCommodityDemand>(),
+                WorkforceCommodityDemands = new List<ColonyCommodityDemand>(),
             };
 
             bool changed = ColonyMergeService.MergeWorkers(apiWorkers, _colony);
@@ -249,10 +249,10 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void MergeWorkers_UpdatesWorkforceAllocationCounts()
         {
-            var apiWorkers = new GameApiColonyWorkersResponse
+            var apiWorkers = new ColonyWorkers
             {
                 WorkerCurrentAttitude = 50,
-                WorkforceOverview = new GameApiWorkforceOverview
+                WorkforceOverview = new ColonyWorkforceOverview
                 {
                     BlueCollarAllocated = 15,
                     BlueCollarUnallocated = 3,
@@ -261,7 +261,7 @@ namespace OE2EmpireTracker.Tests.Services
                     SpecialistAllocated = 4,
                     SpecialistUnallocated = 1,
                 },
-                WorkforceCommodityDemands = new List<GameApiCommodityDemand>(),
+                WorkforceCommodityDemands = new List<ColonyCommodityDemand>(),
             };
 
             bool changed = ColonyMergeService.MergeWorkers(apiWorkers, _colony);
@@ -285,14 +285,14 @@ namespace OE2EmpireTracker.Tests.Services
         {
             _colony.WageLevel = 100;
 
-            var apiWorkers = new GameApiColonyWorkersResponse
+            var apiWorkers = new ColonyWorkers
             {
                 WorkerCurrentAttitude = 50,
-                Wages = new GameApiColonyWages
+                Wages = new ColonyWages
                 {
                     CurrentWagePercentage = 150,
                 },
-                WorkforceCommodityDemands = new List<GameApiCommodityDemand>(),
+                WorkforceCommodityDemands = new List<ColonyCommodityDemand>(),
             };
 
             bool changed = ColonyMergeService.MergeWorkers(apiWorkers, _colony);

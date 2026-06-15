@@ -5,7 +5,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Client.Generated;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
 
@@ -26,9 +26,9 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void MergeStationAssets_NullStation_ReturnsFalse()
         {
-            var apiItems = new List<GameApiAssetCargoItem>
+            var apiItems = new List<AssetCargoItem>
             {
-                new GameApiAssetCargoItem { CargoItemId = 1, Amount = 10, ResourceName = "Iron", TypeC = "R" },
+                new AssetCargoItem { Id = 1, Amount = 10, ResourceName = "Iron", TypeC = "R" },
             };
             var hold = new ItemBag();
 
@@ -46,9 +46,9 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void MergeStationAssets_NullTargetHold_ReturnsFalse()
         {
-            var apiItems = new List<GameApiAssetCargoItem>
+            var apiItems = new List<AssetCargoItem>
             {
-                new GameApiAssetCargoItem { CargoItemId = 1, Amount = 10, ResourceName = "Iron", TypeC = "R" },
+                new AssetCargoItem { Id = 1, Amount = 10, ResourceName = "Iron", TypeC = "R" },
             };
             var station = new Station { UUID = "station-001", GameLocationId = 100 };
 
@@ -85,7 +85,7 @@ namespace OE2EmpireTracker.Tests.Services
             var station = new Station { UUID = "station-001", GameLocationId = 100 };
             var hold = new ItemBag();
 
-            bool result = AssetMergeService.MergeStationAssets(new List<GameApiAssetCargoItem>(), station, hold);
+            bool result = AssetMergeService.MergeStationAssets(new List<AssetCargoItem>(), station, hold);
 
             Assert.That(result, Is.False);
             Assert.That(hold.Count(), Is.EqualTo(0));
@@ -103,11 +103,11 @@ namespace OE2EmpireTracker.Tests.Services
             var hold = new ItemBag();
             station.Holds[AssetMergeService.DefaultHoldName] = hold;
 
-            var apiItems = new List<GameApiAssetCargoItem>
+            var apiItems = new List<AssetCargoItem>
             {
-                new GameApiAssetCargoItem
+                new AssetCargoItem
                 {
-                    CargoItemId = 501,
+                    Id = 501,
                     TypeId = 10,
                     Amount = 25,
                     ResourceName = "Titanium",
@@ -115,9 +115,9 @@ namespace OE2EmpireTracker.Tests.Services
                     Mass = 2.5,
                     Volume = 5,
                 },
-                new GameApiAssetCargoItem
+                new AssetCargoItem
                 {
-                    CargoItemId = 502,
+                    Id = 502,
                     TypeId = 20,
                     Amount = 3,
                     ResourceName = "Plasma Cannon",
@@ -167,11 +167,11 @@ namespace OE2EmpireTracker.Tests.Services
             };
             hold.AddItem(existingItem);
 
-            var apiItems = new List<GameApiAssetCargoItem>
+            var apiItems = new List<AssetCargoItem>
             {
-                new GameApiAssetCargoItem
+                new AssetCargoItem
                 {
-                    CargoItemId = 601,
+                    Id = 601,
                     TypeId = 30,
                     Amount = 50,
                     ResourceName = "Updated Commodity",
@@ -223,11 +223,11 @@ namespace OE2EmpireTracker.Tests.Services
             };
             hold.AddItem(existingItem);
 
-            var apiItems = new List<GameApiAssetCargoItem>
+            var apiItems = new List<AssetCargoItem>
             {
-                new GameApiAssetCargoItem
+                new AssetCargoItem
                 {
-                    CargoItemId = 701,
+                    Id = 701,
                     TypeId = 40,
                     Amount = 10,
                     ResourceName = "Stable Item",
@@ -258,11 +258,11 @@ namespace OE2EmpireTracker.Tests.Services
             var hold = new ItemBag();
             station.Holds[AssetMergeService.DefaultHoldName] = hold;
 
-            var apiItems = new List<GameApiAssetCargoItem>
+            var apiItems = new List<AssetCargoItem>
             {
-                new GameApiAssetCargoItem
+                new AssetCargoItem
                 {
-                    CargoItemId = 801,
+                    Id = 801,
                     TypeId = 50,
                     Amount = 1,
                     ResourceName = "New Widget",

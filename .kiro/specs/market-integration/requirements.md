@@ -39,6 +39,8 @@ The sync model merges public orders from all characters into a shared dataset. P
 3. WHEN syncing, THE Market_Sync_Service SHALL record Sync_Metadata for the character including the system the character was in, the range used, and the sync timestamp.
 4. WHEN a previously-stored order falls within the syncing character's system and range but is absent from the fresh API results, THE Market_Sync_Service SHALL remove that order from the Merged_Market_Dataset.
 5. THE Market_Sync_Service SHALL not remove orders that are outside the syncing character's range, as no information about those orders can be inferred.
+6. WHEN an order's range classification is ambiguous (neither clearly in-range nor clearly outside-range), THE Market_Sync_Service SHALL preserve that order in the Merged_Market_Dataset.
+7. WHEN an order is present in the fresh API results, THE Market_Sync_Service SHALL preserve it regardless of range classification.
 6. IF the sync fails partway through, THEN THE Market_Sync_Service SHALL retain the previous data unchanged and report the failure to the player.
 
 ### Requirement 2: Private Sale Handling
@@ -49,7 +51,7 @@ The sync model merges public orders from all characters into a shared dataset. P
 
 1. WHEN a synced listing has `privateSale=true`, THE Market_Sync_Service SHALL store the order associated with the character who synced it rather than in the shared public dataset.
 2. WHEN Character A creates a private sale to Character B, and both characters sync, THE Market_Form SHALL display that order to both Character A and Character B.
-3. THE Market_Form SHALL not display private sale orders to characters other than the seller and the named buyer.
+3. THE Market_Form SHALL not display private sale orders to characters other than the seller and the named buyer, regardless of account sharing or device access. Visibility is strictly determined by character identity.
 
 ### Requirement 3: Own Orders Display
 
@@ -84,7 +86,7 @@ The sync model merges public orders from all characters into a shared dataset. P
 2. THE Market_Form SHALL display stored price statistics showing low price, average price, high price, sample count, search radius, and look-back window.
 3. WHERE the player specifies a look-back window (1–90 days), THE Market_Sync_Service SHALL pass the `daysBack` parameter to the API.
 4. WHERE the player requests buy-order pricing, THE Market_Sync_Service SHALL pass `buyOrders=true` to the API.
-5. WHEN the player searches for an item by name, THE Market_Sync_Service SHALL call the `/v1/market/items` endpoint to resolve the type code and type ID, then fetch prices.
+5. WHEN the player searches for an item by name, THE Market_Sync_Service SHALL call the `/v1/market/items` endpoint to resolve both the type code and type ID. IF either value cannot be resolved, THE Market_Sync_Service SHALL not proceed to fetch prices and SHALL report the resolution failure to the player.
 
 ### Requirement 6: Market Listings Browsing
 
@@ -95,7 +97,7 @@ The sync model merges public orders from all characters into a shared dataset. P
 1. THE Market_Form SHALL display the Merged_Market_Dataset in a dedicated tab showing item name, price, quantity remaining, location, distance, seller name, faction tag, and order type (buy/sell).
 2. THE Market_Form SHALL provide local filtering on the merged data by order type (Buy/Sell/All), item type, and free-text search on item name or location.
 3. THE Market_Form SHALL provide local sorting on the merged data by price, quantity, distance, item name, and location.
-4. IF no synced data exists, THEN THE Market_Form SHALL display a message prompting the player to configure credentials and run a sync.
+4. IF no synced data exists, THEN THE Market_Form SHALL display a message prompting the player to configure credentials and run a sync. IF synced data exists but credentials are not configured for the current character, THE Market_Form SHALL still display the synced data while showing a credential configuration prompt.
 
 ### Requirement 7: Stock Target Market Scope
 
@@ -106,7 +108,7 @@ The sync model merges public orders from all characters into a shared dataset. P
 1. THE StockTarget model SHALL support a new scope value `Market` that counts the player's own synced sell orders for the target item as current inventory.
 2. WHEN checking a Market-scoped stock target, THE StockTargetService SHALL count the total `amountRemaining` across the player's synced sell orders matching the target item.
 3. WHEN calculating the shortfall for a Market-scoped target, THE StockTargetService SHALL subtract items already in production (incomplete build items in the linked build plan for the same item) from the deficit.
-4. WHEN the adjusted shortfall is greater than zero and the target quantity is greater than zero, THE StockTargetService SHALL generate replenishment build items in the linked build plan to cover only the remaining deficit.
+4. WHEN the adjusted shortfall is greater than zero and the target quantity is greater than zero, THE StockTargetService SHALL generate replenishment build items in the linked build plan to cover only the remaining deficit, regardless of whether the player currently has market listings or sufficient resources.
 5. THE Stock Target form SHALL allow the player to create a target with Market scope, specifying the item and desired listing quantity.
 
 ### Requirement 8: Market Stock Target with Station Scope
@@ -123,24 +125,28 @@ The sync model merges public orders from all characters into a shared dataset. P
 
 **User Story:** As a player, I want to configure API credentials per character and have the tool manage token lifecycle, so that syncs run without manual re-authentication.
 
+**Note:** The `IGameApiTypedClient` infrastructure (from the typed-client-migration spec) already provides OAuth2 token exchange, Bearer header injection, token caching, and per-character credential management via `GameApiCredentialManager`. The Market_Sync_Service SHALL leverage this existing infrastructure rather than implementing its own authentication layer.
+
 #### Acceptance Criteria
 
 1. THE Credential_Store SHALL store the app_id, client_id, and per-character secret encrypted with Windows DPAPI in `%LOCALAPPDATA%\OE2EmpireTracker\secrets.dat`.
 2. WHEN the player configures credentials for a character, THE Market_Sync_Service SHALL validate them by attempting a token exchange against `/v1/auth/token`.
 3. WHEN a token is needed and no valid token exists, THE Market_Sync_Service SHALL exchange the stored credentials for a new JWT.
 4. WHEN a token is within 5 minutes of expiry, THE Market_Sync_Service SHALL proactively refresh the token before the next API call.
-5. IF token exchange fails due to invalid credentials, THEN THE Market_Sync_Service SHALL notify the player and disable sync for that character until credentials are corrected.
+5. IF token exchange fails due to invalid credentials, THEN THE Market_Sync_Service SHALL notify the player and disable sync for that character until credentials are corrected. Sync SHALL only be disabled after an actual token exchange attempt fails, not based on predicted credential state.
 6. THE Market_Sync_Service SHALL include `Authorization: Bearer <token>` and `X-App-Id: <app_id>` headers on every authenticated API call.
 
 ### Requirement 10: Rate Limiting and Resilience
 
 **User Story:** As a player, I want the tool to handle API rate limits gracefully during sync, so that syncs complete reliably.
 
+**Note:** The `IGameApiTypedClient` infrastructure already provides: TokenBucketRateLimiter (throughput control), Polly retry with exponential backoff for 5xx errors, circuit breaker (3 failures → 30s open), and HTTP 429 handling with Retry-After header parsing. The Market_Sync_Service SHALL leverage these built-in resilience policies rather than implementing its own. The criteria below describe the behavioral expectations that the existing infrastructure satisfies.
+
 #### Acceptance Criteria
 
 1. WHEN the Game API returns HTTP 429 (Too Many Requests), THE Market_Sync_Service SHALL retry the request with exponential backoff using Polly.
 2. THE Market_Sync_Service SHALL apply a circuit breaker policy that opens after 5 consecutive failures and remains open for 30 seconds before attempting a half-open probe.
-3. WHILE the circuit breaker is open, THE Market_Sync_Service SHALL abort the current sync and inform the player that the API is temporarily unavailable.
+3. WHILE the circuit breaker is open, THE Market_Sync_Service SHALL allow in-progress operations to complete while preventing new sync operations from starting, and SHALL inform the player that the API is temporarily unavailable. THE Market_Sync_Service SHALL also notify the player about API unavailability for any sync failure (not only circuit breaker events), including timeouts and connection errors.
 4. THE Market_Sync_Service SHALL respect rate limit headers in API responses and throttle subsequent requests within the same sync.
 5. WHERE the API does not provide rate limit headers, THE Market_Sync_Service SHALL apply a default throttle interval between requests as a safety measure.
 
@@ -150,7 +156,7 @@ The sync model merges public orders from all characters into a shared dataset. P
 
 #### Acceptance Criteria
 
-1. WHEN the token lacks a required scope for a sync operation, THE Market_Sync_Service SHALL skip that operation and log which scope is missing.
+1. WHEN the token lacks a required scope for a sync operation, THE Market_Sync_Service SHALL skip that operation and log which scope is missing. Missing scopes SHALL always be logged regardless of whether the operation is skipped or attempted via fallback logic.
 2. THE Market_Sync_Service SHALL track which scopes were granted in the most recent token exchange.
 3. THE Market_Form SHALL display which scopes are granted and which are missing, without disabling access to feature sections that lack their required scope.
 4. IF no credentials are configured for the current character, THEN THE Market_Form SHALL show a configuration prompt in the API data area.

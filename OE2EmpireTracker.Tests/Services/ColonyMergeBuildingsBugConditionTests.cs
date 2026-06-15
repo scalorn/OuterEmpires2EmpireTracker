@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FsCheck;
 using NUnit.Framework;
-using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Client.Generated;
 using OE2EmpireTracker.Common.Models;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
@@ -90,28 +90,28 @@ namespace OE2EmpireTracker.Tests.Services
         /// Creates a list of API buildings of the specified type with past completion dates.
         /// Each building gets a unique BuildingId and a past ConstructingBuildingFinish.
         /// </summary>
-        private static List<GameApiColonyBuilding> CreateApiBuildings(
+        private static ColonyBuildings CreateApiBuildings(
             int count,
             int colonyBuildingTypeId,
             int startBuildingId = 100)
         {
-            var buildings = new List<GameApiColonyBuilding>();
+            var buildings = new List<ColonyBuilding>();
             for (int i = 0; i < count; i++)
             {
-                buildings.Add(new GameApiColonyBuilding
+                buildings.Add(new ColonyBuilding
                 {
                     BuildingId = startBuildingId + i,
                     ColonyBuildingTypeId = colonyBuildingTypeId,
                     BlueprintDesignName = "Structure-Type-" + colonyBuildingTypeId,
                     StatusId = 1,
                     BuildingOnline = true,
-                    ConstructingBuildingFinish = FrozenTime.AddHours(-(count - i)),
+                    ConstructingBuildingFinish = new DateTimeOffset(FrozenTime.AddHours(-(count - i)), TimeSpan.Zero),
                     DurabilityCurrent = 100.0,
                     DurabilityMax = 100.0,
                 });
             }
 
-            return buildings;
+            return new ColonyBuildings { Buildings = buildings };
         }
 
         /// <summary>

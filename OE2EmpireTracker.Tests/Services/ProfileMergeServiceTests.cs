@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FsCheck;
 using NUnit.Framework;
-using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Client.Generated;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
 
@@ -34,35 +34,24 @@ namespace OE2EmpireTracker.Tests.Services
                    select new string(chars.ToArray());
         }
 
-        private static Gen<GameApiRankResponse> RankResponseGen()
+        private static Gen<CharacterLevel> CharacterLevelGen()
         {
-            return from level in Gen.Choose(0, 50)
+            return from levelId in Gen.Choose(0, 50)
                    from levelName in NonNullStringGen()
                    from xpToNext in Gen.Choose(0, 100000)
                    from currentXp in Gen.Choose(0, 100000)
-                   select new GameApiRankResponse
+                   from track in Gen.Elements("public", "private", "military")
+                   select new CharacterLevel
                    {
-                       Level = level,
+                       LevelId = levelId,
                        LevelName = levelName,
                        XpToNextLevel = xpToNext,
-                       CurrentXp = currentXp,
+                       CurrentXP = currentXp,
+                       Track = track,
                    };
         }
 
-        private static Gen<GameApiRanksResponse> RanksResponseGen()
-        {
-            return from pub in RankResponseGen()
-                   from priv in RankResponseGen()
-                   from mil in RankResponseGen()
-                   select new GameApiRanksResponse
-                   {
-                       Public = pub,
-                       Private = priv,
-                       Military = mil,
-                   };
-        }
-
-        private static Gen<GameApiSkillResponse> SkillResponseGen()
+        private static Gen<Skill> SkillGen()
         {
             return from level in Gen.Choose(0, 30)
                    from skillId in Gen.Choose(1, 500)
@@ -70,10 +59,12 @@ namespace OE2EmpireTracker.Tests.Services
                    from amountPerLevel in Gen.Choose(0, 10)
                    from groupName in NonNullStringGen()
                    from isUnlocked in Arb.Generate<bool>()
-                   select new GameApiSkillResponse
+                   from skillName in Gen.Elements(SkillNames)
+                   select new Skill
                    {
-                       Level = level,
+                       SkillLevel = level,
                        SkillId = skillId,
+                       SkillName = skillName,
                        EffectDescription = effectDesc,
                        AmountPerLevel = amountPerLevel,
                        SkillGroupName = groupName,
@@ -86,38 +77,35 @@ namespace OE2EmpireTracker.Tests.Services
             "Mining", "Refining", "Engineering", "Combat", "Navigation",
         };
 
-        private static Gen<Dictionary<string, GameApiSkillResponse>> SkillsDictGen()
+        private static Gen<List<Skill>> SkillsListGen()
         {
             return from count in Gen.Choose(1, 5)
-                   from skills in Gen.ListOf(count, SkillResponseGen())
-                   let dict = skills
-                       .Select((s, i) => new { Key = SkillNames[i % SkillNames.Length], Value = s })
-                       .GroupBy(x => x.Key)
-                       .ToDictionary(g => g.Key, g => g.First().Value)
-                   select dict;
+                   from skills in Gen.ListOf(count, SkillGen())
+                   select skills.ToList();
         }
 
-        private static Gen<GameApiProfileResponse> ProfileResponseGen()
+        private static Gen<PublicCharacter> ProfileResponseGen()
         {
-            return from faction in NonNullStringGen()
-                   from citizenId in NonNullStringGen()
-                   from skillPoints in Gen.Choose(0, 1000)
-                   from characterId in Gen.Choose(1, 99999)
+            return from characterId in Gen.Choose(1, 99999)
                    from firstName in NonNullStringGen()
                    from lastName in NonNullStringGen()
                    from activeMinutes in Gen.Choose(0, 100000)
-                   from ranks in RanksResponseGen()
-                   from skills in SkillsDictGen()
-                   select new GameApiProfileResponse
+                   from levels in Gen.ListOf(3, CharacterLevelGen())
+                   select new PublicCharacter
                    {
-                       Faction = faction,
-                       CitizenId = citizenId,
-                       SkillPoints = skillPoints,
                        CharacterId = characterId,
                        FirstName = firstName,
                        LastName = lastName,
                        ActiveTimeMinutes = activeMinutes,
-                       Ranks = ranks,
+                       Levels = levels.ToList(),
+                   };
+        }
+
+        private static Gen<CharacterSkills> CharacterSkillsGen()
+        {
+            return from skills in SkillsListGen()
+                   select new CharacterSkills
+                   {
                        Skills = skills,
                        SkillInTraining = null,
                    };
@@ -128,9 +116,6 @@ namespace OE2EmpireTracker.Tests.Services
             return new PlayerProfile
             {
                 UUID = Guid.NewGuid().ToString(),
-                Faction = "InitialFaction",
-                CitizenId = "CIT-000",
-                SkillPoints = 0,
                 CharacterId = 0,
                 FirstName = "Initial",
                 LastName = "Profile",
@@ -182,16 +167,12 @@ namespace OE2EmpireTracker.Tests.Services
                 ProfileMergeService.MergeProfileData(local2, remote);
                 ProfileMergeService.MergeProfileData(local2, remote);
 
-                var factionMatch = local1.Faction == local2.Faction;
-                var citizenMatch = local1.CitizenId == local2.CitizenId;
-                var skillPtsMatch = local1.SkillPoints == local2.SkillPoints;
                 var charIdMatch = local1.CharacterId == local2.CharacterId;
                 var firstNameMatch = local1.FirstName == local2.FirstName;
                 var lastNameMatch = local1.LastName == local2.LastName;
                 var activeMinMatch = local1.ActiveTimeMinutes == local2.ActiveTimeMinutes;
 
-                return (factionMatch && citizenMatch && skillPtsMatch
-                    && charIdMatch && firstNameMatch && lastNameMatch && activeMinMatch)
+                return (charIdMatch && firstNameMatch && lastNameMatch && activeMinMatch)
                     .Label("State diverged after second merge");
             });
         }
@@ -216,9 +197,6 @@ namespace OE2EmpireTracker.Tests.Services
                 var local = CreateFreshProfile();
                 ProfileMergeService.MergeProfileData(local, remote);
 
-                var factionMatch = local.Faction == remote.Faction;
-                var citizenMatch = local.CitizenId == remote.CitizenId;
-                var skillPtsMatch = local.SkillPoints == remote.SkillPoints;
                 var charIdMatch = local.CharacterId == remote.CharacterId;
                 var firstNameMatch = local.FirstName == remote.FirstName;
                 var lastNameMatch = local.LastName == remote.LastName;
@@ -228,10 +206,8 @@ namespace OE2EmpireTracker.Tests.Services
                     ? 0 : remote.ActiveTimeMinutes;
                 var activeMinMatch = local.ActiveTimeMinutes == expectedMinutes;
 
-                return (factionMatch && citizenMatch && skillPtsMatch
-                    && charIdMatch && firstNameMatch && lastNameMatch && activeMinMatch)
-                    .Label($"API-wins field mismatch: Faction={factionMatch}, " +
-                           $"CitizenId={citizenMatch}, SkillPts={skillPtsMatch}, " +
+                return (charIdMatch && firstNameMatch && lastNameMatch && activeMinMatch)
+                    .Label($"API-wins field mismatch: " +
                            $"CharId={charIdMatch}, FirstName={firstNameMatch}, " +
                            $"LastName={lastNameMatch}, ActiveMin={activeMinMatch}");
             });
@@ -254,16 +230,17 @@ namespace OE2EmpireTracker.Tests.Services
         {
             var inputGen =
                 from remote in ProfileResponseGen()
+                from skills in CharacterSkillsGen()
                 from trainingStarted in Arb.Generate<bool>()
                 from completionHours in Gen.Choose(0, 48)
-                select new { Remote = remote, TrainingStarted = trainingStarted, CompletionHours = completionHours };
+                select new { Remote = remote, Skills = skills, TrainingStarted = trainingStarted, CompletionHours = completionHours };
 
             return Prop.ForAll(inputGen.ToArbitrary(), (input) =>
             {
                 var local = CreateFreshProfile();
 
                 // Set local-only fields on a skill that the API will also send
-                string skillName = input.Remote.Skills.Keys.First();
+                string skillName = input.Skills.Skills.First().SkillName;
                 var localSkill = local.GetSkill(skillName);
                 localSkill.TrainingStarted = input.TrainingStarted;
                 localSkill.CompletionTime = new CountDownTime();
@@ -272,7 +249,7 @@ namespace OE2EmpireTracker.Tests.Services
                 bool origTrainingStarted = localSkill.TrainingStarted;
                 var origCompletionTime = localSkill.CompletionTime;
 
-                ProfileMergeService.MergeProfileData(local, input.Remote);
+                ProfileMergeService.MergeProfileData(local, input.Remote, input.Skills);
 
                 // Re-fetch the skill after merge
                 var mergedSkill = local.GetSkill(skillName);
@@ -323,7 +300,7 @@ namespace OE2EmpireTracker.Tests.Services
         {
             var inputGen =
                 from remote in ProfileResponseGen()
-                from diffField in Gen.Choose(0, 6)
+                from diffField in Gen.Choose(0, 3)
                 select new { Remote = remote, DiffField = diffField };
 
             return Prop.ForAll(inputGen.ToArbitrary(), (input) =>
@@ -336,13 +313,10 @@ namespace OE2EmpireTracker.Tests.Services
                 // Now change one field on local so remote differs
                 switch (input.DiffField)
                 {
-                    case 0: local.Faction = "DifferentFaction"; break;
-                    case 1: local.CitizenId = "DifferentCitizen"; break;
-                    case 2: local.SkillPoints = input.Remote.SkillPoints + 1; break;
-                    case 3: local.CharacterId = input.Remote.CharacterId + 1; break;
-                    case 4: local.FirstName = "DifferentFirst"; break;
-                    case 5: local.LastName = "DifferentLast"; break;
-                    case 6: local.ActiveTimeMinutes = input.Remote.ActiveTimeMinutes + 1; break;
+                    case 0: local.CharacterId = input.Remote.CharacterId + 1; break;
+                    case 1: local.FirstName = "DifferentFirst"; break;
+                    case 2: local.LastName = "DifferentLast"; break;
+                    case 3: local.ActiveTimeMinutes = input.Remote.ActiveTimeMinutes + 1; break;
                 }
 
                 bool result = ProfileMergeService.MergeProfileData(local, input.Remote);

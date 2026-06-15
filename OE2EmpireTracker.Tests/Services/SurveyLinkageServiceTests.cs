@@ -6,9 +6,13 @@ using System;
 using System.Linq;
 using FsCheck;
 using NUnit.Framework;
+using OE2EmpireTracker.Common.Client.Generated;
 using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Client.Generated;
 using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Common.Client.Generated;
 using OE2EmpireTracker.Services;
+using Survey = OE2EmpireTracker.Models.Survey;
 
 namespace OE2EmpireTracker.Tests.Services
 {
@@ -47,7 +51,7 @@ namespace OE2EmpireTracker.Tests.Services
             };
             this.playerContext.AddSurvey(existingSurvey);
 
-            var apiItem = new GameApiAssetCargoItem
+            var apiItem = new AssetCargoItem
             {
                 TypeC = "Sc",
                 ResourceName = "Survey Report: Alpha Prime (ABC123)",
@@ -67,7 +71,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void ProcessItem_NoExistingSurvey_CreatesStub()
         {
-            var apiItem = new GameApiAssetCargoItem
+            var apiItem = new AssetCargoItem
             {
                 TypeC = "Sc",
                 ResourceName = "Survey Report: Beta Colony (DEF456)",
@@ -92,7 +96,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void ProcessItem_MalformedName_SkipsAndLogsWarning()
         {
-            var apiItem = new GameApiAssetCargoItem
+            var apiItem = new AssetCargoItem
             {
                 TypeC = "Sc",
                 ResourceName = "Some Random Item",
@@ -121,7 +125,7 @@ namespace OE2EmpireTracker.Tests.Services
             };
             this.playerContext.AddSurvey(existingSurvey);
 
-            var apiItem = new GameApiAssetCargoItem
+            var apiItem = new AssetCargoItem
             {
                 TypeC = "Sc",
                 ResourceName = "Survey Report: Alpha Prime (ABC123)",
@@ -141,7 +145,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void ProcessItem_SetsBaseItemTypeID_ToSurveyUUID()
         {
-            var apiItem = new GameApiAssetCargoItem
+            var apiItem = new AssetCargoItem
             {
                 TypeC = "Sc",
                 ResourceName = "Survey Report: Gamma World (AABB11)",
@@ -163,7 +167,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void ProcessItem_StubSurvey_SetsSurveyIDToHexCode()
         {
-            var apiItem = new GameApiAssetCargoItem
+            var apiItem = new AssetCargoItem
             {
                 TypeC = "Sc",
                 ResourceName = "Survey Report: Planet X (FF00AA)",
@@ -199,7 +203,7 @@ namespace OE2EmpireTracker.Tests.Services
             context.CurrentPlayerUUID = "test-player-uuid";
             var svc = new SurveyLinkageService(context);
 
-            var apiItem = new GameApiAssetCargoItem
+            var apiItem = new AssetCargoItem
             {
                 TypeC = "Sc",
                 ResourceName = "Survey Report: Test Planet (AABB11)",

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FsCheck;
 using NUnit.Framework;
-using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Client.Generated;
 using OE2EmpireTracker.Common.Models;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
@@ -47,7 +47,7 @@ namespace OE2EmpireTracker.Tests.Services
                    select prefix + suffix;
         }
 
-        private static Gen<GameApiColonyListItem> ColonyListItemGen()
+        private static Gen<ColonyListItem> ColonyListItemGen()
         {
             return from colonyId in Gen.Choose(1, 100000)
                    from colonyName in NonEmptyNameGen()
@@ -58,7 +58,7 @@ namespace OE2EmpireTracker.Tests.Services
                    from distance in Gen.Choose(1, 1000)
                    from surfVar in Gen.Choose(0, 5)
                    from atmosVar in Gen.Choose(0, 5)
-                   select new GameApiColonyListItem
+                   select new ColonyListItem
                    {
                        ColonyId = colonyId,
                        ColonyName = colonyName,
@@ -75,7 +75,7 @@ namespace OE2EmpireTracker.Tests.Services
                    };
         }
 
-        private static Gen<List<GameApiColonyListItem>> ColonyListGen()
+        private static Gen<List<ColonyListItem>> ColonyListGen()
         {
             return from count in Gen.Choose(1, 5)
                    from items in Gen.ListOf(count, ColonyListItemGen())
@@ -103,11 +103,11 @@ namespace OE2EmpireTracker.Tests.Services
                 var localColonies = new List<Colony>();
 
                 // First merge
-                ColonyMergeService.MergeColonyList(apiColonies, localColonies, ownerUUID);
+                ColonyMergeService.MergeColonyList(new ColonyList { Colonies = apiColonies }, localColonies, ownerUUID);
                 int countAfterFirst = localColonies.Count;
 
                 // Second merge with same data
-                ColonyMergeService.MergeColonyList(apiColonies, localColonies, ownerUUID);
+                ColonyMergeService.MergeColonyList(new ColonyList { Colonies = apiColonies }, localColonies, ownerUUID);
                 int countAfterSecond = localColonies.Count;
 
                 return (countAfterSecond == countAfterFirst).ToProperty();
@@ -159,9 +159,9 @@ namespace OE2EmpireTracker.Tests.Services
                     Structures = new List<ColonyStructure> { existingStructure },
                 };
 
-                var apiBuildings = new List<GameApiColonyBuilding>
+                var apiBuildings = new List<ColonyBuilding>
                 {
-                    new GameApiColonyBuilding
+                    new ColonyBuilding
                     {
                         BuildingId = data.BuildingId,
                         ColonyBuildingTypeId = data.TypeId,
@@ -171,7 +171,7 @@ namespace OE2EmpireTracker.Tests.Services
                     },
                 };
 
-                ColonyMergeService.MergeBuildings(apiBuildings, colony);
+                ColonyMergeService.MergeBuildings(new ColonyBuildings { Buildings = apiBuildings }, colony);
 
                 return (existingStructure.ManufacturingBlueprintUUID == data.BpUuid
                     && existingStructure.BuildQueueSequence == 1
@@ -251,13 +251,13 @@ namespace OE2EmpireTracker.Tests.Services
 
                 // Merge with empty colony list
                 ColonyMergeService.MergeColonyList(
-                    new List<GameApiColonyListItem>(), localColonies, ownerUUID);
+                    new ColonyList { Colonies = new List<ColonyListItem>() }, localColonies, ownerUUID);
 
                 // Merge with empty buildings for each colony
                 foreach (var colony in localColonies)
                 {
                     ColonyMergeService.MergeBuildings(
-                        new List<GameApiColonyBuilding>(), colony);
+                        new ColonyBuildings { Buildings = new List<ColonyBuilding>() }, colony);
                 }
 
                 // Merge with empty warehouse for each colony
@@ -266,7 +266,7 @@ namespace OE2EmpireTracker.Tests.Services
                 foreach (var colony in localColonies)
                 {
                     ColonyMergeService.MergeWarehouse(
-                        new List<GameApiAssetCargoItem>(), colony);
+                        new ColonyWarehouse { Contents = new List<AssetCargoItem>() }, colony);
                 }
 
                 int colonyCountAfter = localColonies.Count;
@@ -346,7 +346,7 @@ namespace OE2EmpireTracker.Tests.Services
                     .ToList();
 
                 // Sync owner B's data
-                ColonyMergeService.MergeColonyList(apiColonies, localColonies, ownerB);
+                ColonyMergeService.MergeColonyList(new ColonyList { Colonies = apiColonies }, localColonies, ownerB);
 
                 // Verify owner A's colonies are unchanged
                 var ownerAAfter = localColonies

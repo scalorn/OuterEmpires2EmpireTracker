@@ -4,7 +4,7 @@
 
 using System.Collections.Generic;
 using NUnit.Framework;
-using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Client.Generated;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
 
@@ -50,9 +50,9 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void MergeColonyList_NewColony_SetsColonyId()
         {
-            var apiColonies = new List<GameApiColonyListItem>
+            var apiColonies = new List<ColonyListItem>
             {
-                new GameApiColonyListItem
+                new ColonyListItem
                 {
                     ColonyId = 777,
                     ColonyName = "New Colony",
@@ -65,7 +65,7 @@ namespace OE2EmpireTracker.Tests.Services
             };
             var localColonies = new List<Colony>();
 
-            ColonyMergeService.MergeColonyList(apiColonies, localColonies, OwnerUUID);
+            ColonyMergeService.MergeColonyList(new ColonyList { Colonies = apiColonies }, localColonies, OwnerUUID);
 
             Assert.That(localColonies.Count, Is.EqualTo(1));
             Assert.That(localColonies[0].ColonyId, Is.EqualTo(777));
@@ -89,9 +89,9 @@ namespace OE2EmpireTracker.Tests.Services
             };
             var localColonies = new List<Colony> { existingColony };
 
-            var apiColonies = new List<GameApiColonyListItem>
+            var apiColonies = new List<ColonyListItem>
             {
-                new GameApiColonyListItem
+                new ColonyListItem
                 {
                     ColonyId = 999,
                     ColonyName = "Sigma Colony",
@@ -103,7 +103,7 @@ namespace OE2EmpireTracker.Tests.Services
                 },
             };
 
-            ColonyMergeService.MergeColonyList(apiColonies, localColonies, OwnerUUID);
+            ColonyMergeService.MergeColonyList(new ColonyList { Colonies = apiColonies }, localColonies, OwnerUUID);
 
             Assert.That(existingColony.ColonyId, Is.EqualTo(999));
         }
