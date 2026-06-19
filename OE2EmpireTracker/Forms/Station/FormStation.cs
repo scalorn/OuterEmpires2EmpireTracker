@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
@@ -54,8 +55,12 @@ namespace OE2EmpireTracker.Forms.Station
             cmbHoldType.SelectedIndexChanged += CmbHoldType_SelectedIndexChanged;
             dgvHold.CellEndEdit += DgvHold_CellEndEdit;
             dgvHold.SelectionChanged += DgvHold_SelectionChanged;
+            dgvHold.SortCompare += DgvHold_SortCompare;
+            dgvHoldCrateContents.SortCompare += DgvHoldCrateContents_SortCompare;
 
             dgvComponents.CellEndEdit += DgvComponents_CellEndEdit;
+            dgvComponents.SortCompare += DgvComponents_SortCompare;
+            dgvMunitions.SortCompare += DgvMunitions_SortCompare;
             cmbStationBlueprint.SelectedItemChanged += CmbStationBlueprint_SelectedItemChanged;
 
             cmdMunAdd.Click += CmdMunAdd_Click;
@@ -351,6 +356,7 @@ namespace OE2EmpireTracker.Forms.Station
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
+            var sortState = CaptureSortState(dgvHold);
             dgvHold.Rows.Clear();
             dgvHoldCrateContents.Rows.Clear();
             lblHoldCrateContents.Text = string.Empty;
@@ -389,6 +395,7 @@ namespace OE2EmpireTracker.Forms.Station
                 dgvHold.Rows[rowIdx].Cells[colHoldQty.Index].ReadOnly = true;
             }
 
+            RestoreSortState(dgvHold, sortState);
             sw.Stop();
             Log.Info("PERF PopulateHoldGrid: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -413,6 +420,7 @@ namespace OE2EmpireTracker.Forms.Station
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
+            var sortState = CaptureSortState(dgvHoldCrateContents);
             dgvHoldCrateContents.Rows.Clear();
             lblHoldCrateContents.Text = string.Format("Crate Contents ({0}):", crate.Name);
             lblHoldCrateContents.Visible = true;
@@ -423,6 +431,7 @@ namespace OE2EmpireTracker.Forms.Station
                 dgvHoldCrateContents.Rows.Add(item.ItemType.ToString(), item.ExtendedName, item.ResourcePurity, item.Quantity.ToString());
             }
 
+            RestoreSortState(dgvHoldCrateContents, sortState);
             sw.Stop();
             Log.Info("PERF PopulateHoldCrateContents: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -676,6 +685,7 @@ namespace OE2EmpireTracker.Forms.Station
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
+            var sortState = CaptureSortState(dgvComponents);
             dgvComponents.Rows.Clear();
             if (_viewModel.IsNew)
             {
@@ -716,6 +726,7 @@ namespace OE2EmpireTracker.Forms.Station
                 dgvComponents.Rows[rowIdx].Cells[colComponentName.Index].ReadOnly = true;
             }
 
+            RestoreSortState(dgvComponents, sortState);
             sw.Stop();
             Log.Info("PERF PopulateComponentsGrid: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -856,6 +867,7 @@ namespace OE2EmpireTracker.Forms.Station
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
+            var sortState = CaptureSortState(dgvMunitions);
             dgvMunitions.Rows.Clear();
             if (_viewModel.IsNew) return;
             if (!tabMunitions.Enabled) return;
@@ -867,6 +879,7 @@ namespace OE2EmpireTracker.Forms.Station
                 dgvMunitions.Rows[rowIdx].Tag = item;
             }
 
+            RestoreSortState(dgvMunitions, sortState);
             sw.Stop();
             Log.Info("PERF PopulateMunitionsGrid: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -1175,6 +1188,78 @@ namespace OE2EmpireTracker.Forms.Station
             _viewModel.Reset();
             PopulateStationList();
             ClearForm();
+        }
+
+        // Numeric sort comparison helpers
+        private void DgvHold_SortCompare(object sender, DataGridViewSortCompareEventArgs e)
+        {
+            if (e.Column == colHoldQty || e.Column == colHoldCondition || e.Column == colHoldMaxRepair)
+            {
+                int v1 = ParseInt(e.CellValue1);
+                int v2 = ParseInt(e.CellValue2);
+                e.SortResult = v1.CompareTo(v2);
+                e.Handled = true;
+            }
+        }
+
+        private void DgvHoldCrateContents_SortCompare(object sender, DataGridViewSortCompareEventArgs e)
+        {
+            if (e.Column == colHoldCrateQty)
+            {
+                int v1 = ParseInt(e.CellValue1);
+                int v2 = ParseInt(e.CellValue2);
+                e.SortResult = v1.CompareTo(v2);
+                e.Handled = true;
+            }
+        }
+
+        private void DgvComponents_SortCompare(object sender, DataGridViewSortCompareEventArgs e)
+        {
+            if (e.Column == colCondition || e.Column == colMaxRepair)
+            {
+                int v1 = ParseInt(e.CellValue1);
+                int v2 = ParseInt(e.CellValue2);
+                e.SortResult = v1.CompareTo(v2);
+                e.Handled = true;
+            }
+        }
+
+        private void DgvMunitions_SortCompare(object sender, DataGridViewSortCompareEventArgs e)
+        {
+            if (e.Column == colMunQty)
+            {
+                int v1 = ParseInt(e.CellValue1);
+                int v2 = ParseInt(e.CellValue2);
+                e.SortResult = v1.CompareTo(v2);
+                e.Handled = true;
+            }
+        }
+
+        private int ParseInt(object value)
+        {
+            if (value == null) return 0;
+            return int.TryParse(value.ToString(), out int result) ? result : 0;
+        }
+
+        private (DataGridViewColumn Column, ListSortDirection Direction)? CaptureSortState(DataGridView grid)
+        {
+            if (grid.SortedColumn != null)
+            {
+                var direction = grid.SortOrder == SortOrder.Descending
+                    ? ListSortDirection.Descending
+                    : ListSortDirection.Ascending;
+                return (grid.SortedColumn, direction);
+            }
+
+            return null;
+        }
+
+        private void RestoreSortState(DataGridView grid, (DataGridViewColumn Column, ListSortDirection Direction)? state)
+        {
+            if (state.HasValue)
+            {
+                grid.Sort(state.Value.Column, state.Value.Direction);
+            }
         }
     }
 }
