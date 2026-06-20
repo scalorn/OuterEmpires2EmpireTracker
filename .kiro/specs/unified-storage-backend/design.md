@@ -613,7 +613,8 @@ CREATE TABLE PlayerSkills (
 -- MAIL
 -- ═══════════════════════════════════════════════════════════════════
 CREATE TABLE MailMessages (
-    MailId INTEGER PRIMARY KEY,
+    MailId INTEGER NOT NULL,
+    OwnerUUID TEXT NOT NULL DEFAULT '',
     CharacterIdFrom INTEGER NOT NULL DEFAULT 0,
     FromName TEXT NOT NULL DEFAULT '',
     CharacterIdTo INTEGER NOT NULL DEFAULT 0,
@@ -623,7 +624,8 @@ CREATE TABLE MailMessages (
     MailRead INTEGER NOT NULL DEFAULT 0,
     MailType TEXT,
     MailContent TEXT NOT NULL DEFAULT '',
-    LocalRead INTEGER NOT NULL DEFAULT 0
+    LocalRead INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (OwnerUUID, MailId)
 );
 
 -- ═══════════════════════════════════════════════════════════════════
