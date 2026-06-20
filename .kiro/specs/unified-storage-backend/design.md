@@ -462,13 +462,13 @@ CREATE TABLE SurveyProperties (
     PRIMARY KEY (SurveyUUID, Key)
 );
 
--- Survey child: Resources (Dictionary<string, SurveyResource>)
+-- Survey child: Resources (Dictionary<string, SurveyResource>, Amount is numeric yield rate)
 CREATE TABLE SurveyResources (
     SurveyUUID TEXT NOT NULL REFERENCES Surveys(UUID) ON DELETE CASCADE,
     ResourceKey TEXT NOT NULL,
     Resource TEXT NOT NULL DEFAULT '',
     Purity TEXT NOT NULL DEFAULT '',
-    Amount TEXT NOT NULL DEFAULT '',
+    Amount INTEGER NOT NULL DEFAULT 0,
     PRIMARY KEY (SurveyUUID, ResourceKey)
 );
 
