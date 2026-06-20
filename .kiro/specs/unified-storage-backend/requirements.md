@@ -33,7 +33,7 @@ This spec covers building the unified IStorageBackend interface and all five bac
 6. THE IStorageBackend interface SHALL include CRUD methods for the permission system: FactionCapability, FactionClearanceLevel, FactionPermissionGroup, FactionGroupCapability, FactionGroupSharingRule, FactionMemberPermissions, FactionMemberCapability, CharacterCapability, CharacterClearanceLevel, CharacterPermissionGroup, CharacterGroupCapability, CharacterGroupSharingRule, CharacterGranteePermissions, CharacterGranteeCapability
 7. THE IStorageBackend interface SHALL include CRUD methods for intel: IntelComment, IntelCommentFactionShare
 8. THE IStorageBackend interface SHALL include methods for permission audit entries (append, query with filters, delete expired)
-9. THE IStorageBackend interface SHALL include a method for global data storage (GetGlobalDataAsync, UpsertGlobalDataAsync) for baseline data types
+9. THE IStorageBackend interface SHALL include methods for baseline/global lookup data stored as proper entities: BlueprintType, ShipClass, TechLevel, Commodity, RefiningRecipe, ResearchTimeEntry, PropertyTypeDefinition, and BaselineGameConstants — NOT as a single opaque JSON blob
 10. THE IStorageBackend interface SHALL target netstandard2.0 to remain compatible with .NET Framework 4.8.1 (WinForms) and .NET 8 (Server)
 11. THE IStorageBackend interface SHALL expose a GetStorageInfo method that returns the backend type name and storage location
 

@@ -554,7 +554,90 @@ CREATE TABLE ServerCharacters (UUID TEXT PRIMARY KEY, Name TEXT, FactionUUID TEX
 CREATE TABLE ApiTokens (Id TEXT PRIMARY KEY, CharacterUUID TEXT, TokenHash TEXT, Role TEXT, ...);
 CREATE TABLE MembershipActions (Id TEXT PRIMARY KEY, FactionUUID TEXT, CharacterUUID TEXT, ActionType TEXT, ExpiresUtc TEXT, ...);
 CREATE TABLE StarSystems (Id INTEGER PRIMARY KEY, Name TEXT, ...);
-CREATE TABLE GlobalData (DataType TEXT PRIMARY KEY, Data TEXT NOT NULL);  -- baseline data stays as JSON blob (large, rarely queried by field)
+
+-- ═══════════════════════════════════════════════════════════════════
+-- BASELINE / GLOBAL LOOKUP TABLES (no JSON blobs)
+-- ═══════════════════════════════════════════════════════════════════
+CREATE TABLE BaselineGameConstants (
+    Key TEXT PRIMARY KEY,  -- singleton row with Key='default'
+    RefiningBaseRate INTEGER NOT NULL DEFAULT 25,
+    CommoditiesPerCycle INTEGER NOT NULL DEFAULT 10,
+    CommodityCycleSeconds INTEGER NOT NULL DEFAULT 600,
+    StructureCap INTEGER NOT NULL DEFAULT 65,
+    WorkerVolume REAL NOT NULL DEFAULT 50
+);
+
+CREATE TABLE BlueprintTypes (
+    Id TEXT PRIMARY KEY,
+    Name TEXT NOT NULL,
+    Universal INTEGER NOT NULL DEFAULT 0,
+    IconPosition TEXT,
+    OutputItemType TEXT NOT NULL DEFAULT ''
+);
+
+-- BlueprintType child: Properties (string array)
+CREATE TABLE BlueprintTypeProperties (
+    BlueprintTypeId TEXT NOT NULL REFERENCES BlueprintTypes(Id) ON DELETE CASCADE,
+    PropertyName TEXT NOT NULL,
+    Sequence INTEGER NOT NULL,
+    PRIMARY KEY (BlueprintTypeId, Sequence)
+);
+
+-- BlueprintType child: ResearchableProperties (string array)
+CREATE TABLE BlueprintTypeResearchableProperties (
+    BlueprintTypeId TEXT NOT NULL REFERENCES BlueprintTypes(Id) ON DELETE CASCADE,
+    PropertyName TEXT NOT NULL,
+    Sequence INTEGER NOT NULL,
+    PRIMARY KEY (BlueprintTypeId, Sequence)
+);
+
+CREATE TABLE ShipClasses (
+    Id INTEGER PRIMARY KEY,
+    Name TEXT NOT NULL
+);
+
+CREATE TABLE TechLevels (
+    Name TEXT PRIMARY KEY
+);
+
+CREATE TABLE Commodities (
+    ID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL,
+    CommodityIndustry TEXT NOT NULL,
+    CommodityGroup TEXT NOT NULL
+);
+
+-- Commodity child: ConstructionResources (Dictionary<string, string>)
+CREATE TABLE CommodityResources (
+    CommodityID TEXT NOT NULL REFERENCES Commodities(ID) ON DELETE CASCADE,
+    ResourceName TEXT NOT NULL,
+    Amount TEXT NOT NULL,
+    PRIMARY KEY (CommodityID, ResourceName)
+);
+
+CREATE TABLE RefiningRecipes (
+    InputResource TEXT NOT NULL,
+    InputPurity TEXT NOT NULL,
+    OutputResource TEXT NOT NULL,
+    ConsumeRate INTEGER NOT NULL,
+    ProduceRate INTEGER NOT NULL,
+    Tier INTEGER NOT NULL,
+    PRIMARY KEY (InputResource, InputPurity)
+);
+
+CREATE TABLE ResearchTimes (
+    Evolution INTEGER PRIMARY KEY,
+    ResearchTimeSeconds INTEGER NOT NULL
+);
+
+CREATE TABLE PropertyTypeDefinitions (
+    Name TEXT PRIMARY KEY,
+    DataType TEXT,
+    Category TEXT
+);
+
+-- Global blueprints: same Blueprints table, distinguished by OwnerUUID being empty/null
+-- (character-specific blueprints have OwnerUUID set to the character UUID)
 
 -- ═══════════════════════════════════════════════════════════════════
 -- PERMISSION ENTITIES (one table per type)
@@ -573,10 +656,12 @@ CREATE TABLE PermissionAuditEntries (Id TEXT PRIMARY KEY, Timestamp TEXT NOT NUL
 ```
 
 **Design notes:**
-- `GlobalData` table retains JSON blob for BaselineRoot because baseline data is large, rarely queried by field, and changes infrequently. All other entity types use proper typed columns.
+- **No JSON blobs anywhere in SQL backends.** All data is stored in typed columns.
 - CountDownTime is inlined as prefixed columns on the parent table (e.g. `BuildCompletion_StartTime`) rather than a separate table, because it has no independent identity.
 - ItemBag items use a `ParentItemUUID` self-reference for recursive nesting (crate contents).
 - All child tables use CASCADE DELETE so removing a parent automatically cleans up children.
+- Global blueprints share the same Blueprints table as character-specific ones, distinguished by OwnerUUID being empty/null for global entries.
+- BaselineGameConstants uses a singleton-row pattern (single row with Key='default').
 
 ## Error Handling
 
@@ -707,8 +792,8 @@ OE2EmpireTracker.Common/
 
 | Decision | Rationale |
 |---|---|
-| Fully normalized relational schema in SQLite/Postgres | Enables field-level queries, indexing, partial updates, and proper SQL operations. Avoids opaque JSON blobs that defeat the purpose of using a relational database. |
-| GlobalData table keeps JSON blob | BaselineRoot is large, rarely queried by field, and changes as a unit. Normalizing it would create 100+ tables for marginal benefit. |
+| Fully normalized relational schema in SQLite/Postgres | Enables field-level queries, indexing, partial updates, and proper SQL operations. No JSON blobs anywhere in SQL backends. |
+| Global blueprints in same Blueprints table | Distinguished by OwnerUUID being empty/null. Avoids duplicate schema for the same entity shape. |
 | No ORM | netstandard2.0 constraint eliminates EF Core. Raw ADO.NET via Microsoft.Data.Sqlite is simpler and gives full control over schema. |
 | Full-file rewrite for JsonSingleFile | Inherent limitation of the format. Per-entity Upsert still rewrites the file but the interface is uniform. |
 | Server-global entities throw on JsonSingleFile | Desktop does not need them. Keeps single-file format unchanged. |
