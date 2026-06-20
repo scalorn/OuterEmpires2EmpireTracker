@@ -919,6 +919,26 @@ Each backend implementation gets a full test suite validating:
 - Malformed data throws appropriate exceptions
 - Atomic write safety (simulate failures)
 
+### DynamoDB Local for DynamoDB Backend Tests
+
+The DynamoDB backend tests use **DynamoDB Local** (AWS's official Java-based emulator) running in-memory. This provides full API compatibility without requiring an AWS account or network access.
+
+**Local infrastructure:**
+- JDK: `D:\tools\jdk25.0.3_9\bin\java.exe` (Amazon Corretto 25.0.3 LTS)
+- DynamoDB Local JAR: `D:\tools\dynamodb-local\DynamoDBLocal.jar` (v3.3.0)
+- Launch command:
+  ```
+  & "D:\tools\jdk25.0.3_9\bin\java.exe" "-Djava.library.path=D:\tools\dynamodb-local\DynamoDBLocal_lib" -jar "D:\tools\dynamodb-local\DynamoDBLocal.jar" -inMemory -port 8111
+  ```
+- SDK endpoint: `http://localhost:8111` with dummy credentials (`AccessKey=fakeKey`, `SecretKey=fakeSecret`, `Region=us-east-1`)
+
+**Test fixture responsibilities:**
+- Start DynamoDB Local process before the test suite (or use a shared fixture)
+- Use `-inMemory` flag so each run starts with a clean slate (no disk persistence)
+- Use a unique port per test suite if running in parallel to avoid conflicts
+- Create required tables in test setup, tear down after
+- Point `AmazonDynamoDBClient` at the local endpoint via `ServiceURL` config override
+
 ### Integration Tests
 
 - Server integration tests pass against Common backends (namespace change only)
