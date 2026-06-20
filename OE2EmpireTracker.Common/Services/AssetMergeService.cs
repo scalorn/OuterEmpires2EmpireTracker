@@ -198,10 +198,59 @@ namespace OE2EmpireTracker.Services
                 return false;
             }
 
+            if (colony.Items == null)
+            {
+                colony.Items = new ItemBag();
+            }
+
             bool anyChanged = false;
+            var touchedUUIDs = new HashSet<string>();
+
             foreach (var apiItem in apiItems)
             {
-                anyChanged |= ProcessSingleAssetItem(apiItem, colony.Items);
+                var (uuid, changed) = ProcessSingleAssetItemTracked(apiItem, colony.Items);
+                if (uuid != null)
+                {
+                    touchedUUIDs.Add(uuid);
+                }
+
+                anyChanged |= changed;
+            }
+
+            // Remove items not present in the API response.
+            // Game API is authoritative — anything not in the response no longer exists.
+            var untouchedItems = colony.Items.Items.Values
+                .Where(i => !touchedUUIDs.Contains(i.UUID))
+                .ToList();
+
+            foreach (var item in untouchedItems)
+            {
+                bool hasLock = colony.Locks != null &&
+                    colony.Locks.GetLockedQuantity(item.ItemType, item.BaseItemTypeID ?? string.Empty) > 0;
+
+                if (hasLock)
+                {
+                    if (item.Quantity != 0)
+                    {
+                        Log.Info(
+                            "MergeColonyAssets: zeroing locked item UUID={0} Name='{1}' Qty={2}→0 (has lock, not in API)",
+                            item.UUID,
+                            item.Name,
+                            item.Quantity);
+                        item.Quantity = 0;
+                        anyChanged = true;
+                    }
+                }
+                else
+                {
+                    colony.Items.Remove(item.UUID);
+                    anyChanged = true;
+                    Log.Info(
+                        "MergeColonyAssets: removed stale item UUID={0} Name='{1}' GameItemId={2} (not in API)",
+                        item.UUID,
+                        item.Name,
+                        item.GameItemId);
+                }
             }
 
             return anyChanged;
@@ -230,9 +279,35 @@ namespace OE2EmpireTracker.Services
             }
 
             bool anyChanges = false;
+            var touchedUUIDs = new HashSet<string>();
+
             foreach (var apiItem in apiItems)
             {
-                anyChanges |= ProcessSingleAssetItem(apiItem, targetHold);
+                var (uuid, changed) = ProcessSingleAssetItemTracked(apiItem, targetHold);
+                if (uuid != null)
+                {
+                    touchedUUIDs.Add(uuid);
+                }
+
+                anyChanges |= changed;
+            }
+
+            // Remove items not present in the API response.
+            // Game API is authoritative — anything not in the response no longer exists.
+            var untouchedItems = targetHold.Items.Values
+                .Where(i => !touchedUUIDs.Contains(i.UUID))
+                .ToList();
+
+            foreach (var item in untouchedItems)
+            {
+                targetHold.Remove(item.UUID);
+                anyChanges = true;
+                Log.Info(
+                    "MergeStationAssets: removed stale item UUID={0} Name='{1}' GameItemId={2} from station '{3}' (not in API)",
+                    item.UUID,
+                    item.Name,
+                    item.GameItemId,
+                    station.Name);
             }
 
             return anyChanges;
@@ -260,9 +335,35 @@ namespace OE2EmpireTracker.Services
             }
 
             bool anyChanges = false;
+            var touchedUUIDs = new HashSet<string>();
+
             foreach (var apiItem in apiItems)
             {
-                anyChanges |= ProcessSingleAssetItem(apiItem, ship.Cargo);
+                var (uuid, changed) = ProcessSingleAssetItemTracked(apiItem, ship.Cargo);
+                if (uuid != null)
+                {
+                    touchedUUIDs.Add(uuid);
+                }
+
+                anyChanges |= changed;
+            }
+
+            // Remove items not present in the API response.
+            // Game API is authoritative — anything not in the response no longer exists.
+            var untouchedItems = ship.Cargo.Items.Values
+                .Where(i => !touchedUUIDs.Contains(i.UUID))
+                .ToList();
+
+            foreach (var item in untouchedItems)
+            {
+                ship.Cargo.Remove(item.UUID);
+                anyChanges = true;
+                Log.Info(
+                    "MergeShipAssets: removed stale item UUID={0} Name='{1}' GameItemId={2} from ship '{3}' (not in API)",
+                    item.UUID,
+                    item.Name,
+                    item.GameItemId,
+                    ship.Name);
             }
 
             return anyChanges;
@@ -350,6 +451,27 @@ namespace OE2EmpireTracker.Services
             var newItem = CreateAssetItem(apiItem, mappedType);
             targetBag.AddItem(newItem);
             return newItem.UUID;
+        }
+
+        /// <summary>
+        /// Processes a single asset cargo item: matches by GameItemId or creates new.
+        /// Returns both the UUID (for stale-item tracking) and whether a change was made.
+        /// </summary>
+        internal static (string Uuid, bool Changed) ProcessSingleAssetItemTracked(AssetCargoItem apiItem, ItemBag targetBag)
+        {
+            var mappedType = MapAssetTypeC(apiItem.TypeC);
+
+            var match = targetBag.Items.Values.FirstOrDefault(i => i.GameItemId == apiItem.Id);
+
+            if (match != null)
+            {
+                bool changed = UpdateExistingAssetItem(match, apiItem);
+                return (match.UUID, changed);
+            }
+
+            var newItem = CreateAssetItem(apiItem, mappedType);
+            targetBag.AddItem(newItem);
+            return (newItem.UUID, true);
         }
 
         /// <summary>

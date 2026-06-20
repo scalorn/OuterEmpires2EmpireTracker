@@ -279,7 +279,8 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         /// <summary>
-        /// Property 3b: Additive merge with pre-existing items — count never decreases.
+        /// Property 3b: Authoritative merge with pre-existing items — count equals API item count
+        /// (items not in the new API response are removed as stale).
         /// Validates: Requirements 5.4, 6.5, 7.5, 13.4
         /// </summary>
         [Test]
@@ -298,14 +299,16 @@ namespace OE2EmpireTracker.Tests.Services
 
                 // Seed the bag with existing items
                 AssetMergeService.MergeColonyAssets(input.ExistingItems, colony);
-                int countBefore = bag.Count();
 
-                // Merge new items
+                // Merge new items (authoritative: stale items removed)
                 AssetMergeService.MergeColonyAssets(input.NewItems, colony);
                 int countAfter = bag.Count();
 
-                return (countAfter >= countBefore)
-                    .Label($"Count decreased: before={countBefore}, after={countAfter}");
+                // Count should equal the number of unique GameItemIds in the new items
+                // (the API response is authoritative — only its items remain)
+                var uniqueNewIds = input.NewItems.Select(i => i.Id).Distinct().Count();
+                return (countAfter == uniqueNewIds)
+                    .Label($"Count mismatch: expected={uniqueNewIds}, actual={countAfter}");
             }).QuickCheckThrowOnFailure();
         }
 
