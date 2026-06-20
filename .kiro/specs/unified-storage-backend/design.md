@@ -547,13 +547,222 @@ CREATE TABLE ShipHopperItems (
 );
 
 -- ═══════════════════════════════════════════════════════════════════
--- SERVER-GLOBAL ENTITIES (same relational approach)
+-- SERVER-GLOBAL ENTITIES
 -- ═══════════════════════════════════════════════════════════════════
-CREATE TABLE ServerFactions (UUID TEXT PRIMARY KEY, Name TEXT, LeaderUUID TEXT, ...);
-CREATE TABLE ServerCharacters (UUID TEXT PRIMARY KEY, Name TEXT, FactionUUID TEXT, ...);
-CREATE TABLE ApiTokens (Id TEXT PRIMARY KEY, CharacterUUID TEXT, TokenHash TEXT, Role TEXT, ...);
-CREATE TABLE MembershipActions (Id TEXT PRIMARY KEY, FactionUUID TEXT, CharacterUUID TEXT, ActionType TEXT, ExpiresUtc TEXT, ...);
-CREATE TABLE StarSystems (Id INTEGER PRIMARY KEY, Name TEXT, ...);
+CREATE TABLE ServerFactions (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT '',
+    Metadata_LastModifiedUtc TEXT,
+    Metadata_ModifiedByTokenId TEXT
+);
+
+-- ServerFaction child: LeaderCharacterUUIDs (List<string>)
+CREATE TABLE ServerFactionLeaders (
+    FactionUUID TEXT NOT NULL REFERENCES ServerFactions(UUID) ON DELETE CASCADE,
+    CharacterUUID TEXT NOT NULL,
+    PRIMARY KEY (FactionUUID, CharacterUUID)
+);
+
+CREATE TABLE ServerCharacters (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    FactionUUID TEXT,
+    Metadata_LastModifiedUtc TEXT,
+    Metadata_ModifiedByTokenId TEXT
+);
+
+CREATE TABLE ApiTokens (
+    Id TEXT PRIMARY KEY,
+    TokenHash TEXT NOT NULL DEFAULT '',
+    CharacterUUID TEXT,
+    Role TEXT NOT NULL DEFAULT 'Character',
+    FactionUUID TEXT,
+    CreatedUtc TEXT NOT NULL,
+    LastUsedUtc TEXT,
+    IsRevoked INTEGER NOT NULL DEFAULT 0,
+    RateLimits_RequestsPerMinute INTEGER NOT NULL DEFAULT 300
+);
+
+CREATE TABLE MembershipActions (
+    Id TEXT PRIMARY KEY,
+    FactionUUID TEXT NOT NULL DEFAULT '',
+    CharacterUUID TEXT NOT NULL DEFAULT '',
+    Type TEXT NOT NULL DEFAULT 'JoinRequest',
+    CreatedUtc TEXT NOT NULL,
+    ExpiresUtc TEXT NOT NULL
+);
+
+CREATE TABLE StarSystems (
+    Id INTEGER PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    X REAL NOT NULL DEFAULT 0,
+    Y REAL NOT NULL DEFAULT 0,
+    Quadrant INTEGER NOT NULL DEFAULT 0,
+    Sector INTEGER NOT NULL DEFAULT 0,
+    Region INTEGER NOT NULL DEFAULT 0,
+    Locality INTEGER NOT NULL DEFAULT 0,
+    SpectralClass TEXT NOT NULL DEFAULT '',
+    FactionId INTEGER NOT NULL DEFAULT 0,
+    FactionName TEXT NOT NULL DEFAULT '',
+    FactionColor TEXT NOT NULL DEFAULT '',
+    HasOrbital INTEGER NOT NULL DEFAULT 0,
+    HasSpaceport INTEGER NOT NULL DEFAULT 0,
+    HasStarbase INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE SharingRules (
+    Id TEXT PRIMARY KEY,
+    OwnerCharacterUUID TEXT NOT NULL DEFAULT '',
+    TargetUUID TEXT NOT NULL DEFAULT '',
+    TargetType TEXT NOT NULL DEFAULT 'Character',
+    DataType TEXT,
+    EntityUUID TEXT
+);
+
+CREATE TABLE CharacterPreferences (
+    CharacterUUID TEXT PRIMARY KEY,
+    ServerProcessing INTEGER NOT NULL DEFAULT 0
+);
+
+-- ═══════════════════════════════════════════════════════════════════
+-- PERMISSION ENTITIES
+-- ═══════════════════════════════════════════════════════════════════
+CREATE TABLE FactionCapabilities (
+    UUID TEXT PRIMARY KEY,
+    FactionUUID TEXT NOT NULL DEFAULT '',
+    Name TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT ''
+);
+
+CREATE TABLE FactionClearanceLevels (
+    UUID TEXT PRIMARY KEY,
+    FactionUUID TEXT NOT NULL DEFAULT '',
+    Level INTEGER NOT NULL DEFAULT 0,
+    Name TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT ''
+);
+
+CREATE TABLE FactionPermissionGroups (
+    UUID TEXT PRIMARY KEY,
+    FactionUUID TEXT NOT NULL DEFAULT '',
+    Name TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT '',
+    DefaultClearanceLevelUUID TEXT NOT NULL DEFAULT ''
+);
+
+CREATE TABLE FactionGroupCapabilities (
+    GroupUUID TEXT NOT NULL,
+    CapabilityUUID TEXT NOT NULL,
+    PRIMARY KEY (GroupUUID, CapabilityUUID)
+);
+
+CREATE TABLE FactionGroupSharingRules (
+    UUID TEXT PRIMARY KEY,
+    GroupUUID TEXT NOT NULL DEFAULT '',
+    DataType TEXT,
+    EntityUUID TEXT,
+    MinClearanceLevelUUID TEXT NOT NULL DEFAULT ''
+);
+
+CREATE TABLE FactionMemberPermissions (
+    CharacterUUID TEXT NOT NULL,
+    FactionUUID TEXT NOT NULL,
+    GroupUUID TEXT,
+    ClearanceLevelUUID TEXT NOT NULL DEFAULT '',
+    PRIMARY KEY (CharacterUUID, FactionUUID)
+);
+
+CREATE TABLE FactionMemberCapabilities (
+    CharacterUUID TEXT NOT NULL,
+    FactionUUID TEXT NOT NULL,
+    CapabilityUUID TEXT NOT NULL,
+    PRIMARY KEY (CharacterUUID, FactionUUID, CapabilityUUID)
+);
+
+CREATE TABLE CharacterCapabilities (
+    UUID TEXT PRIMARY KEY,
+    OwnerCharacterUUID TEXT NOT NULL DEFAULT '',
+    Name TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT ''
+);
+
+CREATE TABLE CharacterClearanceLevels (
+    UUID TEXT PRIMARY KEY,
+    OwnerCharacterUUID TEXT NOT NULL DEFAULT '',
+    Level INTEGER NOT NULL DEFAULT 0,
+    Name TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT ''
+);
+
+CREATE TABLE CharacterPermissionGroups (
+    UUID TEXT PRIMARY KEY,
+    OwnerCharacterUUID TEXT NOT NULL DEFAULT '',
+    Name TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT '',
+    DefaultClearanceLevelUUID TEXT NOT NULL DEFAULT ''
+);
+
+CREATE TABLE CharacterGroupCapabilities (
+    GroupUUID TEXT NOT NULL,
+    CapabilityUUID TEXT NOT NULL,
+    PRIMARY KEY (GroupUUID, CapabilityUUID)
+);
+
+CREATE TABLE CharacterGroupSharingRules (
+    UUID TEXT PRIMARY KEY,
+    GroupUUID TEXT NOT NULL DEFAULT '',
+    DataType TEXT,
+    EntityUUID TEXT
+);
+
+CREATE TABLE CharacterGranteePermissions (
+    OwnerCharacterUUID TEXT NOT NULL,
+    GranteeType TEXT NOT NULL DEFAULT 'Character',
+    GranteeUUID TEXT NOT NULL,
+    GroupUUID TEXT,
+    ClearanceLevelUUID TEXT,
+    PRIMARY KEY (OwnerCharacterUUID, GranteeUUID)
+);
+
+CREATE TABLE CharacterGranteeCapabilities (
+    OwnerCharacterUUID TEXT NOT NULL,
+    GranteeType TEXT NOT NULL DEFAULT 'Character',
+    GranteeUUID TEXT NOT NULL,
+    CapabilityUUID TEXT NOT NULL,
+    PRIMARY KEY (OwnerCharacterUUID, GranteeUUID, CapabilityUUID)
+);
+
+-- ═══════════════════════════════════════════════════════════════════
+-- INTEL AND AUDIT
+-- ═══════════════════════════════════════════════════════════════════
+CREATE TABLE IntelComments (
+    UUID TEXT PRIMARY KEY,
+    TargetCharacterUUID TEXT NOT NULL DEFAULT '',
+    SubmitterCharacterUUID TEXT NOT NULL DEFAULT '',
+    Text TEXT NOT NULL DEFAULT '',
+    CreatedUtc TEXT NOT NULL
+);
+
+CREATE TABLE IntelCommentFactionShares (
+    UUID TEXT PRIMARY KEY,
+    IntelCommentUUID TEXT NOT NULL REFERENCES IntelComments(UUID) ON DELETE CASCADE,
+    FactionUUID TEXT NOT NULL DEFAULT '',
+    ClassificationLevelUUID TEXT,
+    ClassifiedByCharacterUUID TEXT,
+    SharedUtc TEXT NOT NULL,
+    ClassifiedUtc TEXT
+);
+
+CREATE TABLE PermissionAuditEntries (
+    UUID TEXT PRIMARY KEY,
+    Timestamp TEXT NOT NULL,
+    ActorCharacterUUID TEXT NOT NULL DEFAULT '',
+    TargetCharacterUUID TEXT NOT NULL DEFAULT '',
+    ActionType TEXT NOT NULL DEFAULT 'CapabilityGranted',
+    OldValue TEXT NOT NULL DEFAULT '',
+    NewValue TEXT NOT NULL DEFAULT ''
+);
 
 -- ═══════════════════════════════════════════════════════════════════
 -- BASELINE / GLOBAL LOOKUP TABLES (no JSON blobs)
