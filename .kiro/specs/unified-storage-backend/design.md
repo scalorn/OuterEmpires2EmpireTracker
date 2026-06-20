@@ -420,11 +420,11 @@ CREATE TABLE BlueprintProperties (
     PRIMARY KEY (BlueprintUUID, Key)
 );
 
--- Blueprint child: Resources (Dictionary<string, string>)
+-- Blueprint child: Resources (Dictionary<string, string> in DTO, stored as integer)
 CREATE TABLE BlueprintResources (
     BlueprintUUID TEXT NOT NULL REFERENCES Blueprints(UUID) ON DELETE CASCADE,
     ResourceName TEXT NOT NULL,
-    Amount TEXT NOT NULL,
+    Amount INTEGER NOT NULL,
     PRIMARY KEY (BlueprintUUID, ResourceName)
 );
 
@@ -607,11 +607,11 @@ CREATE TABLE Commodities (
     CommodityGroup TEXT NOT NULL
 );
 
--- Commodity child: ConstructionResources (Dictionary<string, string>)
+-- Commodity child: ConstructionResources (Dictionary<string, string> in DTO, stored as integer)
 CREATE TABLE CommodityResources (
     CommodityID TEXT NOT NULL REFERENCES Commodities(ID) ON DELETE CASCADE,
     ResourceName TEXT NOT NULL,
-    Amount TEXT NOT NULL,
+    Amount INTEGER NOT NULL,
     PRIMARY KEY (CommodityID, ResourceName)
 );
 
