@@ -847,21 +847,6 @@ CREATE TABLE PropertyTypeDefinitions (
 
 -- Global blueprints: same Blueprints table, distinguished by OwnerUUID being empty/null
 -- (character-specific blueprints have OwnerUUID set to the character UUID)
-
--- ═══════════════════════════════════════════════════════════════════
--- PERMISSION ENTITIES (one table per type)
--- ═══════════════════════════════════════════════════════════════════
-CREATE TABLE FactionCapabilities (UUID TEXT PRIMARY KEY, FactionUUID TEXT NOT NULL, ...);
-CREATE TABLE FactionClearanceLevels (UUID TEXT PRIMARY KEY, FactionUUID TEXT NOT NULL, ...);
-CREATE TABLE FactionPermissionGroups (UUID TEXT PRIMARY KEY, FactionUUID TEXT NOT NULL, ...);
--- ... (same pattern for all 14 permission entity types)
-
--- ═══════════════════════════════════════════════════════════════════
--- INTEL AND AUDIT
--- ═══════════════════════════════════════════════════════════════════
-CREATE TABLE IntelComments (UUID TEXT PRIMARY KEY, TargetCharacterUUID TEXT, AuthorUUID TEXT, Content TEXT, CreatedUtc TEXT);
-CREATE TABLE IntelCommentFactionShares (UUID TEXT PRIMARY KEY, CommentUUID TEXT REFERENCES IntelComments(UUID) ON DELETE CASCADE, FactionUUID TEXT);
-CREATE TABLE PermissionAuditEntries (Id TEXT PRIMARY KEY, Timestamp TEXT NOT NULL, ActionType TEXT, ActorUUID TEXT, TargetUUID TEXT, Details TEXT);
 ```
 
 **Design notes:**
