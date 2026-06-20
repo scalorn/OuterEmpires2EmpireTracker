@@ -738,10 +738,11 @@ CREATE TABLE DeliveryPlanStops (
     PRIMARY KEY (DeliveryPlanUUID, Sequence)
 );
 
--- DeliveryPlanStop child: DropOff items (List<DeliveryItem>)
-CREATE TABLE DeliveryPlanDropOffs (
+-- DeliveryPlanStop child: Items (both DropOff and PickUp, distinguished by Direction)
+CREATE TABLE DeliveryPlanItems (
     DeliveryPlanUUID TEXT NOT NULL,
     StopSequence INTEGER NOT NULL,
+    Direction TEXT NOT NULL,         -- 'DropOff' or 'PickUp'
     Sequence INTEGER NOT NULL,
     ItemType TEXT NOT NULL DEFAULT 'None',
     BaseItemTypeID TEXT NOT NULL DEFAULT '',
@@ -749,22 +750,7 @@ CREATE TABLE DeliveryPlanDropOffs (
     ResourcePurity TEXT NOT NULL DEFAULT '',
     Quantity INTEGER NOT NULL DEFAULT 0,
     Delivered INTEGER NOT NULL DEFAULT 0,
-    PRIMARY KEY (DeliveryPlanUUID, StopSequence, Sequence),
-    FOREIGN KEY (DeliveryPlanUUID, StopSequence) REFERENCES DeliveryPlanStops(DeliveryPlanUUID, Sequence) ON DELETE CASCADE
-);
-
--- DeliveryPlanStop child: PickUp items (List<DeliveryItem>)
-CREATE TABLE DeliveryPlanPickUps (
-    DeliveryPlanUUID TEXT NOT NULL,
-    StopSequence INTEGER NOT NULL,
-    Sequence INTEGER NOT NULL,
-    ItemType TEXT NOT NULL DEFAULT 'None',
-    BaseItemTypeID TEXT NOT NULL DEFAULT '',
-    Name TEXT NOT NULL DEFAULT '',
-    ResourcePurity TEXT NOT NULL DEFAULT '',
-    Quantity INTEGER NOT NULL DEFAULT 0,
-    Delivered INTEGER NOT NULL DEFAULT 0,
-    PRIMARY KEY (DeliveryPlanUUID, StopSequence, Sequence),
+    PRIMARY KEY (DeliveryPlanUUID, StopSequence, Direction, Sequence),
     FOREIGN KEY (DeliveryPlanUUID, StopSequence) REFERENCES DeliveryPlanStops(DeliveryPlanUUID, Sequence) ON DELETE CASCADE
 );
 
