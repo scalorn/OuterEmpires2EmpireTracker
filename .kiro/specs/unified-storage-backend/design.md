@@ -208,9 +208,9 @@ Provides IStorageBackend using a single SQLite database with a **fully normalize
 - Each `List<T>` property → child table with FK to parent + Sequence column for ordering
 - Each `Dictionary<K,V>` property → child table with FK to parent + Key column + value columns
 - Each `PropertyBag` property → child table with (ParentUUID, Key, Value) columns
-- Each `ItemBag` property → child table with one row per Item (all Item scalar fields as columns)
+- Each `ItemBag` property → unified `Items` table with `ParentUUID` + `ParentType` discriminator
 - Nested value objects without identity (e.g. CountDownTime) → inline columns with prefix on parent table
-- Recursive structures (Item.Contents → ItemBag → Items) → self-referencing table with ParentItemUUID FK
+- Crate contents → same `Items` table with `ParentType='Crate'` and `ParentUUID` pointing to the crate item
 
 ### DynamoDbBackend (Common/Storage/DynamoDbBackend.cs)
 
@@ -360,10 +360,15 @@ CREATE TABLE ColonyStructureWorkers (
     PRIMARY KEY (StructureUUID, Key)
 );
 
--- Colony child: Items (ItemBag)
-CREATE TABLE ColonyItems (
+-- Colony child: Items (ItemBag) — uses unified Items table (see below)
+
+-- ═══════════════════════════════════════════════════════════════════
+-- UNIFIED ITEMS TABLE (all ItemBag contents across all containers)
+-- ═══════════════════════════════════════════════════════════════════
+CREATE TABLE Items (
     UUID TEXT PRIMARY KEY,
-    ColonyUUID TEXT NOT NULL REFERENCES Colonies(UUID) ON DELETE CASCADE,
+    ParentUUID TEXT NOT NULL,       -- colony UUID, ship UUID, or crate item UUID
+    ParentType TEXT NOT NULL,       -- 'Colony', 'ShipCargo', 'ShipHopper', 'Crate'
     ItemType TEXT NOT NULL,
     BaseItemTypeID TEXT NOT NULL DEFAULT '',
     Name TEXT NOT NULL DEFAULT '',
@@ -384,9 +389,11 @@ CREATE TABLE ColonyItems (
     Evolution INTEGER,
     ShipPartType TEXT NOT NULL DEFAULT '',
     JobName TEXT NOT NULL DEFAULT '',
-    JobTrack TEXT NOT NULL DEFAULT '',
-    ParentItemUUID TEXT  -- self-reference for nested Contents
+    JobTrack TEXT NOT NULL DEFAULT ''
 );
+
+-- Index for fast lookup by container
+CREATE INDEX IX_Items_Parent ON Items (ParentUUID, ParentType);
 
 -- ═══════════════════════════════════════════════════════════════════
 -- BLUEPRINT
@@ -521,30 +528,8 @@ CREATE TABLE ShipComponents (
     PRIMARY KEY (ShipUUID, Sequence)
 );
 
--- Ship child: Cargo (ItemBag) and Hopper (ItemBag) follow same pattern as ColonyItems
-CREATE TABLE ShipCargoItems (
-    UUID TEXT PRIMARY KEY,
-    ShipUUID TEXT NOT NULL REFERENCES Ships(UUID) ON DELETE CASCADE,
-    ItemType TEXT NOT NULL,
-    BaseItemTypeID TEXT NOT NULL DEFAULT '',
-    Name TEXT NOT NULL DEFAULT '',
-    Quantity INTEGER NOT NULL DEFAULT 0,
-    ResourcePurity TEXT NOT NULL DEFAULT '',
-    Volume REAL NOT NULL DEFAULT 0,
-    ParentItemUUID TEXT
-);
-
-CREATE TABLE ShipHopperItems (
-    UUID TEXT PRIMARY KEY,
-    ShipUUID TEXT NOT NULL REFERENCES Ships(UUID) ON DELETE CASCADE,
-    ItemType TEXT NOT NULL,
-    BaseItemTypeID TEXT NOT NULL DEFAULT '',
-    Name TEXT NOT NULL DEFAULT '',
-    Quantity INTEGER NOT NULL DEFAULT 0,
-    ResourcePurity TEXT NOT NULL DEFAULT '',
-    Volume REAL NOT NULL DEFAULT 0,
-    ParentItemUUID TEXT
-);
+-- Ship child: Cargo and Hopper use the unified Items table
+-- (ParentType='ShipCargo' or 'ShipHopper', ParentUUID=Ship.UUID)
 
 -- ═══════════════════════════════════════════════════════════════════
 -- SERVER-GLOBAL ENTITIES
@@ -852,8 +837,8 @@ CREATE TABLE PropertyTypeDefinitions (
 **Design notes:**
 - **No JSON blobs anywhere in SQL backends.** All data is stored in typed columns.
 - CountDownTime is inlined as prefixed columns on the parent table (e.g. `BuildCompletion_StartTime`) rather than a separate table, because it has no independent identity.
-- ItemBag items use a `ParentItemUUID` self-reference for recursive nesting (crate contents).
-- All child tables use CASCADE DELETE so removing a parent automatically cleans up children.
+- Items use a unified `Items` table with `ParentUUID` + `ParentType` columns. ParentType is 'Colony', 'ShipCargo', 'ShipHopper', or 'Crate' (self-referencing for nested contents). Cascade delete is handled in application code since the FK is polymorphic.
+- All other child tables use CASCADE DELETE so removing a parent automatically cleans up children.
 - Global blueprints share the same Blueprints table as character-specific ones, distinguished by OwnerUUID being empty/null for global entries.
 - BaselineGameConstants uses a singleton-row pattern (single row with Key='default').
 
