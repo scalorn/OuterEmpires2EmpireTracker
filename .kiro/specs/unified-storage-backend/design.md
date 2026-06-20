@@ -2,17 +2,11 @@
 
 ## Overview
 
-This design unifies all storage behind a single shared `IStorageBackend` interface in OE2EmpireTracker.Common. All backend implementations (JSON single-file, JSON multi-file, SQLite, DynamoDB, Postgres) move into Common. All applications — WinForms Desktop, the Faction Server, and any future apps — consume the same interface and can use any backend interchangeably. A MigrationService allows lossless data movement between any pair of backends.
+This design defines the unified `IStorageBackend` interface and all five backend implementations (JSON single-file, JSON multi-file, SQLite, DynamoDB, Postgres) in OE2EmpireTracker.Common. The scope is limited to building the interface, backends, factory, error types, and supporting models in Common — ready for consumers to adopt in future work. No consumer integration (PlayerContext, EmpireContext, Server startup) or MigrationService is included here.
 
 ## Architecture
 
 ```
-┌─────────────────────┐  ┌──────────────────────┐  ┌────────────────────┐
-│  WinForms Desktop   │  │   Faction Server     │  │  Future Apps       │
-│  (.NET Fx 4.8.1)    │  │   (.NET 8)           │  │  (.NET 8+)        │
-└────────┬────────────┘  └──────────┬───────────┘  └─────────┬──────────┘
-         │                          │                         │
-         ▼                          ▼                         ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                     OE2EmpireTracker.Common (netstandard2.0)             │
 │  ┌───────────────────────────────────────────────────────────────────┐  │
@@ -28,33 +22,15 @@ This design unifies all storage behind a single shared `IStorageBackend` interfa
 │                                                                         │
 │  ┌─────────────┐  ┌──────────────────┐  ┌──────────────────────────┐  │
 │  │  DynamoDB   │  │   Postgres       │  │  StorageBackendFactory   │  │
-│  │  Backend    │  │   Backend        │  │  MigrationService        │  │
+│  │  Backend    │  │   Backend        │  │                          │  │
 │  └─────────────┘  └──────────────────┘  └──────────────────────────┘  │
-│                                                                         │
-│  ┌───────────────────────────────────────────────────────────────────┐  │
-│  │  PlayerContext / EmpireContext (existing, refactored)              │  │
-│  │  - Accepts IStorageBackend for persistence                        │  │
-│  │  - In-memory cache + change events unchanged                      │  │
-│  └───────────────────────────────────────────────────────────────────┘  │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Desktop App Startup Flow
 
-```
-User launches app
-    → PreferencesStore.Load()
-    → Read StorageBackendType + StoragePath
-    → StorageBackendFactory.CreateAsync(type, config)
-        → backend.InitializeAsync()
-    → EmpireContext.SetStorageBackend(backend)
-    → EmpireContext.LoadAsync()
-    → PlayerContext.SetStorageBackend(backend)
-    → PlayerContext.LoadAsync(currentPlayerUUID)
-    → MainWindow displays data
-```
+### Server Startup Flow (Consumer Usage Example)
 
-### Server Startup Flow
+This illustrates how a consumer WOULD use the factory to instantiate a backend:
 
 ```
 Host builds
@@ -63,34 +39,6 @@ Host builds
         → backend.InitializeAsync()
     → Register IStorageBackend as singleton in DI
     → Endpoints inject IStorageBackend
-```
-
-### Data Write Flow (Desktop)
-
-```
-User edits colony in form
-    → ColonyService.UpdateStructure(...)
-    → PlayerContext.MarkDirty(colonyUUID)
-    → PlayerContext.WriteContext()
-        → backend.UpsertColonyAsync(charUUID, colony)
-        → (JsonSingleFile: rewrites full file)
-        → (SQLite: UPDATE CharacterEntities SET Data=... WHERE ...)
-    → PlayerContext.OnColonyDataChanged(colonyUUID)
-```
-
-### Backend Migration Flow
-
-```
-User chooses "Switch to SQLite" in Preferences
-    → MigrationService.MigrateAsync(currentBackend, newSqliteBackend)
-        → For each entity type:
-            → Read from source
-            → Write to destination
-            → Report progress via ProgressChanged event
-        → Validate counts match
-    → PreferencesStore.StorageBackendType = Sqlite
-    → PreferencesStore.StoragePath = newPath
-    → Restart PlayerContext with new backend
 ```
 
 
@@ -127,9 +75,9 @@ namespace OE2EmpireTracker.Common.Interfaces
 ```
 
 Design decisions:
-- Interface remains async Task-based despite WinForms being synchronous — the Desktop app calls `.GetAwaiter().GetResult()` on synchronous code paths.
-- CancellationToken has a default value so callers not needing cancellation can omit it.
+- Interface is async Task-based. CancellationToken has a default value so callers not needing cancellation can omit it.
 - Uses `IReadOnlyList<T>` for all collection returns to enforce immutability at the contract level.
+
 
 ### StorageBackendType Enum (Common/Interfaces/StorageBackendType.cs)
 
@@ -182,6 +130,7 @@ namespace OE2EmpireTracker.Common.Storage
     }
 }
 ```
+
 
 ### JsonSingleFileBackend (Common/Storage/JsonSingleFileBackend.cs)
 
@@ -242,15 +191,26 @@ Directory layout (backward-compatible with existing server deployments):
 - Each write: serializes to temp file, renames atomically
 - Directory structure created on `InitializeAsync`
 
+
 ### SqliteBackend (Common/Storage/SqliteBackend.cs)
 
-Provides IStorageBackend using a single SQLite database with JSON-blob storage per entity.
+Provides IStorageBackend using a single SQLite database with a **fully normalized relational schema**. Every DTO property becomes a typed column. Every collection becomes a child table.
 
 - Connection string: `Data Source={path}/oe2tracker.db`
 - Journal mode: WAL (set on connection open via PRAGMA)
 - Schema version tracked in `_metadata` table
 - Uses `Microsoft.Data.Sqlite` NuGet package (netstandard2.0 compatible)
 - Multi-entity writes use transactions for atomicity
+- No JSON blobs — all data is stored in typed columns
+
+**Schema Design Principles:**
+- Each top-level entity type → one parent table with UUID as PK
+- Each `List<T>` property → child table with FK to parent + Sequence column for ordering
+- Each `Dictionary<K,V>` property → child table with FK to parent + Key column + value columns
+- Each `PropertyBag` property → child table with (ParentUUID, Key, Value) columns
+- Each `ItemBag` property → child table with one row per Item (all Item scalar fields as columns)
+- Nested value objects without identity (e.g. CountDownTime) → inline columns with prefix on parent table
+- Recursive structures (Item.Contents → ItemBag → Items) → self-referencing table with ParentItemUUID FK
 
 ### DynamoDbBackend (Common/Storage/DynamoDbBackend.cs)
 
@@ -258,71 +218,12 @@ Direct port of existing Server `DynamoStorageBackend`. Uses AWSSDK.DynamoDBv2. T
 
 ### PostgresBackend (Common/Storage/PostgresBackend.cs)
 
-Direct port of existing Server `PostgresStorageBackend`. Uses Npgsql. Implements retry logic with exponential backoff via Polly before throwing exceptions.
+Uses the same fully normalized relational schema as SqliteBackend, expressed in PostgreSQL DDL. Uses Npgsql. Implements retry logic with exponential backoff via Polly before throwing exceptions.
 
-### MigrationService (Common/Services/MigrationService.cs)
-
-Transfers all data from any source IStorageBackend to any destination IStorageBackend.
-
-```csharp
-namespace OE2EmpireTracker.Common.Services
-{
-    public class MigrationService
-    {
-        public event EventHandler<MigrationProgressEventArgs> ProgressChanged;
-
-        public async Task MigrateAsync(
-            IStorageBackend source,
-            IStorageBackend destination,
-            CancellationToken ct = default);
-    }
-
-    public class MigrationProgressEventArgs : EventArgs
-    {
-        public string CurrentEntityType { get; set; }
-        public int EntitiesProcessed { get; set; }
-        public int TotalEntityTypes { get; set; }
-        public int CurrentEntityTypeIndex { get; set; }
-    }
-}
-```
-
-Migration order: GlobalData → ServerFactions → ServerCharacters → ApiTokens → MembershipActions → StarSystems → Per-character entities (22 types) → SharingRules → CharacterPreferences → Faction permissions → Character permissions → Intel → Audit.
-
-Post-migration validation compares source vs destination entity counts. Mismatch throws `MigrationValidationException`.
-
-### PlayerContext Refactoring
-
-Current state: Reads/writes a single JSON file directly via `File.ReadAllText` / `SafeFileWriter.WriteAllText`.
-
-Target state: Accepts `IStorageBackend` instance and delegates all persistence.
-
-- `SetStorageBackend(IStorageBackend)` — configures the backend
-- `LoadAsync(string characterUUID)` — loads all per-character data from backend
-- `WriteContext()` — persists dirty entities to backend (incremental writes)
-- `MarkDirty(string entityUUID)` — service methods mark entities before WriteContext
-- Parameterless constructor preserved (creates JsonSingleFileBackend internally for backward compatibility)
-- `GetInstance()` singleton pattern preserved
-- `IsServerOnlyMode`, `PushToServer` delegates remain for transition period
-
-### EmpireContext Refactoring
-
-- `SetStorageBackend(IStorageBackend)` — configures the backend
-- `LoadAsync()` — loads baseline data via `GetGlobalDataAsync("BaselineData")`
-- `WriteContext()` — persists via `UpsertGlobalDataAsync("BaselineData", json)`
-
-### PreferencesStore Integration
-
-```csharp
-[JsonProperty("storageBackendType")]
-[DefaultValue(StorageBackendType.JsonSingleFile)]
-public StorageBackendType StorageBackendType { get; set; } = StorageBackendType.JsonSingleFile;
-
-[JsonProperty("storagePath")]
-public string StoragePath { get; set; } = string.Empty;
-```
-
-Default StoragePath: application directory for JSON backends, `%LocalAppData%/OE2EmpireTracker` for SQLite.
+- Schema identical to SQLite (same table names, same columns, same child tables)
+- Uses PostgreSQL-native types: UUID, NUMERIC, TIMESTAMPTZ, TEXT, BOOLEAN
+- Uses foreign key constraints with CASCADE DELETE
+- Same _metadata table and numbered migration approach as SQLite
 
 ## Data Models
 
@@ -343,6 +244,7 @@ Moved from `OE2EmpireTracker.Server.Storage.Models.cs`. Contains:
 | `RateLimitConfig` | Rate limit configuration per token |
 
 Enums: `TokenRole`, `MembershipActionType`, `SharingTargetType`
+
 
 ### Permission Models (Common/Models/PermissionModels.cs)
 
@@ -365,59 +267,316 @@ The serialization root for the single-file JSON format. Contains arrays for all 
 
 The serialization root for baseline/shared game data (blueprint types, ship classes, commodities, resources, tech levels, etc.).
 
-### SQLite Schema (v1)
+### SQLite/Postgres Relational Schema (v1)
+
+Every entity type has a proper table with typed columns. Collections are child tables. Examples shown below for key entities — all other entities follow the same pattern.
 
 ```sql
+-- Metadata
 CREATE TABLE _metadata (Key TEXT PRIMARY KEY, Value TEXT NOT NULL);
-CREATE TABLE Factions (UUID TEXT PRIMARY KEY, Data TEXT NOT NULL);
-CREATE TABLE Characters (UUID TEXT PRIMARY KEY, Data TEXT NOT NULL);
-CREATE TABLE Tokens (Id TEXT PRIMARY KEY, Data TEXT NOT NULL);
-CREATE TABLE MembershipActions (Id TEXT PRIMARY KEY, FactionUUID TEXT, ExpiresUtc TEXT, Data TEXT NOT NULL);
-CREATE TABLE GlobalData (DataType TEXT PRIMARY KEY, Data TEXT NOT NULL);
-CREATE TABLE StarSystems (Id INTEGER PRIMARY KEY, Data TEXT NOT NULL);
-CREATE TABLE SharingRules (CharacterUUID TEXT PRIMARY KEY, Data TEXT NOT NULL);
-CREATE TABLE CharacterPreferences (CharacterUUID TEXT PRIMARY KEY, Data TEXT NOT NULL);
-CREATE TABLE CharacterEntities (
-    CharacterUUID TEXT NOT NULL,
-    EntityType TEXT NOT NULL,
-    EntityUUID TEXT NOT NULL,
-    Data TEXT NOT NULL,
-    PRIMARY KEY (CharacterUUID, EntityType, EntityUUID)
+
+-- ═══════════════════════════════════════════════════════════════════
+-- COLONY (parent table)
+-- ═══════════════════════════════════════════════════════════════════
+CREATE TABLE Colonies (
+    UUID TEXT PRIMARY KEY,
+    OwnerUUID TEXT NOT NULL,
+    LegacyUUID TEXT,
+    PlanetName TEXT,
+    SystemName TEXT NOT NULL DEFAULT '',
+    ColonyName TEXT,
+    LastImportDateTime TEXT,
+    ColonyId INTEGER NOT NULL DEFAULT 0,
+    SystemId INTEGER NOT NULL DEFAULT 0,
+    ColonySize INTEGER NOT NULL DEFAULT 0,
+    Distance REAL NOT NULL DEFAULT 0,
+    SurfaceVariation INTEGER NOT NULL DEFAULT 0,
+    AtmosVariation INTEGER NOT NULL DEFAULT 0,
+    HexValue TEXT NOT NULL DEFAULT '',
+    SystemObjectTypeName TEXT NOT NULL DEFAULT '',
+    ImagePreFix TEXT NOT NULL DEFAULT '',
+    ManufacturingBlocked INTEGER NOT NULL DEFAULT 0,
+    WorkerCurrentAttitude INTEGER NOT NULL DEFAULT 0,
+    ContentmentIndex INTEGER NOT NULL DEFAULT 0,
+    BlueCollarAllocated INTEGER NOT NULL DEFAULT 0,
+    BlueCollarUnallocated INTEGER NOT NULL DEFAULT 0,
+    WhiteCollarAllocated INTEGER NOT NULL DEFAULT 0,
+    WhiteCollarUnallocated INTEGER NOT NULL DEFAULT 0,
+    SpecialistAllocated INTEGER NOT NULL DEFAULT 0,
+    SpecialistUnallocated INTEGER NOT NULL DEFAULT 0,
+    WageLevel INTEGER NOT NULL DEFAULT 0
 );
-CREATE TABLE FactionPermissions (
-    FactionUUID TEXT NOT NULL,
-    EntityType TEXT NOT NULL,
-    EntityUUID TEXT NOT NULL,
-    Data TEXT NOT NULL,
-    PRIMARY KEY (FactionUUID, EntityType, EntityUUID)
+
+-- Colony child: Structures
+CREATE TABLE ColonyStructures (
+    UUID TEXT PRIMARY KEY,
+    ColonyUUID TEXT NOT NULL REFERENCES Colonies(UUID) ON DELETE CASCADE,
+    Sequence INTEGER NOT NULL DEFAULT 0,
+    FlatpackBlueprintUUID TEXT,
+    DisplaySequence INTEGER NOT NULL DEFAULT 0,
+    BuildingID INTEGER NOT NULL DEFAULT 0,
+    BuildQueueSequence INTEGER NOT NULL DEFAULT 0,
+    MiningSurvey TEXT,
+    MiningSurveyResource TEXT,
+    MiningLeftOvers REAL NOT NULL DEFAULT 0,
+    RefiningResource TEXT,
+    RefiningResourcePurity TEXT,
+    ResearchingBlueprintUUID TEXT,
+    ManufacturingBlueprintUUID TEXT,
+    ManufacturingCommodityName TEXT,
+    ManufacturingQuantity INTEGER NOT NULL DEFAULT 0,
+    ManufacturingCompleted INTEGER NOT NULL DEFAULT 0,
+    StagingResources INTEGER NOT NULL DEFAULT 0,
+    ColonyBuildingTypeId INTEGER NOT NULL DEFAULT 0,
+    ResourceId INTEGER NOT NULL DEFAULT 0,
+    ResourceIcon TEXT NOT NULL DEFAULT '',
+    ManufactureAmountPerRun INTEGER NOT NULL DEFAULT 0,
+    DurabilityCurrent REAL NOT NULL DEFAULT 0,
+    DurabilityMax REAL NOT NULL DEFAULT 0,
+    WageLevel INTEGER NOT NULL DEFAULT 0,
+    -- Inline nested: BuildCompletionTime
+    BuildCompletion_StartTime TEXT,
+    BuildCompletion_RepeatIntervalSeconds INTEGER,
+    BuildCompletion_IsRepeating INTEGER,
+    -- Inline nested: ProcessCompletionTime
+    ProcessCompletion_StartTime TEXT,
+    ProcessCompletion_RepeatIntervalSeconds INTEGER,
+    ProcessCompletion_IsRepeating INTEGER
 );
-CREATE TABLE CharacterPermissions (
-    CharacterUUID TEXT NOT NULL,
-    EntityType TEXT NOT NULL,
-    EntityUUID TEXT NOT NULL,
-    Data TEXT NOT NULL,
-    PRIMARY KEY (CharacterUUID, EntityType, EntityUUID)
+
+-- ColonyStructure child: Properties (PropertyBag)
+CREATE TABLE ColonyStructureProperties (
+    StructureUUID TEXT NOT NULL REFERENCES ColonyStructures(UUID) ON DELETE CASCADE,
+    Key TEXT NOT NULL,
+    Value TEXT NOT NULL,
+    PRIMARY KEY (StructureUUID, Key)
 );
-CREATE TABLE IntelComments (UUID TEXT PRIMARY KEY, TargetCharacterUUID TEXT, Data TEXT NOT NULL);
-CREATE TABLE IntelShares (UUID TEXT PRIMARY KEY, CommentUUID TEXT, FactionUUID TEXT, Data TEXT NOT NULL);
-CREATE TABLE PermissionAuditEntries (
-    Id TEXT PRIMARY KEY,
-    Timestamp TEXT NOT NULL,
-    ActionType TEXT,
-    ActorUUID TEXT,
-    TargetUUID TEXT,
-    Data TEXT NOT NULL
+
+-- ColonyStructure child: AssignedWorkers (PropertyBag)
+CREATE TABLE ColonyStructureWorkers (
+    StructureUUID TEXT NOT NULL REFERENCES ColonyStructures(UUID) ON DELETE CASCADE,
+    Key TEXT NOT NULL,
+    Value TEXT NOT NULL,
+    PRIMARY KEY (StructureUUID, Key)
 );
+
+-- Colony child: Items (ItemBag)
+CREATE TABLE ColonyItems (
+    UUID TEXT PRIMARY KEY,
+    ColonyUUID TEXT NOT NULL REFERENCES Colonies(UUID) ON DELETE CASCADE,
+    ItemType TEXT NOT NULL,
+    BaseItemTypeID TEXT NOT NULL DEFAULT '',
+    Name TEXT NOT NULL DEFAULT '',
+    NickName TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT '',
+    Quantity INTEGER NOT NULL DEFAULT 0,
+    ResourcePurity TEXT NOT NULL DEFAULT '',
+    Volume REAL NOT NULL DEFAULT 0,
+    CurrentHP INTEGER NOT NULL DEFAULT 0,
+    MaxHP INTEGER NOT NULL DEFAULT 0,
+    MaxRepairPercent REAL NOT NULL DEFAULT 0,
+    Mass REAL,
+    GameItemId INTEGER,
+    JobRef INTEGER,
+    JobDeliveryLoc INTEGER,
+    HealthPercentage REAL,
+    LastRepairHealthPercentage REAL,
+    Evolution INTEGER,
+    ShipPartType TEXT NOT NULL DEFAULT '',
+    JobName TEXT NOT NULL DEFAULT '',
+    JobTrack TEXT NOT NULL DEFAULT '',
+    ParentItemUUID TEXT  -- self-reference for nested Contents
+);
+
+-- ═══════════════════════════════════════════════════════════════════
+-- BLUEPRINT
+-- ═══════════════════════════════════════════════════════════════════
+CREATE TABLE Blueprints (
+    UUID TEXT PRIMARY KEY,
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    BaseBlueprintUUID TEXT,
+    LegacyUUID TEXT,
+    BluePrintType TEXT,
+    TechLevel TEXT,
+    Class INTEGER NOT NULL DEFAULT 0,
+    Evolution INTEGER NOT NULL DEFAULT 0,
+    CopyCost INTEGER NOT NULL DEFAULT 0,
+    ItemType TEXT NOT NULL,
+    BaseItemTypeID TEXT NOT NULL DEFAULT '',
+    Name TEXT NOT NULL DEFAULT '',
+    NickName TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT '',
+    Quantity INTEGER NOT NULL DEFAULT 0,
+    Volume REAL NOT NULL DEFAULT 0,
+    GameApiBlueprintId INTEGER,
+    LastDetailImportUtc TEXT
+);
+
+-- Blueprint child: Properties (PropertyBag)
+CREATE TABLE BlueprintProperties (
+    BlueprintUUID TEXT NOT NULL REFERENCES Blueprints(UUID) ON DELETE CASCADE,
+    Key TEXT NOT NULL,
+    Value TEXT NOT NULL,
+    PRIMARY KEY (BlueprintUUID, Key)
+);
+
+-- Blueprint child: Resources (Dictionary<string, string>)
+CREATE TABLE BlueprintResources (
+    BlueprintUUID TEXT NOT NULL REFERENCES Blueprints(UUID) ON DELETE CASCADE,
+    ResourceName TEXT NOT NULL,
+    Amount TEXT NOT NULL,
+    PRIMARY KEY (BlueprintUUID, ResourceName)
+);
+
+-- ═══════════════════════════════════════════════════════════════════
+-- SURVEY
+-- ═══════════════════════════════════════════════════════════════════
+CREATE TABLE Surveys (
+    UUID TEXT PRIMARY KEY,
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    ItemType TEXT NOT NULL,
+    BaseItemTypeID TEXT NOT NULL DEFAULT '',
+    Name TEXT NOT NULL DEFAULT '',
+    NickName TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT '',
+    Quantity INTEGER NOT NULL DEFAULT 0,
+    Volume REAL NOT NULL DEFAULT 0,
+    ScannedBy TEXT,
+    DateTime TEXT,
+    PlanetName TEXT,
+    SystemName TEXT NOT NULL DEFAULT '',
+    SurveyID TEXT,
+    ScannerBlueprintUUID TEXT,
+    SurveyType TEXT NOT NULL DEFAULT 'Planet',
+    AsteroidUUID TEXT NOT NULL DEFAULT '',
+    SystemObjectId INTEGER NOT NULL DEFAULT 0,
+    GameApiSurveyId INTEGER,
+    LastDetailImportUtc TEXT
+);
+
+-- Survey child: Properties (Dictionary<string, string>)
+CREATE TABLE SurveyProperties (
+    SurveyUUID TEXT NOT NULL REFERENCES Surveys(UUID) ON DELETE CASCADE,
+    Key TEXT NOT NULL,
+    Value TEXT NOT NULL,
+    PRIMARY KEY (SurveyUUID, Key)
+);
+
+-- Survey child: Resources (Dictionary<string, SurveyResource>)
+CREATE TABLE SurveyResources (
+    SurveyUUID TEXT NOT NULL REFERENCES Surveys(UUID) ON DELETE CASCADE,
+    ResourceKey TEXT NOT NULL,
+    Resource TEXT NOT NULL DEFAULT '',
+    Purity TEXT NOT NULL DEFAULT '',
+    Amount TEXT NOT NULL DEFAULT '',
+    PRIMARY KEY (SurveyUUID, ResourceKey)
+);
+
+-- ═══════════════════════════════════════════════════════════════════
+-- DELIVERY ROUTE
+-- ═══════════════════════════════════════════════════════════════════
+CREATE TABLE DeliveryRoutes (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    OwnerUUID TEXT NOT NULL DEFAULT ''
+);
+
+-- DeliveryRoute child: Stops (List<RouteStop>)
+CREATE TABLE DeliveryRouteStops (
+    DeliveryRouteUUID TEXT NOT NULL REFERENCES DeliveryRoutes(UUID) ON DELETE CASCADE,
+    Sequence INTEGER NOT NULL,
+    ColonyUUID TEXT NOT NULL DEFAULT '',
+    DestinationType TEXT NOT NULL DEFAULT 'Colony',
+    DestinationUUID TEXT NOT NULL DEFAULT '',
+    Purpose TEXT NOT NULL DEFAULT 'Cargo',
+    FuelEstimate REAL NOT NULL DEFAULT 0,
+    PRIMARY KEY (DeliveryRouteUUID, Sequence)
+);
+
+-- ═══════════════════════════════════════════════════════════════════
+-- SHIP
+-- ═══════════════════════════════════════════════════════════════════
+CREATE TABLE Ships (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    TemplateUUID TEXT NOT NULL DEFAULT '',
+    HullBlueprintUUID TEXT NOT NULL DEFAULT '',
+    LocationType TEXT NOT NULL DEFAULT 'Station',
+    LocationUUID TEXT NOT NULL DEFAULT '',
+    GameLocationId INTEGER,
+    HullCurrentHP INTEGER NOT NULL DEFAULT 0,
+    HullMaxHP INTEGER NOT NULL DEFAULT 0,
+    HullMaxRepairPercent REAL NOT NULL DEFAULT 0
+);
+
+-- Ship child: Components (List<ShipComponentSlot>)
+CREATE TABLE ShipComponents (
+    ShipUUID TEXT NOT NULL REFERENCES Ships(UUID) ON DELETE CASCADE,
+    Sequence INTEGER NOT NULL,
+    SlotType TEXT NOT NULL DEFAULT '',
+    BlueprintUUID TEXT NOT NULL DEFAULT '',
+    CurrentHP INTEGER NOT NULL DEFAULT 0,
+    MaxHP INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (ShipUUID, Sequence)
+);
+
+-- Ship child: Cargo (ItemBag) and Hopper (ItemBag) follow same pattern as ColonyItems
+CREATE TABLE ShipCargoItems (
+    UUID TEXT PRIMARY KEY,
+    ShipUUID TEXT NOT NULL REFERENCES Ships(UUID) ON DELETE CASCADE,
+    ItemType TEXT NOT NULL,
+    BaseItemTypeID TEXT NOT NULL DEFAULT '',
+    Name TEXT NOT NULL DEFAULT '',
+    Quantity INTEGER NOT NULL DEFAULT 0,
+    ResourcePurity TEXT NOT NULL DEFAULT '',
+    Volume REAL NOT NULL DEFAULT 0,
+    ParentItemUUID TEXT
+);
+
+CREATE TABLE ShipHopperItems (
+    UUID TEXT PRIMARY KEY,
+    ShipUUID TEXT NOT NULL REFERENCES Ships(UUID) ON DELETE CASCADE,
+    ItemType TEXT NOT NULL,
+    BaseItemTypeID TEXT NOT NULL DEFAULT '',
+    Name TEXT NOT NULL DEFAULT '',
+    Quantity INTEGER NOT NULL DEFAULT 0,
+    ResourcePurity TEXT NOT NULL DEFAULT '',
+    Volume REAL NOT NULL DEFAULT 0,
+    ParentItemUUID TEXT
+);
+
+-- ═══════════════════════════════════════════════════════════════════
+-- SERVER-GLOBAL ENTITIES (same relational approach)
+-- ═══════════════════════════════════════════════════════════════════
+CREATE TABLE ServerFactions (UUID TEXT PRIMARY KEY, Name TEXT, LeaderUUID TEXT, ...);
+CREATE TABLE ServerCharacters (UUID TEXT PRIMARY KEY, Name TEXT, FactionUUID TEXT, ...);
+CREATE TABLE ApiTokens (Id TEXT PRIMARY KEY, CharacterUUID TEXT, TokenHash TEXT, Role TEXT, ...);
+CREATE TABLE MembershipActions (Id TEXT PRIMARY KEY, FactionUUID TEXT, CharacterUUID TEXT, ActionType TEXT, ExpiresUtc TEXT, ...);
+CREATE TABLE StarSystems (Id INTEGER PRIMARY KEY, Name TEXT, ...);
+CREATE TABLE GlobalData (DataType TEXT PRIMARY KEY, Data TEXT NOT NULL);  -- baseline data stays as JSON blob (large, rarely queried by field)
+
+-- ═══════════════════════════════════════════════════════════════════
+-- PERMISSION ENTITIES (one table per type)
+-- ═══════════════════════════════════════════════════════════════════
+CREATE TABLE FactionCapabilities (UUID TEXT PRIMARY KEY, FactionUUID TEXT NOT NULL, ...);
+CREATE TABLE FactionClearanceLevels (UUID TEXT PRIMARY KEY, FactionUUID TEXT NOT NULL, ...);
+CREATE TABLE FactionPermissionGroups (UUID TEXT PRIMARY KEY, FactionUUID TEXT NOT NULL, ...);
+-- ... (same pattern for all 14 permission entity types)
+
+-- ═══════════════════════════════════════════════════════════════════
+-- INTEL AND AUDIT
+-- ═══════════════════════════════════════════════════════════════════
+CREATE TABLE IntelComments (UUID TEXT PRIMARY KEY, TargetCharacterUUID TEXT, AuthorUUID TEXT, Content TEXT, CreatedUtc TEXT);
+CREATE TABLE IntelCommentFactionShares (UUID TEXT PRIMARY KEY, CommentUUID TEXT REFERENCES IntelComments(UUID) ON DELETE CASCADE, FactionUUID TEXT);
+CREATE TABLE PermissionAuditEntries (Id TEXT PRIMARY KEY, Timestamp TEXT NOT NULL, ActionType TEXT, ActorUUID TEXT, TargetUUID TEXT, Details TEXT);
 ```
 
-EntityType discriminator strings: Colony, Blueprint, Survey, PlayerProfile, DeliveryRoute, DeliveryPlan, Ship, ShipTemplate, MarketListing, MarketTransaction, PricingPlan, StockPlan, StockProfile, BuildPlan, SupplyChain, Asteroid, Station, Faction, ExternalCharacter
-
-Schema migration approach:
-- `InitializeAsync` reads `schema_version` from `_metadata`
-- Compares to `CURRENT_SCHEMA_VERSION` constant
-- Applies sequential migration functions in transactions
-- On failure: rollback and throw `StorageLoadException`
-- If rollback itself fails: throw `StorageCorruptionException`
+**Design notes:**
+- `GlobalData` table retains JSON blob for BaselineRoot because baseline data is large, rarely queried by field, and changes infrequently. All other entity types use proper typed columns.
+- CountDownTime is inlined as prefixed columns on the parent table (e.g. `BuildCompletion_StartTime`) rather than a separate table, because it has no independent identity.
+- ItemBag items use a `ParentItemUUID` self-reference for recursive nesting (crate contents).
+- All child tables use CASCADE DELETE so removing a parent automatically cleans up children.
 
 ## Error Handling
 
@@ -442,11 +601,6 @@ namespace OE2EmpireTracker.Common.Interfaces
     {
         public string BackendType { get; }
     }
-
-    public class MigrationValidationException : Exception
-    {
-        public IReadOnlyDictionary<string, (int Source, int Destination)> Mismatches { get; }
-    }
 }
 ```
 
@@ -459,12 +613,6 @@ namespace OE2EmpireTracker.Common.Interfaces
 | SQLite | StorageLoadException (corrupt DB, schema mismatch) | StorageWriteException (transaction rolled back) | Transaction rollback preserves prior state |
 | DynamoDB | StorageLoadException (unreachable) | StorageWriteException (throttled/error) | Item-level atomicity |
 | Postgres | StorageLoadException (unreachable, after retries) | StorageWriteException (after retries, transaction rolled back) | Polly retry + transaction rollback |
-
-### PlayerContext Error Handling
-
-- When IStorageBackend throws `StorageWriteException`, PlayerContext sets `WritesBlocked = true` and logs the error
-- PlayerContext can also set `WritesBlocked = true` independently for application-level locking
-- `InvalidOperationException` thrown if data operations attempted without a configured backend
 
 ## Testing Strategy
 
@@ -480,55 +628,35 @@ Each backend implementation gets a full test suite validating:
 ### Integration Tests
 
 - Server integration tests pass against Common backends (namespace change only)
-- WinForms tests pass with JsonSingleFileBackend producing identical output
+- Existing server test suite verifies backward compatibility of moved backends
+
 
 ### Property Tests (FsCheck 2.16.6)
 
-Round-trip fidelity tests using generated entity data migrated through backend pairs.
+Property tests validate universal invariants across all backends using generated entity data.
 
 ## Correctness Properties
 
-### Property 1: Round-Trip Fidelity
+*A property is a characteristic or behavior that should hold true across all valid executions of a system — essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees.*
 
-**Validates: Requirements 11.1**
+### Property 1: Entity Count Preservation
 
-For any valid PlayerRoot P and any two backends A and B: `write(A, P) -> read(A) -> write(B) -> read(B) -> write(A) -> read(A) == P`. Tested via FsCheck generators producing random PlayerRoot instances, migrating through all backend pairs, and asserting structural equality.
+*For any* set of N entities written to any backend via Upsert operations, reading all entities of that type SHALL return exactly N entities with the same UUIDs.
 
-### Property 2: Entity Count Preservation
+**Validates: Requirements 2.1, 2.8, 3.1, 4.1, 4.2, 5.1, 6.1**
 
-**Validates: Requirements 10.6**
+### Property 2: Concurrent Read Safety
 
-For any set of N entities written to a backend, reading all entities of that type returns exactly N entities with the same UUIDs.
+*For any* backend and any set of stored entities, multiple concurrent read operations SHALL return consistent results (no partial reads, no corruption). Writes are serialized by the caller.
 
-### Property 3: Concurrent Read Safety
+**Validates: Requirements 4.4, 4.8**
 
-**Validates: Requirements 14.6**
+### Property 3: Atomic Write Safety
 
-Multiple concurrent reads on any backend return consistent results (no partial reads, no corruption). Writes are serialized by the caller (PlayerContext lock).
+*For any* backend, if a write operation fails (exception thrown), the previous state SHALL be preserved. JSON backends use temp-file strategy, SQLite and Postgres use transaction rollback, DynamoDB item writes are individually atomic.
 
-### Property 4: Atomic Write Safety
+**Validates: Requirements 2.3, 3.4, 4.8, 10.3, 10.4**
 
-**Validates: Requirements 14.5, 14.6**
-
-If a write fails (exception thrown), the previous state is preserved. JSON backends use temp-file strategy, SQLite and Postgres use transaction rollback, DynamoDB item writes are individually atomic.
-
-### Property 5: Null vs Empty Preservation
-
-**Validates: Requirements 11.4**
-
-If an entity collection property is null in source, it remains null after round-trip. If it is an empty array, it remains empty array (not collapsed to null).
-
-### Property 6: Decimal Precision Preservation
-
-**Validates: Requirements 11.2**
-
-Banking balance values (decimal) maintain full precision through all backends. Tested with values like 123456789.123456789012345678m.
-
-### Property 7: DateTime Tick Precision
-
-**Validates: Requirements 11.3**
-
-DateTime values maintain tick-level precision through all backends. JSON uses ISO 8601 with 7 fractional digits. SQLite stores as ISO 8601 text. Postgres uses timestamp with time zone.
 
 ## NuGet Dependencies (New for Common)
 
@@ -569,30 +697,27 @@ OE2EmpireTracker.Common/
     PostgresBackend.cs
     StorageBackendFactory.cs
     StorageBackendConfig.cs
-    MigrationService.cs
   Models/
     ServerModels.cs
     PermissionModels.cs
-  Services/
-    PlayerContext.cs      (modified)
-    EmpireContext.cs      (modified)
-    PreferencesStore.cs   (modified)
-OE2EmpireTracker.Server/
-  Storage/                (DELETED)
-  Program.cs              (modified)
 ```
+
 
 ## Design Decisions
 
 | Decision | Rationale |
 |---|---|
-| JSON-blob storage in SQLite (not normalized tables) | Avoids schema-per-entity complexity. Entity models change frequently. No SQLite schema migration for model changes. |
-| No ORM | netstandard2.0 constraint eliminates EF Core. Raw ADO.NET via Microsoft.Data.Sqlite is simpler. |
+| Fully normalized relational schema in SQLite/Postgres | Enables field-level queries, indexing, partial updates, and proper SQL operations. Avoids opaque JSON blobs that defeat the purpose of using a relational database. |
+| GlobalData table keeps JSON blob | BaselineRoot is large, rarely queried by field, and changes as a unit. Normalizing it would create 100+ tables for marginal benefit. |
+| No ORM | netstandard2.0 constraint eliminates EF Core. Raw ADO.NET via Microsoft.Data.Sqlite is simpler and gives full control over schema. |
 | Full-file rewrite for JsonSingleFile | Inherent limitation of the format. Per-entity Upsert still rewrites the file but the interface is uniform. |
 | Server-global entities throw on JsonSingleFile | Desktop does not need them. Keeps single-file format unchanged. |
 | All backends in Common (not separate assemblies) | Simpler build, single dependency graph. Size is acceptable. |
-| Async interface with sync callers | PlayerContext uses .GetAwaiter().GetResult() for now. Future async refactoring possible without interface changes. |
 | Polly retry only for Postgres | Network backends benefit from retry. File-based and in-process SQLite do not have transient network failures. |
+| CountDownTime inlined as prefixed columns | Value object with no independent identity. Separate table adds JOIN overhead for no benefit. |
+| ItemBag uses ParentItemUUID self-reference | Handles recursive crate-contents nesting without infinite child tables. |
+| Child tables use CASCADE DELETE | Simplifies parent deletion — no manual cleanup of child rows needed. |
+| Numbered schema migrations | Each DTO field addition becomes an ALTER TABLE + default value. Predictable, auditable, reversible. |
 
 ## Implementation Phases
 
@@ -606,20 +731,3 @@ OE2EmpireTracker.Server/
 6. Update Server to reference Common backends (namespace changes)
 7. Delete Server local Storage/IStorageBackend.cs
 8. All existing Server tests pass
-
-### Phase 2: PlayerContext and EmpireContext Refactoring
-
-1. Add SetStorageBackend/LoadAsync/MarkDirty to PlayerContext
-2. Modify WriteContext to delegate to backend with dirty tracking
-3. Preserve backward-compatible parameterless constructor
-4. Add SetStorageBackend/LoadAsync to EmpireContext
-5. Add StorageBackendType/StoragePath to PreferencesStore
-6. Update Desktop startup to use StorageBackendFactory
-7. All existing WinForms tests pass
-
-### Phase 3: Migration Service and Property Tests
-
-1. Create MigrationService with progress reporting and count validation
-2. Create FsCheck property tests for round-trip fidelity
-3. Create property tests for decimal precision, DateTime precision, null-vs-empty
-4. End-to-end integration test: migrate through all backend pairs and assert equality
