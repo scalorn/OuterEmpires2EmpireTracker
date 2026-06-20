@@ -532,6 +532,464 @@ CREATE TABLE ShipComponents (
 -- (ParentType='ShipCargo' or 'ShipHopper', ParentUUID=Ship.UUID)
 
 -- ═══════════════════════════════════════════════════════════════════
+-- SHIP TEMPLATE
+-- ═══════════════════════════════════════════════════════════════════
+CREATE TABLE ShipTemplates (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    HullBlueprintUUID TEXT NOT NULL DEFAULT ''
+);
+
+-- ShipTemplate child: Components (List<ShipComponentSlot>)
+CREATE TABLE ShipTemplateComponents (
+    ShipTemplateUUID TEXT NOT NULL REFERENCES ShipTemplates(UUID) ON DELETE CASCADE,
+    Sequence INTEGER NOT NULL,
+    SlotType TEXT NOT NULL DEFAULT '',
+    SlotIndex INTEGER NOT NULL DEFAULT 0,
+    BlueprintUUID TEXT NOT NULL DEFAULT '',
+    CurrentHP INTEGER NOT NULL DEFAULT 0,
+    MaxHP INTEGER NOT NULL DEFAULT 0,
+    MaxRepairPercent REAL NOT NULL DEFAULT 0,
+    PRIMARY KEY (ShipTemplateUUID, Sequence)
+);
+
+-- ═══════════════════════════════════════════════════════════════════
+-- PLAYER PROFILE
+-- ═══════════════════════════════════════════════════════════════════
+CREATE TABLE PlayerProfiles (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    Faction TEXT NOT NULL DEFAULT '',
+    FactionUUID TEXT NOT NULL DEFAULT '',
+    TotalCredits REAL NOT NULL DEFAULT 0,
+    SkillPoints INTEGER NOT NULL DEFAULT 0,
+    CitizenId TEXT NOT NULL DEFAULT '',
+    RegistrationDate TEXT NOT NULL DEFAULT '',
+    ActiveTime TEXT NOT NULL DEFAULT '',
+    CharacterId INTEGER NOT NULL DEFAULT 0,
+    FirstName TEXT NOT NULL DEFAULT '',
+    LastName TEXT NOT NULL DEFAULT '',
+    ActiveTimeMinutes INTEGER NOT NULL DEFAULT 0,
+    -- Inline nested: Public rank
+    PublicRank_Rank INTEGER NOT NULL DEFAULT 0,
+    PublicRank_CurrentXp INTEGER NOT NULL DEFAULT 0,
+    PublicRank_XpToNextLevel INTEGER NOT NULL DEFAULT 0,
+    PublicRank_RankName TEXT NOT NULL DEFAULT '',
+    -- Inline nested: Private rank
+    PrivateRank_Rank INTEGER NOT NULL DEFAULT 0,
+    PrivateRank_CurrentXp INTEGER NOT NULL DEFAULT 0,
+    PrivateRank_XpToNextLevel INTEGER NOT NULL DEFAULT 0,
+    PrivateRank_RankName TEXT NOT NULL DEFAULT '',
+    -- Inline nested: Military rank
+    MilitaryRank_Rank INTEGER NOT NULL DEFAULT 0,
+    MilitaryRank_CurrentXp INTEGER NOT NULL DEFAULT 0,
+    MilitaryRank_XpToNextLevel INTEGER NOT NULL DEFAULT 0,
+    MilitaryRank_RankName TEXT NOT NULL DEFAULT ''
+);
+
+-- PlayerProfile child: Skills (Dictionary<string, PlayerSkill>)
+CREATE TABLE PlayerSkills (
+    PlayerUUID TEXT NOT NULL REFERENCES PlayerProfiles(UUID) ON DELETE CASCADE,
+    SkillName TEXT NOT NULL,
+    Level INTEGER NOT NULL DEFAULT 0,
+    TrainingStarted INTEGER NOT NULL DEFAULT 0,
+    SkillId INTEGER NOT NULL DEFAULT 0,
+    EffectDescription TEXT NOT NULL DEFAULT '',
+    AmountPerLevel INTEGER NOT NULL DEFAULT 0,
+    SkillGroupName TEXT NOT NULL DEFAULT '',
+    IsUnlocked INTEGER NOT NULL DEFAULT 0,
+    TargetLevel INTEGER NOT NULL DEFAULT 0,
+    TrainingPercentageComplete INTEGER NOT NULL DEFAULT 0,
+    RemainingMinutes INTEGER NOT NULL DEFAULT 0,
+    -- Inline nested: CompletionTime
+    Completion_StartTime TEXT,
+    Completion_RepeatIntervalSeconds INTEGER,
+    Completion_IsRepeating INTEGER,
+    PRIMARY KEY (PlayerUUID, SkillName)
+);
+
+-- ═══════════════════════════════════════════════════════════════════
+-- MAIL
+-- ═══════════════════════════════════════════════════════════════════
+CREATE TABLE MailMessages (
+    MailId INTEGER PRIMARY KEY,
+    CharacterIdFrom INTEGER NOT NULL DEFAULT 0,
+    FromName TEXT NOT NULL DEFAULT '',
+    CharacterIdTo INTEGER NOT NULL DEFAULT 0,
+    ToName TEXT NOT NULL DEFAULT '',
+    SentTime TEXT NOT NULL DEFAULT '',
+    Subject TEXT NOT NULL DEFAULT '',
+    MailRead INTEGER NOT NULL DEFAULT 0,
+    MailType TEXT,
+    MailContent TEXT NOT NULL DEFAULT '',
+    LocalRead INTEGER NOT NULL DEFAULT 0
+);
+
+-- ═══════════════════════════════════════════════════════════════════
+-- BANKING
+-- ═══════════════════════════════════════════════════════════════════
+CREATE TABLE BankingTransactions (
+    UUID TEXT PRIMARY KEY,
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    TransactionDateTime TEXT NOT NULL DEFAULT '',
+    CreditChange REAL NOT NULL DEFAULT 0,
+    OldBalance REAL NOT NULL DEFAULT 0,
+    NewBalance REAL NOT NULL DEFAULT 0,
+    TransactionType INTEGER NOT NULL DEFAULT 0,
+    Detail TEXT NOT NULL DEFAULT '',
+    CharacterId INTEGER,
+    SystemObjectId INTEGER,
+    SystemId INTEGER,
+    IsManualEntry INTEGER NOT NULL DEFAULT 0
+);
+
+-- ═══════════════════════════════════════════════════════════════════
+-- MARKET
+-- ═══════════════════════════════════════════════════════════════════
+CREATE TABLE MarketListings (
+    UUID TEXT PRIMARY KEY,
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    StationUUID TEXT NOT NULL DEFAULT '',
+    ItemType TEXT NOT NULL DEFAULT 'None',
+    ItemReferenceID TEXT NOT NULL DEFAULT '',
+    ItemName TEXT NOT NULL DEFAULT '',
+    Quantity INTEGER NOT NULL DEFAULT 0,
+    PricePerUnit REAL NOT NULL DEFAULT 0,
+    CurrentHP INTEGER NOT NULL DEFAULT 0,
+    MaxHP INTEGER NOT NULL DEFAULT 0,
+    MaxRepairPercent REAL NOT NULL DEFAULT 0,
+    MarketId INTEGER,
+    BuyOrder INTEGER NOT NULL DEFAULT 0,
+    BaseItemTypeID TEXT NOT NULL DEFAULT '',
+    ResourcePurity TEXT NOT NULL DEFAULT '',
+    GameTypeCode TEXT NOT NULL DEFAULT '',
+    GameTypeId INTEGER,
+    GameSubTypeId TEXT NOT NULL DEFAULT '',
+    LocationName TEXT NOT NULL DEFAULT '',
+    SystemId INTEGER,
+    SystemName TEXT NOT NULL DEFAULT '',
+    GameLocationId INTEGER,
+    AmountRemaining INTEGER,
+    AmountOriginal INTEGER,
+    AmountSold INTEGER,
+    EscrowRemaining REAL,
+    SalesTaxEstimate REAL,
+    ValueRemaining REAL,
+    Evolution INTEGER,
+    HealthPercentage REAL,
+    SellerName TEXT NOT NULL DEFAULT '',
+    SellerFactionTag TEXT NOT NULL DEFAULT '',
+    PrivateSale INTEGER NOT NULL DEFAULT 0,
+    BuyerName TEXT NOT NULL DEFAULT '',
+    BuyerFactionTag TEXT NOT NULL DEFAULT '',
+    IsOutbid INTEGER NOT NULL DEFAULT 0,
+    IsUndercut INTEGER NOT NULL DEFAULT 0,
+    PlacedDT TEXT NOT NULL DEFAULT '',
+    ExpiresDT TEXT NOT NULL DEFAULT '',
+    CompetitorForMarketId INTEGER,
+    SyncedByCharacterUUID TEXT NOT NULL DEFAULT '',
+    SyncTimestamp TEXT NOT NULL DEFAULT ''
+);
+
+CREATE TABLE MarketTransactions (
+    UUID TEXT PRIMARY KEY,
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    TransactionType TEXT NOT NULL DEFAULT 'Buy',
+    ItemType TEXT NOT NULL DEFAULT 'None',
+    ItemReferenceID TEXT NOT NULL DEFAULT '',
+    ItemName TEXT NOT NULL DEFAULT '',
+    Quantity INTEGER NOT NULL DEFAULT 0,
+    PricePerUnit REAL NOT NULL DEFAULT 0,
+    TotalPrice REAL NOT NULL DEFAULT 0,
+    Counterparty TEXT NOT NULL DEFAULT '',
+    CounterpartyFaction TEXT NOT NULL DEFAULT '',
+    StationUUID TEXT NOT NULL DEFAULT '',
+    Timestamp TEXT NOT NULL DEFAULT '',
+    Notes TEXT NOT NULL DEFAULT '',
+    ListingUUID TEXT NOT NULL DEFAULT '',
+    CurrentHP INTEGER NOT NULL DEFAULT 0,
+    MaxHP INTEGER NOT NULL DEFAULT 0,
+    MaxRepairPercent REAL NOT NULL DEFAULT 0
+);
+
+-- ═══════════════════════════════════════════════════════════════════
+-- DELIVERY PLAN
+-- ═══════════════════════════════════════════════════════════════════
+CREATE TABLE DeliveryPlans (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    RouteUUID TEXT NOT NULL DEFAULT '',
+    ShipUUID TEXT NOT NULL DEFAULT '',
+    Completed INTEGER NOT NULL DEFAULT 0
+);
+
+-- DeliveryPlan child: Stops (List<DeliveryPlanStop>)
+CREATE TABLE DeliveryPlanStops (
+    DeliveryPlanUUID TEXT NOT NULL REFERENCES DeliveryPlans(UUID) ON DELETE CASCADE,
+    Sequence INTEGER NOT NULL,
+    ColonyUUID TEXT NOT NULL DEFAULT '',
+    StopCompleted INTEGER NOT NULL DEFAULT 0,
+    DestinationType TEXT NOT NULL DEFAULT 'Colony',
+    DestinationUUID TEXT NOT NULL DEFAULT '',
+    PRIMARY KEY (DeliveryPlanUUID, Sequence)
+);
+
+-- DeliveryPlanStop child: DropOff items (List<DeliveryItem>)
+CREATE TABLE DeliveryPlanDropOffs (
+    DeliveryPlanUUID TEXT NOT NULL,
+    StopSequence INTEGER NOT NULL,
+    Sequence INTEGER NOT NULL,
+    ItemType TEXT NOT NULL DEFAULT 'None',
+    BaseItemTypeID TEXT NOT NULL DEFAULT '',
+    Name TEXT NOT NULL DEFAULT '',
+    ResourcePurity TEXT NOT NULL DEFAULT '',
+    Quantity INTEGER NOT NULL DEFAULT 0,
+    Delivered INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (DeliveryPlanUUID, StopSequence, Sequence),
+    FOREIGN KEY (DeliveryPlanUUID, StopSequence) REFERENCES DeliveryPlanStops(DeliveryPlanUUID, Sequence) ON DELETE CASCADE
+);
+
+-- DeliveryPlanStop child: PickUp items (List<DeliveryItem>)
+CREATE TABLE DeliveryPlanPickUps (
+    DeliveryPlanUUID TEXT NOT NULL,
+    StopSequence INTEGER NOT NULL,
+    Sequence INTEGER NOT NULL,
+    ItemType TEXT NOT NULL DEFAULT 'None',
+    BaseItemTypeID TEXT NOT NULL DEFAULT '',
+    Name TEXT NOT NULL DEFAULT '',
+    ResourcePurity TEXT NOT NULL DEFAULT '',
+    Quantity INTEGER NOT NULL DEFAULT 0,
+    Delivered INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (DeliveryPlanUUID, StopSequence, Sequence),
+    FOREIGN KEY (DeliveryPlanUUID, StopSequence) REFERENCES DeliveryPlanStops(DeliveryPlanUUID, Sequence) ON DELETE CASCADE
+);
+
+-- ═══════════════════════════════════════════════════════════════════
+-- PRICING PLAN
+-- ═══════════════════════════════════════════════════════════════════
+CREATE TABLE PricingPlans (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT '',
+    FixedCostPerItem REAL NOT NULL DEFAULT 0,
+    HourlyCostRate REAL NOT NULL DEFAULT 0
+);
+
+-- PricingPlan child: ResourcePrices (Dictionary<string, decimal>)
+CREATE TABLE PricingPlanPrices (
+    PricingPlanUUID TEXT NOT NULL REFERENCES PricingPlans(UUID) ON DELETE CASCADE,
+    ResourceKey TEXT NOT NULL,
+    Price REAL NOT NULL DEFAULT 0,
+    PRIMARY KEY (PricingPlanUUID, ResourceKey)
+);
+
+-- ═══════════════════════════════════════════════════════════════════
+-- BUILD PLAN
+-- ═══════════════════════════════════════════════════════════════════
+CREATE TABLE BuildPlans (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT '',
+    DeliveryPlanUUID TEXT NOT NULL DEFAULT '',
+    IsActive INTEGER NOT NULL DEFAULT 1
+);
+
+-- BuildPlan child: Items (List<BuildItem>)
+CREATE TABLE BuildItems (
+    UUID TEXT PRIMARY KEY,
+    BuildPlanUUID TEXT NOT NULL REFERENCES BuildPlans(UUID) ON DELETE CASCADE,
+    Sequence INTEGER NOT NULL DEFAULT 0,
+    ItemType TEXT NOT NULL DEFAULT 'Manufactory',
+    Status TEXT NOT NULL DEFAULT 'Staged',
+    BlueprintUUID TEXT NOT NULL DEFAULT '',
+    ItemName TEXT NOT NULL DEFAULT '',
+    CommodityName TEXT NOT NULL DEFAULT '',
+    ShipTemplateUUID TEXT NOT NULL DEFAULT '',
+    Quantity INTEGER NOT NULL DEFAULT 0,
+    BuildLocationType TEXT NOT NULL DEFAULT 'Colony',
+    BuildLocationUUID TEXT NOT NULL DEFAULT '',
+    StructureUUID TEXT NOT NULL DEFAULT '',
+    AssemblyLocationType TEXT NOT NULL DEFAULT 'Station',
+    AssemblyLocationUUID TEXT NOT NULL DEFAULT '',
+    ParentBuildItemUUID TEXT NOT NULL DEFAULT '',
+    Recipient TEXT NOT NULL DEFAULT '',
+    Notes TEXT NOT NULL DEFAULT '',
+    SequenceInStructure INTEGER NOT NULL DEFAULT 0,
+    DependsOnUUID TEXT NOT NULL DEFAULT '',
+    MiningResource TEXT NOT NULL DEFAULT '',
+    MiningSurveyUUID TEXT NOT NULL DEFAULT '',
+    RefiningResource TEXT NOT NULL DEFAULT '',
+    RefiningPurity TEXT NOT NULL DEFAULT ''
+);
+
+-- ═══════════════════════════════════════════════════════════════════
+-- STOCK PLAN
+-- ═══════════════════════════════════════════════════════════════════
+CREATE TABLE StockPlans (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    ReplenishmentBuildPlanUUID TEXT NOT NULL DEFAULT '',
+    IsActive INTEGER NOT NULL DEFAULT 1
+);
+
+-- StockPlan child: Targets (List<StockTarget>)
+CREATE TABLE StockTargets (
+    UUID TEXT PRIMARY KEY,
+    StockPlanUUID TEXT NOT NULL REFERENCES StockPlans(UUID) ON DELETE CASCADE,
+    Sequence INTEGER NOT NULL DEFAULT 0,
+    ItemType TEXT NOT NULL DEFAULT 'None',
+    ItemReferenceID TEXT NOT NULL DEFAULT '',
+    ItemName TEXT NOT NULL DEFAULT '',
+    ShipTemplateUUID TEXT NOT NULL DEFAULT '',
+    TargetQuantity INTEGER NOT NULL DEFAULT 0,
+    CriticalThreshold INTEGER NOT NULL DEFAULT 0,
+    Scope TEXT NOT NULL DEFAULT 'EmpireWide',
+    LocationUUID TEXT NOT NULL DEFAULT ''
+);
+
+-- ═══════════════════════════════════════════════════════════════════
+-- STOCK PROFILE
+-- ═══════════════════════════════════════════════════════════════════
+CREATE TABLE StockProfiles (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    IsActive INTEGER NOT NULL DEFAULT 1
+);
+
+-- StockProfile child: Entries (List<StockProfileEntry>)
+CREATE TABLE StockProfileEntries (
+    StockProfileUUID TEXT NOT NULL REFERENCES StockProfiles(UUID) ON DELETE CASCADE,
+    Sequence INTEGER NOT NULL,
+    GroupID TEXT NOT NULL DEFAULT '',
+    StockPlanUUID TEXT NOT NULL DEFAULT '',
+    PRIMARY KEY (StockProfileUUID, Sequence)
+);
+
+-- ═══════════════════════════════════════════════════════════════════
+-- SUPPLY CHAIN
+-- ═══════════════════════════════════════════════════════════════════
+CREATE TABLE SupplyChains (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    IsActive INTEGER NOT NULL DEFAULT 1
+);
+
+-- SupplyChain child: Stages (List<SupplyChainStage>)
+CREATE TABLE SupplyChainStages (
+    SupplyChainUUID TEXT NOT NULL REFERENCES SupplyChains(UUID) ON DELETE CASCADE,
+    Sequence INTEGER NOT NULL,
+    StageType TEXT NOT NULL DEFAULT 'Mine',
+    LocationType TEXT NOT NULL DEFAULT 'Colony',
+    LocationUUID TEXT NOT NULL DEFAULT '',
+    ResourceName TEXT NOT NULL DEFAULT '',
+    ResourcePurity TEXT NOT NULL DEFAULT '',
+    AccumulationThreshold INTEGER NOT NULL DEFAULT 0,
+    ProductionRatePerHour REAL NOT NULL DEFAULT 0,
+    DeliveryRouteUUID TEXT NOT NULL DEFAULT '',
+    PRIMARY KEY (SupplyChainUUID, Sequence)
+);
+
+-- ═══════════════════════════════════════════════════════════════════
+-- ASTEROID
+-- ═══════════════════════════════════════════════════════════════════
+CREATE TABLE Asteroids (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    SystemName TEXT NOT NULL DEFAULT '',
+    SystemObjectId INTEGER NOT NULL DEFAULT 0
+);
+
+-- Asteroid child: Reserves (List<AsteroidReserve>)
+CREATE TABLE AsteroidReserves (
+    AsteroidUUID TEXT NOT NULL REFERENCES Asteroids(UUID) ON DELETE CASCADE,
+    Sequence INTEGER NOT NULL,
+    ResourceName TEXT NOT NULL DEFAULT '',
+    Purity TEXT NOT NULL DEFAULT '',
+    MaxReserve INTEGER NOT NULL DEFAULT 0,
+    CurrentReserve INTEGER NOT NULL DEFAULT 0,
+    ResetTimestamp TEXT NOT NULL DEFAULT '',
+    PRIMARY KEY (AsteroidUUID, Sequence)
+);
+
+-- ═══════════════════════════════════════════════════════════════════
+-- STATION
+-- ═══════════════════════════════════════════════════════════════════
+CREATE TABLE Stations (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    StationType TEXT NOT NULL DEFAULT 'Station',
+    Ownership TEXT NOT NULL DEFAULT 'Government',
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    GameLocationId INTEGER,
+    SystemName TEXT NOT NULL DEFAULT '',
+    SystemId INTEGER,
+    StationBlueprintUUID TEXT NOT NULL DEFAULT '',
+    HullCurrentHP INTEGER NOT NULL DEFAULT 0,
+    HullMaxHP INTEGER NOT NULL DEFAULT 0,
+    HullMaxRepairPercent REAL NOT NULL DEFAULT 0
+);
+
+-- Station child: Components (List<ShipComponentSlot>)
+CREATE TABLE StationComponents (
+    StationUUID TEXT NOT NULL REFERENCES Stations(UUID) ON DELETE CASCADE,
+    Sequence INTEGER NOT NULL,
+    SlotType TEXT NOT NULL DEFAULT '',
+    SlotIndex INTEGER NOT NULL DEFAULT 0,
+    BlueprintUUID TEXT NOT NULL DEFAULT '',
+    CurrentHP INTEGER NOT NULL DEFAULT 0,
+    MaxHP INTEGER NOT NULL DEFAULT 0,
+    MaxRepairPercent REAL NOT NULL DEFAULT 0,
+    PRIMARY KEY (StationUUID, Sequence)
+);
+
+-- Station child: Holds (Dictionary<string, ItemBag>) uses unified Items table
+-- ParentType='StationHold', ParentUUID=Station.UUID (hold name stored in a separate column)
+-- Station child: MunitionsHold uses unified Items table
+-- ParentType='StationMunitions', ParentUUID=Station.UUID
+
+-- ═══════════════════════════════════════════════════════════════════
+-- FACTION (player-side)
+-- ═══════════════════════════════════════════════════════════════════
+CREATE TABLE Factions (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT ''
+);
+
+-- ═══════════════════════════════════════════════════════════════════
+-- EXTERNAL CHARACTER
+-- ═══════════════════════════════════════════════════════════════════
+CREATE TABLE ExternalCharacters (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    FactionUUID TEXT NOT NULL DEFAULT ''
+);
+
+-- ═══════════════════════════════════════════════════════════════════
+-- WAREHOUSE OVERFLOW RULE
+-- ═══════════════════════════════════════════════════════════════════
+CREATE TABLE WarehouseOverflowRules (
+    UUID TEXT PRIMARY KEY,
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    IsActive INTEGER NOT NULL DEFAULT 1,
+    ColonyUUID TEXT NOT NULL DEFAULT '',
+    ResourceName TEXT NOT NULL DEFAULT '',
+    ResourcePurity TEXT NOT NULL DEFAULT '',
+    RuleType TEXT NOT NULL DEFAULT 'SpecificResource',
+    TriggerThreshold REAL NOT NULL DEFAULT 0,
+    DestinationType TEXT NOT NULL DEFAULT 'Station',
+    DestinationUUID TEXT NOT NULL DEFAULT '',
+    DeliveryRouteUUID TEXT NOT NULL DEFAULT ''
+);
+
+-- ═══════════════════════════════════════════════════════════════════
 -- SERVER-GLOBAL ENTITIES
 -- ═══════════════════════════════════════════════════════════════════
 CREATE TABLE ServerFactions (
