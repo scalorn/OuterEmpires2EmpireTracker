@@ -695,9 +695,17 @@ CREATE TABLE IF NOT EXISTS StarSystems (
     Name TEXT NOT NULL DEFAULT '',
     X REAL NOT NULL DEFAULT 0,
     Y REAL NOT NULL DEFAULT 0,
-    Z REAL NOT NULL DEFAULT 0,
-    Faction TEXT NOT NULL DEFAULT '',
-    Security TEXT NOT NULL DEFAULT ''
+    Quadrant INTEGER NOT NULL DEFAULT 0,
+    Sector INTEGER NOT NULL DEFAULT 0,
+    Region INTEGER NOT NULL DEFAULT 0,
+    Locality INTEGER NOT NULL DEFAULT 0,
+    SpectralClass TEXT NOT NULL DEFAULT '',
+    FactionId INTEGER NOT NULL DEFAULT 0,
+    FactionName TEXT NOT NULL DEFAULT '',
+    FactionColor TEXT NOT NULL DEFAULT '',
+    HasOrbital INTEGER NOT NULL DEFAULT 0,
+    HasSpaceport INTEGER NOT NULL DEFAULT 0,
+    HasStarbase INTEGER NOT NULL DEFAULT 0
 );
 
 -- SHARING RULES
@@ -1040,115 +1048,592 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
         }
 
         // ═══════════════════════════════════════════════════════════
-        // Server Factions (stubs — Phase 6)
+        // Server Factions
         // ═══════════════════════════════════════════════════════════
 
         /// <inheritdoc/>
-        public Task<ServerFaction> GetFactionAsync(string uuid) => throw new NotImplementedException();
+        public Task<ServerFaction> GetFactionAsync(string uuid)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT UUID, Name, Description, Metadata_LastModifiedUtc, Metadata_ModifiedByTokenId FROM ServerFactions WHERE UUID = @uuid";
+                cmd.Parameters.AddWithValue("@uuid", uuid);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        var faction = ReadServerFaction(reader);
+                        faction.LeaderCharacterUUIDs = ReadFactionLeaders(conn, uuid);
+                        return Task.FromResult(faction);
+                    }
+                }
+            }
+
+            return Task.FromResult<ServerFaction>(null);
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<ServerFaction>> GetAllFactionsAsync() => throw new NotImplementedException();
+        public Task<IReadOnlyList<ServerFaction>> GetAllFactionsAsync()
+        {
+            var results = new List<ServerFaction>();
+            using (var conn = OpenConnection())
+            {
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT UUID, Name, Description, Metadata_LastModifiedUtc, Metadata_ModifiedByTokenId FROM ServerFactions";
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            results.Add(ReadServerFaction(reader));
+                        }
+                    }
+                }
+
+                foreach (var faction in results)
+                {
+                    faction.LeaderCharacterUUIDs = ReadFactionLeaders(conn, faction.UUID);
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<ServerFaction>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertFactionAsync(ServerFaction faction) => throw new NotImplementedException();
+        public Task UpsertFactionAsync(ServerFaction faction)
+        {
+            using (var conn = OpenConnection())
+            using (var tx = conn.BeginTransaction())
+            {
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.Transaction = tx;
+                    cmd.CommandText = @"INSERT OR REPLACE INTO ServerFactions (UUID, Name, Description, Metadata_LastModifiedUtc, Metadata_ModifiedByTokenId)
+                                       VALUES (@uuid, @name, @desc, @modUtc, @modBy)";
+                    cmd.Parameters.AddWithValue("@uuid", faction.UUID);
+                    cmd.Parameters.AddWithValue("@name", faction.Name ?? string.Empty);
+                    cmd.Parameters.AddWithValue("@desc", faction.Description ?? string.Empty);
+                    cmd.Parameters.AddWithValue("@modUtc", faction.Metadata?.LastModifiedUtc.ToString("O") ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@modBy", (object)faction.Metadata?.ModifiedByTokenId ?? DBNull.Value);
+                    cmd.ExecuteNonQuery();
+                }
+
+                using (var delCmd = conn.CreateCommand())
+                {
+                    delCmd.Transaction = tx;
+                    delCmd.CommandText = "DELETE FROM ServerFactionLeaders WHERE FactionUUID = @uuid";
+                    delCmd.Parameters.AddWithValue("@uuid", faction.UUID);
+                    delCmd.ExecuteNonQuery();
+                }
+
+                if (faction.LeaderCharacterUUIDs != null)
+                {
+                    foreach (var leaderUUID in faction.LeaderCharacterUUIDs)
+                    {
+                        using (var insCmd = conn.CreateCommand())
+                        {
+                            insCmd.Transaction = tx;
+                            insCmd.CommandText = "INSERT INTO ServerFactionLeaders (FactionUUID, CharacterUUID) VALUES (@fid, @cid)";
+                            insCmd.Parameters.AddWithValue("@fid", faction.UUID);
+                            insCmd.Parameters.AddWithValue("@cid", leaderUUID);
+                            insCmd.ExecuteNonQuery();
+                        }
+                    }
+                }
+
+                tx.Commit();
+            }
+
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteFactionAsync(string uuid) => throw new NotImplementedException();
+        public Task DeleteFactionAsync(string uuid)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "DELETE FROM ServerFactions WHERE UUID = @uuid";
+                cmd.Parameters.AddWithValue("@uuid", uuid);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
 
         // ═══════════════════════════════════════════════════════════
-        // Server Characters (stubs — Phase 6)
+        // Server Characters
         // ═══════════════════════════════════════════════════════════
 
         /// <inheritdoc/>
-        public Task<ServerCharacter> GetCharacterAsync(string uuid) => throw new NotImplementedException();
+        public Task<ServerCharacter> GetCharacterAsync(string uuid)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT UUID, Name, FactionUUID, Metadata_LastModifiedUtc, Metadata_ModifiedByTokenId FROM ServerCharacters WHERE UUID = @uuid";
+                cmd.Parameters.AddWithValue("@uuid", uuid);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return Task.FromResult(ReadServerCharacter(reader));
+                    }
+                }
+            }
+
+            return Task.FromResult<ServerCharacter>(null);
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<ServerCharacter>> GetAllCharactersAsync() => throw new NotImplementedException();
+        public Task<IReadOnlyList<ServerCharacter>> GetAllCharactersAsync()
+        {
+            var results = new List<ServerCharacter>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT UUID, Name, FactionUUID, Metadata_LastModifiedUtc, Metadata_ModifiedByTokenId FROM ServerCharacters";
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(ReadServerCharacter(reader));
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<ServerCharacter>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertCharacterAsync(ServerCharacter character) => throw new NotImplementedException();
+        public Task UpsertCharacterAsync(ServerCharacter character)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = @"INSERT OR REPLACE INTO ServerCharacters (UUID, Name, FactionUUID, Metadata_LastModifiedUtc, Metadata_ModifiedByTokenId)
+                                   VALUES (@uuid, @name, @factionUUID, @modUtc, @modBy)";
+                cmd.Parameters.AddWithValue("@uuid", character.UUID);
+                cmd.Parameters.AddWithValue("@name", character.Name ?? string.Empty);
+                cmd.Parameters.AddWithValue("@factionUUID", (object)character.FactionUUID ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@modUtc", character.Metadata?.LastModifiedUtc.ToString("O") ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@modBy", (object)character.Metadata?.ModifiedByTokenId ?? DBNull.Value);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteCharacterAsync(string uuid) => throw new NotImplementedException();
+        public Task DeleteCharacterAsync(string uuid)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "DELETE FROM ServerCharacters WHERE UUID = @uuid";
+                cmd.Parameters.AddWithValue("@uuid", uuid);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
 
         // ═══════════════════════════════════════════════════════════
-        // Global Data (stubs — Phase 6)
-        // ═══════════════════════════════════════════════════════════
-
-        /// <inheritdoc/>
-        public Task<string> GetGlobalDataAsync(string dataType) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task UpsertGlobalDataAsync(string dataType, string json) => throw new NotImplementedException();
-
-        // ═══════════════════════════════════════════════════════════
-        // Star Systems (stubs — Phase 6)
-        // ═══════════════════════════════════════════════════════════
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<StarSystem>> GetAllStarSystemsAsync() => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task UpsertStarSystemsAsync(IReadOnlyList<StarSystem> systems) => throw new NotImplementedException();
-
-        // ═══════════════════════════════════════════════════════════
-        // Colony Summaries (stubs — Phase 6)
-        // ═══════════════════════════════════════════════════════════
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<ColonySummary>> GetColonySummariesForSystemAsync(int systemId) => throw new NotImplementedException();
-
-        // ═══════════════════════════════════════════════════════════
-        // API Tokens (stubs — Phase 6)
-        // ═══════════════════════════════════════════════════════════
-
-        /// <inheritdoc/>
-        public Task<ApiToken> FindTokenByHashAsync(string tokenHash) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<ApiToken>> GetAllTokensAsync() => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task UpsertTokenAsync(ApiToken token) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task DeleteTokenAsync(string id) => throw new NotImplementedException();
-
-        // ═══════════════════════════════════════════════════════════
-        // Membership Actions (stubs — Phase 6)
-        // ═══════════════════════════════════════════════════════════
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<MembershipAction>> GetFactionActionsAsync(string factionUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task UpsertMembershipActionAsync(MembershipAction action) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task DeleteMembershipActionAsync(string id) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task DeleteExpiredActionsAsync(DateTime cutoff) => throw new NotImplementedException();
-
-        // ═══════════════════════════════════════════════════════════
-        // Sharing Rules (stubs — Phase 6)
-        // ═══════════════════════════════════════════════════════════
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<SharingRule>> GetSharingRulesForCharacterAsync(string characterUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task UpsertSharingRulesAsync(string characterUUID, IReadOnlyList<SharingRule> rules) => throw new NotImplementedException();
-
-        // ═══════════════════════════════════════════════════════════
-        // Character Preferences (stubs — Phase 6)
+        // Global Data
         // ═══════════════════════════════════════════════════════════
 
         /// <inheritdoc/>
-        public Task<CharacterPreferences> GetCharacterPreferencesAsync(string characterUUID) => throw new NotImplementedException();
+        public Task<string> GetGlobalDataAsync(string dataType)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT Value FROM _metadata WHERE Key = @key";
+                cmd.Parameters.AddWithValue("@key", "global_" + dataType);
+                var result = cmd.ExecuteScalar();
+                if (result == null || result == DBNull.Value)
+                {
+                    return Task.FromResult<string>(null);
+                }
+
+                return Task.FromResult(result.ToString());
+            }
+        }
 
         /// <inheritdoc/>
-        public Task UpsertCharacterPreferencesAsync(CharacterPreferences prefs) => throw new NotImplementedException();
+        public Task UpsertGlobalDataAsync(string dataType, string json)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "INSERT OR REPLACE INTO _metadata (Key, Value) VALUES (@key, @val)";
+                cmd.Parameters.AddWithValue("@key", "global_" + dataType);
+                cmd.Parameters.AddWithValue("@val", json ?? string.Empty);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // Star Systems
+        // ═══════════════════════════════════════════════════════════
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<StarSystem>> GetAllStarSystemsAsync()
+        {
+            var results = new List<StarSystem>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT Id, Name, X, Y, Quadrant, Sector, Region, Locality, SpectralClass, FactionId, FactionName, FactionColor, HasOrbital, HasSpaceport, HasStarbase FROM StarSystems";
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(ReadStarSystem(reader));
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<StarSystem>>(results);
+        }
+
+        /// <inheritdoc/>
+        public Task UpsertStarSystemsAsync(IReadOnlyList<StarSystem> systems)
+        {
+            using (var conn = OpenConnection())
+            using (var tx = conn.BeginTransaction())
+            {
+                using (var delCmd = conn.CreateCommand())
+                {
+                    delCmd.Transaction = tx;
+                    delCmd.CommandText = "DELETE FROM StarSystems";
+                    delCmd.ExecuteNonQuery();
+                }
+
+                foreach (var system in systems)
+                {
+                    using (var cmd = conn.CreateCommand())
+                    {
+                        cmd.Transaction = tx;
+                        cmd.CommandText = @"INSERT INTO StarSystems (Id, Name, X, Y, Quadrant, Sector, Region, Locality, SpectralClass, FactionId, FactionName, FactionColor, HasOrbital, HasSpaceport, HasStarbase)
+                                           VALUES (@id, @name, @x, @y, @quadrant, @sector, @region, @locality, @spectral, @factionId, @factionName, @factionColor, @hasOrbital, @hasSpaceport, @hasStarbase)";
+                        cmd.Parameters.AddWithValue("@id", system.Id);
+                        cmd.Parameters.AddWithValue("@name", system.Name ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@x", (double)system.X);
+                        cmd.Parameters.AddWithValue("@y", (double)system.Y);
+                        cmd.Parameters.AddWithValue("@quadrant", system.Quadrant);
+                        cmd.Parameters.AddWithValue("@sector", system.Sector);
+                        cmd.Parameters.AddWithValue("@region", system.Region);
+                        cmd.Parameters.AddWithValue("@locality", system.Locality);
+                        cmd.Parameters.AddWithValue("@spectral", system.SpectralClass ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@factionId", system.FactionId);
+                        cmd.Parameters.AddWithValue("@factionName", system.FactionName ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@factionColor", system.FactionColor ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@hasOrbital", system.HasOrbital ? 1 : 0);
+                        cmd.Parameters.AddWithValue("@hasSpaceport", system.HasSpaceport ? 1 : 0);
+                        cmd.Parameters.AddWithValue("@hasStarbase", system.HasStarbase ? 1 : 0);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                tx.Commit();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // Colony Summaries
+        // ═══════════════════════════════════════════════════════════
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<ColonySummary>> GetColonySummariesForSystemAsync(int systemId)
+        {
+            var results = new List<ColonySummary>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT ColonyName, ColonySize, PlanetName FROM Colonies WHERE SystemId = @systemId";
+                cmd.Parameters.AddWithValue("@systemId", systemId);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(new ColonySummary
+                        {
+                            ColonyName = reader.IsDBNull(0) ? string.Empty : reader.GetString(0),
+                            Size = reader.GetInt32(1),
+                            PlanetName = reader.IsDBNull(2) ? string.Empty : reader.GetString(2),
+                        });
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<ColonySummary>>(results);
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // API Tokens
+        // ═══════════════════════════════════════════════════════════
+
+        /// <inheritdoc/>
+        public Task<ApiToken> FindTokenByHashAsync(string tokenHash)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT Id, TokenHash, CharacterUUID, Role, FactionUUID, CreatedUtc, LastUsedUtc, IsRevoked, RateLimits_RequestsPerMinute FROM ApiTokens WHERE TokenHash = @hash";
+                cmd.Parameters.AddWithValue("@hash", tokenHash);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return Task.FromResult(ReadApiToken(reader));
+                    }
+                }
+            }
+
+            return Task.FromResult<ApiToken>(null);
+        }
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<ApiToken>> GetAllTokensAsync()
+        {
+            var results = new List<ApiToken>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT Id, TokenHash, CharacterUUID, Role, FactionUUID, CreatedUtc, LastUsedUtc, IsRevoked, RateLimits_RequestsPerMinute FROM ApiTokens";
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(ReadApiToken(reader));
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<ApiToken>>(results);
+        }
+
+        /// <inheritdoc/>
+        public Task UpsertTokenAsync(ApiToken token)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = @"INSERT OR REPLACE INTO ApiTokens (Id, TokenHash, CharacterUUID, Role, FactionUUID, CreatedUtc, LastUsedUtc, IsRevoked, RateLimits_RequestsPerMinute)
+                                   VALUES (@id, @hash, @charUUID, @role, @factionUUID, @created, @lastUsed, @revoked, @rpm)";
+                cmd.Parameters.AddWithValue("@id", token.Id);
+                cmd.Parameters.AddWithValue("@hash", token.TokenHash ?? string.Empty);
+                cmd.Parameters.AddWithValue("@charUUID", (object)token.CharacterUUID ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@role", (int)token.Role);
+                cmd.Parameters.AddWithValue("@factionUUID", (object)token.FactionUUID ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@created", token.CreatedUtc.ToString("O"));
+                cmd.Parameters.AddWithValue("@lastUsed", token.LastUsedUtc.HasValue ? (object)token.LastUsedUtc.Value.ToString("O") : DBNull.Value);
+                cmd.Parameters.AddWithValue("@revoked", token.IsRevoked ? 1 : 0);
+                cmd.Parameters.AddWithValue("@rpm", token.RateLimits?.RequestsPerMinute ?? 300);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task DeleteTokenAsync(string id)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "DELETE FROM ApiTokens WHERE Id = @id";
+                cmd.Parameters.AddWithValue("@id", id);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // Membership Actions
+        // ═══════════════════════════════════════════════════════════
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<MembershipAction>> GetFactionActionsAsync(string factionUUID)
+        {
+            var results = new List<MembershipAction>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT Id, FactionUUID, CharacterUUID, Type, CreatedUtc, ExpiresUtc FROM MembershipActions WHERE FactionUUID = @fid";
+                cmd.Parameters.AddWithValue("@fid", factionUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(ReadMembershipAction(reader));
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<MembershipAction>>(results);
+        }
+
+        /// <inheritdoc/>
+        public Task UpsertMembershipActionAsync(MembershipAction action)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = @"INSERT OR REPLACE INTO MembershipActions (Id, FactionUUID, CharacterUUID, Type, CreatedUtc, ExpiresUtc)
+                                   VALUES (@id, @fid, @cid, @type, @created, @expires)";
+                cmd.Parameters.AddWithValue("@id", action.Id);
+                cmd.Parameters.AddWithValue("@fid", action.FactionUUID ?? string.Empty);
+                cmd.Parameters.AddWithValue("@cid", action.CharacterUUID ?? string.Empty);
+                cmd.Parameters.AddWithValue("@type", (int)action.Type);
+                cmd.Parameters.AddWithValue("@created", action.CreatedUtc.ToString("O"));
+                cmd.Parameters.AddWithValue("@expires", action.ExpiresUtc.ToString("O"));
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task DeleteMembershipActionAsync(string id)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "DELETE FROM MembershipActions WHERE Id = @id";
+                cmd.Parameters.AddWithValue("@id", id);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task DeleteExpiredActionsAsync(DateTime cutoff)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "DELETE FROM MembershipActions WHERE ExpiresUtc < @cutoff";
+                cmd.Parameters.AddWithValue("@cutoff", cutoff.ToString("O"));
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // Sharing Rules
+        // ═══════════════════════════════════════════════════════════
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<SharingRule>> GetSharingRulesForCharacterAsync(string characterUUID)
+        {
+            var results = new List<SharingRule>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT Id, OwnerCharacterUUID, TargetUUID, TargetType, DataType, EntityUUID FROM SharingRules WHERE OwnerCharacterUUID = @cid";
+                cmd.Parameters.AddWithValue("@cid", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(ReadSharingRule(reader));
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<SharingRule>>(results);
+        }
+
+        /// <inheritdoc/>
+        public Task UpsertSharingRulesAsync(string characterUUID, IReadOnlyList<SharingRule> rules)
+        {
+            using (var conn = OpenConnection())
+            using (var tx = conn.BeginTransaction())
+            {
+                using (var delCmd = conn.CreateCommand())
+                {
+                    delCmd.Transaction = tx;
+                    delCmd.CommandText = "DELETE FROM SharingRules WHERE OwnerCharacterUUID = @cid";
+                    delCmd.Parameters.AddWithValue("@cid", characterUUID);
+                    delCmd.ExecuteNonQuery();
+                }
+
+                foreach (var rule in rules)
+                {
+                    using (var cmd = conn.CreateCommand())
+                    {
+                        cmd.Transaction = tx;
+                        cmd.CommandText = @"INSERT INTO SharingRules (Id, OwnerCharacterUUID, TargetUUID, TargetType, DataType, EntityUUID)
+                                           VALUES (@id, @cid, @target, @targetType, @dataType, @entityUUID)";
+                        cmd.Parameters.AddWithValue("@id", rule.Id);
+                        cmd.Parameters.AddWithValue("@cid", characterUUID);
+                        cmd.Parameters.AddWithValue("@target", rule.TargetUUID ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@targetType", (int)rule.TargetType);
+                        cmd.Parameters.AddWithValue("@dataType", (object)rule.DataType ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@entityUUID", (object)rule.EntityUUID ?? DBNull.Value);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                tx.Commit();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // Character Preferences
+        // ═══════════════════════════════════════════════════════════
+
+        /// <inheritdoc/>
+        public Task<CharacterPreferences> GetCharacterPreferencesAsync(string characterUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT CharacterUUID, ServerProcessing FROM CharacterPreferences WHERE CharacterUUID = @cid";
+                cmd.Parameters.AddWithValue("@cid", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return Task.FromResult(new CharacterPreferences
+                        {
+                            CharacterUUID = reader.GetString(0),
+                            ServerProcessing = reader.GetInt32(1) != 0,
+                        });
+                    }
+                }
+            }
+
+            return Task.FromResult<CharacterPreferences>(null);
+        }
+
+        /// <inheritdoc/>
+        public Task UpsertCharacterPreferencesAsync(CharacterPreferences prefs)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = @"INSERT OR REPLACE INTO CharacterPreferences (CharacterUUID, ServerProcessing)
+                                   VALUES (@cid, @processing)";
+                cmd.Parameters.AddWithValue("@cid", prefs.CharacterUUID);
+                cmd.Parameters.AddWithValue("@processing", prefs.ServerProcessing ? 1 : 0);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
 
         // ═══════════════════════════════════════════════════════════
         // Per-Character Entity CRUD — Colony (stubs — Phase 6)
@@ -1738,6 +2223,163 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
         // ═══════════════════════════════════════════════════════════
         // Private Helpers
         // ═══════════════════════════════════════════════════════════
+
+        private static ServerFaction ReadServerFaction(SqliteDataReader reader)
+        {
+            var faction = new ServerFaction
+            {
+                UUID = reader.GetString(0),
+                Name = reader.GetString(1),
+                Description = reader.GetString(2),
+                Metadata = new EntityMetadata(),
+            };
+
+            if (!reader.IsDBNull(3))
+            {
+                faction.Metadata.LastModifiedUtc = DateTime.Parse(reader.GetString(3));
+            }
+
+            if (!reader.IsDBNull(4))
+            {
+                faction.Metadata.ModifiedByTokenId = reader.GetString(4);
+            }
+
+            return faction;
+        }
+
+        private static List<string> ReadFactionLeaders(SqliteConnection conn, string factionUUID)
+        {
+            var leaders = new List<string>();
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT CharacterUUID FROM ServerFactionLeaders WHERE FactionUUID = @fid";
+                cmd.Parameters.AddWithValue("@fid", factionUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        leaders.Add(reader.GetString(0));
+                    }
+                }
+            }
+
+            return leaders;
+        }
+
+        private static ServerCharacter ReadServerCharacter(SqliteDataReader reader)
+        {
+            var character = new ServerCharacter
+            {
+                UUID = reader.GetString(0),
+                Name = reader.GetString(1),
+                Metadata = new EntityMetadata(),
+            };
+
+            if (!reader.IsDBNull(2))
+            {
+                character.FactionUUID = reader.GetString(2);
+            }
+
+            if (!reader.IsDBNull(3))
+            {
+                character.Metadata.LastModifiedUtc = DateTime.Parse(reader.GetString(3));
+            }
+
+            if (!reader.IsDBNull(4))
+            {
+                character.Metadata.ModifiedByTokenId = reader.GetString(4);
+            }
+
+            return character;
+        }
+
+        private static ApiToken ReadApiToken(SqliteDataReader reader)
+        {
+            var token = new ApiToken
+            {
+                Id = reader.GetString(0),
+                TokenHash = reader.GetString(1),
+                Role = (TokenRole)reader.GetInt32(3),
+                CreatedUtc = DateTime.Parse(reader.GetString(5)),
+                IsRevoked = reader.GetInt32(7) != 0,
+                RateLimits = new RateLimitConfig { RequestsPerMinute = reader.GetInt32(8) },
+            };
+
+            if (!reader.IsDBNull(2))
+            {
+                token.CharacterUUID = reader.GetString(2);
+            }
+
+            if (!reader.IsDBNull(4))
+            {
+                token.FactionUUID = reader.GetString(4);
+            }
+
+            if (!reader.IsDBNull(6))
+            {
+                token.LastUsedUtc = DateTime.Parse(reader.GetString(6));
+            }
+
+            return token;
+        }
+
+        private static MembershipAction ReadMembershipAction(SqliteDataReader reader)
+        {
+            return new MembershipAction
+            {
+                Id = reader.GetString(0),
+                FactionUUID = reader.GetString(1),
+                CharacterUUID = reader.GetString(2),
+                Type = (MembershipActionType)reader.GetInt32(3),
+                CreatedUtc = DateTime.Parse(reader.GetString(4)),
+                ExpiresUtc = DateTime.Parse(reader.GetString(5)),
+            };
+        }
+
+        private static SharingRule ReadSharingRule(SqliteDataReader reader)
+        {
+            var rule = new SharingRule
+            {
+                Id = reader.GetString(0),
+                OwnerCharacterUUID = reader.GetString(1),
+                TargetUUID = reader.GetString(2),
+                TargetType = (SharingTargetType)reader.GetInt32(3),
+            };
+
+            if (!reader.IsDBNull(4))
+            {
+                rule.DataType = reader.GetString(4);
+            }
+
+            if (!reader.IsDBNull(5))
+            {
+                rule.EntityUUID = reader.GetString(5);
+            }
+
+            return rule;
+        }
+
+        private static StarSystem ReadStarSystem(SqliteDataReader reader)
+        {
+            return new StarSystem
+            {
+                Id = reader.GetInt32(0),
+                Name = reader.GetString(1),
+                X = (decimal)reader.GetDouble(2),
+                Y = (decimal)reader.GetDouble(3),
+                Quadrant = reader.GetInt32(4),
+                Sector = reader.GetInt32(5),
+                Region = reader.GetInt32(6),
+                Locality = reader.GetInt32(7),
+                SpectralClass = reader.GetString(8),
+                FactionId = reader.GetInt32(9),
+                FactionName = reader.GetString(10),
+                FactionColor = reader.GetString(11),
+                HasOrbital = reader.GetInt32(12) != 0,
+                HasSpaceport = reader.GetInt32(13) != 0,
+                HasStarbase = reader.GetInt32(14) != 0,
+            };
+        }
 
         private static int GetSchemaVersion(SqliteConnection conn)
         {

@@ -134,7 +134,7 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Output: OE2EmpireTracker.Common/Storage/JsonSingleFileBackend.cs (complete)
     - Verification: getDiagnostics — compiles cleanly
 
-- [ ] 5. SQLite Backend — Full Relational Rewrite (Schema DDL)
+- [x] 5. SQLite Backend — Full Relational Rewrite (Schema DDL)
   - [x] 5.1 Create SqliteBackend scaffolding: class, constructor, InitializeAsync, OpenConnection, WAL pragma, _metadata table
     - Satisfies: Req 4, Criteria 5-6; Req 9, Criterion 1
     - Inputs: design.md (SqliteBackend section), Common/Interfaces/IStorageBackend.cs
@@ -185,14 +185,14 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Inputs: design.md (permission entity schemas)
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (schema string extended)
     - Verification: getDiagnostics — compiles cleanly
-  - [ ] 5.11 SQLite schema DDL: IntelComments, IntelCommentFactionShares, PermissionAuditEntries, BaselineGameConstants, BlueprintTypes, BlueprintTypeProperties, BlueprintTypeResearchableProperties, ShipClasses, TechLevels, Commodities, CommodityResources, RefiningRecipes, ResearchTimes, PropertyTypeDefinitions tables
+  - [x] 5.11 SQLite schema DDL: IntelComments, IntelCommentFactionShares, PermissionAuditEntries, BaselineGameConstants, BlueprintTypes, BlueprintTypeProperties, BlueprintTypeResearchableProperties, ShipClasses, TechLevels, Commodities, CommodityResources, RefiningRecipes, ResearchTimes, PropertyTypeDefinitions tables
     - Satisfies: Req 4, Criteria 2, 10; Req 1, Criterion 9
     - Inputs: design.md (intel + audit + baseline schemas)
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (schema complete)
     - Verification: getDiagnostics — compiles cleanly
 
 - [ ] 6. SQLite Backend — CRUD Implementation
-  - [~] 6.1 SQLite CRUD: Server-global entities (ServerFaction, ServerCharacter, ApiToken, MembershipAction, StarSystem, SharingRules, CharacterPreferences, ColonySummary)
+  - [-] 6.1 SQLite CRUD: Server-global entities (ServerFaction, ServerCharacter, ApiToken, MembershipAction, StarSystem, SharingRules, CharacterPreferences, ColonySummary)
     - Satisfies: Req 4, Criteria 1, 9-10; Req 1, Criterion 3
     - Inputs: Common/Storage/SqliteBackend.cs (from 5.11), IStorageBackend interface
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (extended — server-global CRUD methods)
