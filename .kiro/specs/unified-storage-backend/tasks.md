@@ -288,7 +288,7 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Inputs: Common/Storage/JsonMultiFileBackend.cs
     - Output: OE2EmpireTracker.Tests/Storage/JsonMultiFileBackendTests.cs
     - Verification: vstest.console — new tests pass
-  - [-] 9.5 Write unit tests for StorageBackendFactory: valid types create correct backend, invalid type throws, InitializeAsync called
+  - [x] 9.5 Write unit tests for StorageBackendFactory: valid types create correct backend, invalid type throws, InitializeAsync called
     - Satisfies: Req 8, Criteria 1-4
     - Inputs: Common/Storage/StorageBackendFactory.cs
     - Output: OE2EmpireTracker.Tests/Storage/StorageBackendFactoryTests.cs
