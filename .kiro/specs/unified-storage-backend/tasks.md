@@ -278,22 +278,22 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Inputs: Common/Storage/JsonSingleFileBackend.cs, existing PlayerData.json
     - Output: OE2EmpireTracker.Tests/Storage/JsonSingleFileBackendCrudTests.cs
     - Verification: vstest.console — new tests pass
-  - [-] 9.3 Write unit tests for JsonSingleFileBackend: DataVersion migration on load
+  - [x] 9.3 Write unit tests for JsonSingleFileBackend: DataVersion migration on load
     - Satisfies: Req 2, Criteria 9-10; Req 11, Criterion 6
     - Inputs: Common/Storage/JsonSingleFileBackend.cs
     - Output: OE2EmpireTracker.Tests/Storage/JsonSingleFileBackendMigrationTests.cs
     - Verification: vstest.console — new tests pass
-  - [-] 9.4 Write unit tests for JsonMultiFileBackend: initialization, CRUD, missing file, malformed JSON, directory structure
+  - [x] 9.4 Write unit tests for JsonMultiFileBackend: initialization, CRUD, missing file, malformed JSON, directory structure
     - Satisfies: Req 3, Criteria 1-2, 4, 6-8; Req 11, Criterion 4
     - Inputs: Common/Storage/JsonMultiFileBackend.cs
     - Output: OE2EmpireTracker.Tests/Storage/JsonMultiFileBackendTests.cs
     - Verification: vstest.console — new tests pass
-  - [~] 9.5 Write unit tests for StorageBackendFactory: valid types create correct backend, invalid type throws, InitializeAsync called
+  - [-] 9.5 Write unit tests for StorageBackendFactory: valid types create correct backend, invalid type throws, InitializeAsync called
     - Satisfies: Req 8, Criteria 1-4
     - Inputs: Common/Storage/StorageBackendFactory.cs
     - Output: OE2EmpireTracker.Tests/Storage/StorageBackendFactoryTests.cs
     - Verification: vstest.console — new tests pass
-  - [~] 9.6 Write unit tests for StorageExceptions: constructor parameters, properties set correctly
+  - [-] 9.6 Write unit tests for StorageExceptions: constructor parameters, properties set correctly
     - Satisfies: Req 10, Criteria 1-4
     - Inputs: Common/Interfaces/StorageExceptions.cs
     - Output: OE2EmpireTracker.Tests/Storage/StorageExceptionTests.cs

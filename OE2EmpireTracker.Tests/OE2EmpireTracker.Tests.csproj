@@ -608,6 +608,8 @@
     <Compile Include="Storage\JsonSingleFileBackendCrudTests.cs" />
     <Compile Include="Storage\JsonSingleFileBackendMigrationTests.cs" />
     <Compile Include="Storage\JsonMultiFileBackendTests.cs" />
+    <Compile Include="Storage\StorageExceptionTests.cs" />
+    <Compile Include="Storage\StorageBackendFactoryTests.cs" />
     <Compile Include="TestHelper.cs" />
     <Compile Include="GlobalSetup.cs" />
     <None Include="app.config" />
