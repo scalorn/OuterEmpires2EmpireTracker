@@ -123,66 +123,6 @@ namespace OE2EmpireTracker.Common.Storage
             };
         }
 
-
-        // ═══════════════════════════════════════════════════════════
-        // Private Helpers — Load / Save
-        // ═══════════════════════════════════════════════════════════
-
-        private T LoadRoot<T>(string filePath)
-            where T : new()
-        {
-            if (!File.Exists(filePath))
-            {
-                Log.Debug("File not found, initializing empty root: {0}", filePath);
-                return new T();
-            }
-
-            string content = File.ReadAllText(filePath);
-
-            if (string.IsNullOrWhiteSpace(content))
-            {
-                Log.Debug("File is empty, initializing empty root: {0}", filePath);
-                return new T();
-            }
-
-            try
-            {
-                T result = JsonConvert.DeserializeObject<T>(content, JsonSettings.SerializerSettings);
-                return result ?? new T();
-            }
-            catch (JsonReaderException ex)
-            {
-                throw new StorageLoadException(
-                    "JsonSingleFile",
-                    filePath,
-                    $"Malformed JSON in file: {filePath}",
-                    ex);
-            }
-        }
-
-        private void SavePlayerData()
-        {
-            lock (_writeLock)
-            {
-                PlayerRoot sorted = SerializationSorter.SortPlayerRoot(_playerRoot);
-                string json = JsonConvert.SerializeObject(sorted, JsonSettings.SerializerSettings);
-                SafeFileWriter.WriteAllText(_playerDataPath, json);
-                Log.Debug("Player data saved to {0}", _playerDataPath);
-            }
-        }
-
-        private void SaveBaselineData()
-        {
-            lock (_writeLock)
-            {
-                BaselineRoot sorted = SerializationSorter.SortBaselineRoot(_baselineRoot);
-                string json = JsonConvert.SerializeObject(sorted, JsonSettings.SerializerSettings);
-                SafeFileWriter.WriteAllText(_baselineDataPath, json);
-                Log.Debug("Baseline data saved to {0}", _baselineDataPath);
-            }
-        }
-
-
         // ═══════════════════════════════════════════════════════════
         // Server-Global Entities — NotSupported (WinForms does not use these)
         // ═══════════════════════════════════════════════════════════
@@ -261,7 +201,6 @@ namespace OE2EmpireTracker.Common.Storage
 
         /// <inheritdoc/>
         public Task UpsertCharacterPreferencesAsync(CharacterPreferences prefs) => throw new NotSupportedException(NotSupportedMessage);
-
 
         // ═══════════════════════════════════════════════════════════
         // Per-Character Entity CRUD
@@ -1300,7 +1239,6 @@ namespace OE2EmpireTracker.Common.Storage
             return Task.CompletedTask;
         }
 
-
         // ═══════════════════════════════════════════════════════════
         // Faction Permission Entities — NotSupported
         // ═══════════════════════════════════════════════════════════
@@ -1370,7 +1308,6 @@ namespace OE2EmpireTracker.Common.Storage
 
         /// <inheritdoc/>
         public Task RemoveFactionMemberCapabilityAsync(string factionUUID, string characterUUID, string capabilityUUID) => throw new NotSupportedException(NotSupportedMessage);
-
 
         // ═══════════════════════════════════════════════════════════
         // Character Permission Entities — NotSupported
@@ -1442,7 +1379,6 @@ namespace OE2EmpireTracker.Common.Storage
         /// <inheritdoc/>
         public Task RemoveCharacterGranteeCapabilityAsync(string ownerCharacterUUID, string granteeUUID, string capabilityUUID) => throw new NotSupportedException(NotSupportedMessage);
 
-
         // ═══════════════════════════════════════════════════════════
         // Intel — NotSupported
         // ═══════════════════════════════════════════════════════════
@@ -1483,7 +1419,6 @@ namespace OE2EmpireTracker.Common.Storage
 
         /// <inheritdoc/>
         public Task DeleteExpiredAuditEntriesAsync(DateTime cutoff) => throw new NotSupportedException(NotSupportedMessage);
-
 
         // ═══════════════════════════════════════════════════════════
         // Baseline / Global Lookup Data
@@ -1606,6 +1541,64 @@ namespace OE2EmpireTracker.Common.Storage
             _baselineRoot.PropertyType = definitions.ToArray();
             SaveBaselineData();
             return Task.CompletedTask;
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // Private Helpers — Load / Save
+        // ═══════════════════════════════════════════════════════════
+
+        private T LoadRoot<T>(string filePath)
+            where T : new()
+        {
+            if (!File.Exists(filePath))
+            {
+                Log.Debug("File not found, initializing empty root: {0}", filePath);
+                return new T();
+            }
+
+            string content = File.ReadAllText(filePath);
+
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                Log.Debug("File is empty, initializing empty root: {0}", filePath);
+                return new T();
+            }
+
+            try
+            {
+                T result = JsonConvert.DeserializeObject<T>(content, JsonSettings.SerializerSettings);
+                return result ?? new T();
+            }
+            catch (JsonReaderException ex)
+            {
+                throw new StorageLoadException(
+                    "JsonSingleFile",
+                    filePath,
+                    $"Malformed JSON in file: {filePath}",
+                    ex);
+            }
+        }
+
+        private void SavePlayerData()
+        {
+            lock (_writeLock)
+            {
+                PlayerRoot sorted = SerializationSorter.SortPlayerRoot(_playerRoot);
+                string json = JsonConvert.SerializeObject(sorted, JsonSettings.SerializerSettings);
+                SafeFileWriter.WriteAllText(_playerDataPath, json);
+                Log.Debug("Player data saved to {0}", _playerDataPath);
+            }
+        }
+
+        private void SaveBaselineData()
+        {
+            lock (_writeLock)
+            {
+                BaselineRoot sorted = SerializationSorter.SortBaselineRoot(_baselineRoot);
+                string json = JsonConvert.SerializeObject(sorted, JsonSettings.SerializerSettings);
+                SafeFileWriter.WriteAllText(_baselineDataPath, json);
+                Log.Debug("Baseline data saved to {0}", _baselineDataPath);
+            }
         }
     }
 }

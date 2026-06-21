@@ -192,12 +192,12 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Verification: getDiagnostics — compiles cleanly
 
 - [ ] 6. SQLite Backend — CRUD Implementation
-  - [-] 6.1 SQLite CRUD: Server-global entities (ServerFaction, ServerCharacter, ApiToken, MembershipAction, StarSystem, SharingRules, CharacterPreferences, ColonySummary)
+  - [x] 6.1 SQLite CRUD: Server-global entities (ServerFaction, ServerCharacter, ApiToken, MembershipAction, StarSystem, SharingRules, CharacterPreferences, ColonySummary)
     - Satisfies: Req 4, Criteria 1, 9-10; Req 1, Criterion 3
     - Inputs: Common/Storage/SqliteBackend.cs (from 5.11), IStorageBackend interface
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (extended — server-global CRUD methods)
     - Verification: getDiagnostics — compiles cleanly
-  - [~] 6.2 SQLite CRUD: Colony (with Structures child table, ColonyStructureProperties, ColonyStructureWorkers, Items)
+  - [-] 6.2 SQLite CRUD: Colony (with Structures child table, ColonyStructureProperties, ColonyStructureWorkers, Items)
     - Satisfies: Req 4, Criteria 1, 9-14
     - Inputs: Common/Storage/SqliteBackend.cs, Colony model, ColonyStructure model
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (extended — Colony Get/GetAll/Upsert/Delete with child tables)

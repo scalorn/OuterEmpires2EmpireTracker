@@ -24,17 +24,6 @@ namespace OE2EmpireTracker.Common.Storage
     {
         private const int CurrentSchemaVersion = 1;
 
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-
-        /// <summary>
-        /// Schema DDL concatenated from tasks 5.2-5.11. ExecuteSchema runs this
-        /// against a fresh database.
-        /// </summary>
-        private static readonly string SchemaDdl = ColonySchema + ItemsBlueprintSchema + SurveyPlayerProfileSchema + DeliveryRouteShipSchema + DeliveryPlanMarketSchema + PricingBuildStockSchema + RemainingPlayerEntitySchema + ServerGlobalSchema + PermissionSchema + IntelAuditBaselineSchema;
-
-        private readonly string _connectionString;
-        private readonly string _databasePath;
-
         private const string ColonySchema = @"
 CREATE TABLE IF NOT EXISTS Colonies (
     UUID TEXT PRIMARY KEY,
@@ -974,6 +963,17 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
 );
 ";
 
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
+        /// <summary>
+        /// Schema DDL concatenated from tasks 5.2-5.11. ExecuteSchema runs this
+        /// against a fresh database.
+        /// </summary>
+        private static readonly string SchemaDdl = ColonySchema + ItemsBlueprintSchema + SurveyPlayerProfileSchema + DeliveryRouteShipSchema + DeliveryPlanMarketSchema + PricingBuildStockSchema + RemainingPlayerEntitySchema + ServerGlobalSchema + PermissionSchema + IntelAuditBaselineSchema;
+
+        private readonly string _connectionString;
+        private readonly string _databasePath;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SqliteBackend"/> class.
         /// </summary>
@@ -1636,20 +1636,101 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
         }
 
         // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — Colony (stubs — Phase 6)
+        // Per-Character Entity CRUD — Colony
         // ═══════════════════════════════════════════════════════════
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<Colony>> GetAllColoniesAsync(string characterUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<Colony>> GetAllColoniesAsync(string characterUUID)
+        {
+            var results = new List<Colony>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM Colonies WHERE OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(ReadColonyParent(reader));
+                    }
+                }
+
+                foreach (var colony in results)
+                {
+                    colony.Structures = LoadColonyStructures(conn, colony.UUID);
+                    colony.Items = LoadItems(conn, colony.UUID, "Colony");
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<Colony>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task<Colony> GetColonyAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task<Colony> GetColonyAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM Colonies WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        var colony = ReadColonyParent(reader);
+                        colony.Structures = LoadColonyStructures(conn, colony.UUID);
+                        colony.Items = LoadItems(conn, colony.UUID, "Colony");
+                        return Task.FromResult(colony);
+                    }
+                }
+            }
+
+            return Task.FromResult<Colony>(null);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertColonyAsync(string characterUUID, Colony entity) => throw new NotImplementedException();
+        public Task UpsertColonyAsync(string characterUUID, Colony entity)
+        {
+            using (var conn = OpenConnection())
+            using (var tx = conn.BeginTransaction())
+            {
+                UpsertColonyParent(conn, tx, characterUUID, entity);
+                DeleteColonyChildren(conn, tx, entity.UUID);
+                InsertColonyStructures(conn, tx, entity);
+                InsertItems(conn, tx, entity.UUID, "Colony", entity.Items);
+                tx.Commit();
+            }
+
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteColonyAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task DeleteColonyAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            {
+                // Delete items first (polymorphic FK, no CASCADE)
+                using (var delItems = conn.CreateCommand())
+                {
+                    delItems.CommandText = "DELETE FROM Items WHERE ParentUUID = @uuid AND ParentType = 'Colony'";
+                    delItems.Parameters.AddWithValue("@uuid", entityUUID);
+                    delItems.ExecuteNonQuery();
+                }
+
+                // CASCADE handles ColonyStructures, ColonyStructureProperties, ColonyStructureWorkers
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "DELETE FROM Colonies WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                    cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                    cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+
+            return Task.CompletedTask;
+        }
 
         // ═══════════════════════════════════════════════════════════
         // Per-Character Entity CRUD — Blueprint (stubs — Phase 6)
@@ -2223,6 +2304,457 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
         // ═══════════════════════════════════════════════════════════
         // Private Helpers
         // ═══════════════════════════════════════════════════════════
+
+        private static Colony ReadColonyParent(SqliteDataReader reader)
+        {
+            var colony = new Colony
+            {
+                UUID = reader["UUID"] as string,
+                OwnerUUID = reader["OwnerUUID"] as string ?? string.Empty,
+                LegacyUUID = reader["LegacyUUID"] as string,
+                PlanetName = reader["PlanetName"] as string,
+                SystemName = reader["SystemName"] as string ?? string.Empty,
+                ColonyName = reader["ColonyName"] as string,
+                LastImportDateTime = reader["LastImportDateTime"] as string,
+                ColonyId = Convert.ToInt32(reader["ColonyId"]),
+                SystemId = Convert.ToInt32(reader["SystemId"]),
+                ColonySize = Convert.ToInt32(reader["ColonySize"]),
+                Distance = Convert.ToDecimal(reader["Distance"]),
+                SurfaceVariation = Convert.ToInt32(reader["SurfaceVariation"]),
+                AtmosVariation = Convert.ToInt32(reader["AtmosVariation"]),
+                HexValue = reader["HexValue"] as string ?? string.Empty,
+                SystemObjectTypeName = reader["SystemObjectTypeName"] as string ?? string.Empty,
+                ImagePreFix = reader["ImagePreFix"] as string ?? string.Empty,
+                ManufacturingBlocked = Convert.ToInt32(reader["ManufacturingBlocked"]),
+                WorkerCurrentAttitude = Convert.ToInt32(reader["WorkerCurrentAttitude"]),
+                ContentmentIndex = Convert.ToInt32(reader["ContentmentIndex"]),
+                BlueCollarAllocated = Convert.ToInt32(reader["BlueCollarAllocated"]),
+                BlueCollarUnallocated = Convert.ToInt32(reader["BlueCollarUnallocated"]),
+                WhiteCollarAllocated = Convert.ToInt32(reader["WhiteCollarAllocated"]),
+                WhiteCollarUnallocated = Convert.ToInt32(reader["WhiteCollarUnallocated"]),
+                SpecialistAllocated = Convert.ToInt32(reader["SpecialistAllocated"]),
+                SpecialistUnallocated = Convert.ToInt32(reader["SpecialistUnallocated"]),
+                WageLevel = Convert.ToInt32(reader["WageLevel"]),
+            };
+            return colony;
+        }
+
+        private static List<ColonyStructure> LoadColonyStructures(SqliteConnection conn, string colonyUUID)
+        {
+            var structures = new List<ColonyStructure>();
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM ColonyStructures WHERE ColonyUUID = @cid ORDER BY Sequence";
+                cmd.Parameters.AddWithValue("@cid", colonyUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var s = new ColonyStructure
+                        {
+                            UUID = reader["UUID"] as string,
+                            FlatpackBlueprintUUID = reader["FlatpackBlueprintUUID"] as string,
+                            DisplaySequence = Convert.ToInt32(reader["DisplaySequence"]),
+                            BuildingID = Convert.ToInt32(reader["BuildingID"]),
+                            BuildQueueSequence = Convert.ToInt32(reader["BuildQueueSequence"]),
+                            MiningSurvey = reader["MiningSurvey"] as string,
+                            MiningSurveyResource = reader["MiningSurveyResource"] as string,
+                            MiningLeftOvers = Convert.ToDecimal(reader["MiningLeftOvers"]),
+                            RefiningResource = reader["RefiningResource"] as string,
+                            RefiningResourcePurity = reader["RefiningResourcePurity"] as string,
+                            ResearchingBlueprintUUID = reader["ResearchingBlueprintUUID"] as string,
+                            ManufacturingBlueprintUUID = reader["ManufacturingBlueprintUUID"] as string,
+                            ManufacturingCommodityName = reader["ManufacturingCommodityName"] as string,
+                            ManufacturingQuantity = Convert.ToInt32(reader["ManufacturingQuantity"]),
+                            ManufacturingCompleted = Convert.ToInt32(reader["ManufacturingCompleted"]),
+                            StagingResources = Convert.ToInt32(reader["StagingResources"]) != 0,
+                            ColonyBuildingTypeId = Convert.ToInt32(reader["ColonyBuildingTypeId"]),
+                            ResourceId = Convert.ToInt32(reader["ResourceId"]),
+                            ResourceIcon = reader["ResourceIcon"] as string ?? string.Empty,
+                            ManufactureAmountPerRun = Convert.ToInt32(reader["ManufactureAmountPerRun"]),
+                            DurabilityCurrent = Convert.ToDecimal(reader["DurabilityCurrent"]),
+                            DurabilityMax = Convert.ToDecimal(reader["DurabilityMax"]),
+                            WageLevel = Convert.ToInt32(reader["WageLevel"]),
+                        };
+
+                        // BuildCompletionTime
+                        var buildStart = reader["BuildCompletion_StartTime"] as string;
+                        if (buildStart != null)
+                        {
+                            s.BuildCompletionTime = new CountDownTime
+                            {
+                                StartTime = DateTime.Parse(buildStart),
+                                RepeatIntervalSeconds = reader["BuildCompletion_RepeatIntervalSeconds"] == DBNull.Value ? 0 : Convert.ToInt64(reader["BuildCompletion_RepeatIntervalSeconds"]),
+                            };
+                        }
+
+                        // ProcessCompletionTime
+                        var procStart = reader["ProcessCompletion_StartTime"] as string;
+                        if (procStart != null)
+                        {
+                            s.ProcessCompletionTime = new CountDownTime
+                            {
+                                StartTime = DateTime.Parse(procStart),
+                                RepeatIntervalSeconds = reader["ProcessCompletion_RepeatIntervalSeconds"] == DBNull.Value ? 0 : Convert.ToInt64(reader["ProcessCompletion_RepeatIntervalSeconds"]),
+                            };
+                        }
+
+                        // Load Properties and AssignedWorkers
+                        s.Properties = LoadPropertyBag(conn, "ColonyStructureProperties", "StructureUUID", s.UUID);
+                        s.AssignedWorkers = LoadPropertyBag(conn, "ColonyStructureWorkers", "StructureUUID", s.UUID);
+
+                        structures.Add(s);
+                    }
+                }
+            }
+
+            return structures;
+        }
+
+        private static PropertyBag LoadPropertyBag(SqliteConnection conn, string tableName, string fkColumn, string fkValue)
+        {
+            var bag = new PropertyBag();
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = $"SELECT Key, Value FROM {tableName} WHERE {fkColumn} = @fk";
+                cmd.Parameters.AddWithValue("@fk", fkValue);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        bag.Properties[reader.GetString(0)] = reader.GetString(1);
+                    }
+                }
+            }
+
+            return bag;
+        }
+
+        private static ItemBag LoadItems(SqliteConnection conn, string parentUUID, string parentType)
+        {
+            var bag = new ItemBag();
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM Items WHERE ParentUUID = @pid AND ParentType = @pt";
+                cmd.Parameters.AddWithValue("@pid", parentUUID);
+                cmd.Parameters.AddWithValue("@pt", parentType);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var item = new Item
+                        {
+                            UUID = reader["UUID"] as string,
+                            ItemType = Enum.TryParse<ItemType.ItemTypeEnum>(reader["ItemType"] as string, true, out var it) ? it : ItemType.ItemTypeEnum.None,
+                            BaseItemTypeID = reader["BaseItemTypeID"] as string ?? string.Empty,
+                            Name = reader["Name"] as string ?? string.Empty,
+                            NickName = reader["NickName"] as string ?? string.Empty,
+                            Description = reader["Description"] as string ?? string.Empty,
+                            Quantity = Convert.ToInt32(reader["Quantity"]),
+                            ResourcePurity = reader["ResourcePurity"] as string ?? string.Empty,
+                            Volume = Convert.ToDecimal(reader["Volume"]),
+                            CurrentHP = Convert.ToInt32(reader["CurrentHP"]),
+                            MaxHP = Convert.ToInt32(reader["MaxHP"]),
+                            MaxRepairPercent = Convert.ToDecimal(reader["MaxRepairPercent"]),
+                            ShipPartType = reader["ShipPartType"] as string ?? string.Empty,
+                            JobName = reader["JobName"] as string ?? string.Empty,
+                            JobTrack = reader["JobTrack"] as string ?? string.Empty,
+                        };
+
+                        if (reader["Mass"] != DBNull.Value)
+                        {
+                            item.Mass = Convert.ToDecimal(reader["Mass"]);
+                        }
+
+                        if (reader["GameItemId"] != DBNull.Value)
+                        {
+                            item.GameItemId = Convert.ToInt32(reader["GameItemId"]);
+                        }
+
+                        if (reader["JobRef"] != DBNull.Value)
+                        {
+                            item.JobRef = Convert.ToInt32(reader["JobRef"]);
+                        }
+
+                        if (reader["JobDeliveryLoc"] != DBNull.Value)
+                        {
+                            item.JobDeliveryLoc = Convert.ToInt32(reader["JobDeliveryLoc"]);
+                        }
+
+                        if (reader["HealthPercentage"] != DBNull.Value)
+                        {
+                            item.HealthPercentage = Convert.ToDecimal(reader["HealthPercentage"]);
+                        }
+
+                        if (reader["LastRepairHealthPercentage"] != DBNull.Value)
+                        {
+                            item.LastRepairHealthPercentage = Convert.ToDecimal(reader["LastRepairHealthPercentage"]);
+                        }
+
+                        if (reader["Evolution"] != DBNull.Value)
+                        {
+                            item.Evolution = Convert.ToInt32(reader["Evolution"]);
+                        }
+
+                        bag.Items[item.UUID] = item;
+                    }
+                }
+            }
+
+            return bag;
+        }
+
+        private static void UpsertColonyParent(SqliteConnection conn, SqliteTransaction tx, string characterUUID, Colony entity)
+        {
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = @"INSERT OR REPLACE INTO Colonies (
+                    UUID, OwnerUUID, LegacyUUID, PlanetName, SystemName, ColonyName,
+                    LastImportDateTime, ColonyId, SystemId, ColonySize, Distance,
+                    SurfaceVariation, AtmosVariation, HexValue, SystemObjectTypeName,
+                    ImagePreFix, ManufacturingBlocked, WorkerCurrentAttitude, ContentmentIndex,
+                    BlueCollarAllocated, BlueCollarUnallocated, WhiteCollarAllocated,
+                    WhiteCollarUnallocated, SpecialistAllocated, SpecialistUnallocated, WageLevel
+                ) VALUES (
+                    @uuid, @owner, @legacy, @planet, @system, @colName,
+                    @lastImport, @colId, @sysId, @colSize, @distance,
+                    @surfVar, @atmosVar, @hex, @sysObjType,
+                    @imgPre, @mfgBlocked, @attitude, @contentment,
+                    @bcAlloc, @bcUnalloc, @wcAlloc,
+                    @wcUnalloc, @specAlloc, @specUnalloc, @wage
+                )";
+                cmd.Parameters.AddWithValue("@uuid", entity.UUID);
+                cmd.Parameters.AddWithValue("@owner", characterUUID);
+                cmd.Parameters.AddWithValue("@legacy", (object)entity.LegacyUUID ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@planet", (object)entity.PlanetName ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@system", entity.SystemName ?? string.Empty);
+                cmd.Parameters.AddWithValue("@colName", (object)entity.ColonyName ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@lastImport", (object)entity.LastImportDateTime ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@colId", entity.ColonyId);
+                cmd.Parameters.AddWithValue("@sysId", entity.SystemId);
+                cmd.Parameters.AddWithValue("@colSize", entity.ColonySize);
+                cmd.Parameters.AddWithValue("@distance", (double)entity.Distance);
+                cmd.Parameters.AddWithValue("@surfVar", entity.SurfaceVariation);
+                cmd.Parameters.AddWithValue("@atmosVar", entity.AtmosVariation);
+                cmd.Parameters.AddWithValue("@hex", entity.HexValue ?? string.Empty);
+                cmd.Parameters.AddWithValue("@sysObjType", entity.SystemObjectTypeName ?? string.Empty);
+                cmd.Parameters.AddWithValue("@imgPre", entity.ImagePreFix ?? string.Empty);
+                cmd.Parameters.AddWithValue("@mfgBlocked", entity.ManufacturingBlocked);
+                cmd.Parameters.AddWithValue("@attitude", entity.WorkerCurrentAttitude);
+                cmd.Parameters.AddWithValue("@contentment", entity.ContentmentIndex);
+                cmd.Parameters.AddWithValue("@bcAlloc", entity.BlueCollarAllocated);
+                cmd.Parameters.AddWithValue("@bcUnalloc", entity.BlueCollarUnallocated);
+                cmd.Parameters.AddWithValue("@wcAlloc", entity.WhiteCollarAllocated);
+                cmd.Parameters.AddWithValue("@wcUnalloc", entity.WhiteCollarUnallocated);
+                cmd.Parameters.AddWithValue("@specAlloc", entity.SpecialistAllocated);
+                cmd.Parameters.AddWithValue("@specUnalloc", entity.SpecialistUnallocated);
+                cmd.Parameters.AddWithValue("@wage", entity.WageLevel);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        private static void DeleteColonyChildren(SqliteConnection conn, SqliteTransaction tx, string colonyUUID)
+        {
+            // Delete items (polymorphic FK, no CASCADE from Colonies)
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = "DELETE FROM Items WHERE ParentUUID = @uuid AND ParentType = 'Colony'";
+                cmd.Parameters.AddWithValue("@uuid", colonyUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            // Delete structure items
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = @"DELETE FROM Items WHERE ParentType = 'ColonyStructure' AND ParentUUID IN
+                    (SELECT UUID FROM ColonyStructures WHERE ColonyUUID = @uuid)";
+                cmd.Parameters.AddWithValue("@uuid", colonyUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            // CASCADE handles ColonyStructureProperties and ColonyStructureWorkers
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = "DELETE FROM ColonyStructures WHERE ColonyUUID = @uuid";
+                cmd.Parameters.AddWithValue("@uuid", colonyUUID);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        private static void InsertColonyStructures(SqliteConnection conn, SqliteTransaction tx, Colony entity)
+        {
+            for (int i = 0; i < entity.Structures.Count; i++)
+            {
+                var s = entity.Structures[i];
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.Transaction = tx;
+                    cmd.CommandText = @"INSERT INTO ColonyStructures (
+                        UUID, ColonyUUID, Sequence, FlatpackBlueprintUUID, DisplaySequence,
+                        BuildingID, BuildQueueSequence, MiningSurvey, MiningSurveyResource,
+                        MiningLeftOvers, RefiningResource, RefiningResourcePurity,
+                        ResearchingBlueprintUUID, ManufacturingBlueprintUUID,
+                        ManufacturingCommodityName, ManufacturingQuantity, ManufacturingCompleted,
+                        StagingResources, ColonyBuildingTypeId, ResourceId, ResourceIcon,
+                        ManufactureAmountPerRun, DurabilityCurrent, DurabilityMax, WageLevel,
+                        BuildCompletion_StartTime, BuildCompletion_RepeatIntervalSeconds, BuildCompletion_IsRepeating,
+                        ProcessCompletion_StartTime, ProcessCompletion_RepeatIntervalSeconds, ProcessCompletion_IsRepeating
+                    ) VALUES (
+                        @uuid, @colUUID, @seq, @flatpack, @dispSeq,
+                        @buildId, @bqSeq, @minSurvey, @minRes,
+                        @minLeft, @refRes, @refPurity,
+                        @resBp, @mfgBp,
+                        @mfgComm, @mfgQty, @mfgDone,
+                        @staging, @cbTypeId, @resId, @resIcon,
+                        @mfgPerRun, @durCur, @durMax, @wage,
+                        @bcStart, @bcInterval, @bcRepeat,
+                        @pcStart, @pcInterval, @pcRepeat
+                    )";
+                    cmd.Parameters.AddWithValue("@uuid", s.UUID);
+                    cmd.Parameters.AddWithValue("@colUUID", entity.UUID);
+                    cmd.Parameters.AddWithValue("@seq", i);
+                    cmd.Parameters.AddWithValue("@flatpack", (object)s.FlatpackBlueprintUUID ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@dispSeq", s.DisplaySequence);
+                    cmd.Parameters.AddWithValue("@buildId", s.BuildingID);
+                    cmd.Parameters.AddWithValue("@bqSeq", s.BuildQueueSequence);
+                    cmd.Parameters.AddWithValue("@minSurvey", (object)s.MiningSurvey ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@minRes", (object)s.MiningSurveyResource ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@minLeft", (double)s.MiningLeftOvers);
+                    cmd.Parameters.AddWithValue("@refRes", (object)s.RefiningResource ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@refPurity", (object)s.RefiningResourcePurity ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@resBp", (object)s.ResearchingBlueprintUUID ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@mfgBp", (object)s.ManufacturingBlueprintUUID ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@mfgComm", (object)s.ManufacturingCommodityName ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@mfgQty", s.ManufacturingQuantity);
+                    cmd.Parameters.AddWithValue("@mfgDone", s.ManufacturingCompleted);
+                    cmd.Parameters.AddWithValue("@staging", s.StagingResources ? 1 : 0);
+                    cmd.Parameters.AddWithValue("@cbTypeId", s.ColonyBuildingTypeId);
+                    cmd.Parameters.AddWithValue("@resId", s.ResourceId);
+                    cmd.Parameters.AddWithValue("@resIcon", s.ResourceIcon ?? string.Empty);
+                    cmd.Parameters.AddWithValue("@mfgPerRun", s.ManufactureAmountPerRun);
+                    cmd.Parameters.AddWithValue("@durCur", (double)s.DurabilityCurrent);
+                    cmd.Parameters.AddWithValue("@durMax", (double)s.DurabilityMax);
+                    cmd.Parameters.AddWithValue("@wage", s.WageLevel);
+
+                    // BuildCompletionTime
+                    if (s.BuildCompletionTime != null)
+                    {
+                        cmd.Parameters.AddWithValue("@bcStart", s.BuildCompletionTime.StartTime.ToString("O"));
+                        cmd.Parameters.AddWithValue("@bcInterval", s.BuildCompletionTime.RepeatIntervalSeconds);
+                        cmd.Parameters.AddWithValue("@bcRepeat", s.BuildCompletionTime.IsRepeating ? 1 : 0);
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@bcStart", DBNull.Value);
+                        cmd.Parameters.AddWithValue("@bcInterval", DBNull.Value);
+                        cmd.Parameters.AddWithValue("@bcRepeat", DBNull.Value);
+                    }
+
+                    // ProcessCompletionTime
+                    if (s.ProcessCompletionTime != null)
+                    {
+                        cmd.Parameters.AddWithValue("@pcStart", s.ProcessCompletionTime.StartTime.ToString("O"));
+                        cmd.Parameters.AddWithValue("@pcInterval", s.ProcessCompletionTime.RepeatIntervalSeconds);
+                        cmd.Parameters.AddWithValue("@pcRepeat", s.ProcessCompletionTime.IsRepeating ? 1 : 0);
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@pcStart", DBNull.Value);
+                        cmd.Parameters.AddWithValue("@pcInterval", DBNull.Value);
+                        cmd.Parameters.AddWithValue("@pcRepeat", DBNull.Value);
+                    }
+
+                    cmd.ExecuteNonQuery();
+                }
+
+                // Insert properties
+                foreach (var kvp in s.Properties.Properties)
+                {
+                    using (var propCmd = conn.CreateCommand())
+                    {
+                        propCmd.Transaction = tx;
+                        propCmd.CommandText = "INSERT INTO ColonyStructureProperties (StructureUUID, Key, Value) VALUES (@sid, @key, @val)";
+                        propCmd.Parameters.AddWithValue("@sid", s.UUID);
+                        propCmd.Parameters.AddWithValue("@key", kvp.Key);
+                        propCmd.Parameters.AddWithValue("@val", kvp.Value);
+                        propCmd.ExecuteNonQuery();
+                    }
+                }
+
+                // Insert assigned workers
+                foreach (var kvp in s.AssignedWorkers.Properties)
+                {
+                    using (var wCmd = conn.CreateCommand())
+                    {
+                        wCmd.Transaction = tx;
+                        wCmd.CommandText = "INSERT INTO ColonyStructureWorkers (StructureUUID, Key, Value) VALUES (@sid, @key, @val)";
+                        wCmd.Parameters.AddWithValue("@sid", s.UUID);
+                        wCmd.Parameters.AddWithValue("@key", kvp.Key);
+                        wCmd.Parameters.AddWithValue("@val", kvp.Value);
+                        wCmd.ExecuteNonQuery();
+                    }
+                }
+            }
+        }
+
+        private static void InsertItems(SqliteConnection conn, SqliteTransaction tx, string parentUUID, string parentType, ItemBag items)
+        {
+            if (items == null)
+            {
+                return;
+            }
+
+            foreach (var kvp in items.Items)
+            {
+                var item = kvp.Value;
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.Transaction = tx;
+                    cmd.CommandText = @"INSERT INTO Items (
+                        UUID, ParentUUID, ParentType, ItemType, BaseItemTypeID, Name, NickName,
+                        Description, Quantity, ResourcePurity, Volume, CurrentHP, MaxHP,
+                        MaxRepairPercent, Mass, GameItemId, JobRef, JobDeliveryLoc,
+                        HealthPercentage, LastRepairHealthPercentage, Evolution,
+                        ShipPartType, JobName, JobTrack
+                    ) VALUES (
+                        @uuid, @parent, @ptype, @itype, @baseId, @name, @nick,
+                        @desc, @qty, @purity, @vol, @curHp, @maxHp,
+                        @maxRepair, @mass, @gameId, @jobRef, @jobDel,
+                        @health, @lastRepair, @evo,
+                        @shipPart, @jobName, @jobTrack
+                    )";
+                    cmd.Parameters.AddWithValue("@uuid", item.UUID);
+                    cmd.Parameters.AddWithValue("@parent", parentUUID);
+                    cmd.Parameters.AddWithValue("@ptype", parentType);
+                    cmd.Parameters.AddWithValue("@itype", item.ItemType.ToString());
+                    cmd.Parameters.AddWithValue("@baseId", item.BaseItemTypeID ?? string.Empty);
+                    cmd.Parameters.AddWithValue("@name", item.Name ?? string.Empty);
+                    cmd.Parameters.AddWithValue("@nick", item.NickName ?? string.Empty);
+                    cmd.Parameters.AddWithValue("@desc", item.Description ?? string.Empty);
+                    cmd.Parameters.AddWithValue("@qty", item.Quantity);
+                    cmd.Parameters.AddWithValue("@purity", item.ResourcePurity ?? string.Empty);
+                    cmd.Parameters.AddWithValue("@vol", (double)item.Volume);
+                    cmd.Parameters.AddWithValue("@curHp", item.CurrentHP);
+                    cmd.Parameters.AddWithValue("@maxHp", item.MaxHP);
+                    cmd.Parameters.AddWithValue("@maxRepair", (double)item.MaxRepairPercent);
+                    cmd.Parameters.AddWithValue("@mass", item.Mass.HasValue ? (object)(double)item.Mass.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@gameId", item.GameItemId.HasValue ? (object)item.GameItemId.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@jobRef", item.JobRef.HasValue ? (object)item.JobRef.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@jobDel", item.JobDeliveryLoc.HasValue ? (object)item.JobDeliveryLoc.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@health", item.HealthPercentage.HasValue ? (object)(double)item.HealthPercentage.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@lastRepair", item.LastRepairHealthPercentage.HasValue ? (object)(double)item.LastRepairHealthPercentage.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@evo", item.Evolution.HasValue ? (object)item.Evolution.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@shipPart", item.ShipPartType ?? string.Empty);
+                    cmd.Parameters.AddWithValue("@jobName", item.JobName ?? string.Empty);
+                    cmd.Parameters.AddWithValue("@jobTrack", item.JobTrack ?? string.Empty);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
 
         private static ServerFaction ReadServerFaction(SqliteDataReader reader)
         {
