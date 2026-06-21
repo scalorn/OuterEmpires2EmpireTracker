@@ -321,7 +321,7 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Output: OE2EmpireTracker.Tests/Storage/SqliteBackendMigrationTests.cs
     - Verification: vstest.console — new tests pass
 
-- [ ] 11. DynamoDB Backend Unit Tests (DynamoDB Local)
+- [x] 11. DynamoDB Backend Unit Tests (DynamoDB Local)
   - [x] 11.1 Create DynamoDB Local test fixture: start/stop process, table creation/teardown, endpoint configuration
     - Satisfies: Req 5, Criteria 1, 4; design.md (DynamoDB Local test infrastructure)
     - Inputs: design.md (DynamoDB Local config: JDK path, JAR path, port 8111, -inMemory flag)
@@ -337,24 +337,24 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Inputs: Common/Storage/DynamoDbBackend.cs, DynamoDbLocalFixture
     - Output: OE2EmpireTracker.Tests/Storage/DynamoDbBackendGlobalEntityTests.cs
     - Verification: vstest.console — tests pass with DynamoDB Local
-  - [-] 11.4 Write unit tests for DynamoDbBackend: Per-character entity CRUD (Colony, Blueprint, Survey, PlayerProfile, DeliveryRoute, Ship)
+  - [x] 11.4 Write unit tests for DynamoDbBackend: Per-character entity CRUD (Colony, Blueprint, Survey, PlayerProfile, DeliveryRoute, Ship)
     - Satisfies: Req 5, Criteria 1-2
     - Inputs: Common/Storage/DynamoDbBackend.cs, DynamoDbLocalFixture
     - Output: OE2EmpireTracker.Tests/Storage/DynamoDbBackendCharacterEntityTests.cs
     - Verification: vstest.console — tests pass with DynamoDB Local
-  - [-] 11.5 Write unit tests for DynamoDbBackend: error handling (unreachable endpoint throws StorageLoadException/StorageWriteException)
+  - [x] 11.5 Write unit tests for DynamoDbBackend: error handling (unreachable endpoint throws StorageLoadException/StorageWriteException)
     - Satisfies: Req 5, Criterion 5
     - Inputs: Common/Storage/DynamoDbBackend.cs
     - Output: OE2EmpireTracker.Tests/Storage/DynamoDbBackendErrorTests.cs
     - Verification: vstest.console — tests pass (uses invalid endpoint to simulate unreachable)
 
 - [ ] 12. Property Tests
-  - [~] 12.1 Write property tests: Entity Count Preservation across JsonSingleFile and SQLite backends
+  - [-] 12.1 Write property tests: Entity Count Preservation across JsonSingleFile and SQLite backends
     - Satisfies: Correctness Property 1 (design.md)
     - Inputs: All backend implementations, FsCheck 2.16.6 patterns
     - Output: OE2EmpireTracker.Tests/Storage/StorageCountPreservationPropertyTests.cs
     - Verification: vstest.console — property tests pass
-  - [~] 12.2 Write property tests: Atomic Write Safety for JsonSingleFile and SQLite backends
+  - [-] 12.2 Write property tests: Atomic Write Safety for JsonSingleFile and SQLite backends
     - Satisfies: Correctness Property 3 (design.md); Req 10, Criteria 3-4
     - Inputs: All backend implementations, FsCheck 2.16.6 patterns
     - Output: OE2EmpireTracker.Tests/Storage/AtomicWritePropertyTests.cs

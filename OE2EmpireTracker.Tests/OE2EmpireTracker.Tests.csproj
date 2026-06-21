@@ -636,6 +636,8 @@
     <Compile Include="Storage\DynamoDbBackendLifecycleTests.cs" />
     <Compile Include="Storage\DynamoDbBackendGlobalEntityTests.cs" />
     <Compile Include="Storage\DynamoDbBackendErrorTests.cs" />
+    <Compile Include="Storage\StorageCountPreservationPropertyTests.cs" />
+    <Compile Include="Storage\AtomicWritePropertyTests.cs" />
     <Compile Include="TestHelper.cs" />
     <Compile Include="GlobalSetup.cs" />
     <None Include="app.config" />
