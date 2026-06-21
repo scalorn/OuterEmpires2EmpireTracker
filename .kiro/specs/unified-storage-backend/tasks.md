@@ -332,17 +332,17 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Inputs: Common/Storage/DynamoDbBackend.cs, DynamoDbLocalFixture
     - Output: OE2EmpireTracker.Tests/Storage/DynamoDbBackendLifecycleTests.cs
     - Verification: vstest.console — tests pass with DynamoDB Local
-  - [-] 11.3 Write unit tests for DynamoDbBackend: Server-global entity CRUD (Faction, Character, Token, MembershipAction, StarSystem)
+  - [x] 11.3 Write unit tests for DynamoDbBackend: Server-global entity CRUD (Faction, Character, Token, MembershipAction, StarSystem)
     - Satisfies: Req 5, Criteria 1-2
     - Inputs: Common/Storage/DynamoDbBackend.cs, DynamoDbLocalFixture
     - Output: OE2EmpireTracker.Tests/Storage/DynamoDbBackendGlobalEntityTests.cs
     - Verification: vstest.console — tests pass with DynamoDB Local
-  - [~] 11.4 Write unit tests for DynamoDbBackend: Per-character entity CRUD (Colony, Blueprint, Survey, PlayerProfile, DeliveryRoute, Ship)
+  - [-] 11.4 Write unit tests for DynamoDbBackend: Per-character entity CRUD (Colony, Blueprint, Survey, PlayerProfile, DeliveryRoute, Ship)
     - Satisfies: Req 5, Criteria 1-2
     - Inputs: Common/Storage/DynamoDbBackend.cs, DynamoDbLocalFixture
     - Output: OE2EmpireTracker.Tests/Storage/DynamoDbBackendCharacterEntityTests.cs
     - Verification: vstest.console — tests pass with DynamoDB Local
-  - [~] 11.5 Write unit tests for DynamoDbBackend: error handling (unreachable endpoint throws StorageLoadException/StorageWriteException)
+  - [-] 11.5 Write unit tests for DynamoDbBackend: error handling (unreachable endpoint throws StorageLoadException/StorageWriteException)
     - Satisfies: Req 5, Criterion 5
     - Inputs: Common/Storage/DynamoDbBackend.cs
     - Output: OE2EmpireTracker.Tests/Storage/DynamoDbBackendErrorTests.cs

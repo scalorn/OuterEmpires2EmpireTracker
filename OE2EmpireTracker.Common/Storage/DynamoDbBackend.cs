@@ -81,33 +81,44 @@ namespace OE2EmpireTracker.Common.Storage
             }
             catch (ResourceNotFoundException)
             {
-                Log.Info("Creating DynamoDB table {0}", _tableName);
-                await _client.CreateTableAsync(new CreateTableRequest
+                try
                 {
-                    TableName = _tableName,
-                    KeySchema = new List<KeySchemaElement>
+                    Log.Info("Creating DynamoDB table {0}", _tableName);
+                    await _client.CreateTableAsync(new CreateTableRequest
                     {
-                        new KeySchemaElement("PK", KeyType.HASH),
-                        new KeySchemaElement("SK", KeyType.RANGE),
-                    },
-                    AttributeDefinitions = new List<AttributeDefinition>
-                    {
-                        new AttributeDefinition("PK", ScalarAttributeType.S),
-                        new AttributeDefinition("SK", ScalarAttributeType.S),
-                    },
-                    BillingMode = BillingMode.PAY_PER_REQUEST,
-                }, ct);
+                        TableName = _tableName,
+                        KeySchema = new List<KeySchemaElement>
+                        {
+                            new KeySchemaElement("PK", KeyType.HASH),
+                            new KeySchemaElement("SK", KeyType.RANGE),
+                        },
+                        AttributeDefinitions = new List<AttributeDefinition>
+                        {
+                            new AttributeDefinition("PK", ScalarAttributeType.S),
+                            new AttributeDefinition("SK", ScalarAttributeType.S),
+                        },
+                        BillingMode = BillingMode.PAY_PER_REQUEST,
+                    }, ct);
 
-                // Wait for table to become active
-                bool active = false;
-                while (!active)
-                {
-                    await Task.Delay(1000, ct);
-                    var desc = await _client.DescribeTableAsync(_tableName, ct);
-                    active = desc.Table.TableStatus == TableStatus.ACTIVE;
+                    // Wait for table to become active
+                    bool active = false;
+                    while (!active)
+                    {
+                        await Task.Delay(1000, ct);
+                        var desc = await _client.DescribeTableAsync(_tableName, ct);
+                        active = desc.Table.TableStatus == TableStatus.ACTIVE;
+                    }
+
+                    Log.Info("DynamoDB table {0} created", _tableName);
                 }
-
-                Log.Info("DynamoDB table {0} created", _tableName);
+                catch (Exception ex) when (!(ex is StorageLoadException))
+                {
+                    throw new StorageLoadException("DynamoDB", _tableName, "Failed to create DynamoDB table during initialization", ex);
+                }
+            }
+            catch (Exception ex) when (!(ex is StorageLoadException))
+            {
+                throw new StorageLoadException("DynamoDB", _tableName, "Failed to connect to DynamoDB during initialization", ex);
             }
         }
 
@@ -995,93 +1006,121 @@ namespace OE2EmpireTracker.Common.Storage
 
         private async Task<string> GetItemDataAsync(string pk, string sk)
         {
-            var response = await _client.GetItemAsync(new GetItemRequest
+            try
             {
-                TableName = _tableName,
-                Key = new Dictionary<string, AttributeValue>
+                var response = await _client.GetItemAsync(new GetItemRequest
                 {
-                    ["PK"] = new AttributeValue(pk),
-                    ["SK"] = new AttributeValue(sk),
-                },
-            });
+                    TableName = _tableName,
+                    Key = new Dictionary<string, AttributeValue>
+                    {
+                        ["PK"] = new AttributeValue(pk),
+                        ["SK"] = new AttributeValue(sk),
+                    },
+                });
 
-            if (response.Item == null || !response.Item.ContainsKey("Data"))
-            {
-                return null;
+                if (response.Item == null || !response.Item.ContainsKey("Data"))
+                {
+                    return null;
+                }
+
+                return response.Item["Data"].S;
             }
-
-            return response.Item["Data"].S;
+            catch (Exception ex)
+            {
+                throw new StorageLoadException("DynamoDB", _tableName, $"Failed to read item PK={pk} SK={sk} from DynamoDB", ex);
+            }
         }
 
         private async Task PutItemDataAsync(string pk, string sk, string data)
         {
-            await _client.PutItemAsync(new PutItemRequest
+            try
             {
-                TableName = _tableName,
-                Item = new Dictionary<string, AttributeValue>
+                await _client.PutItemAsync(new PutItemRequest
                 {
-                    ["PK"] = new AttributeValue(pk),
-                    ["SK"] = new AttributeValue(sk),
-                    ["Data"] = new AttributeValue(data),
-                },
-            });
+                    TableName = _tableName,
+                    Item = new Dictionary<string, AttributeValue>
+                    {
+                        ["PK"] = new AttributeValue(pk),
+                        ["SK"] = new AttributeValue(sk),
+                        ["Data"] = new AttributeValue(data),
+                    },
+                });
+            }
+            catch (Exception ex)
+            {
+                throw new StorageWriteException("DynamoDB", $"PutItem PK={pk} SK={sk}", "Failed to write item to DynamoDB", ex);
+            }
         }
 
         private async Task DeleteItemAsync(string pk, string sk)
         {
-            await _client.DeleteItemAsync(new DeleteItemRequest
+            try
             {
-                TableName = _tableName,
-                Key = new Dictionary<string, AttributeValue>
+                await _client.DeleteItemAsync(new DeleteItemRequest
                 {
-                    ["PK"] = new AttributeValue(pk),
-                    ["SK"] = new AttributeValue(sk),
-                },
-            });
+                    TableName = _tableName,
+                    Key = new Dictionary<string, AttributeValue>
+                    {
+                        ["PK"] = new AttributeValue(pk),
+                        ["SK"] = new AttributeValue(sk),
+                    },
+                });
+            }
+            catch (Exception ex)
+            {
+                throw new StorageWriteException("DynamoDB", $"DeleteItem PK={pk} SK={sk}", "Failed to delete item from DynamoDB", ex);
+            }
         }
 
         private async Task<List<string>> ScanByPrefixAsync(string pkPrefix, string skValue)
         {
-            var filterExpression = "begins_with(PK, :pk)";
-            var expressionValues = new Dictionary<string, AttributeValue>
+            try
             {
-                [":pk"] = new AttributeValue(pkPrefix),
-            };
-
-            if (skValue != null)
-            {
-                filterExpression += " AND SK = :sk";
-                expressionValues[":sk"] = new AttributeValue(skValue);
-            }
-
-            var scanRequest = new ScanRequest
-            {
-                TableName = _tableName,
-                FilterExpression = filterExpression,
-                ExpressionAttributeValues = expressionValues,
-            };
-
-            var results = new List<string>();
-            ScanResponse response = null;
-            do
-            {
-                if (response?.LastEvaluatedKey?.Count > 0)
+                var filterExpression = "begins_with(PK, :pk)";
+                var expressionValues = new Dictionary<string, AttributeValue>
                 {
-                    scanRequest.ExclusiveStartKey = response.LastEvaluatedKey;
+                    [":pk"] = new AttributeValue(pkPrefix),
+                };
+
+                if (skValue != null)
+                {
+                    filterExpression += " AND SK = :sk";
+                    expressionValues[":sk"] = new AttributeValue(skValue);
                 }
 
-                response = await _client.ScanAsync(scanRequest);
-                foreach (var item in response.Items)
+                var scanRequest = new ScanRequest
                 {
-                    if (item.ContainsKey("Data"))
+                    TableName = _tableName,
+                    FilterExpression = filterExpression,
+                    ExpressionAttributeValues = expressionValues,
+                };
+
+                var results = new List<string>();
+                ScanResponse response = null;
+                do
+                {
+                    if (response?.LastEvaluatedKey?.Count > 0)
                     {
-                        results.Add(item["Data"].S);
+                        scanRequest.ExclusiveStartKey = response.LastEvaluatedKey;
+                    }
+
+                    response = await _client.ScanAsync(scanRequest);
+                    foreach (var item in response.Items)
+                    {
+                        if (item.ContainsKey("Data"))
+                        {
+                            results.Add(item["Data"].S);
+                        }
                     }
                 }
-            }
-            while (response.LastEvaluatedKey?.Count > 0);
+                while (response.LastEvaluatedKey?.Count > 0);
 
-            return results;
+                return results;
+            }
+            catch (Exception ex)
+            {
+                throw new StorageLoadException("DynamoDB", _tableName, $"Failed to scan by prefix PK={pkPrefix} from DynamoDB", ex);
+            }
         }
     }
 }
