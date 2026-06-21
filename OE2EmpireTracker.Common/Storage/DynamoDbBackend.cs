@@ -263,9 +263,40 @@ namespace OE2EmpireTracker.Common.Storage
         // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<ColonySummary>> GetColonySummariesForSystemAsync(int systemId)
+        public async Task<IReadOnlyList<ColonySummary>> GetColonySummariesForSystemAsync(int systemId)
         {
-            throw new NotImplementedException();
+            // Load star systems to resolve system name
+            var systemsJson = await GetItemDataAsync("Global#Data", "StarSystems");
+            if (systemsJson == null)
+            {
+                return Array.Empty<ColonySummary>();
+            }
+
+            var systems = JsonConvert.DeserializeObject<List<StarSystem>>(systemsJson) ?? new List<StarSystem>();
+            var system = systems.FirstOrDefault(s => s.Id == systemId);
+            if (system == null)
+            {
+                return Array.Empty<ColonySummary>();
+            }
+
+            // Scan all colonies across all characters
+            var items = await ScanByPrefixAsync("Char#", "Colony#");
+            var results = new List<ColonySummary>();
+            foreach (var json in items)
+            {
+                var colony = JsonConvert.DeserializeObject<Colony>(json);
+                if (colony != null && colony.SystemId == systemId)
+                {
+                    results.Add(new ColonySummary
+                    {
+                        ColonyName = colony.ColonyName ?? string.Empty,
+                        Size = colony.Structures?.Count ?? 0,
+                        PlanetName = colony.PlanetName ?? string.Empty,
+                    });
+                }
+            }
+
+            return results;
         }
 
         // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
@@ -735,48 +766,181 @@ namespace OE2EmpireTracker.Common.Storage
         // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<IntelComment>> GetIntelCommentsForTargetAsync(string targetCharacterUUID)
-            => throw new NotImplementedException();
+        public async Task<IReadOnlyList<IntelComment>> GetIntelCommentsForTargetAsync(string targetCharacterUUID)
+        {
+            var items = await ScanByPrefixAsync($"Intel#Target#{targetCharacterUUID}", "Comment#");
+            return items
+                .Select(j => JsonConvert.DeserializeObject<IntelComment>(j))
+                .Where(c => c != null)
+                .Cast<IntelComment>()
+                .ToList();
+        }
 
         /// <inheritdoc/>
-        public Task<IntelComment> GetIntelCommentAsync(string commentUUID)
-            => throw new NotImplementedException();
+        public async Task<IntelComment> GetIntelCommentAsync(string commentUUID)
+        {
+            var json = await GetItemDataAsync($"Intel#Comment#{commentUUID}", "Data");
+            return json != null ? JsonConvert.DeserializeObject<IntelComment>(json) : null;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertIntelCommentAsync(IntelComment comment)
-            => throw new NotImplementedException();
+        public async Task UpsertIntelCommentAsync(IntelComment comment)
+        {
+            var json = JsonConvert.SerializeObject(comment, SerializerSettings);
+            await PutItemDataAsync($"Intel#Target#{comment.TargetCharacterUUID}", $"Comment#{comment.UUID}", json);
+            await PutItemDataAsync($"Intel#Comment#{comment.UUID}", "Data", json);
+        }
 
         /// <inheritdoc/>
-        public Task DeleteIntelCommentAsync(string commentUUID)
-            => throw new NotImplementedException();
+        public async Task DeleteIntelCommentAsync(string commentUUID)
+        {
+            var comment = await GetIntelCommentAsync(commentUUID);
+            if (comment != null)
+            {
+                await DeleteItemAsync($"Intel#Target#{comment.TargetCharacterUUID}", $"Comment#{comment.UUID}");
+            }
+
+            await DeleteItemAsync($"Intel#Comment#{commentUUID}", "Data");
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<IntelCommentFactionShare>> GetIntelSharesForCommentAsync(string commentUUID)
-            => throw new NotImplementedException();
+        public async Task<IReadOnlyList<IntelCommentFactionShare>> GetIntelSharesForCommentAsync(string commentUUID)
+        {
+            var items = await ScanByPrefixAsync($"Intel#Comment#{commentUUID}", "Share#");
+            return items
+                .Select(j => JsonConvert.DeserializeObject<IntelCommentFactionShare>(j))
+                .Where(c => c != null)
+                .Cast<IntelCommentFactionShare>()
+                .ToList();
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<IntelCommentFactionShare>> GetIntelSharesForFactionAsync(string factionUUID)
-            => throw new NotImplementedException();
+        public async Task<IReadOnlyList<IntelCommentFactionShare>> GetIntelSharesForFactionAsync(string factionUUID)
+        {
+            var items = await ScanByPrefixAsync($"Intel#Faction#{factionUUID}", "Share#");
+            return items
+                .Select(j => JsonConvert.DeserializeObject<IntelCommentFactionShare>(j))
+                .Where(c => c != null)
+                .Cast<IntelCommentFactionShare>()
+                .ToList();
+        }
 
         /// <inheritdoc/>
-        public Task UpsertIntelShareAsync(IntelCommentFactionShare share)
-            => throw new NotImplementedException();
+        public async Task UpsertIntelShareAsync(IntelCommentFactionShare share)
+        {
+            var json = JsonConvert.SerializeObject(share, SerializerSettings);
+            await PutItemDataAsync($"Intel#Comment#{share.IntelCommentUUID}", $"Share#{share.UUID}", json);
+            await PutItemDataAsync($"Intel#Faction#{share.FactionUUID}", $"Share#{share.UUID}", json);
+        }
 
         /// <inheritdoc/>
-        public Task DeleteIntelShareAsync(string shareUUID)
-            => throw new NotImplementedException();
+        public async Task DeleteIntelShareAsync(string shareUUID)
+        {
+            // Find the share in all Intel#Comment# entries to get its details
+            var scanRequest = new ScanRequest
+            {
+                TableName = _tableName,
+                FilterExpression = "begins_with(PK, :pk) AND SK = :sk",
+                ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+                {
+                    [":pk"] = new AttributeValue("Intel#Comment#"),
+                    [":sk"] = new AttributeValue($"Share#{shareUUID}"),
+                },
+            };
+
+            var scanResponse = await _client.ScanAsync(scanRequest);
+            if (scanResponse.Items.Count > 0)
+            {
+                var item = scanResponse.Items[0];
+                var json = item["Data"].S;
+                var share = JsonConvert.DeserializeObject<IntelCommentFactionShare>(json);
+                if (share != null)
+                {
+                    await DeleteItemAsync($"Intel#Comment#{share.IntelCommentUUID}", $"Share#{share.UUID}");
+                    await DeleteItemAsync($"Intel#Faction#{share.FactionUUID}", $"Share#{share.UUID}");
+                }
+            }
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<PermissionAuditEntry>> GetPermissionAuditEntriesAsync(DateTime? startDate = null, DateTime? endDate = null, PermissionActionType? actionType = null, string actorUUID = null, string targetUUID = null)
-            => throw new NotImplementedException();
+        public async Task<IReadOnlyList<PermissionAuditEntry>> GetPermissionAuditEntriesAsync(DateTime? startDate = null, DateTime? endDate = null, PermissionActionType? actionType = null, string actorUUID = null, string targetUUID = null)
+        {
+            var items = await ScanByPrefixAsync("Audit#Entries", "Entry#");
+            var entries = items
+                .Select(j => JsonConvert.DeserializeObject<PermissionAuditEntry>(j))
+                .Where(e => e != null)
+                .Cast<PermissionAuditEntry>();
+
+            if (startDate.HasValue)
+            {
+                entries = entries.Where(e => e.Timestamp >= startDate.Value);
+            }
+
+            if (endDate.HasValue)
+            {
+                entries = entries.Where(e => e.Timestamp <= endDate.Value);
+            }
+
+            if (actionType.HasValue)
+            {
+                entries = entries.Where(e => e.ActionType == actionType.Value);
+            }
+
+            if (!string.IsNullOrEmpty(actorUUID))
+            {
+                entries = entries.Where(e => e.ActorCharacterUUID == actorUUID);
+            }
+
+            if (!string.IsNullOrEmpty(targetUUID))
+            {
+                entries = entries.Where(e => e.TargetCharacterUUID == targetUUID);
+            }
+
+            return entries.ToList();
+        }
 
         /// <inheritdoc/>
-        public Task AppendPermissionAuditEntryAsync(PermissionAuditEntry entry)
-            => throw new NotImplementedException();
+        public async Task AppendPermissionAuditEntryAsync(PermissionAuditEntry entry)
+        {
+            await PutItemDataAsync(
+                "Audit#Entries",
+                $"Entry#{entry.UUID}",
+                JsonConvert.SerializeObject(entry, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task DeleteExpiredAuditEntriesAsync(DateTime cutoff)
-            => throw new NotImplementedException();
+        public async Task DeleteExpiredAuditEntriesAsync(DateTime cutoff)
+        {
+            var scanRequest = new ScanRequest
+            {
+                TableName = _tableName,
+                FilterExpression = "PK = :pk AND begins_with(SK, :sk)",
+                ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+                {
+                    [":pk"] = new AttributeValue("Audit#Entries"),
+                    [":sk"] = new AttributeValue("Entry#"),
+                },
+            };
+
+            var scanResponse = await _client.ScanAsync(scanRequest);
+            foreach (var item in scanResponse.Items)
+            {
+                var json = item["Data"].S;
+                var entry = JsonConvert.DeserializeObject<PermissionAuditEntry>(json);
+                if (entry != null && entry.Timestamp < cutoff)
+                {
+                    await _client.DeleteItemAsync(new DeleteItemRequest
+                    {
+                        TableName = _tableName,
+                        Key = new Dictionary<string, AttributeValue>
+                        {
+                            ["PK"] = item["PK"],
+                            ["SK"] = item["SK"],
+                        },
+                    });
+                }
+            }
+        }
 
         // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // Per-Character Entity CRUD (stubs)
@@ -1408,52 +1572,143 @@ namespace OE2EmpireTracker.Common.Storage
         // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
-        public Task<BaselineGameConstants> GetBaselineGameConstantsAsync() => throw new NotImplementedException();
+        public async Task<BaselineGameConstants> GetBaselineGameConstantsAsync()
+        {
+            var json = await GetItemDataAsync("Baseline#Data", "GameConstants");
+            return json != null ? JsonConvert.DeserializeObject<BaselineGameConstants>(json) : null;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertBaselineGameConstantsAsync(BaselineGameConstants constants) => throw new NotImplementedException();
+        public async Task UpsertBaselineGameConstantsAsync(BaselineGameConstants constants)
+        {
+            await PutItemDataAsync("Baseline#Data", "GameConstants", JsonConvert.SerializeObject(constants, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<BlueprintType>> GetAllBlueprintTypesAsync() => throw new NotImplementedException();
+        public async Task<IReadOnlyList<BlueprintType>> GetAllBlueprintTypesAsync()
+        {
+            var json = await GetItemDataAsync("Baseline#Data", "BlueprintTypes");
+            if (json != null)
+            {
+                return JsonConvert.DeserializeObject<List<BlueprintType>>(json) ?? new List<BlueprintType>();
+            }
+
+            return new List<BlueprintType>();
+        }
 
         /// <inheritdoc/>
-        public Task UpsertBlueprintTypesAsync(IReadOnlyList<BlueprintType> types) => throw new NotImplementedException();
+        public async Task UpsertBlueprintTypesAsync(IReadOnlyList<BlueprintType> types)
+        {
+            await PutItemDataAsync("Baseline#Data", "BlueprintTypes", JsonConvert.SerializeObject(types, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<ShipClass>> GetAllShipClassesAsync() => throw new NotImplementedException();
+        public async Task<IReadOnlyList<ShipClass>> GetAllShipClassesAsync()
+        {
+            var json = await GetItemDataAsync("Baseline#Data", "ShipClasses");
+            if (json != null)
+            {
+                return JsonConvert.DeserializeObject<List<ShipClass>>(json) ?? new List<ShipClass>();
+            }
+
+            return new List<ShipClass>();
+        }
 
         /// <inheritdoc/>
-        public Task UpsertShipClassesAsync(IReadOnlyList<ShipClass> classes) => throw new NotImplementedException();
+        public async Task UpsertShipClassesAsync(IReadOnlyList<ShipClass> classes)
+        {
+            await PutItemDataAsync("Baseline#Data", "ShipClasses", JsonConvert.SerializeObject(classes, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<TechLevel>> GetAllTechLevelsAsync() => throw new NotImplementedException();
+        public async Task<IReadOnlyList<TechLevel>> GetAllTechLevelsAsync()
+        {
+            var json = await GetItemDataAsync("Baseline#Data", "TechLevels");
+            if (json != null)
+            {
+                return JsonConvert.DeserializeObject<List<TechLevel>>(json) ?? new List<TechLevel>();
+            }
+
+            return new List<TechLevel>();
+        }
 
         /// <inheritdoc/>
-        public Task UpsertTechLevelsAsync(IReadOnlyList<TechLevel> levels) => throw new NotImplementedException();
+        public async Task UpsertTechLevelsAsync(IReadOnlyList<TechLevel> levels)
+        {
+            await PutItemDataAsync("Baseline#Data", "TechLevels", JsonConvert.SerializeObject(levels, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<Commodity>> GetAllCommoditiesAsync() => throw new NotImplementedException();
+        public async Task<IReadOnlyList<Commodity>> GetAllCommoditiesAsync()
+        {
+            var json = await GetItemDataAsync("Baseline#Data", "Commodities");
+            if (json != null)
+            {
+                return JsonConvert.DeserializeObject<List<Commodity>>(json) ?? new List<Commodity>();
+            }
+
+            return new List<Commodity>();
+        }
 
         /// <inheritdoc/>
-        public Task UpsertCommoditiesAsync(IReadOnlyList<Commodity> commodities) => throw new NotImplementedException();
+        public async Task UpsertCommoditiesAsync(IReadOnlyList<Commodity> commodities)
+        {
+            await PutItemDataAsync("Baseline#Data", "Commodities", JsonConvert.SerializeObject(commodities, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<RefiningRecipe>> GetAllRefiningRecipesAsync() => throw new NotImplementedException();
+        public async Task<IReadOnlyList<RefiningRecipe>> GetAllRefiningRecipesAsync()
+        {
+            var json = await GetItemDataAsync("Baseline#Data", "RefiningRecipes");
+            if (json != null)
+            {
+                return JsonConvert.DeserializeObject<List<RefiningRecipe>>(json) ?? new List<RefiningRecipe>();
+            }
+
+            return new List<RefiningRecipe>();
+        }
 
         /// <inheritdoc/>
-        public Task UpsertRefiningRecipesAsync(IReadOnlyList<RefiningRecipe> recipes) => throw new NotImplementedException();
+        public async Task UpsertRefiningRecipesAsync(IReadOnlyList<RefiningRecipe> recipes)
+        {
+            await PutItemDataAsync("Baseline#Data", "RefiningRecipes", JsonConvert.SerializeObject(recipes, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<ResearchTimeEntry>> GetAllResearchTimesAsync() => throw new NotImplementedException();
+        public async Task<IReadOnlyList<ResearchTimeEntry>> GetAllResearchTimesAsync()
+        {
+            var json = await GetItemDataAsync("Baseline#Data", "ResearchTimes");
+            if (json != null)
+            {
+                return JsonConvert.DeserializeObject<List<ResearchTimeEntry>>(json) ?? new List<ResearchTimeEntry>();
+            }
+
+            return new List<ResearchTimeEntry>();
+        }
 
         /// <inheritdoc/>
-        public Task UpsertResearchTimesAsync(IReadOnlyList<ResearchTimeEntry> entries) => throw new NotImplementedException();
+        public async Task UpsertResearchTimesAsync(IReadOnlyList<ResearchTimeEntry> entries)
+        {
+            await PutItemDataAsync("Baseline#Data", "ResearchTimes", JsonConvert.SerializeObject(entries, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<PropertyTypeDefinition>> GetAllPropertyTypeDefinitionsAsync() => throw new NotImplementedException();
+        public async Task<IReadOnlyList<PropertyTypeDefinition>> GetAllPropertyTypeDefinitionsAsync()
+        {
+            var json = await GetItemDataAsync("Baseline#Data", "PropertyTypeDefinitions");
+            if (json != null)
+            {
+                return JsonConvert.DeserializeObject<List<PropertyTypeDefinition>>(json) ?? new List<PropertyTypeDefinition>();
+            }
+
+            return new List<PropertyTypeDefinition>();
+        }
 
         /// <inheritdoc/>
-        public Task UpsertPropertyTypeDefinitionsAsync(IReadOnlyList<PropertyTypeDefinition> definitions) => throw new NotImplementedException();
+        public async Task UpsertPropertyTypeDefinitionsAsync(IReadOnlyList<PropertyTypeDefinition> definitions)
+        {
+            await PutItemDataAsync("Baseline#Data", "PropertyTypeDefinitions", JsonConvert.SerializeObject(definitions, SerializerSettings));
+        }
 
         // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // Private Helpers
