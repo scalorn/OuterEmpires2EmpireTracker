@@ -2215,8 +2215,19 @@ namespace OE2EmpireTracker.Common.Storage
             }
 
             var json = File.ReadAllText(path);
-            var list = JsonConvert.DeserializeObject<List<T>>(json) ?? new List<T>();
-            return Task.FromResult(list);
+            try
+            {
+                var list = JsonConvert.DeserializeObject<List<T>>(json) ?? new List<T>();
+                return Task.FromResult(list);
+            }
+            catch (JsonException ex)
+            {
+                throw new StorageLoadException(
+                    "JsonMultiFile",
+                    path,
+                    $"Failed to deserialize JSON from {path}",
+                    ex);
+            }
         }
 
         private string DataFilePath(string filename) => Path.Combine(_dataPath, filename);
@@ -2435,7 +2446,18 @@ namespace OE2EmpireTracker.Common.Storage
                 return Array.Empty<T>();
             }
 
-            return JsonConvert.DeserializeObject<List<T>>(json, SerializerSettings) ?? new List<T>();
+            try
+            {
+                return JsonConvert.DeserializeObject<List<T>>(json, SerializerSettings) ?? new List<T>();
+            }
+            catch (JsonException ex)
+            {
+                throw new StorageLoadException(
+                    "JsonMultiFile",
+                    path,
+                    $"Failed to deserialize JSON from {path}",
+                    ex);
+            }
         }
 
         private async Task UpsertEntityAsync<T>(string characterUUID, string dataType, T entity, Func<T, bool> predicate)
