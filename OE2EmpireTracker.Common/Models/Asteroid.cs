@@ -7,6 +7,7 @@ namespace OE2EmpireTracker.Models
     public class Asteroid
     {
         public string UUID { get; set; }
+        public string OwnerUUID { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         public string SystemName { get; set; } = string.Empty;
         public List<AsteroidReserve> Reserves { get; set; } = new List<AsteroidReserve>();

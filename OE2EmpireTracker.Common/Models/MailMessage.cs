@@ -8,6 +8,18 @@ namespace OE2EmpireTracker.Models
     public class MailMessage
     {
         /// <summary>
+        /// Gets or sets the unique identifier for storage backend operations.
+        /// </summary>
+        [JsonProperty("uuid")]
+        public string UUID { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the character UUID that owns this mail message.
+        /// </summary>
+        [JsonProperty("ownerUUID")]
+        public string OwnerUUID { get; set; } = string.Empty;
+
+        /// <summary>
         /// Gets or sets the unique mail identifier from the game API.
         /// </summary>
         [JsonProperty("mailId")]

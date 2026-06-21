@@ -537,197 +537,757 @@ namespace OE2EmpireTracker.Common.Storage
 
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<Ship>> GetAllShipsAsync(string characterUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<Ship>> GetAllShipsAsync(string characterUUID)
+        {
+            var results = _playerRoot.Ship
+                .Where(e => e.OwnerUUID == characterUUID)
+                .ToList();
+            return Task.FromResult<IReadOnlyList<Ship>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task<Ship> GetShipAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task<Ship> GetShipAsync(string characterUUID, string entityUUID)
+        {
+            var entity = _playerRoot.Ship
+                .FirstOrDefault(e => e.UUID == entityUUID && e.OwnerUUID == characterUUID);
+            return Task.FromResult(entity);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertShipAsync(string characterUUID, Ship entity) => throw new NotImplementedException();
+        public Task UpsertShipAsync(string characterUUID, Ship entity)
+        {
+            entity.OwnerUUID = characterUUID;
+            var list = _playerRoot.Ship.ToList();
+            var index = list.FindIndex(e => e.UUID == entity.UUID);
+            if (index >= 0)
+            {
+                list[index] = entity;
+            }
+            else
+            {
+                list.Add(entity);
+            }
+
+            _playerRoot.Ship = list.ToArray();
+            SavePlayerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteShipAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task DeleteShipAsync(string characterUUID, string entityUUID)
+        {
+            _playerRoot.Ship = _playerRoot.Ship
+                .Where(e => !(e.UUID == entityUUID && e.OwnerUUID == characterUUID))
+                .ToArray();
+            SavePlayerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<ShipTemplate>> GetAllShipTemplatesAsync(string characterUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<ShipTemplate>> GetAllShipTemplatesAsync(string characterUUID)
+        {
+            var results = _playerRoot.ShipTemplate
+                .Where(e => e.OwnerUUID == characterUUID)
+                .ToList();
+            return Task.FromResult<IReadOnlyList<ShipTemplate>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task<ShipTemplate> GetShipTemplateAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task<ShipTemplate> GetShipTemplateAsync(string characterUUID, string entityUUID)
+        {
+            var entity = _playerRoot.ShipTemplate
+                .FirstOrDefault(e => e.UUID == entityUUID && e.OwnerUUID == characterUUID);
+            return Task.FromResult(entity);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertShipTemplateAsync(string characterUUID, ShipTemplate entity) => throw new NotImplementedException();
+        public Task UpsertShipTemplateAsync(string characterUUID, ShipTemplate entity)
+        {
+            entity.OwnerUUID = characterUUID;
+            var list = _playerRoot.ShipTemplate.ToList();
+            var index = list.FindIndex(e => e.UUID == entity.UUID);
+            if (index >= 0)
+            {
+                list[index] = entity;
+            }
+            else
+            {
+                list.Add(entity);
+            }
+
+            _playerRoot.ShipTemplate = list.ToArray();
+            SavePlayerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteShipTemplateAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task DeleteShipTemplateAsync(string characterUUID, string entityUUID)
+        {
+            _playerRoot.ShipTemplate = _playerRoot.ShipTemplate
+                .Where(e => !(e.UUID == entityUUID && e.OwnerUUID == characterUUID))
+                .ToArray();
+            SavePlayerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<MarketListing>> GetAllMarketListingsAsync(string characterUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<MarketListing>> GetAllMarketListingsAsync(string characterUUID)
+        {
+            var results = _playerRoot.MarketListing
+                .Where(e => e.OwnerUUID == characterUUID)
+                .ToList();
+            return Task.FromResult<IReadOnlyList<MarketListing>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task<MarketListing> GetMarketListingAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task<MarketListing> GetMarketListingAsync(string characterUUID, string entityUUID)
+        {
+            var entity = _playerRoot.MarketListing
+                .FirstOrDefault(e => e.UUID == entityUUID && e.OwnerUUID == characterUUID);
+            return Task.FromResult(entity);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertMarketListingAsync(string characterUUID, MarketListing entity) => throw new NotImplementedException();
+        public Task UpsertMarketListingAsync(string characterUUID, MarketListing entity)
+        {
+            entity.OwnerUUID = characterUUID;
+            var list = _playerRoot.MarketListing.ToList();
+            var index = list.FindIndex(e => e.UUID == entity.UUID);
+            if (index >= 0)
+            {
+                list[index] = entity;
+            }
+            else
+            {
+                list.Add(entity);
+            }
+
+            _playerRoot.MarketListing = list.ToArray();
+            SavePlayerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteMarketListingAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task DeleteMarketListingAsync(string characterUUID, string entityUUID)
+        {
+            _playerRoot.MarketListing = _playerRoot.MarketListing
+                .Where(e => !(e.UUID == entityUUID && e.OwnerUUID == characterUUID))
+                .ToArray();
+            SavePlayerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<MarketTransaction>> GetAllMarketTransactionsAsync(string characterUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<MarketTransaction>> GetAllMarketTransactionsAsync(string characterUUID)
+        {
+            var results = _playerRoot.MarketTransaction
+                .Where(e => e.OwnerUUID == characterUUID)
+                .ToList();
+            return Task.FromResult<IReadOnlyList<MarketTransaction>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task<MarketTransaction> GetMarketTransactionAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task<MarketTransaction> GetMarketTransactionAsync(string characterUUID, string entityUUID)
+        {
+            var entity = _playerRoot.MarketTransaction
+                .FirstOrDefault(e => e.UUID == entityUUID && e.OwnerUUID == characterUUID);
+            return Task.FromResult(entity);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertMarketTransactionAsync(string characterUUID, MarketTransaction entity) => throw new NotImplementedException();
+        public Task UpsertMarketTransactionAsync(string characterUUID, MarketTransaction entity)
+        {
+            entity.OwnerUUID = characterUUID;
+            var list = _playerRoot.MarketTransaction.ToList();
+            var index = list.FindIndex(e => e.UUID == entity.UUID);
+            if (index >= 0)
+            {
+                list[index] = entity;
+            }
+            else
+            {
+                list.Add(entity);
+            }
+
+            _playerRoot.MarketTransaction = list.ToArray();
+            SavePlayerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteMarketTransactionAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task DeleteMarketTransactionAsync(string characterUUID, string entityUUID)
+        {
+            _playerRoot.MarketTransaction = _playerRoot.MarketTransaction
+                .Where(e => !(e.UUID == entityUUID && e.OwnerUUID == characterUUID))
+                .ToArray();
+            SavePlayerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<PricingPlan>> GetAllPricingPlansAsync(string characterUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<PricingPlan>> GetAllPricingPlansAsync(string characterUUID)
+        {
+            var results = _playerRoot.PricingPlan
+                .Where(e => e.OwnerUUID == characterUUID)
+                .ToList();
+            return Task.FromResult<IReadOnlyList<PricingPlan>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task<PricingPlan> GetPricingPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task<PricingPlan> GetPricingPlanAsync(string characterUUID, string entityUUID)
+        {
+            var entity = _playerRoot.PricingPlan
+                .FirstOrDefault(e => e.UUID == entityUUID && e.OwnerUUID == characterUUID);
+            return Task.FromResult(entity);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertPricingPlanAsync(string characterUUID, PricingPlan entity) => throw new NotImplementedException();
+        public Task UpsertPricingPlanAsync(string characterUUID, PricingPlan entity)
+        {
+            entity.OwnerUUID = characterUUID;
+            var list = _playerRoot.PricingPlan.ToList();
+            var index = list.FindIndex(e => e.UUID == entity.UUID);
+            if (index >= 0)
+            {
+                list[index] = entity;
+            }
+            else
+            {
+                list.Add(entity);
+            }
+
+            _playerRoot.PricingPlan = list.ToArray();
+            SavePlayerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeletePricingPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task DeletePricingPlanAsync(string characterUUID, string entityUUID)
+        {
+            _playerRoot.PricingPlan = _playerRoot.PricingPlan
+                .Where(e => !(e.UUID == entityUUID && e.OwnerUUID == characterUUID))
+                .ToArray();
+            SavePlayerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<StockPlan>> GetAllStockPlansAsync(string characterUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<StockPlan>> GetAllStockPlansAsync(string characterUUID)
+        {
+            var results = _playerRoot.StockPlan
+                .Where(e => e.OwnerUUID == characterUUID)
+                .ToList();
+            return Task.FromResult<IReadOnlyList<StockPlan>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task<StockPlan> GetStockPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task<StockPlan> GetStockPlanAsync(string characterUUID, string entityUUID)
+        {
+            var entity = _playerRoot.StockPlan
+                .FirstOrDefault(e => e.UUID == entityUUID && e.OwnerUUID == characterUUID);
+            return Task.FromResult(entity);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertStockPlanAsync(string characterUUID, StockPlan entity) => throw new NotImplementedException();
+        public Task UpsertStockPlanAsync(string characterUUID, StockPlan entity)
+        {
+            entity.OwnerUUID = characterUUID;
+            var list = _playerRoot.StockPlan.ToList();
+            var index = list.FindIndex(e => e.UUID == entity.UUID);
+            if (index >= 0)
+            {
+                list[index] = entity;
+            }
+            else
+            {
+                list.Add(entity);
+            }
+
+            _playerRoot.StockPlan = list.ToArray();
+            SavePlayerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteStockPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task DeleteStockPlanAsync(string characterUUID, string entityUUID)
+        {
+            _playerRoot.StockPlan = _playerRoot.StockPlan
+                .Where(e => !(e.UUID == entityUUID && e.OwnerUUID == characterUUID))
+                .ToArray();
+            SavePlayerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<StockProfile>> GetAllStockProfilesAsync(string characterUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<StockProfile>> GetAllStockProfilesAsync(string characterUUID)
+        {
+            var results = _playerRoot.StockProfile
+                .Where(e => e.OwnerUUID == characterUUID)
+                .ToList();
+            return Task.FromResult<IReadOnlyList<StockProfile>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task<StockProfile> GetStockProfileAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task<StockProfile> GetStockProfileAsync(string characterUUID, string entityUUID)
+        {
+            var entity = _playerRoot.StockProfile
+                .FirstOrDefault(e => e.UUID == entityUUID && e.OwnerUUID == characterUUID);
+            return Task.FromResult(entity);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertStockProfileAsync(string characterUUID, StockProfile entity) => throw new NotImplementedException();
+        public Task UpsertStockProfileAsync(string characterUUID, StockProfile entity)
+        {
+            entity.OwnerUUID = characterUUID;
+            var list = _playerRoot.StockProfile.ToList();
+            var index = list.FindIndex(e => e.UUID == entity.UUID);
+            if (index >= 0)
+            {
+                list[index] = entity;
+            }
+            else
+            {
+                list.Add(entity);
+            }
+
+            _playerRoot.StockProfile = list.ToArray();
+            SavePlayerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteStockProfileAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task DeleteStockProfileAsync(string characterUUID, string entityUUID)
+        {
+            _playerRoot.StockProfile = _playerRoot.StockProfile
+                .Where(e => !(e.UUID == entityUUID && e.OwnerUUID == characterUUID))
+                .ToArray();
+            SavePlayerData();
+            return Task.CompletedTask;
+        }
 
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<BuildPlan>> GetAllBuildPlansAsync(string characterUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<BuildPlan>> GetAllBuildPlansAsync(string characterUUID)
+        {
+            var results = _playerRoot.BuildPlan
+                .Where(e => e.OwnerUUID == characterUUID)
+                .ToList();
+            return Task.FromResult<IReadOnlyList<BuildPlan>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task<BuildPlan> GetBuildPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task<BuildPlan> GetBuildPlanAsync(string characterUUID, string entityUUID)
+        {
+            var entity = _playerRoot.BuildPlan
+                .FirstOrDefault(e => e.UUID == entityUUID && e.OwnerUUID == characterUUID);
+            return Task.FromResult(entity);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertBuildPlanAsync(string characterUUID, BuildPlan entity) => throw new NotImplementedException();
+        public Task UpsertBuildPlanAsync(string characterUUID, BuildPlan entity)
+        {
+            entity.OwnerUUID = characterUUID;
+            var list = _playerRoot.BuildPlan.ToList();
+            var index = list.FindIndex(e => e.UUID == entity.UUID);
+            if (index >= 0)
+            {
+                list[index] = entity;
+            }
+            else
+            {
+                list.Add(entity);
+            }
+
+            _playerRoot.BuildPlan = list.ToArray();
+            SavePlayerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteBuildPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task DeleteBuildPlanAsync(string characterUUID, string entityUUID)
+        {
+            _playerRoot.BuildPlan = _playerRoot.BuildPlan
+                .Where(e => !(e.UUID == entityUUID && e.OwnerUUID == characterUUID))
+                .ToArray();
+            SavePlayerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<SupplyChain>> GetAllSupplyChainsAsync(string characterUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<SupplyChain>> GetAllSupplyChainsAsync(string characterUUID)
+        {
+            var results = _playerRoot.SupplyChain
+                .Where(e => e.OwnerUUID == characterUUID)
+                .ToList();
+            return Task.FromResult<IReadOnlyList<SupplyChain>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task<SupplyChain> GetSupplyChainAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task<SupplyChain> GetSupplyChainAsync(string characterUUID, string entityUUID)
+        {
+            var entity = _playerRoot.SupplyChain
+                .FirstOrDefault(e => e.UUID == entityUUID && e.OwnerUUID == characterUUID);
+            return Task.FromResult(entity);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertSupplyChainAsync(string characterUUID, SupplyChain entity) => throw new NotImplementedException();
+        public Task UpsertSupplyChainAsync(string characterUUID, SupplyChain entity)
+        {
+            entity.OwnerUUID = characterUUID;
+            var list = _playerRoot.SupplyChain.ToList();
+            var index = list.FindIndex(e => e.UUID == entity.UUID);
+            if (index >= 0)
+            {
+                list[index] = entity;
+            }
+            else
+            {
+                list.Add(entity);
+            }
+
+            _playerRoot.SupplyChain = list.ToArray();
+            SavePlayerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteSupplyChainAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task DeleteSupplyChainAsync(string characterUUID, string entityUUID)
+        {
+            _playerRoot.SupplyChain = _playerRoot.SupplyChain
+                .Where(e => !(e.UUID == entityUUID && e.OwnerUUID == characterUUID))
+                .ToArray();
+            SavePlayerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<Asteroid>> GetAllAsteroidsAsync(string characterUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<Asteroid>> GetAllAsteroidsAsync(string characterUUID)
+        {
+            var results = _playerRoot.Asteroid
+                .Where(e => e.OwnerUUID == characterUUID)
+                .ToList();
+            return Task.FromResult<IReadOnlyList<Asteroid>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task<Asteroid> GetAsteroidAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task<Asteroid> GetAsteroidAsync(string characterUUID, string entityUUID)
+        {
+            var entity = _playerRoot.Asteroid
+                .FirstOrDefault(e => e.UUID == entityUUID && e.OwnerUUID == characterUUID);
+            return Task.FromResult(entity);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertAsteroidAsync(string characterUUID, Asteroid entity) => throw new NotImplementedException();
+        public Task UpsertAsteroidAsync(string characterUUID, Asteroid entity)
+        {
+            entity.OwnerUUID = characterUUID;
+            var list = _playerRoot.Asteroid.ToList();
+            var index = list.FindIndex(e => e.UUID == entity.UUID);
+            if (index >= 0)
+            {
+                list[index] = entity;
+            }
+            else
+            {
+                list.Add(entity);
+            }
+
+            _playerRoot.Asteroid = list.ToArray();
+            SavePlayerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteAsteroidAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task DeleteAsteroidAsync(string characterUUID, string entityUUID)
+        {
+            _playerRoot.Asteroid = _playerRoot.Asteroid
+                .Where(e => !(e.UUID == entityUUID && e.OwnerUUID == characterUUID))
+                .ToArray();
+            SavePlayerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<Station>> GetAllStationsAsync(string characterUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<Station>> GetAllStationsAsync(string characterUUID)
+        {
+            var results = _playerRoot.Station
+                .Where(e => e.OwnerUUID == characterUUID)
+                .ToList();
+            return Task.FromResult<IReadOnlyList<Station>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task<Station> GetStationAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task<Station> GetStationAsync(string characterUUID, string entityUUID)
+        {
+            var entity = _playerRoot.Station
+                .FirstOrDefault(e => e.UUID == entityUUID && e.OwnerUUID == characterUUID);
+            return Task.FromResult(entity);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertStationAsync(string characterUUID, Station entity) => throw new NotImplementedException();
+        public Task UpsertStationAsync(string characterUUID, Station entity)
+        {
+            entity.OwnerUUID = characterUUID;
+            var list = _playerRoot.Station.ToList();
+            var index = list.FindIndex(e => e.UUID == entity.UUID);
+            if (index >= 0)
+            {
+                list[index] = entity;
+            }
+            else
+            {
+                list.Add(entity);
+            }
+
+            _playerRoot.Station = list.ToArray();
+            SavePlayerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteStationAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task DeleteStationAsync(string characterUUID, string entityUUID)
+        {
+            _playerRoot.Station = _playerRoot.Station
+                .Where(e => !(e.UUID == entityUUID && e.OwnerUUID == characterUUID))
+                .ToArray();
+            SavePlayerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<Faction>> GetAllFactionsForCharacterAsync(string characterUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<Faction>> GetAllFactionsForCharacterAsync(string characterUUID)
+        {
+            var results = _playerRoot.Faction
+                .Where(e => e.OwnerUUID == characterUUID)
+                .ToList();
+            return Task.FromResult<IReadOnlyList<Faction>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task<Faction> GetFactionForCharacterAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task<Faction> GetFactionForCharacterAsync(string characterUUID, string entityUUID)
+        {
+            var entity = _playerRoot.Faction
+                .FirstOrDefault(e => e.UUID == entityUUID && e.OwnerUUID == characterUUID);
+            return Task.FromResult(entity);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertFactionForCharacterAsync(string characterUUID, Faction entity) => throw new NotImplementedException();
+        public Task UpsertFactionForCharacterAsync(string characterUUID, Faction entity)
+        {
+            entity.OwnerUUID = characterUUID;
+            var list = _playerRoot.Faction.ToList();
+            var index = list.FindIndex(e => e.UUID == entity.UUID);
+            if (index >= 0)
+            {
+                list[index] = entity;
+            }
+            else
+            {
+                list.Add(entity);
+            }
+
+            _playerRoot.Faction = list.ToArray();
+            SavePlayerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteFactionForCharacterAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task DeleteFactionForCharacterAsync(string characterUUID, string entityUUID)
+        {
+            _playerRoot.Faction = _playerRoot.Faction
+                .Where(e => !(e.UUID == entityUUID && e.OwnerUUID == characterUUID))
+                .ToArray();
+            SavePlayerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<ExternalCharacter>> GetAllExternalCharactersAsync(string characterUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<ExternalCharacter>> GetAllExternalCharactersAsync(string characterUUID)
+        {
+            var results = _playerRoot.ExternalCharacter
+                .Where(e => e.OwnerUUID == characterUUID)
+                .ToList();
+            return Task.FromResult<IReadOnlyList<ExternalCharacter>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task<ExternalCharacter> GetExternalCharacterAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task<ExternalCharacter> GetExternalCharacterAsync(string characterUUID, string entityUUID)
+        {
+            var entity = _playerRoot.ExternalCharacter
+                .FirstOrDefault(e => e.UUID == entityUUID && e.OwnerUUID == characterUUID);
+            return Task.FromResult(entity);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertExternalCharacterAsync(string characterUUID, ExternalCharacter entity) => throw new NotImplementedException();
+        public Task UpsertExternalCharacterAsync(string characterUUID, ExternalCharacter entity)
+        {
+            entity.OwnerUUID = characterUUID;
+            var list = _playerRoot.ExternalCharacter.ToList();
+            var index = list.FindIndex(e => e.UUID == entity.UUID);
+            if (index >= 0)
+            {
+                list[index] = entity;
+            }
+            else
+            {
+                list.Add(entity);
+            }
+
+            _playerRoot.ExternalCharacter = list.ToArray();
+            SavePlayerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteExternalCharacterAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task DeleteExternalCharacterAsync(string characterUUID, string entityUUID)
+        {
+            _playerRoot.ExternalCharacter = _playerRoot.ExternalCharacter
+                .Where(e => !(e.UUID == entityUUID && e.OwnerUUID == characterUUID))
+                .ToArray();
+            SavePlayerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<WarehouseOverflowRule>> GetAllWarehouseOverflowRulesAsync(string characterUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<WarehouseOverflowRule>> GetAllWarehouseOverflowRulesAsync(string characterUUID)
+        {
+            var results = _playerRoot.WarehouseOverflowRule
+                .Where(e => e.OwnerUUID == characterUUID)
+                .ToList();
+            return Task.FromResult<IReadOnlyList<WarehouseOverflowRule>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task<WarehouseOverflowRule> GetWarehouseOverflowRuleAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task<WarehouseOverflowRule> GetWarehouseOverflowRuleAsync(string characterUUID, string entityUUID)
+        {
+            var entity = _playerRoot.WarehouseOverflowRule
+                .FirstOrDefault(e => e.UUID == entityUUID && e.OwnerUUID == characterUUID);
+            return Task.FromResult(entity);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertWarehouseOverflowRuleAsync(string characterUUID, WarehouseOverflowRule entity) => throw new NotImplementedException();
+        public Task UpsertWarehouseOverflowRuleAsync(string characterUUID, WarehouseOverflowRule entity)
+        {
+            entity.OwnerUUID = characterUUID;
+            var list = _playerRoot.WarehouseOverflowRule.ToList();
+            var index = list.FindIndex(e => e.UUID == entity.UUID);
+            if (index >= 0)
+            {
+                list[index] = entity;
+            }
+            else
+            {
+                list.Add(entity);
+            }
+
+            _playerRoot.WarehouseOverflowRule = list.ToArray();
+            SavePlayerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteWarehouseOverflowRuleAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task DeleteWarehouseOverflowRuleAsync(string characterUUID, string entityUUID)
+        {
+            _playerRoot.WarehouseOverflowRule = _playerRoot.WarehouseOverflowRule
+                .Where(e => !(e.UUID == entityUUID && e.OwnerUUID == characterUUID))
+                .ToArray();
+            SavePlayerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<MailMessage>> GetAllMailMessagesAsync(string characterUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<MailMessage>> GetAllMailMessagesAsync(string characterUUID)
+        {
+            var results = _playerRoot.MailMessage
+                .Where(e => e.OwnerUUID == characterUUID)
+                .ToList();
+            return Task.FromResult<IReadOnlyList<MailMessage>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task<MailMessage> GetMailMessageAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task<MailMessage> GetMailMessageAsync(string characterUUID, string entityUUID)
+        {
+            var entity = _playerRoot.MailMessage
+                .FirstOrDefault(e => e.UUID == entityUUID && e.OwnerUUID == characterUUID);
+            return Task.FromResult(entity);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertMailMessageAsync(string characterUUID, MailMessage entity) => throw new NotImplementedException();
+        public Task UpsertMailMessageAsync(string characterUUID, MailMessage entity)
+        {
+            entity.OwnerUUID = characterUUID;
+            var list = _playerRoot.MailMessage.ToList();
+            var index = list.FindIndex(e => e.UUID == entity.UUID);
+            if (index >= 0)
+            {
+                list[index] = entity;
+            }
+            else
+            {
+                list.Add(entity);
+            }
+
+            _playerRoot.MailMessage = list.ToArray();
+            SavePlayerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteMailMessageAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task DeleteMailMessageAsync(string characterUUID, string entityUUID)
+        {
+            _playerRoot.MailMessage = _playerRoot.MailMessage
+                .Where(e => !(e.UUID == entityUUID && e.OwnerUUID == characterUUID))
+                .ToArray();
+            SavePlayerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<BankingTransaction>> GetAllBankingTransactionsAsync(string characterUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<BankingTransaction>> GetAllBankingTransactionsAsync(string characterUUID)
+        {
+            var results = _playerRoot.BankingTransaction
+                .Where(e => e.OwnerUUID == characterUUID)
+                .ToList();
+            return Task.FromResult<IReadOnlyList<BankingTransaction>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task<BankingTransaction> GetBankingTransactionAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task<BankingTransaction> GetBankingTransactionAsync(string characterUUID, string entityUUID)
+        {
+            var entity = _playerRoot.BankingTransaction
+                .FirstOrDefault(e => e.UUID == entityUUID && e.OwnerUUID == characterUUID);
+            return Task.FromResult(entity);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertBankingTransactionAsync(string characterUUID, BankingTransaction entity) => throw new NotImplementedException();
+        public Task UpsertBankingTransactionAsync(string characterUUID, BankingTransaction entity)
+        {
+            entity.OwnerUUID = characterUUID;
+            var list = _playerRoot.BankingTransaction.ToList();
+            var index = list.FindIndex(e => e.UUID == entity.UUID);
+            if (index >= 0)
+            {
+                list[index] = entity;
+            }
+            else
+            {
+                list.Add(entity);
+            }
+
+            _playerRoot.BankingTransaction = list.ToArray();
+            SavePlayerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteBankingTransactionAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task DeleteBankingTransactionAsync(string characterUUID, string entityUUID)
+        {
+            _playerRoot.BankingTransaction = _playerRoot.BankingTransaction
+                .Where(e => !(e.UUID == entityUUID && e.OwnerUUID == characterUUID))
+                .ToArray();
+            SavePlayerData();
+            return Task.CompletedTask;
+        }
 
 
         // ═══════════════════════════════════════════════════════════
