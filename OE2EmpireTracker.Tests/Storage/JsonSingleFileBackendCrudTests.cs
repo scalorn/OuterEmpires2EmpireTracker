@@ -12,8 +12,8 @@ using NUnit.Framework;
 using OE2EmpireTracker.Common.Interfaces;
 using OE2EmpireTracker.Common.Storage;
 using OE2EmpireTracker.Models;
-using Blueprint = OE2EmpireTracker.Models.Blueprint;
-using Colony = OE2EmpireTracker.Models.Colony;
+
+using BlueprintModel = OE2EmpireTracker.Models.Blueprint;
 namespace OE2EmpireTracker.Tests.Storage
 {
     [TestFixture]
@@ -91,21 +91,21 @@ namespace OE2EmpireTracker.Tests.Storage
         {
             var backend = await CreateBackendAsync();
 
-            var bp1 = new Blueprint
+            var bp1 = new BlueprintModel
             {
                 UUID = "bp-001",
                 OwnerUUID = "char-A",
                 Name = "Hull Mk1"
             };
 
-            var bp2 = new Blueprint
+            var bp2 = new BlueprintModel
             {
                 UUID = "bp-002",
                 OwnerUUID = "char-A",
                 Name = "Hull Mk2"
             };
 
-            var bp3 = new Blueprint
+            var bp3 = new BlueprintModel
             {
                 UUID = "bp-003",
                 OwnerUUID = "char-A",
