@@ -31,6 +31,7 @@ Welcome to the OE2 Empire Tracker documentation. This application helps you mana
 - [Mail](mail.md) — In-game mail archive with background sync and local read tracking
 - [Game API Status](game-api-status.md) — API request metrics, TPS graph, and rate limiter visibility
 - [Preferences](preferences.md) — Configurable thresholds, intervals, and refresh rates
+- [Screenshot Walkthrough](screenshot-walkthrough-guide.md) — Visual guide to the application UI
 
 ## About
 

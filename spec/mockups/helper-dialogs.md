@@ -172,3 +172,94 @@ Behavior:
 - On allocate with no selection, shows warning MessageBox
 - Exposes `SelectedColonyUUID` and `SelectedStructureUUID` after successful allocation
 - Rows sorted by colony name then structure name
+
+---
+
+### FormAbout
+
+Modal dialog displaying application information. Launched from Help → About menu item.
+
+```
++--------------------------------------------------+
+| About                                      [X]   |
++--------------------------------------------------+
+| OE2 Empire Tracker                (bold, 12pt)   |
+| Version 1.0.0.0                                  |
+| Copyright © 2024                                 |
+|                                                  |
+| Empire Tracking Tool for Outer Empires 2         |
+| https://outerempires.net/                (link)  |
+|                                                  |
+| Designed by Scalorn Scorpus                      |
+|                                                  |
+| Developed and maintained via a specification     |
+| development process by Kiro                      |
+| https://kiro.dev/                        (link)  |
+|                                                  |
+| GitHub project at                                |
+| https://github.com/scalorn/...           (link)  |
+|                                                  |
+|                   [ OK ]                         |
++--------------------------------------------------+
+```
+
+Controls:
+- `lblAppName` (Label, Bold 12pt) — Application name "OE2 Empire Tracker"
+- `lblVersion` (Label) — Assembly version string
+- `lblCopyright` (Label) — Copyright notice
+- `lblDescription` (Label) — "Empire Tracking Tool for Outer Empires 2"
+- `lnkGame` (LinkLabel) — Game website URL; opens in default browser on click
+- `lblDesigner` (Label) — Designer credit with email
+- `lblDeveloped` (Label) — Development process attribution
+- `lnkKiro` (LinkLabel) — Kiro website URL; opens in default browser on click
+- `lblGitHub` (Label) — "GitHub project at" prefix text
+- `lnkGitHub` (LinkLabel) — GitHub repository URL; opens in default browser on click
+- `btnOK` (Button) — Closes the dialog (DialogResult.OK, AcceptButton)
+
+Behavior:
+- Fixed-size dialog (450×315), non-resizable (FixedDialog border style)
+- No minimize/maximize buttons
+- Centered on parent window
+- All link labels open URLs via Process.Start on LinkClicked
+
+---
+
+### FormHelp
+
+Non-modal dialog displaying in-app help documentation rendered from markdown files. Launched from Help → Contents (Ctrl+F1) or F1 context-sensitive help.
+
+```
++------------------------------------------------------------------+
+| Help                                                       [X]   |
++------------------------------------------------------------------+
+| +---Topics---+  +---Content----------------------------+         |
+| | ▸ Getting  |  |                                      |         |
+| |   Started  |  |  # Getting Started                   |         |
+| | ▸ Colonies |  |                                      |         |
+| | ▸ Colony   |  |  Welcome to OE2 Empire Tracker...    |         |
+| |   Activity |  |                                      |         |
+| | ▸ Bluepri..|  |  ## Creating a Player Profile        |         |
+| | ▸ Surveys  |  |                                      |         |
+| | ▸ Delivery |  |  To get started, open the Player     |         |
+| |   Routes   |  |  Profile form from the Manage menu.  |         |
+| | ▸ Ships    |  |                                      |         |
+| | ▸ Stations |  |  ...                                 |         |
+| | ▸ Market   |  |                                      |         |
+| +------------+  +--------------------------------------+         |
++------------------------------------------------------------------+
+```
+
+Controls:
+- `splitContainer` (SplitContainer, Dock.Fill) — Divides form into topic tree and content panel
+  - Panel1 (250px default):
+    - `treeViewTopics` (TreeView, Dock.Fill, HideSelection=false) — Hierarchical topic list populated from docs/ folder
+  - Panel2:
+    - `webBrowser` (WebBrowser, Dock.Fill, AllowNavigation=true) — Renders markdown-to-HTML content via HelpRenderer
+
+Behavior:
+- 900×600 default size, centered on parent, resizable
+- TreeView populated on load from HelpTopicRegistry (all docs/*.md files)
+- Selecting a tree node loads the corresponding markdown file, renders via Markdig to HTML, and displays in WebBrowser
+- Internal links (href to other .md files) are intercepted via Navigating event and load the target topic instead of navigating away
+- F1 from any form navigates directly to that form's mapped topic via HelpTopicRegistry
+- Context-sensitive: if opened with a specific topic, selects that node and displays its content immediately

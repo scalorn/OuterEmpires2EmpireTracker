@@ -94,3 +94,51 @@ sequenceDiagram
         Context-->>UI: BankingDataChanged
     end
 ```
+
+
+## Sync Pipeline Requirements
+
+### Token Management
+
+**REQ-GAI-001** TokenRefreshHandler SHALL serialize token refresh attempts using a semaphore so only one 401 → refresh exchange occurs at a time.
+**REQ-GAI-002** Concurrent 401 responses SHALL wait for the in-progress refresh and reuse the updated token (stale-check optimization).
+**REQ-GAI-003** TokenRefreshHandler SHALL increment an internal token version on each successful refresh so callers can detect stale tokens.
+**REQ-GAI-004** TokenRefreshHandler SHALL call GameApiCredentialManager to retrieve the character secret for token exchange.
+
+### Sync Orchestration (QueueSyncService)
+
+**REQ-GAI-010** QueueSyncService SHALL provide a RunSyncAsync method that runs a single sync cycle for all configured characters.
+**REQ-GAI-011** QueueSyncService SHALL return immediately without error if a sync cycle is already in progress (re-entrancy guard via _isSyncRunning flag).
+**REQ-GAI-012** QueueSyncService SHALL iterate each configured character UUID and sync their data independently; failure of one character SHALL NOT abort remaining characters.
+**REQ-GAI-013** QueueSyncService SHALL support cancellation via CancellationToken for cooperative cancellation.
+**REQ-GAI-014** QueueSyncService SHALL return a QueueSyncResult with success/failure counts, elapsed time, and per-character details.
+**REQ-GAI-015** QueueSyncService SHALL provide a RunMarketSyncAsync method that syncs market data for all configured characters and removes stale orders after sync.
+**REQ-GAI-016** QueueSyncService SHALL detect blueprint entries in crate cargo responses and extract them for dual-tracking via BlueprintLinkageService.
+
+### Asset Merge (AssetMergeService)
+
+**REQ-GAI-020** AssetMergeService.MapAssetTypeC SHALL map API TypeC codes to the local ItemTypeEnum, using case-insensitive matching with exact-case disambiguation for ambiguous codes (SH vs Sh).
+**REQ-GAI-021** Unknown TypeC codes SHALL map to ItemTypeEnum.None with a warning logged.
+**REQ-GAI-022** AssetMergeService.ExtractResourcePurity SHALL parse resource names with purity suffixes (e.g. "Heavy Post-Trans Metals (Unrefined, Med Purity)") into separate baseName and normalized purity strings.
+**REQ-GAI-023** AssetMergeService.MergeColonyAssets SHALL merge API cargo items into a colony's ItemBag, creating new items or updating existing items matched by GameItemId.
+**REQ-GAI-024** MergeColonyAssets SHALL remove items not present in the API response (game API is authoritative), except items with active warehouse locks which are zeroed instead.
+**REQ-GAI-025** AssetMergeService.MergeStationAssets SHALL merge API cargo items into a station's target hold, removing stale items not in the response.
+**REQ-GAI-026** AssetMergeService.MergeShipAssets SHALL merge API cargo items into a ship's cargo hold, removing stale items not in the response.
+**REQ-GAI-027** All merge methods SHALL return a boolean indicating whether any changes were made.
+**REQ-GAI-028** All merge methods SHALL handle null inputs gracefully (return false, log warning).
+
+### Crate Content Import (CrateContentImporter)
+
+**REQ-GAI-030** CrateContentImporter SHALL parse typed AssetCrateContents DTOs from the game API and populate the parent crate Item's Contents bag.
+**REQ-GAI-031** CrateContentImporter SHALL map each cargo item's TypeC code via AssetMergeService.MapAssetTypeC to determine the local ItemType.
+**REQ-GAI-032** CrateContentImporter SHALL detect nested crates and return their GameItemIds in the result for cascade processing.
+**REQ-GAI-033** CrateContentImporter SHALL detect cycles (crate A contains crate B contains crate A) using a visited set and terminate recursion on cycle detection.
+**REQ-GAI-034** CrateContentImporter SHALL dual-track blueprint items found in crates via BlueprintLinkageService.
+**REQ-GAI-035** CrateContentImporter SHALL return a CrateContentImportResult with total items, imported count, failed count, blueprints linked, nested crate IDs, per-type counts, errors list, and overall success flag.
+
+### Production Sync Scheduler (ProductionSyncScheduler)
+
+**REQ-GAI-040** ProductionSyncScheduler SHALL be a production subclass of GameApiSyncScheduler that delegates virtual method calls to PlayerContext for real data access and persistence.
+**REQ-GAI-041** ProductionSyncScheduler SHALL provide access to mutable player profiles, colonies, stations, and ships for the sync pipeline to merge into.
+**REQ-GAI-042** ProductionSyncScheduler SHALL call PlayerContext.WriteContext() to persist merged data after sync operations complete.
+**REQ-GAI-043** ProductionSyncScheduler SHALL raise ColonyDataChanged, StationDataChanged, ShipDataChanged, and BankingDataChanged events after successful merges.
