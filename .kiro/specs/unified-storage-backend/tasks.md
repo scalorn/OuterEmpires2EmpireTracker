@@ -229,17 +229,17 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Verification: getDiagnostics — compiles cleanly
 
 - [ ] 7. Postgres Backend — Full Relational Rewrite
-  - [-] 7.1 Create PostgresBackend scaffolding: class, constructor, InitializeAsync, connection management, Polly retry policy
+  - [x] 7.1 Create PostgresBackend scaffolding: class, constructor, InitializeAsync, connection management, Polly retry policy
     - Satisfies: Req 6, Criteria 3-5; Req 9, Criterion 8
     - Inputs: design.md (PostgresBackend section), Common/Interfaces/IStorageBackend.cs
     - Output: OE2EmpireTracker.Common/Storage/PostgresBackend.cs (scaffolding + _metadata + retry)
     - Verification: getDiagnostics — compiles cleanly
-  - [~] 7.2 Postgres schema DDL: All player entity tables (matching SQLite schema with PostgreSQL-native types)
+  - [x] 7.2 Postgres schema DDL: All player entity tables (matching SQLite schema with PostgreSQL-native types)
     - Satisfies: Req 6, Criteria 1-2, 6-7; Req 9, Criterion 8
     - Inputs: Common/Storage/SqliteBackend.cs (schema reference), design.md (Postgres types)
     - Output: OE2EmpireTracker.Common/Storage/PostgresBackend.cs (schema DDL complete)
     - Verification: getDiagnostics — compiles cleanly
-  - [~] 7.3 Postgres schema DDL: All server-global, permission, intel, audit, and baseline tables
+  - [-] 7.3 Postgres schema DDL: All server-global, permission, intel, audit, and baseline tables
     - Satisfies: Req 6, Criteria 1-2, 6-7
     - Inputs: SQLite schema as reference
     - Output: OE2EmpireTracker.Common/Storage/PostgresBackend.cs (full schema DDL)

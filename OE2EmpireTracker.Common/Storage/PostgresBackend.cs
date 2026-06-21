@@ -605,13 +605,342 @@ CREATE TABLE IF NOT EXISTS BankingTransactions (
 );
 ";
 
+        private const string ServerPermissionBaselineSchema = @"
+-- SERVER FACTIONS
+CREATE TABLE IF NOT EXISTS ServerFactions (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT '',
+    Metadata_LastModifiedUtc TEXT,
+    Metadata_ModifiedByTokenId TEXT
+);
+
+CREATE TABLE IF NOT EXISTS ServerFactionLeaders (
+    FactionUUID TEXT NOT NULL REFERENCES ServerFactions(UUID) ON DELETE CASCADE,
+    CharacterUUID TEXT NOT NULL,
+    PRIMARY KEY (FactionUUID, CharacterUUID)
+);
+
+-- SERVER CHARACTERS
+CREATE TABLE IF NOT EXISTS ServerCharacters (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    FactionUUID TEXT,
+    Metadata_LastModifiedUtc TEXT,
+    Metadata_ModifiedByTokenId TEXT
+);
+
+-- API TOKENS
+CREATE TABLE IF NOT EXISTS ApiTokens (
+    Id TEXT PRIMARY KEY,
+    TokenHash TEXT NOT NULL DEFAULT '',
+    CharacterUUID TEXT,
+    Role INTEGER NOT NULL DEFAULT 0,
+    FactionUUID TEXT,
+    CreatedUtc TEXT NOT NULL DEFAULT '',
+    LastUsedUtc TEXT,
+    IsRevoked BOOLEAN NOT NULL DEFAULT FALSE,
+    RateLimits_RequestsPerMinute INTEGER NOT NULL DEFAULT 300
+);
+
+-- MEMBERSHIP ACTIONS
+CREATE TABLE IF NOT EXISTS MembershipActions (
+    Id TEXT PRIMARY KEY,
+    FactionUUID TEXT NOT NULL DEFAULT '',
+    CharacterUUID TEXT NOT NULL DEFAULT '',
+    Type INTEGER NOT NULL DEFAULT 0,
+    CreatedUtc TEXT NOT NULL DEFAULT '',
+    ExpiresUtc TEXT NOT NULL DEFAULT ''
+);
+
+-- STAR SYSTEMS
+CREATE TABLE IF NOT EXISTS StarSystems (
+    Id INTEGER PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    X DOUBLE PRECISION NOT NULL DEFAULT 0,
+    Y DOUBLE PRECISION NOT NULL DEFAULT 0,
+    Quadrant INTEGER NOT NULL DEFAULT 0,
+    Sector INTEGER NOT NULL DEFAULT 0,
+    Region INTEGER NOT NULL DEFAULT 0,
+    Locality INTEGER NOT NULL DEFAULT 0,
+    SpectralClass TEXT NOT NULL DEFAULT '',
+    FactionId INTEGER NOT NULL DEFAULT 0,
+    FactionName TEXT NOT NULL DEFAULT '',
+    FactionColor TEXT NOT NULL DEFAULT '',
+    HasOrbital BOOLEAN NOT NULL DEFAULT FALSE,
+    HasSpaceport BOOLEAN NOT NULL DEFAULT FALSE,
+    HasStarbase BOOLEAN NOT NULL DEFAULT FALSE
+);
+
+-- SHARING RULES
+CREATE TABLE IF NOT EXISTS SharingRules (
+    Id TEXT PRIMARY KEY,
+    OwnerCharacterUUID TEXT NOT NULL DEFAULT '',
+    TargetUUID TEXT NOT NULL DEFAULT '',
+    TargetType INTEGER NOT NULL DEFAULT 0,
+    DataType TEXT,
+    EntityUUID TEXT
+);
+
+-- CHARACTER PREFERENCES
+CREATE TABLE IF NOT EXISTS CharacterPreferences (
+    CharacterUUID TEXT PRIMARY KEY,
+    ServerProcessing BOOLEAN NOT NULL DEFAULT FALSE
+);
+
+-- FACTION CAPABILITIES
+CREATE TABLE IF NOT EXISTS FactionCapabilities (
+    UUID TEXT PRIMARY KEY,
+    FactionUUID TEXT NOT NULL DEFAULT '',
+    Name TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT ''
+);
+
+-- FACTION CLEARANCE LEVELS
+CREATE TABLE IF NOT EXISTS FactionClearanceLevels (
+    UUID TEXT PRIMARY KEY,
+    FactionUUID TEXT NOT NULL DEFAULT '',
+    Level INTEGER NOT NULL DEFAULT 0,
+    Name TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT ''
+);
+
+-- FACTION PERMISSION GROUPS
+CREATE TABLE IF NOT EXISTS FactionPermissionGroups (
+    UUID TEXT PRIMARY KEY,
+    FactionUUID TEXT NOT NULL DEFAULT '',
+    Name TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT '',
+    DefaultClearanceLevelUUID TEXT NOT NULL DEFAULT ''
+);
+
+-- FACTION GROUP CAPABILITIES (junction)
+CREATE TABLE IF NOT EXISTS FactionGroupCapabilities (
+    GroupUUID TEXT NOT NULL,
+    CapabilityUUID TEXT NOT NULL,
+    PRIMARY KEY (GroupUUID, CapabilityUUID)
+);
+
+-- FACTION GROUP SHARING RULES
+CREATE TABLE IF NOT EXISTS FactionGroupSharingRules (
+    UUID TEXT PRIMARY KEY,
+    GroupUUID TEXT NOT NULL DEFAULT '',
+    DataType TEXT,
+    EntityUUID TEXT,
+    MinClearanceLevelUUID TEXT NOT NULL DEFAULT ''
+);
+
+-- FACTION MEMBER PERMISSIONS
+CREATE TABLE IF NOT EXISTS FactionMemberPermissions (
+    FactionUUID TEXT NOT NULL,
+    CharacterUUID TEXT NOT NULL,
+    GroupUUID TEXT,
+    ClearanceLevelUUID TEXT NOT NULL DEFAULT '',
+    PRIMARY KEY (FactionUUID, CharacterUUID)
+);
+
+-- FACTION MEMBER CAPABILITIES (junction)
+CREATE TABLE IF NOT EXISTS FactionMemberCapabilities (
+    FactionUUID TEXT NOT NULL,
+    CharacterUUID TEXT NOT NULL,
+    CapabilityUUID TEXT NOT NULL,
+    PRIMARY KEY (FactionUUID, CharacterUUID, CapabilityUUID)
+);
+
+-- CHARACTER CAPABILITIES
+CREATE TABLE IF NOT EXISTS CharacterCapabilities (
+    UUID TEXT PRIMARY KEY,
+    OwnerCharacterUUID TEXT NOT NULL DEFAULT '',
+    Name TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT ''
+);
+
+-- CHARACTER CLEARANCE LEVELS
+CREATE TABLE IF NOT EXISTS CharacterClearanceLevels (
+    UUID TEXT PRIMARY KEY,
+    OwnerCharacterUUID TEXT NOT NULL DEFAULT '',
+    Level INTEGER NOT NULL DEFAULT 0,
+    Name TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT ''
+);
+
+-- CHARACTER PERMISSION GROUPS
+CREATE TABLE IF NOT EXISTS CharacterPermissionGroups (
+    UUID TEXT PRIMARY KEY,
+    OwnerCharacterUUID TEXT NOT NULL DEFAULT '',
+    Name TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT '',
+    DefaultClearanceLevelUUID TEXT NOT NULL DEFAULT ''
+);
+
+-- CHARACTER GROUP CAPABILITIES (junction)
+CREATE TABLE IF NOT EXISTS CharacterGroupCapabilities (
+    GroupUUID TEXT NOT NULL,
+    CapabilityUUID TEXT NOT NULL,
+    PRIMARY KEY (GroupUUID, CapabilityUUID)
+);
+
+-- CHARACTER GROUP SHARING RULES
+CREATE TABLE IF NOT EXISTS CharacterGroupSharingRules (
+    UUID TEXT PRIMARY KEY,
+    GroupUUID TEXT NOT NULL DEFAULT '',
+    DataType TEXT,
+    EntityUUID TEXT
+);
+
+-- CHARACTER GRANTEE PERMISSIONS
+CREATE TABLE IF NOT EXISTS CharacterGranteePermissions (
+    OwnerCharacterUUID TEXT NOT NULL,
+    GranteeType INTEGER NOT NULL DEFAULT 0,
+    GranteeUUID TEXT NOT NULL,
+    GroupUUID TEXT,
+    ClearanceLevelUUID TEXT,
+    PRIMARY KEY (OwnerCharacterUUID, GranteeUUID)
+);
+
+-- CHARACTER GRANTEE CAPABILITIES (junction)
+CREATE TABLE IF NOT EXISTS CharacterGranteeCapabilities (
+    OwnerCharacterUUID TEXT NOT NULL,
+    GranteeUUID TEXT NOT NULL,
+    CapabilityUUID TEXT NOT NULL,
+    PRIMARY KEY (OwnerCharacterUUID, GranteeUUID, CapabilityUUID)
+);
+
+-- INTEL COMMENTS
+CREATE TABLE IF NOT EXISTS IntelComments (
+    UUID TEXT PRIMARY KEY,
+    TargetCharacterUUID TEXT NOT NULL DEFAULT '',
+    SubmitterCharacterUUID TEXT NOT NULL DEFAULT '',
+    Text TEXT NOT NULL DEFAULT '',
+    CreatedUtc TEXT NOT NULL DEFAULT ''
+);
+
+-- INTEL COMMENT FACTION SHARES
+CREATE TABLE IF NOT EXISTS IntelCommentFactionShares (
+    UUID TEXT PRIMARY KEY,
+    IntelCommentUUID TEXT NOT NULL REFERENCES IntelComments(UUID) ON DELETE CASCADE,
+    FactionUUID TEXT NOT NULL DEFAULT '',
+    ClassificationLevelUUID TEXT,
+    ClassifiedByCharacterUUID TEXT,
+    SharedUtc TEXT NOT NULL DEFAULT '',
+    ClassifiedUtc TEXT
+);
+
+-- PERMISSION AUDIT ENTRIES
+CREATE TABLE IF NOT EXISTS PermissionAuditEntries (
+    UUID TEXT PRIMARY KEY,
+    Timestamp TEXT NOT NULL DEFAULT '',
+    ActorCharacterUUID TEXT NOT NULL DEFAULT '',
+    TargetCharacterUUID TEXT NOT NULL DEFAULT '',
+    ActionType INTEGER NOT NULL DEFAULT 0,
+    OldValue TEXT NOT NULL DEFAULT '',
+    NewValue TEXT NOT NULL DEFAULT ''
+);
+
+-- BASELINE GAME CONSTANTS
+CREATE TABLE IF NOT EXISTS BaselineGameConstants (
+    Id INTEGER PRIMARY KEY DEFAULT 1,
+    DataVersion INTEGER NOT NULL DEFAULT 0,
+    LastUpdatedUtc TEXT
+);
+
+-- BLUEPRINT TYPES
+CREATE TABLE IF NOT EXISTS BlueprintTypes (
+    Name TEXT PRIMARY KEY,
+    Category TEXT NOT NULL DEFAULT '',
+    TechLevel TEXT NOT NULL DEFAULT '',
+    BaseVolume DOUBLE PRECISION NOT NULL DEFAULT 0,
+    BaseMass DOUBLE PRECISION NOT NULL DEFAULT 0
+);
+
+-- BLUEPRINT TYPE PROPERTIES (default properties for a blueprint type)
+CREATE TABLE IF NOT EXISTS BlueprintTypeProperties (
+    BlueprintTypeName TEXT NOT NULL REFERENCES BlueprintTypes(Name) ON DELETE CASCADE,
+    Key TEXT NOT NULL,
+    DefaultValue TEXT NOT NULL DEFAULT '',
+    PRIMARY KEY (BlueprintTypeName, Key)
+);
+
+-- BLUEPRINT TYPE RESEARCHABLE PROPERTIES
+CREATE TABLE IF NOT EXISTS BlueprintTypeResearchableProperties (
+    BlueprintTypeName TEXT NOT NULL REFERENCES BlueprintTypes(Name) ON DELETE CASCADE,
+    Key TEXT NOT NULL,
+    MinValue TEXT NOT NULL DEFAULT '',
+    MaxValue TEXT NOT NULL DEFAULT '',
+    PRIMARY KEY (BlueprintTypeName, Key)
+);
+
+-- SHIP CLASSES
+CREATE TABLE IF NOT EXISTS ShipClasses (
+    Name TEXT PRIMARY KEY,
+    HullType TEXT NOT NULL DEFAULT '',
+    CargoCapacity INTEGER NOT NULL DEFAULT 0,
+    HopperCapacity INTEGER NOT NULL DEFAULT 0,
+    ComponentSlots INTEGER NOT NULL DEFAULT 0,
+    BaseHP INTEGER NOT NULL DEFAULT 0
+);
+
+-- TECH LEVELS
+CREATE TABLE IF NOT EXISTS TechLevels (
+    Name TEXT PRIMARY KEY,
+    Level INTEGER NOT NULL DEFAULT 0,
+    Description TEXT NOT NULL DEFAULT ''
+);
+
+-- COMMODITIES
+CREATE TABLE IF NOT EXISTS Commodities (
+    Name TEXT PRIMARY KEY,
+    Category TEXT NOT NULL DEFAULT '',
+    BaseVolume DOUBLE PRECISION NOT NULL DEFAULT 0,
+    BaseMass DOUBLE PRECISION NOT NULL DEFAULT 0,
+    BaseValue DOUBLE PRECISION NOT NULL DEFAULT 0
+);
+
+-- COMMODITY RESOURCES (construction recipe)
+CREATE TABLE IF NOT EXISTS CommodityResources (
+    CommodityName TEXT NOT NULL REFERENCES Commodities(Name) ON DELETE CASCADE,
+    ResourceName TEXT NOT NULL,
+    Quantity INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (CommodityName, ResourceName)
+);
+
+-- REFINING RECIPES
+CREATE TABLE IF NOT EXISTS RefiningRecipes (
+    Id TEXT PRIMARY KEY,
+    InputResource TEXT NOT NULL DEFAULT '',
+    InputPurity TEXT NOT NULL DEFAULT '',
+    OutputResource TEXT NOT NULL DEFAULT '',
+    OutputPurity TEXT NOT NULL DEFAULT '',
+    OutputQuantity INTEGER NOT NULL DEFAULT 0,
+    ProcessingTime INTEGER NOT NULL DEFAULT 0
+);
+
+-- RESEARCH TIMES
+CREATE TABLE IF NOT EXISTS ResearchTimes (
+    Id TEXT PRIMARY KEY,
+    BlueprintType TEXT NOT NULL DEFAULT '',
+    TechLevel TEXT NOT NULL DEFAULT '',
+    PropertyKey TEXT NOT NULL DEFAULT '',
+    BaseTimeMinutes INTEGER NOT NULL DEFAULT 0
+);
+
+-- PROPERTY TYPE DEFINITIONS
+CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
+    Key TEXT PRIMARY KEY,
+    DisplayName TEXT NOT NULL DEFAULT '',
+    Category TEXT NOT NULL DEFAULT '',
+    DataType TEXT NOT NULL DEFAULT 'string',
+    Unit TEXT NOT NULL DEFAULT ''
+);
+";
+
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         /// Schema DDL concatenated from tasks 7.2-7.3. ExecuteSchema runs this
         /// against a fresh database.
         /// </summary>
-        private static readonly string SchemaDdl = PlayerEntitySchemaA + PlayerEntitySchemaB + PlayerEntitySchemaC;
+        private static readonly string SchemaDdl = PlayerEntitySchemaA + PlayerEntitySchemaB + PlayerEntitySchemaC + ServerPermissionBaselineSchema;
 
         private readonly string _connectionString;
         private readonly RetryPolicy _retryPolicy;
