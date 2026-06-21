@@ -1905,52 +1905,260 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
         }
 
         // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — PlayerProfile (stubs — Phase 6)
+        // Per-Character Entity CRUD — PlayerProfile
         // ═══════════════════════════════════════════════════════════
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<PlayerProfile>> GetAllPlayerProfilesAsync(string characterUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<PlayerProfile>> GetAllPlayerProfilesAsync(string characterUUID)
+        {
+            var results = new List<PlayerProfile>();
+            using (var conn = OpenConnection())
+            {
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT * FROM PlayerProfiles WHERE UUID = @uuid";
+                    cmd.Parameters.AddWithValue("@uuid", characterUUID);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            results.Add(ReadPlayerProfileParent(reader));
+                        }
+                    }
+                }
+
+                foreach (var profile in results)
+                {
+                    profile.Skills = LoadPlayerSkills(conn, profile.UUID);
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<PlayerProfile>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task<PlayerProfile> GetPlayerProfileAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task<PlayerProfile> GetPlayerProfileAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM PlayerProfiles WHERE UUID = @uuid";
+                cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        var profile = ReadPlayerProfileParent(reader);
+                        profile.Skills = LoadPlayerSkills(conn, profile.UUID);
+                        return Task.FromResult(profile);
+                    }
+                }
+            }
+
+            return Task.FromResult<PlayerProfile>(null);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertPlayerProfileAsync(string characterUUID, PlayerProfile entity) => throw new NotImplementedException();
+        public Task UpsertPlayerProfileAsync(string characterUUID, PlayerProfile entity)
+        {
+            using (var conn = OpenConnection())
+            using (var tx = conn.BeginTransaction())
+            {
+                UpsertPlayerProfileParent(conn, tx, entity);
+                DeletePlayerProfileChildren(conn, tx, entity.UUID);
+                InsertPlayerSkills(conn, tx, entity);
+                tx.Commit();
+            }
+
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeletePlayerProfileAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task DeletePlayerProfileAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                // CASCADE handles PlayerSkills
+                cmd.CommandText = "DELETE FROM PlayerProfiles WHERE UUID = @uuid";
+                cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
 
         // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — DeliveryRoute (stubs — Phase 6)
+        // Per-Character Entity CRUD — DeliveryRoute
         // ═══════════════════════════════════════════════════════════
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<DeliveryRoute>> GetAllDeliveryRoutesAsync(string characterUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<DeliveryRoute>> GetAllDeliveryRoutesAsync(string characterUUID)
+        {
+            var results = new List<DeliveryRoute>();
+            using (var conn = OpenConnection())
+            {
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT * FROM DeliveryRoutes WHERE OwnerUUID = @ownerUUID";
+                    cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            results.Add(ReadDeliveryRouteParent(reader));
+                        }
+                    }
+                }
+
+                foreach (var route in results)
+                {
+                    route.Stops = LoadDeliveryRouteStops(conn, route.UUID);
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<DeliveryRoute>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task<DeliveryRoute> GetDeliveryRouteAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task<DeliveryRoute> GetDeliveryRouteAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM DeliveryRoutes WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        var route = ReadDeliveryRouteParent(reader);
+                        route.Stops = LoadDeliveryRouteStops(conn, route.UUID);
+                        return Task.FromResult(route);
+                    }
+                }
+            }
+
+            return Task.FromResult<DeliveryRoute>(null);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertDeliveryRouteAsync(string characterUUID, DeliveryRoute entity) => throw new NotImplementedException();
+        public Task UpsertDeliveryRouteAsync(string characterUUID, DeliveryRoute entity)
+        {
+            using (var conn = OpenConnection())
+            using (var tx = conn.BeginTransaction())
+            {
+                UpsertDeliveryRouteParent(conn, tx, characterUUID, entity);
+                DeleteDeliveryRouteChildren(conn, tx, entity.UUID);
+                InsertDeliveryRouteStops(conn, tx, entity);
+                tx.Commit();
+            }
+
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteDeliveryRouteAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task DeleteDeliveryRouteAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                // CASCADE handles DeliveryRouteStops
+                cmd.CommandText = "DELETE FROM DeliveryRoutes WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
 
         // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — DeliveryPlan (stubs — Phase 6)
+        // Per-Character Entity CRUD — DeliveryPlan
         // ═══════════════════════════════════════════════════════════
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<DeliveryPlan>> GetAllDeliveryPlansAsync(string characterUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<DeliveryPlan>> GetAllDeliveryPlansAsync(string characterUUID)
+        {
+            var results = new List<DeliveryPlan>();
+            using (var conn = OpenConnection())
+            {
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT * FROM DeliveryPlans WHERE OwnerUUID = @ownerUUID";
+                    cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            results.Add(ReadDeliveryPlanParent(reader));
+                        }
+                    }
+                }
+
+                foreach (var plan in results)
+                {
+                    plan.Stops = LoadDeliveryPlanStops(conn, plan.UUID);
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<DeliveryPlan>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task<DeliveryPlan> GetDeliveryPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task<DeliveryPlan> GetDeliveryPlanAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM DeliveryPlans WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        var plan = ReadDeliveryPlanParent(reader);
+                        plan.Stops = LoadDeliveryPlanStops(conn, plan.UUID);
+                        return Task.FromResult(plan);
+                    }
+                }
+            }
+
+            return Task.FromResult<DeliveryPlan>(null);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertDeliveryPlanAsync(string characterUUID, DeliveryPlan entity) => throw new NotImplementedException();
+        public Task UpsertDeliveryPlanAsync(string characterUUID, DeliveryPlan entity)
+        {
+            using (var conn = OpenConnection())
+            using (var tx = conn.BeginTransaction())
+            {
+                UpsertDeliveryPlanParent(conn, tx, characterUUID, entity);
+                DeleteDeliveryPlanChildren(conn, tx, entity.UUID);
+                InsertDeliveryPlanChildren(conn, tx, entity);
+                tx.Commit();
+            }
+
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteDeliveryPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task DeleteDeliveryPlanAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                // CASCADE handles DeliveryPlanStops and DeliveryPlanItems
+                cmd.CommandText = "DELETE FROM DeliveryPlans WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
 
         // ═══════════════════════════════════════════════════════════
         // Per-Character Entity CRUD — Ship (stubs — Phase 6)
@@ -3251,6 +3459,523 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
                         cmd.Parameters.AddWithValue("@amount", int.TryParse(kvp.Value.Amount, out var amt) ? amt : 0);
                         cmd.ExecuteNonQuery();
                     }
+                }
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // PlayerProfile Helpers
+        // ═══════════════════════════════════════════════════════════
+
+        private static PlayerProfile ReadPlayerProfileParent(SqliteDataReader reader)
+        {
+            var profile = new PlayerProfile
+            {
+                UUID = reader["UUID"] as string ?? string.Empty,
+                Name = reader["Name"] as string ?? string.Empty,
+                Faction = reader["Faction"] as string ?? string.Empty,
+                FactionUUID = reader["FactionUUID"] as string ?? string.Empty,
+                TotalCredits = Convert.ToDecimal(reader["TotalCredits"]),
+                SkillPoints = Convert.ToInt32(reader["SkillPoints"]),
+                CitizenId = reader["CitizenId"] as string ?? string.Empty,
+                RegistrationDate = reader["RegistrationDate"] as string ?? string.Empty,
+                ActiveTime = reader["ActiveTime"] as string ?? string.Empty,
+                CharacterId = Convert.ToInt32(reader["CharacterId"]),
+                FirstName = reader["FirstName"] as string ?? string.Empty,
+                LastName = reader["LastName"] as string ?? string.Empty,
+                ActiveTimeMinutes = Convert.ToInt32(reader["ActiveTimeMinutes"]),
+                Public = new PlayerRank
+                {
+                    Rank = Convert.ToInt32(reader["PublicRank_Rank"]),
+                    CurrentXp = Convert.ToInt64(reader["PublicRank_CurrentXp"]),
+                    XpToNextLevel = Convert.ToInt64(reader["PublicRank_XpToNextLevel"]),
+                    RankName = reader["PublicRank_RankName"] as string ?? string.Empty,
+                },
+                Private = new PlayerRank
+                {
+                    Rank = Convert.ToInt32(reader["PrivateRank_Rank"]),
+                    CurrentXp = Convert.ToInt64(reader["PrivateRank_CurrentXp"]),
+                    XpToNextLevel = Convert.ToInt64(reader["PrivateRank_XpToNextLevel"]),
+                    RankName = reader["PrivateRank_RankName"] as string ?? string.Empty,
+                },
+                Military = new PlayerRank
+                {
+                    Rank = Convert.ToInt32(reader["MilitaryRank_Rank"]),
+                    CurrentXp = Convert.ToInt64(reader["MilitaryRank_CurrentXp"]),
+                    XpToNextLevel = Convert.ToInt64(reader["MilitaryRank_XpToNextLevel"]),
+                    RankName = reader["MilitaryRank_RankName"] as string ?? string.Empty,
+                },
+            };
+
+            return profile;
+        }
+
+        private static Dictionary<string, PlayerSkill> LoadPlayerSkills(SqliteConnection conn, string playerUUID)
+        {
+            var skills = new Dictionary<string, PlayerSkill>();
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM PlayerSkills WHERE PlayerUUID = @pUUID";
+                cmd.Parameters.AddWithValue("@pUUID", playerUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var skillName = reader["SkillName"] as string ?? string.Empty;
+                        var skill = new PlayerSkill
+                        {
+                            Level = Convert.ToInt32(reader["Level"]),
+                            TrainingStarted = Convert.ToInt32(reader["TrainingStarted"]) != 0,
+                            SkillId = Convert.ToInt32(reader["SkillId"]),
+                            EffectDescription = reader["EffectDescription"] as string ?? string.Empty,
+                            AmountPerLevel = Convert.ToInt32(reader["AmountPerLevel"]),
+                            SkillGroupName = reader["SkillGroupName"] as string ?? string.Empty,
+                            IsUnlocked = Convert.ToInt32(reader["IsUnlocked"]) != 0,
+                            TargetLevel = Convert.ToInt32(reader["TargetLevel"]),
+                            TrainingPercentageComplete = Convert.ToInt32(reader["TrainingPercentageComplete"]),
+                            RemainingMinutes = Convert.ToInt32(reader["RemainingMinutes"]),
+                        };
+
+                        var completionStart = reader["Completion_StartTime"] as string;
+                        if (completionStart != null)
+                        {
+                            skill.CompletionTime = new CountDownTime
+                            {
+                                StartTime = DateTime.Parse(completionStart),
+                                RepeatIntervalSeconds = reader["Completion_RepeatIntervalSeconds"] == DBNull.Value ? 0 : Convert.ToInt64(reader["Completion_RepeatIntervalSeconds"]),
+                            };
+                        }
+
+                        skills[skillName] = skill;
+                    }
+                }
+            }
+
+            return skills;
+        }
+
+        private static void UpsertPlayerProfileParent(SqliteConnection conn, SqliteTransaction tx, PlayerProfile entity)
+        {
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = @"INSERT OR REPLACE INTO PlayerProfiles (
+                    UUID, Name, Faction, FactionUUID, TotalCredits, SkillPoints,
+                    CitizenId, RegistrationDate, ActiveTime, CharacterId,
+                    FirstName, LastName, ActiveTimeMinutes,
+                    PublicRank_Rank, PublicRank_CurrentXp, PublicRank_XpToNextLevel, PublicRank_RankName,
+                    PrivateRank_Rank, PrivateRank_CurrentXp, PrivateRank_XpToNextLevel, PrivateRank_RankName,
+                    MilitaryRank_Rank, MilitaryRank_CurrentXp, MilitaryRank_XpToNextLevel, MilitaryRank_RankName
+                ) VALUES (
+                    @uuid, @name, @faction, @factionUUID, @credits, @skillPts,
+                    @citizenId, @regDate, @activeTime, @charId,
+                    @firstName, @lastName, @activeMin,
+                    @pubRank, @pubXp, @pubNext, @pubName,
+                    @privRank, @privXp, @privNext, @privName,
+                    @milRank, @milXp, @milNext, @milName
+                )";
+                cmd.Parameters.AddWithValue("@uuid", entity.UUID);
+                cmd.Parameters.AddWithValue("@name", entity.Name ?? string.Empty);
+                cmd.Parameters.AddWithValue("@faction", entity.Faction ?? string.Empty);
+                cmd.Parameters.AddWithValue("@factionUUID", entity.FactionUUID ?? string.Empty);
+                cmd.Parameters.AddWithValue("@credits", (double)entity.TotalCredits);
+                cmd.Parameters.AddWithValue("@skillPts", entity.SkillPoints);
+                cmd.Parameters.AddWithValue("@citizenId", entity.CitizenId ?? string.Empty);
+                cmd.Parameters.AddWithValue("@regDate", entity.RegistrationDate ?? string.Empty);
+                cmd.Parameters.AddWithValue("@activeTime", entity.ActiveTime ?? string.Empty);
+                cmd.Parameters.AddWithValue("@charId", entity.CharacterId);
+                cmd.Parameters.AddWithValue("@firstName", entity.FirstName ?? string.Empty);
+                cmd.Parameters.AddWithValue("@lastName", entity.LastName ?? string.Empty);
+                cmd.Parameters.AddWithValue("@activeMin", entity.ActiveTimeMinutes);
+                cmd.Parameters.AddWithValue("@pubRank", entity.Public?.Rank ?? 0);
+                cmd.Parameters.AddWithValue("@pubXp", entity.Public?.CurrentXp ?? 0L);
+                cmd.Parameters.AddWithValue("@pubNext", entity.Public?.XpToNextLevel ?? 0L);
+                cmd.Parameters.AddWithValue("@pubName", entity.Public?.RankName ?? string.Empty);
+                cmd.Parameters.AddWithValue("@privRank", entity.Private?.Rank ?? 0);
+                cmd.Parameters.AddWithValue("@privXp", entity.Private?.CurrentXp ?? 0L);
+                cmd.Parameters.AddWithValue("@privNext", entity.Private?.XpToNextLevel ?? 0L);
+                cmd.Parameters.AddWithValue("@privName", entity.Private?.RankName ?? string.Empty);
+                cmd.Parameters.AddWithValue("@milRank", entity.Military?.Rank ?? 0);
+                cmd.Parameters.AddWithValue("@milXp", entity.Military?.CurrentXp ?? 0L);
+                cmd.Parameters.AddWithValue("@milNext", entity.Military?.XpToNextLevel ?? 0L);
+                cmd.Parameters.AddWithValue("@milName", entity.Military?.RankName ?? string.Empty);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        private static void DeletePlayerProfileChildren(SqliteConnection conn, SqliteTransaction tx, string playerUUID)
+        {
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = "DELETE FROM PlayerSkills WHERE PlayerUUID = @uuid";
+                cmd.Parameters.AddWithValue("@uuid", playerUUID);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        private static void InsertPlayerSkills(SqliteConnection conn, SqliteTransaction tx, PlayerProfile entity)
+        {
+            if (entity.Skills == null)
+            {
+                return;
+            }
+
+            foreach (var kvp in entity.Skills)
+            {
+                var skillName = kvp.Key;
+                var skill = kvp.Value;
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.Transaction = tx;
+                    cmd.CommandText = @"INSERT INTO PlayerSkills (
+                        PlayerUUID, SkillName, Level, TrainingStarted, SkillId,
+                        EffectDescription, AmountPerLevel, SkillGroupName, IsUnlocked,
+                        TargetLevel, TrainingPercentageComplete, RemainingMinutes,
+                        Completion_StartTime, Completion_RepeatIntervalSeconds, Completion_IsRepeating
+                    ) VALUES (
+                        @pUUID, @skillName, @level, @training, @skillId,
+                        @effect, @amount, @group, @unlocked,
+                        @target, @pct, @remaining,
+                        @cStart, @cInterval, @cRepeat
+                    )";
+                    cmd.Parameters.AddWithValue("@pUUID", entity.UUID);
+                    cmd.Parameters.AddWithValue("@skillName", skillName);
+                    cmd.Parameters.AddWithValue("@level", skill.Level);
+                    cmd.Parameters.AddWithValue("@training", skill.TrainingStarted ? 1 : 0);
+                    cmd.Parameters.AddWithValue("@skillId", skill.SkillId);
+                    cmd.Parameters.AddWithValue("@effect", skill.EffectDescription ?? string.Empty);
+                    cmd.Parameters.AddWithValue("@amount", skill.AmountPerLevel);
+                    cmd.Parameters.AddWithValue("@group", skill.SkillGroupName ?? string.Empty);
+                    cmd.Parameters.AddWithValue("@unlocked", skill.IsUnlocked ? 1 : 0);
+                    cmd.Parameters.AddWithValue("@target", skill.TargetLevel);
+                    cmd.Parameters.AddWithValue("@pct", skill.TrainingPercentageComplete);
+                    cmd.Parameters.AddWithValue("@remaining", skill.RemainingMinutes);
+
+                    if (skill.CompletionTime != null && skill.CompletionTime.StartTime != DateTime.MinValue)
+                    {
+                        cmd.Parameters.AddWithValue("@cStart", skill.CompletionTime.StartTime.ToString("O"));
+                        cmd.Parameters.AddWithValue("@cInterval", skill.CompletionTime.RepeatIntervalSeconds);
+                        cmd.Parameters.AddWithValue("@cRepeat", skill.CompletionTime.IsRepeating ? 1 : 0);
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@cStart", DBNull.Value);
+                        cmd.Parameters.AddWithValue("@cInterval", DBNull.Value);
+                        cmd.Parameters.AddWithValue("@cRepeat", DBNull.Value);
+                    }
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // DeliveryRoute Helpers
+        // ═══════════════════════════════════════════════════════════
+
+        private static DeliveryRoute ReadDeliveryRouteParent(SqliteDataReader reader)
+        {
+            return new DeliveryRoute
+            {
+                UUID = reader["UUID"] as string,
+                Name = reader["Name"] as string ?? string.Empty,
+                OwnerUUID = reader["OwnerUUID"] as string ?? string.Empty,
+            };
+        }
+
+        private static List<RouteStop> LoadDeliveryRouteStops(SqliteConnection conn, string routeUUID)
+        {
+            var stops = new List<RouteStop>();
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM DeliveryRouteStops WHERE DeliveryRouteUUID = @rUUID ORDER BY Sequence";
+                cmd.Parameters.AddWithValue("@rUUID", routeUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var stop = new RouteStop
+                        {
+                            Sequence = Convert.ToInt32(reader["Sequence"]),
+                            ColonyUUID = reader["ColonyUUID"] as string ?? string.Empty,
+                            DestinationUUID = reader["DestinationUUID"] as string ?? string.Empty,
+                            FuelEstimate = Convert.ToDecimal(reader["FuelEstimate"]),
+                        };
+
+                        var destTypeStr = reader["DestinationType"] as string;
+                        if (Enum.TryParse<DestinationType>(destTypeStr, true, out var dt))
+                        {
+                            stop.DestinationType = dt;
+                        }
+
+                        var purposeStr = reader["Purpose"] as string;
+                        if (Enum.TryParse<RouteStopPurpose>(purposeStr, true, out var purpose))
+                        {
+                            stop.Purpose = purpose;
+                        }
+
+                        stops.Add(stop);
+                    }
+                }
+            }
+
+            return stops;
+        }
+
+        private static void UpsertDeliveryRouteParent(SqliteConnection conn, SqliteTransaction tx, string characterUUID, DeliveryRoute entity)
+        {
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = @"INSERT OR REPLACE INTO DeliveryRoutes (UUID, Name, OwnerUUID)
+                                   VALUES (@uuid, @name, @owner)";
+                cmd.Parameters.AddWithValue("@uuid", entity.UUID);
+                cmd.Parameters.AddWithValue("@name", entity.Name ?? string.Empty);
+                cmd.Parameters.AddWithValue("@owner", characterUUID);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        private static void DeleteDeliveryRouteChildren(SqliteConnection conn, SqliteTransaction tx, string routeUUID)
+        {
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = "DELETE FROM DeliveryRouteStops WHERE DeliveryRouteUUID = @uuid";
+                cmd.Parameters.AddWithValue("@uuid", routeUUID);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        private static void InsertDeliveryRouteStops(SqliteConnection conn, SqliteTransaction tx, DeliveryRoute entity)
+        {
+            if (entity.Stops == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < entity.Stops.Count; i++)
+            {
+                var stop = entity.Stops[i];
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.Transaction = tx;
+                    cmd.CommandText = @"INSERT INTO DeliveryRouteStops (
+                        DeliveryRouteUUID, Sequence, ColonyUUID, DestinationType, DestinationUUID, Purpose, FuelEstimate
+                    ) VALUES (
+                        @rUUID, @seq, @colUUID, @destType, @destUUID, @purpose, @fuel
+                    )";
+                    cmd.Parameters.AddWithValue("@rUUID", entity.UUID);
+                    cmd.Parameters.AddWithValue("@seq", stop.Sequence);
+                    cmd.Parameters.AddWithValue("@colUUID", stop.ColonyUUID ?? string.Empty);
+                    cmd.Parameters.AddWithValue("@destType", stop.DestinationType.ToString());
+                    cmd.Parameters.AddWithValue("@destUUID", stop.DestinationUUID ?? string.Empty);
+                    cmd.Parameters.AddWithValue("@purpose", stop.Purpose.ToString());
+                    cmd.Parameters.AddWithValue("@fuel", (double)stop.FuelEstimate);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // DeliveryPlan Helpers
+        // ═══════════════════════════════════════════════════════════
+
+        private static DeliveryPlan ReadDeliveryPlanParent(SqliteDataReader reader)
+        {
+            return new DeliveryPlan
+            {
+                UUID = reader["UUID"] as string,
+                Name = reader["Name"] as string ?? string.Empty,
+                OwnerUUID = reader["OwnerUUID"] as string ?? string.Empty,
+                RouteUUID = reader["RouteUUID"] as string ?? string.Empty,
+                ShipUUID = reader["ShipUUID"] as string ?? string.Empty,
+                Completed = Convert.ToInt32(reader["Completed"]) != 0,
+            };
+        }
+
+        private static List<DeliveryPlanStop> LoadDeliveryPlanStops(SqliteConnection conn, string planUUID)
+        {
+            var stops = new List<DeliveryPlanStop>();
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM DeliveryPlanStops WHERE DeliveryPlanUUID = @pUUID ORDER BY Sequence";
+                cmd.Parameters.AddWithValue("@pUUID", planUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var stop = new DeliveryPlanStop
+                        {
+                            Sequence = Convert.ToInt32(reader["Sequence"]),
+                            ColonyUUID = reader["ColonyUUID"] as string ?? string.Empty,
+                            StopCompleted = Convert.ToInt32(reader["StopCompleted"]) != 0,
+                            DestinationUUID = reader["DestinationUUID"] as string ?? string.Empty,
+                        };
+
+                        var destTypeStr = reader["DestinationType"] as string;
+                        if (Enum.TryParse<DestinationType>(destTypeStr, true, out var dt))
+                        {
+                            stop.DestinationType = dt;
+                        }
+
+                        stops.Add(stop);
+                    }
+                }
+            }
+
+            // Load items for each stop
+            foreach (var stop in stops)
+            {
+                LoadDeliveryPlanItems(conn, planUUID, stop);
+            }
+
+            return stops;
+        }
+
+        private static void LoadDeliveryPlanItems(SqliteConnection conn, string planUUID, DeliveryPlanStop stop)
+        {
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM DeliveryPlanItems WHERE DeliveryPlanUUID = @pUUID AND StopSequence = @seq ORDER BY Direction, Sequence";
+                cmd.Parameters.AddWithValue("@pUUID", planUUID);
+                cmd.Parameters.AddWithValue("@seq", stop.Sequence);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var item = new DeliveryItem
+                        {
+                            BaseItemTypeID = reader["BaseItemTypeID"] as string ?? string.Empty,
+                            Name = reader["Name"] as string ?? string.Empty,
+                            ResourcePurity = reader["ResourcePurity"] as string ?? string.Empty,
+                            Quantity = Convert.ToInt32(reader["Quantity"]),
+                            Delivered = Convert.ToInt32(reader["Delivered"]) != 0,
+                        };
+
+                        var itemTypeStr = reader["ItemType"] as string;
+                        if (Enum.TryParse<ItemType.ItemTypeEnum>(itemTypeStr, true, out var it))
+                        {
+                            item.ItemType = it;
+                        }
+
+                        var direction = reader["Direction"] as string;
+                        if (string.Equals(direction, "DropOff", StringComparison.OrdinalIgnoreCase))
+                        {
+                            stop.DropOff.Add(item);
+                        }
+                        else
+                        {
+                            stop.PickUp.Add(item);
+                        }
+                    }
+                }
+            }
+        }
+
+        private static void UpsertDeliveryPlanParent(SqliteConnection conn, SqliteTransaction tx, string characterUUID, DeliveryPlan entity)
+        {
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = @"INSERT OR REPLACE INTO DeliveryPlans (UUID, Name, OwnerUUID, RouteUUID, ShipUUID, Completed)
+                                   VALUES (@uuid, @name, @owner, @route, @ship, @completed)";
+                cmd.Parameters.AddWithValue("@uuid", entity.UUID);
+                cmd.Parameters.AddWithValue("@name", entity.Name ?? string.Empty);
+                cmd.Parameters.AddWithValue("@owner", characterUUID);
+                cmd.Parameters.AddWithValue("@route", entity.RouteUUID ?? string.Empty);
+                cmd.Parameters.AddWithValue("@ship", entity.ShipUUID ?? string.Empty);
+                cmd.Parameters.AddWithValue("@completed", entity.Completed ? 1 : 0);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        private static void DeleteDeliveryPlanChildren(SqliteConnection conn, SqliteTransaction tx, string planUUID)
+        {
+            // Delete items first (they reference stops)
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = "DELETE FROM DeliveryPlanItems WHERE DeliveryPlanUUID = @uuid";
+                cmd.Parameters.AddWithValue("@uuid", planUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = "DELETE FROM DeliveryPlanStops WHERE DeliveryPlanUUID = @uuid";
+                cmd.Parameters.AddWithValue("@uuid", planUUID);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        private static void InsertDeliveryPlanChildren(SqliteConnection conn, SqliteTransaction tx, DeliveryPlan entity)
+        {
+            if (entity.Stops == null)
+            {
+                return;
+            }
+
+            foreach (var stop in entity.Stops)
+            {
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.Transaction = tx;
+                    cmd.CommandText = @"INSERT INTO DeliveryPlanStops (
+                        DeliveryPlanUUID, Sequence, ColonyUUID, StopCompleted, DestinationType, DestinationUUID
+                    ) VALUES (
+                        @pUUID, @seq, @colUUID, @completed, @destType, @destUUID
+                    )";
+                    cmd.Parameters.AddWithValue("@pUUID", entity.UUID);
+                    cmd.Parameters.AddWithValue("@seq", stop.Sequence);
+                    cmd.Parameters.AddWithValue("@colUUID", stop.ColonyUUID ?? string.Empty);
+                    cmd.Parameters.AddWithValue("@completed", stop.StopCompleted ? 1 : 0);
+                    cmd.Parameters.AddWithValue("@destType", stop.DestinationType.ToString());
+                    cmd.Parameters.AddWithValue("@destUUID", stop.DestinationUUID ?? string.Empty);
+                    cmd.ExecuteNonQuery();
+                }
+
+                // Insert drop-off items
+                InsertDeliveryPlanItemList(conn, tx, entity.UUID, stop.Sequence, "DropOff", stop.DropOff);
+
+                // Insert pick-up items
+                InsertDeliveryPlanItemList(conn, tx, entity.UUID, stop.Sequence, "PickUp", stop.PickUp);
+            }
+        }
+
+        private static void InsertDeliveryPlanItemList(SqliteConnection conn, SqliteTransaction tx, string planUUID, int stopSequence, string direction, List<DeliveryItem> items)
+        {
+            if (items == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < items.Count; i++)
+            {
+                var item = items[i];
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.Transaction = tx;
+                    cmd.CommandText = @"INSERT INTO DeliveryPlanItems (
+                        DeliveryPlanUUID, StopSequence, Direction, Sequence,
+                        ItemType, BaseItemTypeID, Name, ResourcePurity, Quantity, Delivered
+                    ) VALUES (
+                        @pUUID, @stopSeq, @dir, @seq,
+                        @itemType, @baseId, @name, @purity, @qty, @delivered
+                    )";
+                    cmd.Parameters.AddWithValue("@pUUID", planUUID);
+                    cmd.Parameters.AddWithValue("@stopSeq", stopSequence);
+                    cmd.Parameters.AddWithValue("@dir", direction);
+                    cmd.Parameters.AddWithValue("@seq", i);
+                    cmd.Parameters.AddWithValue("@itemType", item.ItemType.ToString());
+                    cmd.Parameters.AddWithValue("@baseId", item.BaseItemTypeID ?? string.Empty);
+                    cmd.Parameters.AddWithValue("@name", item.Name ?? string.Empty);
+                    cmd.Parameters.AddWithValue("@purity", item.ResourcePurity ?? string.Empty);
+                    cmd.Parameters.AddWithValue("@qty", item.Quantity);
+                    cmd.Parameters.AddWithValue("@delivered", item.Delivered ? 1 : 0);
+                    cmd.ExecuteNonQuery();
                 }
             }
         }
