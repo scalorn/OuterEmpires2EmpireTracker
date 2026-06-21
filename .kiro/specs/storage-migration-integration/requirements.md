@@ -19,7 +19,7 @@ The following items from the original spec are **COMPLETE** and do not need re-i
 - Server/Storage/ folder removed; Server references Common backends
 - Server Program.cs uses Common's IStorageBackend interface and creates backends from appsettings.json
 - Server models (ServerModels.cs, PermissionModels.cs) moved to Common/Models/
-- All 264 Server tests passing with Common backends
+- All 264 Server tests pass with Common backends
 - Property tests for entity count preservation and atomic write safety
 - PlayerContext.WritesBlocked static property (blocks writes, returns early)
 
@@ -50,26 +50,32 @@ The following items from the original spec are **COMPLETE** and do not need re-i
 
 1. THE PlayerContext SHALL accept an IStorageBackend instance via a public property and use the IStorageBackend for all load and save operations instead of directly reading or writing JSON files
 2. WHEN WriteContext is called and no IStorageBackend is configured AND ServerOnly mode is not active, THEN THE PlayerContext SHALL log a warning and return without writing (preserving backward compatibility with test scenarios that operate without a backend)
-3. WHEN PlayerContext is initialized with a backend and a CurrentPlayerUUID is set, THE PlayerContext SHALL load all per-character entity data for that player by calling the corresponding GetAll methods on the IStorageBackend before firing CurrentPlayerChanged
-4. THE PlayerContext SHALL continue to expose data via IReadOnlyList properties and fire all existing change events (CurrentPlayerChanged, ColonyDataChanged, BlueprintDataChanged, SurveyDataChanged, DeliveryDataChanged, PricingDataChanged, BuildPlanDataChanged, MarketDataChanged, StationDataChanged, AsteroidDataChanged, PlayerProfileDataChanged, ShipTemplateDataChanged, ShipDataChanged, StockDataChanged, SupplyChainDataChanged, ContactDataChanged, BankingDataChanged, MailDataChanged) regardless of which backend is configured
-5. WHEN WriteContext is called with an IStorageBackend configured, THE PlayerContext SHALL persist the current entity state by calling Upsert on the IStorageBackend for all dirty entity collections, matching all 22 per-character entity types
-6. THE PlayerContext SHALL maintain backward compatibility with existing ServerOnly mode delegates (IsServerOnlyMode, PushToServer, ExportFromServer, IsServerConnected) such that when ServerOnly mode is active, the delegates continue to control persistence behavior as they do today
-7. THE PlayerContext SHALL expose a public settable property for the IStorageBackend that can be assigned after construction, enabling existing callers to configure the backend before triggering data load
-8. IF an IStorageBackend method throws StorageWriteException during WriteContext, THEN THE PlayerContext SHALL set WritesBlocked to true and propagate the exception to the caller; in-memory entity state SHALL remain unchanged (no data loss on write failure)
+3. WHEN CurrentPlayerUUID changes and an IStorageBackend is configured, THE PlayerContext SHALL reload all per-character entity data from the backend by calling the corresponding GetAll methods, replacing in-memory state, before firing CurrentPlayerChanged
+4. IF the IStorageBackend property is set while a CurrentPlayerUUID is already active, THE PlayerContext SHALL immediately trigger a load from the new backend (equivalent to re-setting CurrentPlayerUUID)
+5. THE PlayerContext SHALL continue to expose data via IReadOnlyList properties and fire all existing change events (CurrentPlayerChanged, ColonyDataChanged, BlueprintDataChanged, SurveyDataChanged, DeliveryDataChanged, PricingDataChanged, BuildPlanDataChanged, MarketDataChanged, StationDataChanged, AsteroidDataChanged, PlayerProfileDataChanged, ShipTemplateDataChanged, ShipDataChanged, StockDataChanged, SupplyChainDataChanged, ContactDataChanged, BankingDataChanged, MailDataChanged) regardless of which backend is configured
+6. WHEN WriteContext is called with an IStorageBackend configured, THE PlayerContext SHALL persist the current entity state by calling Upsert on the IStorageBackend for all dirty entity collections, matching all 22 per-character entity types
+7. THE PlayerContext SHALL maintain backward compatibility with existing ServerOnly mode delegates (IsServerOnlyMode, PushToServer, ExportFromServer, IsServerConnected) such that when ServerOnly mode is active, the delegates continue to control persistence behavior as they do today
+8. THE PlayerContext SHALL expose a public settable property for the IStorageBackend that can be assigned after construction, enabling existing callers to configure the backend before triggering data load
+9. IF an IStorageBackend method throws StorageWriteException during WriteContext, THEN THE PlayerContext SHALL set WritesBlocked to true and propagate the exception to the caller; in-memory entity state SHALL remain unchanged (no data loss on write failure)
+10. ALL calls from PlayerContext to IStorageBackend SHALL use `Task.Run(() => backend.MethodAsync()).GetAwaiter().GetResult()` to bridge async-to-sync, avoiding deadlocks by ensuring the async work runs on the thread pool rather than capturing the WinForms SynchronizationContext
+
 
 ### Requirement 2: Dirty Entity Tracking
 
 **User Story:** As a developer, I want PlayerContext to only persist changed entities on each write cycle, so that incremental writes are efficient regardless of backend.
 
+**Dependency:** Requires Requirement 1 (PlayerContext uses IStorageBackend) to be implemented first. Dirty tracking has no purpose without backend integration.
+
 #### Acceptance Criteria
 
-1. THE PlayerContext SHALL track which entities have been modified since the last successful persistence operation, where modification means any of: an entity property was changed via a service method, an entity was added to a collection, or an entity was replaced in a collection
-2. WHEN WriteContext is called, THE PlayerContext SHALL persist only entities marked as dirty via the IStorageBackend Upsert methods
-3. WHEN WriteContext is called, THE PlayerContext SHALL delete only entities that were removed from in-memory collections since the last successful persistence operation, via the IStorageBackend Delete methods
-4. WHEN persistence completes successfully, THE PlayerContext SHALL clear all dirty flags and all pending-deletion records
-5. IF persistence fails partway through, THEN THE PlayerContext SHALL retain dirty flags for entities that were not successfully persisted, and SHALL retain pending-deletion records for entities whose deletion was not confirmed
-6. WHEN a PlayerRoot is first loaded from a backend, THE PlayerContext SHALL start with zero dirty flags (no entities marked dirty) until a service method modifies, adds, or removes an entity
-7. WHEN WriteContext is called and the active backend is JsonSingleFileBackend, THE PlayerContext SHALL write the complete PlayerRoot file regardless of dirty flags, since that backend does not support per-entity persistence
+1. THE PlayerContext SHALL track which entities have been modified since the last successful persistence operation, where modification means any of: an entity property was changed via a service method, an entity was added to a collection, or an entity was removed from a collection
+2. THE PlayerContext SHALL expose a `MarkDirty<T>(string entityUUID)` method that service classes call after mutating an entity, and a `MarkDeleted<T>(string entityUUID)` method that service classes call after removing an entity from a collection
+3. ALL existing service classes (ColonyService, BlueprintService, SurveyService, PlayerProfileService, DeliveryRouteService, DeliveryPlanService, ShipService, ShipTemplateService, StationService, MarketListingService, PricingPlanService, BuildPlanMutationService, StockTargetMutationService, SupplyChainMutationService, AsteroidService, ContactsService, BankingService, MailService) SHALL call MarkDirty after mutations and MarkDeleted after deletions
+4. WHEN WriteContext is called, THE PlayerContext SHALL persist only entities marked as dirty via the IStorageBackend Upsert methods, and delete only entities in the pending-deletion set via IStorageBackend Delete methods
+5. WHEN persistence completes successfully, THE PlayerContext SHALL clear all dirty flags and all pending-deletion records
+6. THE PlayerContext SHALL clear dirty flags one entity at a time as each Upsert succeeds within the write loop; if a write fails partway through, entities already successfully persisted have their dirty flags cleared, and entities not yet persisted retain their dirty flags for the next write attempt
+7. WHEN a PlayerRoot is first loaded from a backend, THE PlayerContext SHALL start with zero dirty flags (no entities marked dirty) until a service method calls MarkDirty or MarkDeleted
+8. WHEN WriteContext is called and the active backend is JsonSingleFileBackend, THE PlayerContext SHALL write the complete PlayerRoot file regardless of dirty flags, since that backend does not support per-entity persistence; dirty flags SHALL still be cleared after successful write
 
 ### Requirement 3: EmpireContext Storage Backend Integration
 
@@ -78,12 +84,14 @@ The following items from the original spec are **COMPLETE** and do not need re-i
 #### Acceptance Criteria
 
 1. THE EmpireContext SHALL accept an IStorageBackend instance via a public property and use it for loading and saving baseline data; WHEN no IStorageBackend is provided (null), THE EmpireContext SHALL fall back to direct file I/O using the configured FilePath (preserving current behavior)
-2. WHEN EmpireContext loads baseline data from an IStorageBackend with JsonSingleFile or JsonMultiFile type, THE EmpireContext SHALL call GetGlobalDataAsync with dataType "BaselineRoot" and deserialize the returned JSON string into a BaselineRoot object
-3. WHEN EmpireContext loads baseline data from an IStorageBackend with Sqlite, DynamoDb, or Postgres type, THE EmpireContext SHALL use the typed baseline methods (GetBaselineGameConstantsAsync, GetAllBlueprintTypesAsync, GetAllShipClassesAsync, GetAllTechLevelsAsync, GetAllCommoditiesAsync, GetAllRefiningRecipesAsync, GetAllResearchTimesAsync, GetAllPropertyTypeDefinitionsAsync) to load each baseline collection independently
-4. IF baseline load methods return null or empty results, THEN THE EmpireContext SHALL initialize with an empty BaselineRoot containing default BaselineGameConstants and empty entity arrays
-5. WHEN EmpireContext saves baseline data via WriteContext and an IStorageBackend is configured, THE EmpireContext SHALL persist using the appropriate method for the backend type: GetGlobalDataAsync/UpsertGlobalDataAsync for JSON backends, typed methods for relational backends
-6. IF the IStorageBackend throws a StorageLoadException during load, THEN THE EmpireContext SHALL propagate the exception to the caller without partial initialization
-7. THE EmpireContext SHALL continue to expose data via existing IReadOnlyList properties (BlueprintTypeList, ShipClassList, TechLevelList, CommodityList, GlobalBlueprintList, ResourceList, PropertyTypeRegistry) and support all existing mutation methods regardless of which backend is configured
+2. THE EmpireContext SHALL also accept a StorageBackendType value alongside the IStorageBackend instance so it knows which load/save strategy to use without runtime type checks
+3. WHEN StorageBackendType is JsonSingleFile or JsonMultiFile, THE EmpireContext SHALL call GetGlobalDataAsync with dataType "BaselineRoot" and deserialize the returned JSON string into a BaselineRoot object
+4. WHEN StorageBackendType is Sqlite, DynamoDb, or Postgres, THE EmpireContext SHALL use the typed baseline methods (GetBaselineGameConstantsAsync, GetAllBlueprintTypesAsync, GetAllShipClassesAsync, GetAllTechLevelsAsync, GetAllCommoditiesAsync, GetAllRefiningRecipesAsync, GetAllResearchTimesAsync, GetAllPropertyTypeDefinitionsAsync) to load each baseline collection independently
+5. IF baseline load methods return null or empty results, THEN THE EmpireContext SHALL initialize with an empty BaselineRoot containing default BaselineGameConstants and empty entity arrays
+6. WHEN EmpireContext saves baseline data via WriteContext and an IStorageBackend is configured, THE EmpireContext SHALL persist using the appropriate method for the configured StorageBackendType: UpsertGlobalDataAsync for JSON backends, typed Upsert methods for relational backends
+7. IF the IStorageBackend throws a StorageLoadException during load, THEN THE EmpireContext SHALL propagate the exception to the caller without partial initialization
+8. THE EmpireContext SHALL continue to expose data via existing IReadOnlyList properties (BlueprintTypeList, ShipClassList, TechLevelList, CommodityList, GlobalBlueprintList, ResourceList, PropertyTypeRegistry) and support all existing mutation methods regardless of which backend is configured
+9. ALL calls from EmpireContext to IStorageBackend SHALL use the same async-to-sync bridging strategy as PlayerContext (Req 1 Criterion 10)
 
 ### ~~Requirement 4: Server Migration to Common Backends~~ — COMPLETE
 
@@ -112,6 +120,9 @@ No further work needed for this requirement.
 6. WHEN StorageBackendType is Postgres, THE PreferencesStore SHALL accept a connection string (non-empty string, maximum 1024 characters)
 7. WHEN the desktop application starts, THE application SHALL use StorageBackendFactory.CreateAsync to create the IStorageBackend instance corresponding to the configured StorageBackendType and pass it to PlayerContext and EmpireContext
 8. IF the StorageBackendType setting contains an unrecognized value or is missing, THEN THE PreferencesStore SHALL fall back to JsonSingleFile and log a warning indicating the invalid value that was encountered
+9. IF StorageBackendFactory.CreateAsync throws during startup (e.g. SQLite file corrupt, Postgres unreachable, DynamoDB credentials invalid), THE application SHALL display an error dialog with the exception message and offer to fall back to JsonSingleFile with the default path or exit
+10. Backend selection is configured via manual editing of UIPreferences.json for the initial implementation; a FormPreferences UI section for storage backend selection is deferred to a future spec
+
 
 ### Requirement 6: Data Migration Service
 
@@ -121,12 +132,14 @@ No further work needed for this requirement.
 
 1. THE Migration_Service SHALL accept any source IStorageBackend and any destination IStorageBackend
 2. THE Migration_Service SHALL migrate all entity types: server-global entities, all per-character entities (22 types), baseline data, sharing rules, permission entities, intel entities, and audit entries
-3. THE Migration_Service SHALL preserve every entity with no field loss during migration
-4. THE Migration_Service SHALL accept an IProgress<MigrationProgress> callback and invoke it at least once per entity type, reporting the current entity type name and the cumulative count of entities processed so far
-5. IF migration fails partway through, THEN THE Migration_Service SHALL throw a StorageWriteException (or StorageLoadException for read failures) whose message includes the entity type being processed when the failure occurred and the number of entities successfully migrated before failure; partial data already written to the destination SHALL remain in place (no rollback of successfully migrated entities)
-6. THE Migration_Service SHALL validate entity counts after migration by comparing source counts to destination counts for each entity type
-7. WHEN source and destination entity counts do not match for any entity type, THE Migration_Service SHALL throw a MigrationValidationException identifying the mismatched entity types and their expected (source) and actual (destination) counts
-8. THE Migration_Service SHALL support migration between any pair of the 5 backends (JsonSingleFile, JsonMultiFile, Sqlite, DynamoDb, Postgres)
+3. THE Migration_Service SHALL discover character UUIDs to migrate by reading the PlayerProfile collection from the source backend (every character with data has at least one PlayerProfile); the caller MAY also provide an explicit list of character UUIDs to migrate (for selective migration)
+4. THE Migration_Service SHALL preserve every entity with no field loss during migration
+5. THE Migration_Service SHALL accept an IProgress<MigrationProgress> callback and invoke it at least once per entity type, reporting the current entity type name and the cumulative count of entities processed so far
+6. IF migration fails partway through, THEN THE Migration_Service SHALL throw a StorageWriteException (or StorageLoadException for read failures) whose message includes the entity type being processed when the failure occurred and the number of entities successfully migrated before failure; partial data already written to the destination SHALL remain in place (no rollback of successfully migrated entities)
+7. THE Migration_Service SHALL validate entity counts after migration by comparing source counts to destination counts for each entity type
+8. WHEN source and destination entity counts do not match for any entity type, THE Migration_Service SHALL throw a MigrationValidationException identifying the mismatched entity types and their expected (source) and actual (destination) counts
+9. THE Migration_Service SHALL support migration between any pair of the 5 backends (JsonSingleFile, JsonMultiFile, Sqlite, DynamoDb, Postgres)
+10. THE Migration_Service SHALL be async (Task-based) since it calls IStorageBackend methods directly; callers bridge to sync using the standard pattern (Req 1 Criterion 10) if needed
 
 ### Requirement 7: Round-Trip Fidelity
 
@@ -136,13 +149,13 @@ No further work needed for this requirement.
 
 #### Acceptance Criteria
 
-1. WHEN data is migrated from any backend A to any backend B and back to backend A (for all 20 ordered pairs of the 5 StorageBackendType values), THE migrated data SHALL be byte-for-byte equivalent when re-serialized, confirming no data transformation occurred
+1. WHEN data is migrated from any backend A to any backend B and back to backend A, THE migrated data SHALL be structurally equivalent via deep-equality comparison; specifically, re-serializing the round-tripped entities with the project's standard JsonSerializerSettings and SerializationSorter SHALL produce identical JSON output to the original serialization
 2. THE migration process SHALL preserve decimal precision for all numeric values (including banking balance fields) by retaining the exact decimal representation with no floating-point rounding or truncation of significant digits
-3. THE migration process SHALL preserve DateTime values with tick-level precision (100-nanosecond .NET ticks, no rounding or truncation)
+3. THE migration process SHALL preserve DateTime values with microsecond precision (1μs = 10 ticks) across all backends; the Postgres backend SHALL store DateTime as `bigint` (raw .NET ticks) to preserve full tick-level precision rather than using `timestamp` which truncates to microseconds
 4. THE migration process SHALL preserve null versus empty-collection distinctions for all collection properties
 5. THE migration process SHALL preserve entity UUID stability (no UUID regeneration or modification during migration)
 6. THE migration process SHALL preserve full structural equality including nested objects, arrays, all property values, string values (including Unicode characters, empty strings, and whitespace-only strings), and enum values
-7. THE property tests SHALL cover all entity types defined in IStorageBackend (all 22 per-character player entity types and all baseline data types) using randomly generated entity instances with a minimum of 100 test cases per backend pair
+7. THE property tests SHALL cover all entity types defined in IStorageBackend (all 22 per-character player entity types and all baseline data types) using randomly generated entity instances with a minimum of 100 test cases per backend pair; tests SHALL cover at minimum the pairs: JsonSingleFile↔Sqlite, JsonSingleFile↔JsonMultiFile, Sqlite↔Postgres (3 pairs covering the most common migration paths)
 8. THE property tests SHALL use deep-equality comparison asserting that every property on the round-tripped entity equals the original, including collection ordering, nested object graphs, and null-valued optional properties
 
 ### Requirement 8: PlayerContext Error Recovery
@@ -161,13 +174,14 @@ No further work needed for this requirement.
 ## Implementation Phases
 
 ### Phase 2: PlayerContext and EmpireContext Integration
-- Refactor PlayerContext to accept IStorageBackend (Reqs 1, 2, 8)
+- Refactor PlayerContext to accept IStorageBackend with async bridging (Reqs 1, 2, 8)
+- Add MarkDirty/MarkDeleted to PlayerContext; update all 18 service classes (Req 2)
 - Refactor EmpireContext to use IStorageBackend for BaselineRoot (Req 3)
 - Add StorageBackendType/StoragePath to PreferencesStore (Req 5)
-- Desktop app startup uses StorageBackendFactory.CreateAsync
-- All existing WinForms tests pass
+- Desktop app startup uses StorageBackendFactory.CreateAsync with error dialog fallback
+- All existing WinForms tests pass (they operate without a backend — Req 1 Criterion 2)
 
 ### Phase 3: Data Migration Service and Round-Trip Tests
-- Implement Migration_Service with progress and validation (Req 6)
-- Implement round-trip fidelity property tests for all backend pairs (Req 7)
-- End-to-end testing of backend switching via Preferences form
+- Implement Migration_Service with progress, validation, and character discovery (Req 6)
+- Implement round-trip fidelity property tests for key backend pairs (Req 7)
+- End-to-end testing of backend switching via manual preferences editing
