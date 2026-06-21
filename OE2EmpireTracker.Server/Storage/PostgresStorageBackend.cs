@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using Npgsql;
+using OE2EmpireTracker.Common.Models;
 using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Server.Storage;

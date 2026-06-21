@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
+using OE2EmpireTracker.Common.Models;
 using OE2EmpireTracker.Server.Auth;
 using OE2EmpireTracker.Server.Storage;
 using OE2EmpireTracker.Services;

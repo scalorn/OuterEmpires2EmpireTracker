@@ -61,7 +61,7 @@ This plan implements the unified IStorageBackend interface and all five backend 
 
 ## Tasks
 
-- [ ] 1. Interface, Enum, and Exceptions
+- [x] 1. Interface, Enum, and Exceptions
   - [x] 1.1 Create StorageBackendType enum and StorageExceptions in Common/Interfaces
     - Satisfies: Req 7, Criterion 1; Req 10, Criteria 1-4
     - Inputs: design.md (enum values, exception hierarchy)
@@ -72,14 +72,14 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Inputs: Server/Storage/IStorageBackend.cs (current interface), design.md
     - Output: OE2EmpireTracker.Common/Interfaces/IStorageBackend.cs (partial — lifecycle, StorageInfo, factions, characters, tokens, membership actions, star systems, colony summaries, sharing rules, preferences)
     - Verification: getDiagnostics — compiles cleanly
-  - [-] 1.3 Extend IStorageBackend with per-character entity methods, permission methods, intel, audit, and baseline methods
+  - [x] 1.3 Extend IStorageBackend with per-character entity methods, permission methods, intel, audit, and baseline methods
     - Satisfies: Req 1, Criteria 4, 6-9
     - Inputs: Server/Storage/IStorageBackend.cs, design.md
     - Output: OE2EmpireTracker.Common/Interfaces/IStorageBackend.cs (complete interface)
     - Verification: getDiagnostics — compiles cleanly
 
 - [ ] 2. Move Server Models to Common
-  - [~] 2.1 Move ServerModels.cs from Server/Storage to Common/Models
+  - [-] 2.1 Move ServerModels.cs from Server/Storage to Common/Models
     - Satisfies: Req 1, Criteria 3 (model availability in Common)
     - Inputs: Server/Storage/Models.cs
     - Output: OE2EmpireTracker.Common/Models/ServerModels.cs; Server file deleted; using statements updated in Server

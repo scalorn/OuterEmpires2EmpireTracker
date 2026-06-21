@@ -1,3 +1,4 @@
+using OE2EmpireTracker.Common.Models;
 using OE2EmpireTracker.Server.Auth;
 using OE2EmpireTracker.Server.Storage;
 

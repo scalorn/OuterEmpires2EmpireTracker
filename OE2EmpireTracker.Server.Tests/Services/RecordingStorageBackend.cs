@@ -7,6 +7,8 @@
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Server.Storage;
 using OE2EmpireTracker.Server.Tests.Endpoints;
+using ServerCharacter = OE2EmpireTracker.Common.Models.ServerCharacter;
+using ServerFaction = OE2EmpireTracker.Common.Models.ServerFaction;
 
 namespace OE2EmpireTracker.Server.Tests.Services;
 

@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
+using OE2EmpireTracker.Common.Models;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Server.Storage;
 

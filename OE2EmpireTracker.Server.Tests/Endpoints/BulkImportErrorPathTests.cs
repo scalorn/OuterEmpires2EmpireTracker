@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using NUnit.Framework;
+using OE2EmpireTracker.Common.Models;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Server.Endpoints;
 using OE2EmpireTracker.Server.Storage;

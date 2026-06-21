@@ -7,6 +7,7 @@
 using System.Text.Json;
 using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
+using OE2EmpireTracker.Common.Models;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Server.Services;
 using OE2EmpireTracker.Server.Storage;

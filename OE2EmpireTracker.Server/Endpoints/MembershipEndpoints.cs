@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using OE2EmpireTracker.Common.Models;
 using OE2EmpireTracker.Server.Push;
 using OE2EmpireTracker.Server.Storage;
 

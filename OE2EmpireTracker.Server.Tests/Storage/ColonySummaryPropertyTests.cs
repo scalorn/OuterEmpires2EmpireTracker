@@ -10,6 +10,7 @@ using FsCheck.NUnit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
+using OE2EmpireTracker.Common.Models;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Server.Storage;
 using OE2EmpireTracker.Services;

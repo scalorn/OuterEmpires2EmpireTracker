@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using System.Text.Json;
+using OE2EmpireTracker.Common.Models;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Server.Storage;
 

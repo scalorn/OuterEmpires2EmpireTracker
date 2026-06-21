@@ -12,6 +12,7 @@ using FsCheck;
 using FsCheck.NUnit;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
+using OE2EmpireTracker.Common.Models;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Server.Storage;
 

@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Http;
 using NUnit.Framework;
 using OE2EmpireTracker.Server.Endpoints;
 using OE2EmpireTracker.Server.Storage;
+using SharingRule = OE2EmpireTracker.Common.Models.SharingRule;
+using SharingTargetType = OE2EmpireTracker.Common.Models.SharingTargetType;
+using TokenRole = OE2EmpireTracker.Common.Models.TokenRole;
 
 namespace OE2EmpireTracker.Server.Tests.Endpoints;
 

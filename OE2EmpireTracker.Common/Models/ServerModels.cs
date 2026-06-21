@@ -214,4 +214,49 @@ namespace OE2EmpireTracker.Common.Models
         /// <summary>Gets or sets the planet name.</summary>
         public string PlanetName { get; set; } = string.Empty;
     }
+
+    /// <summary>
+    /// Public asteroid summary for system view.
+    /// </summary>
+    public class AsteroidSummary
+    {
+        /// <summary>Gets or sets the asteroid UUID.</summary>
+        public string UUID { get; set; } = string.Empty;
+
+        /// <summary>Gets or sets the asteroid name.</summary>
+        public string Name { get; set; } = string.Empty;
+
+        /// <summary>Gets or sets the star system ID.</summary>
+        public int SystemId { get; set; }
+    }
+
+    /// <summary>
+    /// Public blueprint summary — excludes private fields like OwnerUUID and Resources.
+    /// </summary>
+    public class BlueprintSummary
+    {
+        /// <summary>Gets or sets the blueprint UUID.</summary>
+        public string UUID { get; set; } = string.Empty;
+
+        /// <summary>Gets or sets the blueprint name.</summary>
+        public string Name { get; set; } = string.Empty;
+
+        /// <summary>Gets or sets the blueprint nickname.</summary>
+        public string NickName { get; set; } = string.Empty;
+
+        /// <summary>Gets or sets the blueprint type.</summary>
+        public string BluePrintType { get; set; } = string.Empty;
+
+        /// <summary>Gets or sets the tech level.</summary>
+        public string TechLevel { get; set; } = string.Empty;
+
+        /// <summary>Gets or sets the evolution level.</summary>
+        public int Evolution { get; set; }
+
+        /// <summary>Gets or sets the class level.</summary>
+        public int Class { get; set; }
+
+        /// <summary>Gets or sets the description.</summary>
+        public string Description { get; set; } = string.Empty;
+    }
 }

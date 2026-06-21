@@ -2,6 +2,7 @@ using Amazon;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
 using Newtonsoft.Json;
+using OE2EmpireTracker.Common.Models;
 using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Server.Storage;

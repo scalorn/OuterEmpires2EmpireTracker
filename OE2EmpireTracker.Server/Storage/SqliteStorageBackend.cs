@@ -1,5 +1,6 @@
 using Microsoft.Data.Sqlite;
 using Newtonsoft.Json;
+using OE2EmpireTracker.Common.Models;
 using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Server.Storage;

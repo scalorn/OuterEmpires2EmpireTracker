@@ -1,5 +1,7 @@
 using System.Security.Claims;
 using OE2EmpireTracker.Server.Storage;
+using ServerFaction = OE2EmpireTracker.Common.Models.ServerFaction;
+using TokenRole = OE2EmpireTracker.Common.Models.TokenRole;
 
 namespace OE2EmpireTracker.Server.Endpoints;
 

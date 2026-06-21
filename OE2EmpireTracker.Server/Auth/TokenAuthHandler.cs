@@ -2,6 +2,7 @@ using System.Security.Claims;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
+using OE2EmpireTracker.Common.Models;
 using OE2EmpireTracker.Server.Storage;
 
 namespace OE2EmpireTracker.Server.Auth;
