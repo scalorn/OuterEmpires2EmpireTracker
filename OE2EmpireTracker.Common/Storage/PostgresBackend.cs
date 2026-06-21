@@ -1715,6 +1715,56 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
             return Task.CompletedTask;
         }
 
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<string>> GetAllCharacterUUIDsAsync()
+        {
+            return Task.FromResult(_retryPolicy.Execute(() =>
+            {
+                var results = new List<string>();
+                using (var conn = OpenConnection())
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+SELECT DISTINCT OwnerUUID FROM Colonies
+UNION SELECT DISTINCT OwnerUUID FROM Blueprints
+UNION SELECT DISTINCT OwnerUUID FROM Surveys
+UNION SELECT DISTINCT UUID FROM PlayerProfiles
+UNION SELECT DISTINCT OwnerUUID FROM DeliveryRoutes
+UNION SELECT DISTINCT OwnerUUID FROM DeliveryPlans
+UNION SELECT DISTINCT OwnerUUID FROM Ships
+UNION SELECT DISTINCT OwnerUUID FROM ShipTemplates
+UNION SELECT DISTINCT OwnerUUID FROM MarketListings
+UNION SELECT DISTINCT OwnerUUID FROM MarketTransactions
+UNION SELECT DISTINCT OwnerUUID FROM PricingPlans
+UNION SELECT DISTINCT OwnerUUID FROM StockPlans
+UNION SELECT DISTINCT OwnerUUID FROM StockProfiles
+UNION SELECT DISTINCT OwnerUUID FROM BuildPlans
+UNION SELECT DISTINCT OwnerUUID FROM SupplyChains
+UNION SELECT DISTINCT OwnerUUID FROM Asteroids
+UNION SELECT DISTINCT OwnerUUID FROM Stations
+UNION SELECT DISTINCT OwnerUUID FROM Factions
+UNION SELECT DISTINCT OwnerUUID FROM ExternalCharacters
+UNION SELECT DISTINCT OwnerUUID FROM WarehouseOverflowRules
+UNION SELECT DISTINCT OwnerUUID FROM MailMessages
+UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var uuid = reader.GetString(0);
+                            if (!string.IsNullOrEmpty(uuid))
+                            {
+                                results.Add(uuid);
+                            }
+                        }
+                    }
+                }
+
+                return (IReadOnlyList<string>)results;
+            }));
+        }
+
         // ═══════════════════════════════════════════════════════════
         // Per-Character Entity CRUD — Colony
         // ═══════════════════════════════════════════════════════════

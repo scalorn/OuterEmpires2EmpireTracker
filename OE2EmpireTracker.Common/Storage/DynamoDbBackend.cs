@@ -217,6 +217,58 @@ namespace OE2EmpireTracker.Common.Storage
             await DeleteItemAsync($"Character#{uuid}", "Character");
         }
 
+        /// <inheritdoc/>
+        public async Task<IReadOnlyList<string>> GetAllCharacterUUIDsAsync()
+        {
+            try
+            {
+                var scanRequest = new ScanRequest
+                {
+                    TableName = _tableName,
+                    FilterExpression = "begins_with(PK, :pk)",
+                    ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+                    {
+                        [":pk"] = new AttributeValue("Char#"),
+                    },
+                    ProjectionExpression = "PK",
+                };
+
+                var uuids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                ScanResponse response = null;
+                do
+                {
+                    if (response?.LastEvaluatedKey?.Count > 0)
+                    {
+                        scanRequest.ExclusiveStartKey = response.LastEvaluatedKey;
+                    }
+
+                    response = await _client.ScanAsync(scanRequest);
+                    foreach (var item in response.Items)
+                    {
+                        if (item.ContainsKey("PK"))
+                        {
+                            var pk = item["PK"].S;
+                            if (pk.StartsWith("Char#", StringComparison.Ordinal) && pk.Length > 5)
+                            {
+                                var uuid = pk.Substring(5);
+                                if (!string.IsNullOrEmpty(uuid))
+                                {
+                                    uuids.Add(uuid);
+                                }
+                            }
+                        }
+                    }
+                }
+                while (response.LastEvaluatedKey?.Count > 0);
+
+                return uuids.ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new StorageLoadException("DynamoDB", _tableName, "Failed to scan character UUIDs from DynamoDB", ex);
+            }
+        }
+
         // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // Global Data
         // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•

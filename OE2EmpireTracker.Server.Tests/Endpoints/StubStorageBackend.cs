@@ -411,6 +411,8 @@ internal class StubStorageBackend : IStorageBackend
 
     public OE2EmpireTracker.Common.Interfaces.StorageInfo GetStorageInfo() => new OE2EmpireTracker.Common.Interfaces.StorageInfo { BackendType = "Stub", Location = "in-memory" };
 
+    public Task<IReadOnlyList<string>> GetAllCharacterUUIDsAsync() => Task.FromResult<IReadOnlyList<string>>(Array.Empty<string>());
+
     // ===== Baseline / Global Lookup Data =====
 
     public Task<BaselineGameConstants?> GetBaselineGameConstantsAsync() => throw new NotImplementedException();

@@ -27,7 +27,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
 
 ## Tasks
 
-- [ ] 1. Prerequisite: Decimal precision fix in SQLite backend
+- [x] 1. Prerequisite: Decimal precision fix in SQLite backend
   - [x] 1.1 Fix SQLite BankingTransaction decimal columns (REAL→TEXT)
     - Modify table-rebuild logic for BankingTransactions: CreditChange, OldBalance, NewBalance columns to TEXT
     - Remove `(double)` casts in BankingTransaction read/write methods; use `value.ToString("G")` and `decimal.Parse(...)`
@@ -37,7 +37,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Storage/SqliteBackend.cs (modified)_
     - _Verification: Build succeeds; existing SQLite backend tests pass; decimal round-trip test added_
 
-  - [-] 1.2 Fix SQLite MarketTransaction decimal columns (REAL→TEXT)
+  - [x] 1.2 Fix SQLite MarketTransaction decimal columns (REAL→TEXT)
     - Modify table-rebuild logic for MarketTransactions: PricePerUnit, TotalPrice columns to TEXT
     - Remove `(double)` casts in MarketTransaction read/write methods
     - Add schema migration method for MarketTransactions table rebuild
@@ -72,21 +72,21 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Interfaces/IStorageBackend.cs (modified)_
     - _Verification: Build will fail until implementations added — that's expected_
 
-  - [-] 2.2 Implement GetAllCharacterUUIDsAsync in JsonSingleFileBackend
+  - [x] 2.2 Implement GetAllCharacterUUIDsAsync in JsonSingleFileBackend
     - Parse the single JSON file, extract distinct OwnerUUID values from all per-character entity arrays
     - _Satisfies: Req 6, Criterion 3_
     - _Inputs: Common/Storage/JsonSingleFileBackend.cs (1369 lines — search for existing GetAll pattern)_
     - _Output: Common/Storage/JsonSingleFileBackend.cs (modified)_
     - _Verification: Build succeeds; unit test for character discovery_
 
-  - [-] 2.3 Implement GetAllCharacterUUIDsAsync in JsonMultiFileBackend
+  - [x] 2.3 Implement GetAllCharacterUUIDsAsync in JsonMultiFileBackend
     - Enumerate character subdirectories in the data folder
     - _Satisfies: Req 6, Criterion 3_
     - _Inputs: Common/Storage/JsonMultiFileBackend.cs (2207 lines — search for directory enumeration pattern)_
     - _Output: Common/Storage/JsonMultiFileBackend.cs (modified)_
     - _Verification: Build succeeds; unit test for character discovery_
 
-  - [-] 2.4 Implement GetAllCharacterUUIDsAsync in SqliteBackend
+  - [x] 2.4 Implement GetAllCharacterUUIDsAsync in SqliteBackend
     - SELECT DISTINCT CharacterUUID via UNION across all 22 per-character tables
     - Note: the UNION query will be ~22 lines (one SELECT per table). Use existing table name constants.
     - _Satisfies: Req 6, Criterion 3_
@@ -94,14 +94,14 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Storage/SqliteBackend.cs (modified)_
     - _Verification: Build succeeds; unit test for character discovery_
 
-  - [~] 2.5 Implement GetAllCharacterUUIDsAsync in PostgresBackend
+  - [x] 2.5 Implement GetAllCharacterUUIDsAsync in PostgresBackend
     - Same UNION DISTINCT query pattern as SQLite, adapted for Npgsql
     - _Satisfies: Req 6, Criterion 3_
     - _Inputs: Common/Storage/PostgresBackend.cs (5647 lines — search for table names)_
     - _Output: Common/Storage/PostgresBackend.cs (modified)_
     - _Verification: Build succeeds; unit test for character discovery_
 
-  - [~] 2.6 Implement GetAllCharacterUUIDsAsync in DynamoDbBackend
+  - [x] 2.6 Implement GetAllCharacterUUIDsAsync in DynamoDbBackend
     - Scan partition key prefix for character UUIDs (use existing scan pattern from other methods)
     - _Satisfies: Req 6, Criterion 3_
     - _Inputs: Common/Storage/DynamoDbBackend.cs (1588 lines)_
