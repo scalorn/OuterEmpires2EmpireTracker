@@ -1,7 +1,6 @@
 using System.Security.Claims;
 using OE2EmpireTracker.Common.Models;
 using OE2EmpireTracker.Server.Storage;
-using GranteeType = OE2EmpireTracker.Server.Storage.GranteeType;
 
 namespace OE2EmpireTracker.Server.Endpoints;
 

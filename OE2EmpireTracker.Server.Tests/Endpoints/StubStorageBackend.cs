@@ -4,15 +4,9 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using OE2EmpireTracker.Common.Models;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Server.Storage;
-using ApiToken = OE2EmpireTracker.Common.Models.ApiToken;
-using CharacterPreferences = OE2EmpireTracker.Common.Models.CharacterPreferences;
-using ColonySummary = OE2EmpireTracker.Common.Models.ColonySummary;
-using MembershipAction = OE2EmpireTracker.Common.Models.MembershipAction;
-using ServerCharacter = OE2EmpireTracker.Common.Models.ServerCharacter;
-using ServerFaction = OE2EmpireTracker.Common.Models.ServerFaction;
-using SharingRule = OE2EmpireTracker.Common.Models.SharingRule;
 
 namespace OE2EmpireTracker.Server.Tests.Endpoints;
 

@@ -79,12 +79,12 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Verification: getDiagnostics — compiles cleanly
 
 - [ ] 2. Move Server Models to Common
-  - [-] 2.1 Move ServerModels.cs from Server/Storage to Common/Models
+  - [x] 2.1 Move ServerModels.cs from Server/Storage to Common/Models
     - Satisfies: Req 1, Criteria 3 (model availability in Common)
     - Inputs: Server/Storage/Models.cs
     - Output: OE2EmpireTracker.Common/Models/ServerModels.cs; Server file deleted; using statements updated in Server
     - Verification: Full solution build — zero errors, zero warnings
-  - [~] 2.2 Move PermissionModels.cs from Server/Storage to Common/Models
+  - [-] 2.2 Move PermissionModels.cs from Server/Storage to Common/Models
     - Satisfies: Req 1, Criteria 6-8 (permission model availability in Common)
     - Inputs: Server/Storage/PermissionModels.cs
     - Output: OE2EmpireTracker.Common/Models/PermissionModels.cs; Server file deleted; using statements updated in Server

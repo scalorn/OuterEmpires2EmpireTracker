@@ -1,5 +1,7 @@
 using System;
 
+#nullable enable
+
 namespace OE2EmpireTracker.Common.Models
 {
     /// <summary>Identifies whether a grantee is a character or a faction.</summary>
@@ -31,119 +33,56 @@ namespace OE2EmpireTracker.Common.Models
         ClearanceChanged,
     }
 
-    /// <summary>A named capability permission scoped to a character.</summary>
-    public class CharacterCapability
+    /// <summary>Categorizes the type of data governed by sharing rules.</summary>
+    public enum DataType
     {
-        /// <summary>Gets or sets the unique identifier.</summary>
-        public string UUID { get; set; } = string.Empty;
+        /// <summary>Blueprint data.</summary>
+        Blueprints,
 
-        /// <summary>Gets or sets the owner character UUID.</summary>
-        public string OwnerCharacterUUID { get; set; } = string.Empty;
+        /// <summary>Colony data.</summary>
+        Colonies,
 
-        /// <summary>Gets or sets the capability name.</summary>
-        public string Name { get; set; } = string.Empty;
+        /// <summary>Survey data.</summary>
+        Surveys,
 
-        /// <summary>Gets or sets the capability description.</summary>
-        public string Description { get; set; } = string.Empty;
-    }
+        /// <summary>Delivery route data.</summary>
+        DeliveryRoutes,
 
-    /// <summary>A clearance level defining tiered data visibility within a character's shared data.</summary>
-    public class CharacterClearanceLevel
-    {
-        /// <summary>Gets or sets the unique identifier.</summary>
-        public string UUID { get; set; } = string.Empty;
+        /// <summary>Delivery plan data.</summary>
+        DeliveryPlans,
 
-        /// <summary>Gets or sets the owner character UUID.</summary>
-        public string OwnerCharacterUUID { get; set; } = string.Empty;
+        /// <summary>Build plan data.</summary>
+        BuildPlans,
 
-        /// <summary>Gets or sets the clearance level number.</summary>
-        public int Level { get; set; }
+        /// <summary>Ship data.</summary>
+        Ships,
 
-        /// <summary>Gets or sets the level name.</summary>
-        public string Name { get; set; } = string.Empty;
+        /// <summary>Ship template data.</summary>
+        ShipTemplates,
 
-        /// <summary>Gets or sets the level description.</summary>
-        public string Description { get; set; } = string.Empty;
-    }
+        /// <summary>Station data.</summary>
+        Stations,
 
-    /// <summary>Junction linking a character permission group to a granted capability.</summary>
-    public class CharacterGroupCapability
-    {
-        /// <summary>Gets or sets the group UUID.</summary>
-        public string GroupUUID { get; set; } = string.Empty;
+        /// <summary>Asteroid data.</summary>
+        Asteroids,
 
-        /// <summary>Gets or sets the capability UUID.</summary>
-        public string CapabilityUUID { get; set; } = string.Empty;
-    }
+        /// <summary>Market listing data.</summary>
+        MarketListings,
 
-    /// <summary>A sharing rule within a character group that defines what data the character shares outward.</summary>
-    public class CharacterGroupSharingRule
-    {
-        /// <summary>Gets or sets the unique identifier.</summary>
-        public string UUID { get; set; } = string.Empty;
+        /// <summary>Market transaction data.</summary>
+        MarketTransactions,
 
-        /// <summary>Gets or sets the group UUID.</summary>
-        public string GroupUUID { get; set; } = string.Empty;
+        /// <summary>Pricing plan data.</summary>
+        PricingPlans,
 
-        /// <summary>Gets or sets the optional data type filter.</summary>
-        public string DataType { get; set; }
+        /// <summary>Stock plan data.</summary>
+        StockPlans,
 
-        /// <summary>Gets or sets the optional entity UUID filter.</summary>
-        public string EntityUUID { get; set; }
-    }
+        /// <summary>Stock profile data.</summary>
+        StockProfiles,
 
-    /// <summary>An individual capability grant to a grantee outside of group membership.</summary>
-    public class CharacterGranteeCapability
-    {
-        /// <summary>Gets or sets the owner character UUID.</summary>
-        public string OwnerCharacterUUID { get; set; } = string.Empty;
-
-        /// <summary>Gets or sets the grantee type.</summary>
-        public GranteeType GranteeType { get; set; }
-
-        /// <summary>Gets or sets the grantee UUID.</summary>
-        public string GranteeUUID { get; set; } = string.Empty;
-
-        /// <summary>Gets or sets the capability UUID.</summary>
-        public string CapabilityUUID { get; set; } = string.Empty;
-    }
-
-    /// <summary>Per-grantee permission assignment linking a character or faction to a group and clearance level.</summary>
-    public class CharacterGranteePermissions
-    {
-        /// <summary>Gets or sets the owner character UUID.</summary>
-        public string OwnerCharacterUUID { get; set; } = string.Empty;
-
-        /// <summary>Gets or sets the grantee type.</summary>
-        public GranteeType GranteeType { get; set; }
-
-        /// <summary>Gets or sets the grantee UUID.</summary>
-        public string GranteeUUID { get; set; } = string.Empty;
-
-        /// <summary>Gets or sets the optional group UUID.</summary>
-        public string GroupUUID { get; set; }
-
-        /// <summary>Gets or sets the optional clearance level UUID.</summary>
-        public string ClearanceLevelUUID { get; set; }
-    }
-
-    /// <summary>A permission group that bundles capabilities and sharing rules for a character's grantees.</summary>
-    public class CharacterPermissionGroup
-    {
-        /// <summary>Gets or sets the unique identifier.</summary>
-        public string UUID { get; set; } = string.Empty;
-
-        /// <summary>Gets or sets the owner character UUID.</summary>
-        public string OwnerCharacterUUID { get; set; } = string.Empty;
-
-        /// <summary>Gets or sets the group name.</summary>
-        public string Name { get; set; } = string.Empty;
-
-        /// <summary>Gets or sets the group description.</summary>
-        public string Description { get; set; } = string.Empty;
-
-        /// <summary>Gets or sets the default clearance level UUID.</summary>
-        public string DefaultClearanceLevelUUID { get; set; } = string.Empty;
+        /// <summary>Supply chain data.</summary>
+        SupplyChains,
     }
 
     /// <summary>A named capability permission scoped to a faction.</summary>
@@ -181,6 +120,25 @@ namespace OE2EmpireTracker.Common.Models
         public string Description { get; set; } = string.Empty;
     }
 
+    /// <summary>A permission group that bundles capabilities and sharing rules for faction members.</summary>
+    public class FactionPermissionGroup
+    {
+        /// <summary>Gets or sets the unique identifier.</summary>
+        public string UUID { get; set; } = string.Empty;
+
+        /// <summary>Gets or sets the faction UUID.</summary>
+        public string FactionUUID { get; set; } = string.Empty;
+
+        /// <summary>Gets or sets the group name.</summary>
+        public string Name { get; set; } = string.Empty;
+
+        /// <summary>Gets or sets the group description.</summary>
+        public string Description { get; set; } = string.Empty;
+
+        /// <summary>Gets or sets the default clearance level UUID.</summary>
+        public string DefaultClearanceLevelUUID { get; set; } = string.Empty;
+    }
+
     /// <summary>Junction linking a faction permission group to a granted capability.</summary>
     public class FactionGroupCapability
     {
@@ -201,10 +159,10 @@ namespace OE2EmpireTracker.Common.Models
         public string GroupUUID { get; set; } = string.Empty;
 
         /// <summary>Gets or sets the optional data type filter.</summary>
-        public string DataType { get; set; }
+        public string? DataType { get; set; }
 
         /// <summary>Gets or sets the optional entity UUID filter.</summary>
-        public string EntityUUID { get; set; }
+        public string? EntityUUID { get; set; }
 
         /// <summary>Gets or sets the minimum clearance level UUID.</summary>
         public string MinClearanceLevelUUID { get; set; } = string.Empty;
@@ -233,20 +191,55 @@ namespace OE2EmpireTracker.Common.Models
         public string FactionUUID { get; set; } = string.Empty;
 
         /// <summary>Gets or sets the optional group UUID.</summary>
-        public string GroupUUID { get; set; }
+        public string? GroupUUID { get; set; }
 
         /// <summary>Gets or sets the clearance level UUID.</summary>
         public string ClearanceLevelUUID { get; set; } = string.Empty;
     }
 
-    /// <summary>A permission group that bundles capabilities and sharing rules for faction members.</summary>
-    public class FactionPermissionGroup
+    /// <summary>A named capability permission scoped to a character.</summary>
+    public class CharacterCapability
     {
         /// <summary>Gets or sets the unique identifier.</summary>
         public string UUID { get; set; } = string.Empty;
 
-        /// <summary>Gets or sets the faction UUID.</summary>
-        public string FactionUUID { get; set; } = string.Empty;
+        /// <summary>Gets or sets the owner character UUID.</summary>
+        public string OwnerCharacterUUID { get; set; } = string.Empty;
+
+        /// <summary>Gets or sets the capability name.</summary>
+        public string Name { get; set; } = string.Empty;
+
+        /// <summary>Gets or sets the capability description.</summary>
+        public string Description { get; set; } = string.Empty;
+    }
+
+    /// <summary>A clearance level defining tiered data visibility within a character's shared data.</summary>
+    public class CharacterClearanceLevel
+    {
+        /// <summary>Gets or sets the unique identifier.</summary>
+        public string UUID { get; set; } = string.Empty;
+
+        /// <summary>Gets or sets the owner character UUID.</summary>
+        public string OwnerCharacterUUID { get; set; } = string.Empty;
+
+        /// <summary>Gets or sets the clearance level number.</summary>
+        public int Level { get; set; }
+
+        /// <summary>Gets or sets the level name.</summary>
+        public string Name { get; set; } = string.Empty;
+
+        /// <summary>Gets or sets the level description.</summary>
+        public string Description { get; set; } = string.Empty;
+    }
+
+    /// <summary>A permission group that bundles capabilities and sharing rules for a character's grantees.</summary>
+    public class CharacterPermissionGroup
+    {
+        /// <summary>Gets or sets the unique identifier.</summary>
+        public string UUID { get; set; } = string.Empty;
+
+        /// <summary>Gets or sets the owner character UUID.</summary>
+        public string OwnerCharacterUUID { get; set; } = string.Empty;
 
         /// <summary>Gets or sets the group name.</summary>
         public string Name { get; set; } = string.Empty;
@@ -256,6 +249,67 @@ namespace OE2EmpireTracker.Common.Models
 
         /// <summary>Gets or sets the default clearance level UUID.</summary>
         public string DefaultClearanceLevelUUID { get; set; } = string.Empty;
+    }
+
+    /// <summary>Junction linking a character permission group to a granted capability.</summary>
+    public class CharacterGroupCapability
+    {
+        /// <summary>Gets or sets the group UUID.</summary>
+        public string GroupUUID { get; set; } = string.Empty;
+
+        /// <summary>Gets or sets the capability UUID.</summary>
+        public string CapabilityUUID { get; set; } = string.Empty;
+    }
+
+    /// <summary>A sharing rule within a character group that defines what data the character shares outward.</summary>
+    public class CharacterGroupSharingRule
+    {
+        /// <summary>Gets or sets the unique identifier.</summary>
+        public string UUID { get; set; } = string.Empty;
+
+        /// <summary>Gets or sets the group UUID.</summary>
+        public string GroupUUID { get; set; } = string.Empty;
+
+        /// <summary>Gets or sets the optional data type filter.</summary>
+        public string? DataType { get; set; }
+
+        /// <summary>Gets or sets the optional entity UUID filter.</summary>
+        public string? EntityUUID { get; set; }
+    }
+
+    /// <summary>Per-grantee permission assignment linking a character or faction to a group and clearance level.</summary>
+    public class CharacterGranteePermissions
+    {
+        /// <summary>Gets or sets the owner character UUID.</summary>
+        public string OwnerCharacterUUID { get; set; } = string.Empty;
+
+        /// <summary>Gets or sets the grantee type.</summary>
+        public GranteeType GranteeType { get; set; }
+
+        /// <summary>Gets or sets the grantee UUID.</summary>
+        public string GranteeUUID { get; set; } = string.Empty;
+
+        /// <summary>Gets or sets the optional group UUID.</summary>
+        public string? GroupUUID { get; set; }
+
+        /// <summary>Gets or sets the optional clearance level UUID.</summary>
+        public string? ClearanceLevelUUID { get; set; }
+    }
+
+    /// <summary>An individual capability grant to a grantee outside of group membership.</summary>
+    public class CharacterGranteeCapability
+    {
+        /// <summary>Gets or sets the owner character UUID.</summary>
+        public string OwnerCharacterUUID { get; set; } = string.Empty;
+
+        /// <summary>Gets or sets the grantee type.</summary>
+        public GranteeType GranteeType { get; set; }
+
+        /// <summary>Gets or sets the grantee UUID.</summary>
+        public string GranteeUUID { get; set; } = string.Empty;
+
+        /// <summary>Gets or sets the capability UUID.</summary>
+        public string CapabilityUUID { get; set; } = string.Empty;
     }
 
     /// <summary>A private intel comment about an external character, shareable with factions.</summary>
@@ -290,10 +344,10 @@ namespace OE2EmpireTracker.Common.Models
         public string FactionUUID { get; set; } = string.Empty;
 
         /// <summary>Gets or sets the clearance level assigned during classification. Null means pending review.</summary>
-        public string ClassificationLevelUUID { get; set; }
+        public string? ClassificationLevelUUID { get; set; }
 
         /// <summary>Gets or sets the character who classified this comment. Null until reviewed.</summary>
-        public string ClassifiedByCharacterUUID { get; set; }
+        public string? ClassifiedByCharacterUUID { get; set; }
 
         /// <summary>Gets or sets the share timestamp.</summary>
         public DateTime SharedUtc { get; set; }
