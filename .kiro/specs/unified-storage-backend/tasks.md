@@ -261,19 +261,19 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Inputs: Common/Storage/SqliteBackend.cs (from 6.7)
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (migration infrastructure added)
     - Verification: getDiagnostics — compiles cleanly
-  - [-] 8.2 Implement SQLite legacy JSON-blob migration: detect old schema, read JSON blobs, insert into normalized tables
+  - [x] 8.2 Implement SQLite legacy JSON-blob migration: detect old schema, read JSON blobs, insert into normalized tables
     - Satisfies: Req 11, Criterion 5
     - Inputs: Common/Storage/SqliteBackend.cs (from 8.1), old schema structure (JSON-blob tables)
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (legacy migration logic added)
     - Verification: getDiagnostics — compiles cleanly
 
 - [ ] 9. Unit Tests — JsonSingleFile and JsonMultiFile Backends
-  - [~] 9.1 Write unit tests for JsonSingleFileBackend: lifecycle, empty/missing file, malformed JSON error handling
+  - [-] 9.1 Write unit tests for JsonSingleFileBackend: lifecycle, empty/missing file, malformed JSON error handling
     - Satisfies: Req 2, Criteria 6-7; Req 10, Criteria 1-2; Req 11, Criterion 1
     - Inputs: Common/Storage/JsonSingleFileBackend.cs
     - Output: OE2EmpireTracker.Tests/Storage/JsonSingleFileBackendLifecycleTests.cs
     - Verification: vstest.console — new tests pass
-  - [~] 9.2 Write unit tests for JsonSingleFileBackend: CRUD operations and serialization byte-identical output
+  - [-] 9.2 Write unit tests for JsonSingleFileBackend: CRUD operations and serialization byte-identical output
     - Satisfies: Req 2, Criteria 1, 3-4, 8; Req 11, Criteria 1, 3
     - Inputs: Common/Storage/JsonSingleFileBackend.cs, existing PlayerData.json
     - Output: OE2EmpireTracker.Tests/Storage/JsonSingleFileBackendCrudTests.cs
