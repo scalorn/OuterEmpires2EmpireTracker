@@ -239,12 +239,12 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Inputs: Common/Storage/SqliteBackend.cs (schema reference), design.md (Postgres types)
     - Output: OE2EmpireTracker.Common/Storage/PostgresBackend.cs (schema DDL complete)
     - Verification: getDiagnostics — compiles cleanly
-  - [-] 7.3 Postgres schema DDL: All server-global, permission, intel, audit, and baseline tables
+  - [x] 7.3 Postgres schema DDL: All server-global, permission, intel, audit, and baseline tables
     - Satisfies: Req 6, Criteria 1-2, 6-7
     - Inputs: SQLite schema as reference
     - Output: OE2EmpireTracker.Common/Storage/PostgresBackend.cs (full schema DDL)
     - Verification: getDiagnostics — compiles cleanly
-  - [~] 7.4 Postgres CRUD: Server-global entities, Colony, Blueprint, Survey, PlayerProfile, DeliveryRoute, DeliveryPlan
+  - [-] 7.4 Postgres CRUD: Server-global entities, Colony, Blueprint, Survey, PlayerProfile, DeliveryRoute, DeliveryPlan
     - Satisfies: Req 6, Criteria 1, 5-7
     - Inputs: Common/Storage/PostgresBackend.cs (from 7.3), SqliteBackend CRUD as reference
     - Output: OE2EmpireTracker.Common/Storage/PostgresBackend.cs (extended — first batch of CRUD)
