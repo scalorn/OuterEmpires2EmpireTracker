@@ -95,7 +95,7 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Output: OE2EmpireTracker.Common/Storage/JsonMultiFileBackend.cs; Server file deleted; Server references updated
     - Verification: Full solution build — zero errors, zero warnings
 
-- [ ] 3. Move DynamoDB Backend and Create Factory Scaffolding
+- [x] 3. Move DynamoDB Backend and Create Factory Scaffolding
   - [x] 3.1 Move DynamoStorageBackend from Server to Common as DynamoDbBackend
     - Satisfies: Req 5, Criteria 1-5
     - Inputs: Server/Storage/DynamoStorageBackend.cs, Common/Interfaces/IStorageBackend.cs
@@ -106,14 +106,14 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Inputs: design.md (factory pattern, config class)
     - Output: OE2EmpireTracker.Common/Storage/StorageBackendConfig.cs, OE2EmpireTracker.Common/Storage/StorageBackendFactory.cs
     - Verification: getDiagnostics — compiles cleanly
-  - [-] 3.3 Update Server Program.cs to use Common backends and factory; delete Server/Storage/IStorageBackend.cs
+  - [x] 3.3 Update Server Program.cs to use Common backends and factory; delete Server/Storage/IStorageBackend.cs
     - Satisfies: Req 8, Criterion 2; design.md Server Project Migration section
     - Inputs: Server/Program.cs, Server/Storage/IStorageBackend.cs (to be deleted)
     - Output: Server/Program.cs updated; Server/Storage/IStorageBackend.cs deleted; old SQLite and Postgres backend files deleted from Server
     - Verification: Full solution build + dotnet test OE2EmpireTracker.Server.Tests — all existing tests pass
 
 - [ ] 4. JsonSingleFileBackend (New Implementation)
-  - [~] 4.1 Implement JsonSingleFileBackend: lifecycle, load/save, empty/malformed handling
+  - [-] 4.1 Implement JsonSingleFileBackend: lifecycle, load/save, empty/malformed handling
     - Satisfies: Req 2, Criteria 1-4, 6-7; Req 11, Criteria 1, 3
     - Inputs: Common/Services/PlayerRoot.cs, Common/Services/SafeFileWriter.cs, Common/Services/JsonSettings.cs, Common/Services/SerializationSorter.cs
     - Output: OE2EmpireTracker.Common/Storage/JsonSingleFileBackend.cs (lifecycle, Initialize, ValidateConnection, GetStorageInfo, load/save plumbing)
