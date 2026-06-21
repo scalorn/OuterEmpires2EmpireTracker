@@ -1010,34 +1010,53 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
         /// <inheritdoc/>
         public Task InitializeAsync(CancellationToken ct = default)
         {
-            using (var conn = OpenConnection())
+            try
             {
-                using (var cmd = conn.CreateCommand())
+                using (var conn = OpenConnection())
                 {
-                    cmd.CommandText = "CREATE TABLE IF NOT EXISTS _metadata (Key TEXT PRIMARY KEY, Value TEXT NOT NULL);";
-                    cmd.ExecuteNonQuery();
-                }
+                    using (var cmd = conn.CreateCommand())
+                    {
+                        cmd.CommandText = "CREATE TABLE IF NOT EXISTS _metadata (Key TEXT PRIMARY KEY, Value TEXT NOT NULL);";
+                        cmd.ExecuteNonQuery();
+                    }
 
-                int version = GetSchemaVersion(conn);
-                if (version == 0)
-                {
-                    ExecuteSchema(conn);
-                    SetSchemaVersion(conn, CurrentSchemaVersion);
-                    Log.Info("SQLite database initialized with schema version {0}", CurrentSchemaVersion);
-                }
-                else if (version < CurrentSchemaVersion)
-                {
-                    RunMigrations(conn, version, _databasePath);
-                }
-                else
-                {
-                    Log.Debug("SQLite database already at schema version {0}", version);
-                }
+                    int version = GetSchemaVersion(conn);
+                    if (version == 0)
+                    {
+                        ExecuteSchema(conn);
+                        SetSchemaVersion(conn, CurrentSchemaVersion);
+                        Log.Info("SQLite database initialized with schema version {0}", CurrentSchemaVersion);
+                    }
+                    else if (version < CurrentSchemaVersion)
+                    {
+                        RunMigrations(conn, version, _databasePath);
+                    }
+                    else
+                    {
+                        Log.Debug("SQLite database already at schema version {0}", version);
+                    }
 
-                if (DetectLegacySchema(conn))
-                {
-                    MigrateLegacyData(conn);
+                    if (DetectLegacySchema(conn))
+                    {
+                        MigrateLegacyData(conn);
+                    }
                 }
+            }
+            catch (StorageLoadException)
+            {
+                throw;
+            }
+            catch (StorageCorruptionException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new StorageLoadException(
+                    "Sqlite",
+                    _databasePath,
+                    "Failed to initialize SQLite database",
+                    ex);
             }
 
             return Task.CompletedTask;

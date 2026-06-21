@@ -305,17 +305,17 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Inputs: Common/Storage/SqliteBackend.cs
     - Output: OE2EmpireTracker.Tests/Storage/SqliteBackendSchemaTests.cs
     - Verification: vstest.console — new tests pass
-  - [-] 10.2 Write unit tests for SqliteBackend: Colony CRUD with child tables (Structures, Properties, Workers, Items)
+  - [x] 10.2 Write unit tests for SqliteBackend: Colony CRUD with child tables (Structures, Properties, Workers, Items)
     - Satisfies: Req 4, Criteria 1-4, 9-14
     - Inputs: Common/Storage/SqliteBackend.cs
     - Output: OE2EmpireTracker.Tests/Storage/SqliteBackendColonyTests.cs
     - Verification: vstest.console — new tests pass
-  - [~] 10.3 Write unit tests for SqliteBackend: Blueprint, Survey, PlayerProfile, DeliveryRoute, DeliveryPlan CRUD with child tables
+  - [-] 10.3 Write unit tests for SqliteBackend: Blueprint, Survey, PlayerProfile, DeliveryRoute, DeliveryPlan CRUD with child tables
     - Satisfies: Req 4, Criteria 1-4, 9-14
     - Inputs: Common/Storage/SqliteBackend.cs
     - Output: OE2EmpireTracker.Tests/Storage/SqliteBackendEntityTests.cs
     - Verification: vstest.console — new tests pass
-  - [~] 10.4 Write unit tests for SqliteBackend: transaction rollback on failure, schema migration versioning, legacy JSON-blob migration, error handling
+  - [-] 10.4 Write unit tests for SqliteBackend: transaction rollback on failure, schema migration versioning, legacy JSON-blob migration, error handling
     - Satisfies: Req 4, Criteria 8-9; Req 9, Criteria 2, 6-7; Req 10, Criteria 1-3; Req 11, Criterion 5
     - Inputs: Common/Storage/SqliteBackend.cs
     - Output: OE2EmpireTracker.Tests/Storage/SqliteBackendMigrationTests.cs
