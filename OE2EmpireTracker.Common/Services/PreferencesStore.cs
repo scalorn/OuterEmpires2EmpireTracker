@@ -3,6 +3,8 @@ using System.IO;
 using Newtonsoft.Json;
 using NLog;
 using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Interfaces;
+using OE2EmpireTracker.Common.Storage;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Persistence;
 
@@ -52,6 +54,63 @@ namespace OE2EmpireTracker.Services
             var prefs = PreferencesStore.GetInstance().Preferences;
             int minutes = Math.Max(1, Math.Min(60, prefs.MailSyncIntervalMinutes));
             return minutes * 60 * 1000;
+        }
+
+        /// <summary>
+        /// Parses the storage backend type string from preferences.
+        /// Falls back to <see cref="StorageBackendType.JsonSingleFile"/> with a warning if unrecognized.
+        /// </summary>
+        /// <param name="value">The string value to parse (case-insensitive).</param>
+        /// <returns>The parsed <see cref="StorageBackendType"/> value.</returns>
+        public StorageBackendType ParseStorageBackendType(string value)
+        {
+            if (Enum.TryParse<StorageBackendType>(value, ignoreCase: true, out var parsed))
+            {
+                return parsed;
+            }
+
+            Log.Warn("Unrecognized StorageBackendType '{0}', falling back to JsonSingleFile", value);
+            return StorageBackendType.JsonSingleFile;
+        }
+
+        /// <summary>
+        /// Resolves the full storage backend configuration from current preferences,
+        /// applying default paths when no explicit path is configured.
+        /// </summary>
+        /// <returns>A <see cref="StorageBackendConfig"/> populated for the configured backend type.</returns>
+        public StorageBackendConfig ResolveStorageConfig()
+        {
+            var type = ParseStorageBackendType(Preferences.StorageBackendType);
+            var config = new StorageBackendConfig();
+
+            switch (type)
+            {
+                case Common.Interfaces.StorageBackendType.JsonSingleFile:
+                case Common.Interfaces.StorageBackendType.JsonMultiFile:
+                    config.ConnectionString = !string.IsNullOrEmpty(Preferences.StoragePath)
+                        ? Preferences.StoragePath
+                        : AppDomain.CurrentDomain.BaseDirectory;
+                    break;
+
+                case Common.Interfaces.StorageBackendType.Sqlite:
+                    config.ConnectionString = !string.IsNullOrEmpty(Preferences.StoragePath)
+                        ? Preferences.StoragePath
+                        : Path.Combine(
+                            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                            "OE2EmpireTracker");
+                    break;
+
+                case Common.Interfaces.StorageBackendType.DynamoDb:
+                    config.AwsRegion = Preferences.StorageAwsRegion;
+                    config.TablePrefix = Preferences.StorageTablePrefix;
+                    break;
+
+                case Common.Interfaces.StorageBackendType.Postgres:
+                    config.ConnectionString = Preferences.StorageConnectionString;
+                    break;
+            }
+
+            return config;
         }
 
         public void Save()

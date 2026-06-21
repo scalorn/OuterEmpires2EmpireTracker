@@ -24,16 +24,19 @@ namespace OE2EmpireTracker.Services
         /// <param name="load">Delegate that loads all entities of this type for a character.</param>
         /// <param name="upsert">Delegate that upserts a single entity for a character.</param>
         /// <param name="delete">Delegate that deletes an entity by UUID for a character.</param>
+        /// <param name="findInList">Delegate that finds an entity by UUID in the in-memory list.</param>
         public EntityPersistenceEntry(
             Type entityType,
             Func<IStorageBackend, string, Task<IReadOnlyList<object>>> load,
             Func<IStorageBackend, string, object, Task> upsert,
-            Func<IStorageBackend, string, string, Task> delete)
+            Func<IStorageBackend, string, string, Task> delete,
+            Func<PlayerContext, string, object> findInList)
         {
             EntityType = entityType;
             Load = load;
             Upsert = upsert;
             Delete = delete;
+            FindInList = findInList;
         }
 
         /// <summary>
@@ -58,6 +61,12 @@ namespace OE2EmpireTracker.Services
         /// Signature: (backend, characterUUID, entityUUID) => Task.
         /// </summary>
         public Func<IStorageBackend, string, string, Task> Delete { get; }
+
+        /// <summary>
+        /// Gets the delegate that finds an entity by UUID in the PlayerContext's in-memory list.
+        /// Signature: (playerContext, entityUUID) => entity or null.
+        /// </summary>
+        public Func<PlayerContext, string, object> FindInList { get; }
     }
 
     /// <summary>

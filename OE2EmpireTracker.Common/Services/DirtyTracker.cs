@@ -173,6 +173,64 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Gets all dirty entity UUIDs for a given type (non-generic overload for runtime type dispatch).
+        /// </summary>
+        /// <param name="entityType">The entity type to query.</param>
+        /// <returns>A list of UUIDs that have been marked dirty for the given type.</returns>
+        public IReadOnlyList<string> GetDirtyUUIDs(Type entityType)
+        {
+            lock (_lock)
+            {
+                return _dirty
+                    .Where(k => k.EntityType == entityType)
+                    .Select(k => k.EntityUUID)
+                    .ToList();
+            }
+        }
+
+        /// <summary>
+        /// Gets all deleted entity UUIDs for a given type (non-generic overload for runtime type dispatch).
+        /// </summary>
+        /// <param name="entityType">The entity type to query.</param>
+        /// <returns>A list of UUIDs that have been marked deleted for the given type.</returns>
+        public IReadOnlyList<string> GetDeletedUUIDs(Type entityType)
+        {
+            lock (_lock)
+            {
+                return _deleted
+                    .Where(k => k.EntityType == entityType)
+                    .Select(k => k.EntityUUID)
+                    .ToList();
+            }
+        }
+
+        /// <summary>
+        /// Clears the dirty flag for a single entity after successful persistence (non-generic overload).
+        /// </summary>
+        /// <param name="entityType">The entity type.</param>
+        /// <param name="entityUUID">The UUID of the entity to clear.</param>
+        public void ClearDirty(Type entityType, string entityUUID)
+        {
+            lock (_lock)
+            {
+                _dirty.Remove(new DirtyKey(entityType, entityUUID));
+            }
+        }
+
+        /// <summary>
+        /// Clears the deleted record for a single entity after successful deletion (non-generic overload).
+        /// </summary>
+        /// <param name="entityType">The entity type.</param>
+        /// <param name="entityUUID">The UUID of the entity to clear.</param>
+        public void ClearDeleted(Type entityType, string entityUUID)
+        {
+            lock (_lock)
+            {
+                _deleted.Remove(new DirtyKey(entityType, entityUUID));
+            }
+        }
+
+        /// <summary>
         /// Clears all dirty and deleted flags (used after full-file write or fresh load).
         /// </summary>
         public void ClearAll()

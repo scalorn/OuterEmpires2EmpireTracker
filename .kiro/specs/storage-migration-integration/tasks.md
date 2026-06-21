@@ -166,7 +166,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Verification: DirtyTrackerTests pass in vstest.console_
 
 
-- [ ] 6. PlayerContext storage backend integration — properties, map, and load
+- [x] 6. PlayerContext storage backend integration — properties, map, and load
   - [x] 6.1 Add StorageBackend and DirtyTracker properties to PlayerContext
     - Add `public IStorageBackend StorageBackend { get; set; }` property
     - Add `public DirtyTracker DirtyTracker { get; }` property (initialized in constructor)
@@ -189,7 +189,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/EntityPersistenceMap.cs (NEW)_
     - _Verification: Build succeeds_
 
-  - [-] 6.3 Implement LoadFromBackend in PlayerContext using EntityPersistenceMap
+  - [x] 6.3 Implement LoadFromBackend in PlayerContext using EntityPersistenceMap
     - Add private `LoadFromBackend(string characterUUID)` method
     - Iterate EntityPersistenceMap entries, call each Load delegate via Task.Run bridging
     - Assign results into a PlayerRoot, call existing Init methods (InitColonies, InitBlueprints, etc.)
@@ -201,7 +201,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/PlayerContext.cs (modified)_
     - _Verification: Build succeeds_
 
-  - [-] 6.4 Wire CurrentPlayerUUID setter to use LoadFromBackend
+  - [x] 6.4 Wire CurrentPlayerUUID setter to use LoadFromBackend
     - When StorageBackend is non-null, call LoadFromBackend instead of legacy file load
     - Save previous UUID; on StorageLoadException revert and propagate
     - When StorageBackend property setter is called while CurrentPlayerUUID is active, trigger reload
@@ -213,7 +213,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
 
 
 - [ ] 7. PlayerContext WriteContext backend integration
-  - [~] 7.1 Modify WriteContext for backend routing and full-file path
+  - [-] 7.1 Modify WriteContext for backend routing and full-file path
     - Add branching at top of WriteContext: WritesBlocked check → ServerOnly check → no-backend check → backend dispatch
     - When backend is JsonSingleFileBackend: serialize full PlayerRoot (reuse existing serialization), call UpsertGlobalDataAsync via Task.Run
     - Clear all dirty flags after successful full-file write
@@ -226,7 +226,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/PlayerContext.cs (modified)_
     - _Verification: Build succeeds_
 
-  - [~] 7.2 Implement PersistDirtyEntities using EntityPersistenceMap
+  - [-] 7.2 Implement PersistDirtyEntities using EntityPersistenceMap
     - Add private `PersistDirtyEntities(IStorageBackend backend, string charUUID)` method
     - Iterate EntityPersistenceMap: for each entry, get dirty UUIDs, find entity, call Upsert delegate via Task.Run
     - Clear dirty flag per-entity on success
@@ -446,7 +446,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
 
 
 - [ ] 14. Backend selection preferences
-  - [-] 14.1 Add storage backend properties to UIPreferences
+  - [x] 14.1 Add storage backend properties to UIPreferences
     - Add StorageBackendType (string, default "JsonSingleFile")
     - Add StoragePath, StorageAwsRegion, StorageTablePrefix, StorageConnectionString
     - All with [JsonProperty] attributes and [DefaultValue] where appropriate
@@ -457,7 +457,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Models/UIPreferences.cs (modified)_
     - _Verification: Build succeeds_
 
-  - [~] 14.2 Add ResolveStorageConfig and ParseStorageBackendType to PreferencesStore
+  - [-] 14.2 Add ResolveStorageConfig and ParseStorageBackendType to PreferencesStore
     - ParseStorageBackendType: Enum.TryParse with fallback to JsonSingleFile + warning log
     - ResolveStorageConfig: switch on type, apply default paths per backend type
     - JsonSingleFile/JsonMultiFile default: AppDomain.CurrentDomain.BaseDirectory
