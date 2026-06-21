@@ -678,76 +678,202 @@ namespace OE2EmpireTracker.Common.Storage
         // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<Colony>> GetAllColoniesAsync(string characterUUID) => throw new NotImplementedException();
+        public async Task<IReadOnlyList<Colony>> GetAllColoniesAsync(string characterUUID)
+        {
+            var items = await ScanByPrefixAsync($"Char#{characterUUID}", "Colony#");
+            return items
+                .Select(j => JsonConvert.DeserializeObject<Colony>(j))
+                .Where(c => c != null)
+                .Cast<Colony>()
+                .ToList();
+        }
 
         /// <inheritdoc/>
-        public Task<Colony> GetColonyAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task<Colony> GetColonyAsync(string characterUUID, string entityUUID)
+        {
+            var json = await GetItemDataAsync($"Char#{characterUUID}", $"Colony#{entityUUID}");
+            return json != null ? JsonConvert.DeserializeObject<Colony>(json) : null;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertColonyAsync(string characterUUID, Colony entity) => throw new NotImplementedException();
+        public async Task UpsertColonyAsync(string characterUUID, Colony entity)
+        {
+            await PutItemDataAsync(
+                $"Char#{characterUUID}",
+                $"Colony#{entity.UUID}",
+                JsonConvert.SerializeObject(entity, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task DeleteColonyAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task DeleteColonyAsync(string characterUUID, string entityUUID)
+        {
+            await DeleteItemAsync($"Char#{characterUUID}", $"Colony#{entityUUID}");
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<Blueprint>> GetAllBlueprintsAsync(string characterUUID) => throw new NotImplementedException();
+        public async Task<IReadOnlyList<Blueprint>> GetAllBlueprintsAsync(string characterUUID)
+        {
+            var items = await ScanByPrefixAsync($"Char#{characterUUID}", "Blueprint#");
+            return items
+                .Select(j => JsonConvert.DeserializeObject<Blueprint>(j))
+                .Where(c => c != null)
+                .Cast<Blueprint>()
+                .ToList();
+        }
 
         /// <inheritdoc/>
-        public Task<Blueprint> GetBlueprintAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task<Blueprint> GetBlueprintAsync(string characterUUID, string entityUUID)
+        {
+            var json = await GetItemDataAsync($"Char#{characterUUID}", $"Blueprint#{entityUUID}");
+            return json != null ? JsonConvert.DeserializeObject<Blueprint>(json) : null;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertBlueprintAsync(string characterUUID, Blueprint entity) => throw new NotImplementedException();
+        public async Task UpsertBlueprintAsync(string characterUUID, Blueprint entity)
+        {
+            await PutItemDataAsync(
+                $"Char#{characterUUID}",
+                $"Blueprint#{entity.UUID}",
+                JsonConvert.SerializeObject(entity, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task DeleteBlueprintAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task DeleteBlueprintAsync(string characterUUID, string entityUUID)
+        {
+            await DeleteItemAsync($"Char#{characterUUID}", $"Blueprint#{entityUUID}");
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<Survey>> GetAllSurveysAsync(string characterUUID) => throw new NotImplementedException();
+        public async Task<IReadOnlyList<Survey>> GetAllSurveysAsync(string characterUUID)
+        {
+            var items = await ScanByPrefixAsync($"Char#{characterUUID}", "Survey#");
+            return items
+                .Select(j => JsonConvert.DeserializeObject<Survey>(j))
+                .Where(c => c != null)
+                .Cast<Survey>()
+                .ToList();
+        }
 
         /// <inheritdoc/>
-        public Task<Survey> GetSurveyAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task<Survey> GetSurveyAsync(string characterUUID, string entityUUID)
+        {
+            var json = await GetItemDataAsync($"Char#{characterUUID}", $"Survey#{entityUUID}");
+            return json != null ? JsonConvert.DeserializeObject<Survey>(json) : null;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertSurveyAsync(string characterUUID, Survey entity) => throw new NotImplementedException();
+        public async Task UpsertSurveyAsync(string characterUUID, Survey entity)
+        {
+            await PutItemDataAsync(
+                $"Char#{characterUUID}",
+                $"Survey#{entity.SurveyID}",
+                JsonConvert.SerializeObject(entity, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task DeleteSurveyAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task DeleteSurveyAsync(string characterUUID, string entityUUID)
+        {
+            await DeleteItemAsync($"Char#{characterUUID}", $"Survey#{entityUUID}");
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<PlayerProfile>> GetAllPlayerProfilesAsync(string characterUUID) => throw new NotImplementedException();
+        public async Task<IReadOnlyList<PlayerProfile>> GetAllPlayerProfilesAsync(string characterUUID)
+        {
+            var items = await ScanByPrefixAsync($"Char#{characterUUID}", "PlayerProfile#");
+            return items
+                .Select(j => JsonConvert.DeserializeObject<PlayerProfile>(j))
+                .Where(c => c != null)
+                .Cast<PlayerProfile>()
+                .ToList();
+        }
 
         /// <inheritdoc/>
-        public Task<PlayerProfile> GetPlayerProfileAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task<PlayerProfile> GetPlayerProfileAsync(string characterUUID, string entityUUID)
+        {
+            var json = await GetItemDataAsync($"Char#{characterUUID}", $"PlayerProfile#{entityUUID}");
+            return json != null ? JsonConvert.DeserializeObject<PlayerProfile>(json) : null;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertPlayerProfileAsync(string characterUUID, PlayerProfile entity) => throw new NotImplementedException();
+        public async Task UpsertPlayerProfileAsync(string characterUUID, PlayerProfile entity)
+        {
+            await PutItemDataAsync(
+                $"Char#{characterUUID}",
+                $"PlayerProfile#{entity.UUID}",
+                JsonConvert.SerializeObject(entity, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task DeletePlayerProfileAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task DeletePlayerProfileAsync(string characterUUID, string entityUUID)
+        {
+            await DeleteItemAsync($"Char#{characterUUID}", $"PlayerProfile#{entityUUID}");
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<DeliveryRoute>> GetAllDeliveryRoutesAsync(string characterUUID) => throw new NotImplementedException();
+        public async Task<IReadOnlyList<DeliveryRoute>> GetAllDeliveryRoutesAsync(string characterUUID)
+        {
+            var items = await ScanByPrefixAsync($"Char#{characterUUID}", "DeliveryRoute#");
+            return items
+                .Select(j => JsonConvert.DeserializeObject<DeliveryRoute>(j))
+                .Where(c => c != null)
+                .Cast<DeliveryRoute>()
+                .ToList();
+        }
 
         /// <inheritdoc/>
-        public Task<DeliveryRoute> GetDeliveryRouteAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task<DeliveryRoute> GetDeliveryRouteAsync(string characterUUID, string entityUUID)
+        {
+            var json = await GetItemDataAsync($"Char#{characterUUID}", $"DeliveryRoute#{entityUUID}");
+            return json != null ? JsonConvert.DeserializeObject<DeliveryRoute>(json) : null;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertDeliveryRouteAsync(string characterUUID, DeliveryRoute entity) => throw new NotImplementedException();
+        public async Task UpsertDeliveryRouteAsync(string characterUUID, DeliveryRoute entity)
+        {
+            await PutItemDataAsync(
+                $"Char#{characterUUID}",
+                $"DeliveryRoute#{entity.UUID}",
+                JsonConvert.SerializeObject(entity, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task DeleteDeliveryRouteAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task DeleteDeliveryRouteAsync(string characterUUID, string entityUUID)
+        {
+            await DeleteItemAsync($"Char#{characterUUID}", $"DeliveryRoute#{entityUUID}");
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<DeliveryPlan>> GetAllDeliveryPlansAsync(string characterUUID) => throw new NotImplementedException();
+        public async Task<IReadOnlyList<DeliveryPlan>> GetAllDeliveryPlansAsync(string characterUUID)
+        {
+            var items = await ScanByPrefixAsync($"Char#{characterUUID}", "DeliveryPlan#");
+            return items
+                .Select(j => JsonConvert.DeserializeObject<DeliveryPlan>(j))
+                .Where(c => c != null)
+                .Cast<DeliveryPlan>()
+                .ToList();
+        }
 
         /// <inheritdoc/>
-        public Task<DeliveryPlan> GetDeliveryPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task<DeliveryPlan> GetDeliveryPlanAsync(string characterUUID, string entityUUID)
+        {
+            var json = await GetItemDataAsync($"Char#{characterUUID}", $"DeliveryPlan#{entityUUID}");
+            return json != null ? JsonConvert.DeserializeObject<DeliveryPlan>(json) : null;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertDeliveryPlanAsync(string characterUUID, DeliveryPlan entity) => throw new NotImplementedException();
+        public async Task UpsertDeliveryPlanAsync(string characterUUID, DeliveryPlan entity)
+        {
+            await PutItemDataAsync(
+                $"Char#{characterUUID}",
+                $"DeliveryPlan#{entity.UUID}",
+                JsonConvert.SerializeObject(entity, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task DeleteDeliveryPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task DeleteDeliveryPlanAsync(string characterUUID, string entityUUID)
+        {
+            await DeleteItemAsync($"Char#{characterUUID}", $"DeliveryPlan#{entityUUID}");
+        }
 
         /// <inheritdoc/>
         public Task<IReadOnlyList<Ship>> GetAllShipsAsync(string characterUUID) => throw new NotImplementedException();
@@ -1084,7 +1210,7 @@ namespace OE2EmpireTracker.Common.Storage
 
                 if (skValue != null)
                 {
-                    filterExpression += " AND SK = :sk";
+                    filterExpression += " AND begins_with(SK, :sk)";
                     expressionValues[":sk"] = new AttributeValue(skValue);
                 }
 
