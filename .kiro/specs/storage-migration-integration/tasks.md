@@ -167,7 +167,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
 
 
 - [ ] 6. PlayerContext storage backend integration — properties, map, and load
-  - [-] 6.1 Add StorageBackend and DirtyTracker properties to PlayerContext
+  - [x] 6.1 Add StorageBackend and DirtyTracker properties to PlayerContext
     - Add `public IStorageBackend StorageBackend { get; set; }` property
     - Add `public DirtyTracker DirtyTracker { get; }` property (initialized in constructor)
     - Add `public void MarkDirty<T>(string entityUUID)` and `MarkDeleted<T>(string entityUUID)` delegate methods
@@ -178,7 +178,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/PlayerContext.cs (modified)_
     - _Verification: Build succeeds; existing tests still pass (backend is null → backward compat)_
 
-  - [~] 6.2 Create EntityPersistenceMap with load/upsert/delete delegates for all 22 entity types
+  - [x] 6.2 Create EntityPersistenceMap with load/upsert/delete delegates for all 22 entity types
     - Create Common/Services/EntityPersistenceMap.cs (NEW)
     - Define `EntityPersistenceEntry` struct with Load, Upsert, Delete, FindInList delegates
     - Populate static array with one entry per entity type mapping to IStorageBackend methods
