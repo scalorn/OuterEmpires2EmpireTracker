@@ -34,6 +34,38 @@ namespace OE2EmpireTracker.Models
         public int MailSyncIntervalMinutes { get; set; } = 5;
 
         /// <summary>
+        /// Gets or sets the configured storage backend type. Defaults to JsonSingleFile.
+        /// </summary>
+        [JsonProperty("storageBackendType")]
+        [DefaultValue("JsonSingleFile")]
+        public string StorageBackendType { get; set; } = "JsonSingleFile";
+
+        /// <summary>
+        /// Gets or sets the path for file-based backends (JsonSingleFile, JsonMultiFile, Sqlite).
+        /// Null or empty means use the default path for the backend type.
+        /// </summary>
+        [JsonProperty("storagePath")]
+        public string StoragePath { get; set; }
+
+        /// <summary>
+        /// Gets or sets the AWS region for the DynamoDB backend.
+        /// </summary>
+        [JsonProperty("storageAwsRegion")]
+        public string StorageAwsRegion { get; set; }
+
+        /// <summary>
+        /// Gets or sets the table name prefix for the DynamoDB backend.
+        /// </summary>
+        [JsonProperty("storageTablePrefix")]
+        public string StorageTablePrefix { get; set; }
+
+        /// <summary>
+        /// Gets or sets the connection string for the Postgres backend.
+        /// </summary>
+        [JsonProperty("storageConnectionString")]
+        public string StorageConnectionString { get; set; }
+
+        /// <summary>
         /// Time horizon in hours for flatpack auto-fill. 0 = include all unbuilt structures.
         /// When > 0, only includes structures whose build will complete within this many hours.
         /// </summary>

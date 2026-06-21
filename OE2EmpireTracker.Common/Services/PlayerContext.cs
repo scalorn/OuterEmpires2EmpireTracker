@@ -22,6 +22,8 @@ namespace OE2EmpireTracker.Services
 
         private string _currentPlayerUUID = string.Empty;
 
+        private IStorageBackend _storageBackend;
+
         private Dictionary<string, Blueprint> _blueprintCache;
         private Dictionary<string, Survey> _surveyCache;
         private Dictionary<string, Colony> _colonyCache;
@@ -303,8 +305,21 @@ namespace OE2EmpireTracker.Services
         /// <summary>
         /// The storage backend used for persistence. When null and not in ServerOnly mode,
         /// WriteContext logs a warning and returns (backward compatibility for tests).
+        /// When set while CurrentPlayerUUID is already active, triggers a reload from the new backend.
         /// </summary>
-        public IStorageBackend StorageBackend { get; set; }
+        public IStorageBackend StorageBackend
+        {
+            get => _storageBackend;
+            set
+            {
+                _storageBackend = value;
+                if (value != null && !string.IsNullOrEmpty(_currentPlayerUUID))
+                {
+                    Log.Info("StorageBackend changed while player active — reloading from new backend");
+                    LoadFromBackend(_currentPlayerUUID);
+                }
+            }
+        }
 
         /// <summary>
         /// The dirty tracker instance. Services call MarkDirty/MarkDeleted through
@@ -314,6 +329,8 @@ namespace OE2EmpireTracker.Services
 
         /// <summary>
         /// UUID of the currently selected player. Forms filter data by this value.
+        /// When StorageBackend is configured, triggers LoadFromBackend instead of legacy file load.
+        /// On StorageLoadException, reverts to the previous UUID and propagates the exception.
         /// </summary>
         public string CurrentPlayerUUID
         {
@@ -322,7 +339,22 @@ namespace OE2EmpireTracker.Services
             {
                 if (_currentPlayerUUID != value)
                 {
+                    var previousUUID = _currentPlayerUUID;
                     _currentPlayerUUID = value ?? string.Empty;
+
+                    if (_storageBackend != null && !string.IsNullOrEmpty(_currentPlayerUUID))
+                    {
+                        try
+                        {
+                            LoadFromBackend(_currentPlayerUUID);
+                        }
+                        catch (StorageLoadException)
+                        {
+                            _currentPlayerUUID = previousUUID;
+                            throw;
+                        }
+                    }
+
                     Log.Info("Current player changed to {0}", _currentPlayerUUID);
                     CurrentPlayerChanged?.Invoke(this, EventArgs.Empty);
                 }

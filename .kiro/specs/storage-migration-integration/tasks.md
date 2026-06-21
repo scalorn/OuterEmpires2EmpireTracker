@@ -189,7 +189,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/EntityPersistenceMap.cs (NEW)_
     - _Verification: Build succeeds_
 
-  - [~] 6.3 Implement LoadFromBackend in PlayerContext using EntityPersistenceMap
+  - [-] 6.3 Implement LoadFromBackend in PlayerContext using EntityPersistenceMap
     - Add private `LoadFromBackend(string characterUUID)` method
     - Iterate EntityPersistenceMap entries, call each Load delegate via Task.Run bridging
     - Assign results into a PlayerRoot, call existing Init methods (InitColonies, InitBlueprints, etc.)
@@ -201,7 +201,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/PlayerContext.cs (modified)_
     - _Verification: Build succeeds_
 
-  - [~] 6.4 Wire CurrentPlayerUUID setter to use LoadFromBackend
+  - [-] 6.4 Wire CurrentPlayerUUID setter to use LoadFromBackend
     - When StorageBackend is non-null, call LoadFromBackend instead of legacy file load
     - Save previous UUID; on StorageLoadException revert and propagate
     - When StorageBackend property setter is called while CurrentPlayerUUID is active, trigger reload
@@ -446,7 +446,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
 
 
 - [ ] 14. Backend selection preferences
-  - [~] 14.1 Add storage backend properties to UIPreferences
+  - [-] 14.1 Add storage backend properties to UIPreferences
     - Add StorageBackendType (string, default "JsonSingleFile")
     - Add StoragePath, StorageAwsRegion, StorageTablePrefix, StorageConnectionString
     - All with [JsonProperty] attributes and [DefaultValue] where appropriate
