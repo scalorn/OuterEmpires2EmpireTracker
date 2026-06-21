@@ -62,12 +62,12 @@ This plan implements the unified IStorageBackend interface and all five backend 
 ## Tasks
 
 - [ ] 1. Interface, Enum, and Exceptions
-  - [-] 1.1 Create StorageBackendType enum and StorageExceptions in Common/Interfaces
+  - [x] 1.1 Create StorageBackendType enum and StorageExceptions in Common/Interfaces
     - Satisfies: Req 7, Criterion 1; Req 10, Criteria 1-4
     - Inputs: design.md (enum values, exception hierarchy)
     - Output: OE2EmpireTracker.Common/Interfaces/StorageBackendType.cs, OE2EmpireTracker.Common/Interfaces/StorageExceptions.cs
     - Verification: getDiagnostics — compiles cleanly
-  - [~] 1.2 Create IStorageBackend interface in Common/Interfaces (lifecycle + server-global + sharing + preferences)
+  - [-] 1.2 Create IStorageBackend interface in Common/Interfaces (lifecycle + server-global + sharing + preferences)
     - Satisfies: Req 1, Criteria 1-3, 5, 10-11
     - Inputs: Server/Storage/IStorageBackend.cs (current interface), design.md
     - Output: OE2EmpireTracker.Common/Interfaces/IStorageBackend.cs (partial — lifecycle, StorageInfo, factions, characters, tokens, membership actions, star systems, colony summaries, sharing rules, preferences)
