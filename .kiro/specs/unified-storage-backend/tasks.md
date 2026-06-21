@@ -155,12 +155,12 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Inputs: design.md (Survey + PlayerProfile schema)
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (schema string extended)
     - Verification: getDiagnostics — compiles cleanly
-  - [-] 5.5 SQLite schema DDL: DeliveryRoutes, DeliveryRouteStops, Ships, ShipComponents, ShipTemplates, ShipTemplateComponents tables
+  - [x] 5.5 SQLite schema DDL: DeliveryRoutes, DeliveryRouteStops, Ships, ShipComponents, ShipTemplates, ShipTemplateComponents tables
     - Satisfies: Req 4, Criteria 2-3, 10, 13
     - Inputs: design.md (DeliveryRoute + Ship + ShipTemplate schema)
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (schema string extended)
     - Verification: getDiagnostics — compiles cleanly
-  - [~] 5.6 SQLite schema DDL: DeliveryPlans, DeliveryPlanStops, DeliveryPlanItems, MarketListings, MarketTransactions tables
+  - [-] 5.6 SQLite schema DDL: DeliveryPlans, DeliveryPlanStops, DeliveryPlanItems, MarketListings, MarketTransactions tables
     - Satisfies: Req 4, Criteria 2-3, 10, 13
     - Inputs: design.md (DeliveryPlan + Market schema)
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (schema string extended)

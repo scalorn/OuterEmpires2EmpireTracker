@@ -33,7 +33,7 @@ namespace OE2EmpireTracker.Common.Storage
         /// Schema DDL concatenated from tasks 5.2-5.11. ExecuteSchema runs this
         /// against a fresh database.
         /// </summary>
-        private static readonly string SchemaDdl = ColonySchema + ItemsBlueprintSchema + SurveyPlayerProfileSchema + DeliveryRouteShipSchema;
+        private static readonly string SchemaDdl = ColonySchema + ItemsBlueprintSchema + SurveyPlayerProfileSchema + DeliveryRouteShipSchema + DeliveryPlanMarketSchema;
 
         private const string ColonySchema = @"
 CREATE TABLE IF NOT EXISTS Colonies (
@@ -334,6 +334,110 @@ CREATE TABLE IF NOT EXISTS ShipTemplateComponents (
     MaxHP INTEGER NOT NULL DEFAULT 0,
     MaxRepairPercent REAL NOT NULL DEFAULT 0,
     PRIMARY KEY (ShipTemplateUUID, Sequence)
+);
+";
+
+        private const string DeliveryPlanMarketSchema = @"
+-- DELIVERY PLAN
+CREATE TABLE IF NOT EXISTS DeliveryPlans (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    RouteUUID TEXT NOT NULL DEFAULT '',
+    ShipUUID TEXT NOT NULL DEFAULT '',
+    Completed INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS DeliveryPlanStops (
+    DeliveryPlanUUID TEXT NOT NULL REFERENCES DeliveryPlans(UUID) ON DELETE CASCADE,
+    Sequence INTEGER NOT NULL,
+    ColonyUUID TEXT NOT NULL DEFAULT '',
+    StopCompleted INTEGER NOT NULL DEFAULT 0,
+    DestinationType TEXT NOT NULL DEFAULT 'Colony',
+    DestinationUUID TEXT NOT NULL DEFAULT '',
+    PRIMARY KEY (DeliveryPlanUUID, Sequence)
+);
+
+CREATE TABLE IF NOT EXISTS DeliveryPlanItems (
+    DeliveryPlanUUID TEXT NOT NULL,
+    StopSequence INTEGER NOT NULL,
+    Direction TEXT NOT NULL,
+    Sequence INTEGER NOT NULL,
+    ItemType TEXT NOT NULL DEFAULT 'None',
+    BaseItemTypeID TEXT NOT NULL DEFAULT '',
+    Name TEXT NOT NULL DEFAULT '',
+    ResourcePurity TEXT NOT NULL DEFAULT '',
+    Quantity INTEGER NOT NULL DEFAULT 0,
+    Delivered INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (DeliveryPlanUUID, StopSequence, Direction, Sequence),
+    FOREIGN KEY (DeliveryPlanUUID, StopSequence) REFERENCES DeliveryPlanStops(DeliveryPlanUUID, Sequence) ON DELETE CASCADE
+);
+
+-- MARKET
+CREATE TABLE IF NOT EXISTS MarketListings (
+    UUID TEXT PRIMARY KEY,
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    StationUUID TEXT NOT NULL DEFAULT '',
+    ItemType TEXT NOT NULL DEFAULT 'None',
+    ItemReferenceID TEXT NOT NULL DEFAULT '',
+    ItemName TEXT NOT NULL DEFAULT '',
+    Quantity INTEGER NOT NULL DEFAULT 0,
+    PricePerUnit REAL NOT NULL DEFAULT 0,
+    CurrentHP INTEGER NOT NULL DEFAULT 0,
+    MaxHP INTEGER NOT NULL DEFAULT 0,
+    MaxRepairPercent REAL NOT NULL DEFAULT 0,
+    MarketId INTEGER,
+    BuyOrder INTEGER NOT NULL DEFAULT 0,
+    BaseItemTypeID TEXT NOT NULL DEFAULT '',
+    ResourcePurity TEXT NOT NULL DEFAULT '',
+    GameTypeCode TEXT NOT NULL DEFAULT '',
+    GameTypeId INTEGER,
+    GameSubTypeId TEXT NOT NULL DEFAULT '',
+    LocationName TEXT NOT NULL DEFAULT '',
+    SystemId INTEGER,
+    SystemName TEXT NOT NULL DEFAULT '',
+    GameLocationId INTEGER,
+    AmountRemaining INTEGER,
+    AmountOriginal INTEGER,
+    AmountSold INTEGER,
+    EscrowRemaining REAL,
+    SalesTaxEstimate REAL,
+    ValueRemaining REAL,
+    Evolution INTEGER,
+    HealthPercentage REAL,
+    SellerName TEXT NOT NULL DEFAULT '',
+    SellerFactionTag TEXT NOT NULL DEFAULT '',
+    PrivateSale INTEGER NOT NULL DEFAULT 0,
+    BuyerName TEXT NOT NULL DEFAULT '',
+    BuyerFactionTag TEXT NOT NULL DEFAULT '',
+    IsOutbid INTEGER NOT NULL DEFAULT 0,
+    IsUndercut INTEGER NOT NULL DEFAULT 0,
+    PlacedDT TEXT NOT NULL DEFAULT '',
+    ExpiresDT TEXT NOT NULL DEFAULT '',
+    CompetitorForMarketId INTEGER,
+    SyncedByCharacterUUID TEXT NOT NULL DEFAULT '',
+    SyncTimestamp TEXT NOT NULL DEFAULT ''
+);
+
+CREATE TABLE IF NOT EXISTS MarketTransactions (
+    UUID TEXT PRIMARY KEY,
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    TransactionType TEXT NOT NULL DEFAULT 'Buy',
+    ItemType TEXT NOT NULL DEFAULT 'None',
+    ItemReferenceID TEXT NOT NULL DEFAULT '',
+    ItemName TEXT NOT NULL DEFAULT '',
+    Quantity INTEGER NOT NULL DEFAULT 0,
+    PricePerUnit REAL NOT NULL DEFAULT 0,
+    TotalPrice REAL NOT NULL DEFAULT 0,
+    Counterparty TEXT NOT NULL DEFAULT '',
+    CounterpartyFaction TEXT NOT NULL DEFAULT '',
+    StationUUID TEXT NOT NULL DEFAULT '',
+    Timestamp TEXT NOT NULL DEFAULT '',
+    Notes TEXT NOT NULL DEFAULT '',
+    ListingUUID TEXT NOT NULL DEFAULT '',
+    CurrentHP INTEGER NOT NULL DEFAULT 0,
+    MaxHP INTEGER NOT NULL DEFAULT 0,
+    MaxRepairPercent REAL NOT NULL DEFAULT 0
 );
 ";
 
