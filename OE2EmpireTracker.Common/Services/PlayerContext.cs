@@ -456,7 +456,7 @@ namespace OE2EmpireTracker.Services
             if (_instance != null)
             {
                 _instance.DirtyTracker.ClearAll();
-                _instance.StorageBackend = null;
+                _instance._storageBackend = null;
             }
 
             _instance = null;
@@ -630,6 +630,105 @@ namespace OE2EmpireTracker.Services
             MailDataChanged?.Invoke(this, EventArgs.Empty);
         }
 
+        /// <summary>
+        /// Loads all per-character entity data from the configured storage backend.
+        /// Iterates EntityPersistenceMap entries, calls each Load delegate via Task.Run bridging,
+        /// replaces in-memory state, and clears DirtyTracker.
+        /// </summary>
+        /// <param name="characterUUID">The character UUID to load data for.</param>
+        private void LoadFromBackend(string characterUUID)
+        {
+            var backend = _storageBackend;
+            var loadedData = new Dictionary<Type, IReadOnlyList<object>>();
+
+            foreach (var entry in EntityPersistenceMap.Entries)
+            {
+                var result = Task.Run(() => entry.Load(backend, characterUUID))
+                    .GetAwaiter().GetResult();
+                loadedData[entry.EntityType] = result;
+            }
+
+            lock (_listLock)
+            {
+                InitFromBackendData(loadedData);
+            }
+
+            DirtyTracker.ClearAll();
+        }
+
+        /// <summary>
+        /// Initializes in-memory entity collections from backend-loaded data.
+        /// Constructs a PlayerRoot and delegates to existing Init methods.
+        /// </summary>
+        /// <param name="loadedData">Dictionary mapping entity types to their loaded object lists.</param>
+        private void InitFromBackendData(Dictionary<Type, IReadOnlyList<object>> loadedData)
+        {
+            var playerRoot = new PlayerRoot
+            {
+                Colony = GetArray<Colony>(loadedData),
+                Blueprint = GetArray<Blueprint>(loadedData),
+                Survey = GetArray<Survey>(loadedData),
+                PlayerProfile = GetArray<PlayerProfile>(loadedData),
+                DeliveryRoute = GetArray<DeliveryRoute>(loadedData),
+                DeliveryPlan = GetArray<DeliveryPlan>(loadedData),
+                Ship = GetArray<Ship>(loadedData),
+                ShipTemplate = GetArray<ShipTemplate>(loadedData),
+                Station = GetArray<Station>(loadedData),
+                MarketListing = GetArray<MarketListing>(loadedData),
+                MarketTransaction = GetArray<MarketTransaction>(loadedData),
+                PricingPlan = GetArray<PricingPlan>(loadedData),
+                BuildPlan = GetArray<BuildPlan>(loadedData),
+                StockPlan = GetArray<StockPlan>(loadedData),
+                StockProfile = GetArray<StockProfile>(loadedData),
+                SupplyChain = GetArray<SupplyChain>(loadedData),
+                WarehouseOverflowRule = GetArray<WarehouseOverflowRule>(loadedData),
+                Asteroid = GetArray<Asteroid>(loadedData),
+                BankingTransaction = GetArray<BankingTransaction>(loadedData),
+                MailMessage = GetArray<MailMessage>(loadedData),
+                Faction = GetArray<Faction>(loadedData),
+                ExternalCharacter = GetArray<ExternalCharacter>(loadedData),
+            };
+
+            InitColonies(playerRoot);
+            InitBlueprints(playerRoot);
+            InitSurveys(playerRoot);
+            InitPlayerProfiles(playerRoot);
+            InitDeliveryRoutes(playerRoot);
+            InitDeliveryPlans(playerRoot);
+            InitShips(playerRoot);
+            InitShipTemplates(playerRoot);
+            InitStations(playerRoot);
+            InitMarketListings(playerRoot);
+            InitMarketTransactions(playerRoot);
+            InitPricingPlans(playerRoot);
+            InitBuildPlans(playerRoot);
+            InitStockPlans(playerRoot);
+            InitStockProfiles(playerRoot);
+            InitSupplyChains(playerRoot);
+            InitWarehouseOverflowRules(playerRoot);
+            InitAsteroids(playerRoot);
+            InitBankingTransactions(playerRoot);
+            InitMailMessages(playerRoot);
+            InitFactions(playerRoot);
+            InitExternalCharacters(playerRoot);
+        }
+
+        /// <summary>
+        /// Extracts a typed array from the loaded backend data dictionary.
+        /// </summary>
+        /// <typeparam name="T">The entity type.</typeparam>
+        /// <param name="loadedData">The loaded data dictionary.</param>
+        /// <returns>An array of entities, or an empty array if the type is not found.</returns>
+        private static T[] GetArray<T>(Dictionary<Type, IReadOnlyList<object>> loadedData)
+        {
+            if (loadedData.TryGetValue(typeof(T), out var list))
+            {
+                return list.Cast<T>().ToArray();
+            }
+
+            return new T[0];
+        }
+
         public void WriteContext()
         {
             if (WritesBlocked)
@@ -792,6 +891,167 @@ namespace OE2EmpireTracker.Services
             {
                 Log.Warn(ex, "LoadFromServerAsync: failed to load from server, using local data");
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// Loads all per-character entities from the storage backend, reinitializes
+        /// in-memory state, and clears the dirty tracker. On failure, reverts
+        /// <see cref="_currentPlayerUUID"/> to <paramref name="previousUUID"/> and propagates.
+        /// </summary>
+        /// <param name="characterUUID">The character UUID to load data for.</param>
+        /// <param name="previousUUID">The UUID to revert to on failure.</param>
+        private void LoadFromBackend(string characterUUID, string previousUUID)
+        {
+            var backend = StorageBackend;
+            var playerRoot = new PlayerRoot();
+
+            try
+            {
+                foreach (var entry in EntityPersistenceMap.Entries)
+                {
+                    var entities = Task.Run(() => entry.Load(backend, characterUUID))
+                        .GetAwaiter().GetResult();
+
+                    AssignToPlayerRoot(playerRoot, entry.EntityType, entities);
+                }
+
+                lock (_listLock)
+                {
+                    InitPlayerProfiles(playerRoot);
+                    InitBlueprints(playerRoot);
+                    InitSurveys(playerRoot);
+                    InitColonies(playerRoot);
+                    InitDeliveryRoutes(playerRoot);
+                    InitDeliveryPlans(playerRoot);
+                    InitPricingPlans(playerRoot);
+                    InitBuildPlans(playerRoot);
+                    InitShipTemplates(playerRoot);
+                    InitShips(playerRoot);
+                    InitStations(playerRoot);
+                    InitMarketListings(playerRoot);
+                    InitMarketTransactions(playerRoot);
+                    InitStockPlans(playerRoot);
+                    InitStockProfiles(playerRoot);
+                    InitSupplyChains(playerRoot);
+                    InitWarehouseOverflowRules(playerRoot);
+                    InitFactions(playerRoot);
+                    InitExternalCharacters(playerRoot);
+                    InitAsteroids(playerRoot);
+                    InitBankingTransactions(playerRoot);
+                    InitMailMessages(playerRoot);
+                    InitMarketSyncData(playerRoot);
+                }
+
+                DirtyTracker.ClearAll();
+                Log.Info("LoadFromBackend: loaded data for character {0}", characterUUID);
+            }
+            catch (StorageLoadException ex)
+            {
+                Log.Error(ex, "LoadFromBackend: failed to load character {0}, reverting to {1}", characterUUID, previousUUID);
+                _currentPlayerUUID = previousUUID;
+                throw;
+            }
+            catch (AggregateException ex) when (ex.InnerException is StorageLoadException)
+            {
+                Log.Error(ex.InnerException, "LoadFromBackend: failed to load character {0}, reverting to {1}", characterUUID, previousUUID);
+                _currentPlayerUUID = previousUUID;
+                throw ex.InnerException;
+            }
+        }
+
+        /// <summary>
+        /// Assigns a loaded entity list to the appropriate PlayerRoot array property.
+        /// </summary>
+        private static void AssignToPlayerRoot(PlayerRoot root, Type entityType, IReadOnlyList<object> entities)
+        {
+            if (entityType == typeof(Colony))
+            {
+                root.Colony = entities.Cast<Colony>().ToArray();
+            }
+            else if (entityType == typeof(Blueprint))
+            {
+                root.Blueprint = entities.Cast<Blueprint>().ToArray();
+            }
+            else if (entityType == typeof(Survey))
+            {
+                root.Survey = entities.Cast<Survey>().ToArray();
+            }
+            else if (entityType == typeof(PlayerProfile))
+            {
+                root.PlayerProfile = entities.Cast<PlayerProfile>().ToArray();
+            }
+            else if (entityType == typeof(DeliveryRoute))
+            {
+                root.DeliveryRoute = entities.Cast<DeliveryRoute>().ToArray();
+            }
+            else if (entityType == typeof(DeliveryPlan))
+            {
+                root.DeliveryPlan = entities.Cast<DeliveryPlan>().ToArray();
+            }
+            else if (entityType == typeof(Ship))
+            {
+                root.Ship = entities.Cast<Ship>().ToArray();
+            }
+            else if (entityType == typeof(ShipTemplate))
+            {
+                root.ShipTemplate = entities.Cast<ShipTemplate>().ToArray();
+            }
+            else if (entityType == typeof(Station))
+            {
+                root.Station = entities.Cast<Station>().ToArray();
+            }
+            else if (entityType == typeof(MarketListing))
+            {
+                root.MarketListing = entities.Cast<MarketListing>().ToArray();
+            }
+            else if (entityType == typeof(MarketTransaction))
+            {
+                root.MarketTransaction = entities.Cast<MarketTransaction>().ToArray();
+            }
+            else if (entityType == typeof(PricingPlan))
+            {
+                root.PricingPlan = entities.Cast<PricingPlan>().ToArray();
+            }
+            else if (entityType == typeof(BuildPlan))
+            {
+                root.BuildPlan = entities.Cast<BuildPlan>().ToArray();
+            }
+            else if (entityType == typeof(StockPlan))
+            {
+                root.StockPlan = entities.Cast<StockPlan>().ToArray();
+            }
+            else if (entityType == typeof(StockProfile))
+            {
+                root.StockProfile = entities.Cast<StockProfile>().ToArray();
+            }
+            else if (entityType == typeof(SupplyChain))
+            {
+                root.SupplyChain = entities.Cast<SupplyChain>().ToArray();
+            }
+            else if (entityType == typeof(WarehouseOverflowRule))
+            {
+                root.WarehouseOverflowRule = entities.Cast<WarehouseOverflowRule>().ToArray();
+            }
+            else if (entityType == typeof(Asteroid))
+            {
+                root.Asteroid = entities.Cast<Asteroid>().ToArray();
+            }
+            else if (entityType == typeof(BankingTransaction))
+            {
+                root.BankingTransaction = entities.Cast<BankingTransaction>().ToArray();
+            }
+            else if (entityType == typeof(MailMessage))
+            {
+                root.MailMessage = entities.Cast<MailMessage>().ToArray();
+            }
+            else if (entityType == typeof(Faction))
+            {
+                root.Faction = entities.Cast<Faction>().ToArray();
+            }
+            else if (entityType == typeof(ExternalCharacter))
+            {
+                root.ExternalCharacter = entities.Cast<ExternalCharacter>().ToArray();
             }
         }
 
