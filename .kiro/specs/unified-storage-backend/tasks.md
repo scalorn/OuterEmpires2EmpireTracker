@@ -299,7 +299,7 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Output: OE2EmpireTracker.Tests/Storage/StorageExceptionTests.cs
     - Verification: vstest.console — new tests pass
 
-- [ ] 10. Unit Tests — SQLite and Postgres Backends
+- [x] 10. Unit Tests — SQLite and Postgres Backends
   - [x] 10.1 Write unit tests for SqliteBackend: schema creation on new DB, WAL mode, _metadata table
     - Satisfies: Req 4, Criteria 5-6; Req 9, Criteria 1-3
     - Inputs: Common/Storage/SqliteBackend.cs
@@ -310,19 +310,19 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Inputs: Common/Storage/SqliteBackend.cs
     - Output: OE2EmpireTracker.Tests/Storage/SqliteBackendColonyTests.cs
     - Verification: vstest.console — new tests pass
-  - [-] 10.3 Write unit tests for SqliteBackend: Blueprint, Survey, PlayerProfile, DeliveryRoute, DeliveryPlan CRUD with child tables
+  - [x] 10.3 Write unit tests for SqliteBackend: Blueprint, Survey, PlayerProfile, DeliveryRoute, DeliveryPlan CRUD with child tables
     - Satisfies: Req 4, Criteria 1-4, 9-14
     - Inputs: Common/Storage/SqliteBackend.cs
     - Output: OE2EmpireTracker.Tests/Storage/SqliteBackendEntityTests.cs
     - Verification: vstest.console — new tests pass
-  - [-] 10.4 Write unit tests for SqliteBackend: transaction rollback on failure, schema migration versioning, legacy JSON-blob migration, error handling
+  - [x] 10.4 Write unit tests for SqliteBackend: transaction rollback on failure, schema migration versioning, legacy JSON-blob migration, error handling
     - Satisfies: Req 4, Criteria 8-9; Req 9, Criteria 2, 6-7; Req 10, Criteria 1-3; Req 11, Criterion 5
     - Inputs: Common/Storage/SqliteBackend.cs
     - Output: OE2EmpireTracker.Tests/Storage/SqliteBackendMigrationTests.cs
     - Verification: vstest.console — new tests pass
 
 - [ ] 11. DynamoDB Backend Unit Tests (DynamoDB Local)
-  - [~] 11.1 Create DynamoDB Local test fixture: start/stop process, table creation/teardown, endpoint configuration
+  - [-] 11.1 Create DynamoDB Local test fixture: start/stop process, table creation/teardown, endpoint configuration
     - Satisfies: Req 5, Criteria 1, 4; design.md (DynamoDB Local test infrastructure)
     - Inputs: design.md (DynamoDB Local config: JDK path, JAR path, port 8111, -inMemory flag)
     - Output: OE2EmpireTracker.Tests/Storage/DynamoDbLocalFixture.cs

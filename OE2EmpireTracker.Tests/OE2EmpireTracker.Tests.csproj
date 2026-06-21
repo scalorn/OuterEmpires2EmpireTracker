@@ -626,6 +626,7 @@
     <Compile Include="Storage\SqliteBackendEntityTests.cs" />
     <Compile Include="Storage\SqliteBackendSchemaTests.cs" />
     <Compile Include="Storage\SqliteBackendMigrationTests.cs" />
+    <Compile Include="Storage\DynamoDbLocalFixture.cs" />
     <Compile Include="TestHelper.cs" />
     <Compile Include="GlobalSetup.cs" />
     <None Include="app.config" />
