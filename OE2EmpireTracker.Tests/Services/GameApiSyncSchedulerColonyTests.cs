@@ -8,6 +8,7 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using NUnit.Framework;
 using OE2EmpireTracker.Client;
 using OE2EmpireTracker.Common.Client.Generated;
@@ -31,6 +32,11 @@ namespace OE2EmpireTracker.Tests.Services
 
         private static readonly DateTime FrozenTime = new DateTime(2025, 1, 20, 10, 0, 0, DateTimeKind.Utc);
 
+        private static readonly JsonSerializerSettings CamelCaseSettings = new JsonSerializerSettings
+        {
+            ContractResolver = new CamelCasePropertyNamesContractResolver(),
+        };
+
         private readonly List<string> _tempFiles = new List<string>();
 
         private HttpListener _listener;
@@ -52,6 +58,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void SetUp()
         {
             SystemClock.UtcNowFunc = () => FrozenTime;
+            SystemClock.EnableInstantDelay();
 
             // Find an available port for the HttpListener
             _baseUrl = "http://localhost:" + GetAvailablePort() + "/";
@@ -133,7 +140,7 @@ namespace OE2EmpireTracker.Tests.Services
                 },
             };
 
-            string json = JsonConvert.SerializeObject(colonyListResponse);
+            string json = JsonConvert.SerializeObject(colonyListResponse, CamelCaseSettings);
             SetupSingleResponse(HttpStatusCode.OK, json);
 
             await _scheduler.CallSyncColoniesAsync(PlayerUUID);
@@ -261,7 +268,7 @@ namespace OE2EmpireTracker.Tests.Services
                 },
             };
 
-            string colonyListJson = JsonConvert.SerializeObject(colonyListResponse);
+            string colonyListJson = JsonConvert.SerializeObject(colonyListResponse, CamelCaseSettings);
 
             int requestCount = 0;
             SetupMultipleResponses(ctx =>
@@ -334,7 +341,7 @@ namespace OE2EmpireTracker.Tests.Services
                 },
             };
 
-            string json = JsonConvert.SerializeObject(colonyListResponse);
+            string json = JsonConvert.SerializeObject(colonyListResponse, CamelCaseSettings);
             SetupSingleResponse(HttpStatusCode.OK, json);
 
             await _scheduler.CallSyncColoniesAsync(PlayerUUID);
@@ -373,7 +380,7 @@ namespace OE2EmpireTracker.Tests.Services
                 },
             };
 
-            string json = JsonConvert.SerializeObject(colonyListResponse);
+            string json = JsonConvert.SerializeObject(colonyListResponse, CamelCaseSettings);
             SetupSingleResponse(HttpStatusCode.OK, json);
 
             await _scheduler.CallSyncColoniesAsync(PlayerUUID);

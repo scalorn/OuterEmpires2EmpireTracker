@@ -468,6 +468,11 @@ namespace OE2EmpireTracker.Services
                 Log.Warn("Colony sync failed for character {0}: HTTP {1}", playerUUID, ex.StatusCode);
                 return;
             }
+            catch (ApiDeserializationException ex)
+            {
+                Log.Warn("Colony sync for character {0}: malformed response: {1}", playerUUID, ex.Message);
+                return;
+            }
 
             if (colonyListResponse?.Colonies == null)
             {
@@ -681,6 +686,11 @@ namespace OE2EmpireTracker.Services
                     errorsEncountered);
                 return;
             }
+            catch (ApiDeserializationException ex)
+            {
+                Log.Warn("Asset sync for character {0}: malformed locations response: {1}", playerUUID, ex.Message);
+                return;
+            }
 
             if (locationsResponse?.Locations == null)
             {
@@ -750,6 +760,15 @@ namespace OE2EmpireTracker.Services
                         "Asset sync: location {0} ({1}) returned HTTP 403, skipping",
                         location.LocationId,
                         location.LocationName);
+                    errorsEncountered++;
+                }
+                catch (ApiDeserializationException ex)
+                {
+                    Log.Warn(
+                        "Asset sync: malformed response for location {0} ({1}): {2}",
+                        location.LocationId,
+                        location.LocationName,
+                        ex.Message);
                     errorsEncountered++;
                 }
                 catch (ApiHttpException ex) when (ex.StatusCode == 404)

@@ -8,6 +8,7 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using NUnit.Framework;
 using OE2EmpireTracker.Client;
 using OE2EmpireTracker.Common.Client.Generated;
@@ -30,6 +31,11 @@ namespace OE2EmpireTracker.Tests.Services
         private const string AccessToken = "test-access-token";
         private const string AppId = "test-app-id";
         private const string ClientId = "test-client-id";
+
+        private static readonly JsonSerializerSettings CamelCaseSettings = new JsonSerializerSettings
+        {
+            ContractResolver = new CamelCasePropertyNamesContractResolver(),
+        };
 
         private readonly List<string> _tempFiles = new List<string>();
 
@@ -139,7 +145,7 @@ namespace OE2EmpireTracker.Tests.Services
                 new LocationDef(1, AssetTypeCodes.Colony, "Colony A", 5),
                 new LocationDef(2, AssetTypeCodes.Colony, "Colony B", 3));
 
-            string locationsJson = JsonConvert.SerializeObject(locationsResponse);
+            string locationsJson = JsonConvert.SerializeObject(locationsResponse, CamelCaseSettings);
             int requestCount = 0;
 
             SetupMultipleResponses(ctx =>
@@ -204,7 +210,7 @@ namespace OE2EmpireTracker.Tests.Services
                 new LocationDef(1, AssetTypeCodes.Colony, "Colony A", 5),
                 new LocationDef(2, AssetTypeCodes.Colony, "Colony B", 3));
 
-            string locationsJson = JsonConvert.SerializeObject(locationsResponse);
+            string locationsJson = JsonConvert.SerializeObject(locationsResponse, CamelCaseSettings);
 
             var detailResponse = new GameApiServiceResponse<AssetLocationDetail>
             {
@@ -224,7 +230,7 @@ namespace OE2EmpireTracker.Tests.Services
                     },
                 },
             };
-            string detailJson = JsonConvert.SerializeObject(detailResponse);
+            string detailJson = JsonConvert.SerializeObject(detailResponse, CamelCaseSettings);
 
             int requestCount = 0;
             SetupMultipleResponses(ctx =>
@@ -273,7 +279,7 @@ namespace OE2EmpireTracker.Tests.Services
                 new LocationDef(2, AssetTypeCodes.Colony, "Colony B", 3),
                 new LocationDef(3, AssetTypeCodes.Colony, "Colony C", 2));
 
-            string locationsJson = JsonConvert.SerializeObject(locationsResponse);
+            string locationsJson = JsonConvert.SerializeObject(locationsResponse, CamelCaseSettings);
 
             SetupMultipleResponses(ctx =>
             {
@@ -318,7 +324,7 @@ namespace OE2EmpireTracker.Tests.Services
                 new LocationDef(1, AssetTypeCodes.Colony, "Colony A", 5),
                 new LocationDef(2, AssetTypeCodes.Colony, "Colony B", 3));
 
-            string locationsJson = JsonConvert.SerializeObject(locationsResponse);
+            string locationsJson = JsonConvert.SerializeObject(locationsResponse, CamelCaseSettings);
 
             var detailResponse = new GameApiServiceResponse<AssetLocationDetail>
             {
@@ -338,7 +344,7 @@ namespace OE2EmpireTracker.Tests.Services
                     },
                 },
             };
-            string validDetailJson = JsonConvert.SerializeObject(detailResponse);
+            string validDetailJson = JsonConvert.SerializeObject(detailResponse, CamelCaseSettings);
 
             int requestCount = 0;
             SetupMultipleResponses(ctx =>
@@ -406,7 +412,7 @@ namespace OE2EmpireTracker.Tests.Services
                 new LocationDef(2, AssetTypeCodes.Colony, "Colony B", 3),
                 new LocationDef(3, AssetTypeCodes.Station, "Empty Station", 0));
 
-            string locationsJson = JsonConvert.SerializeObject(locationsResponse);
+            string locationsJson = JsonConvert.SerializeObject(locationsResponse, CamelCaseSettings);
 
             var detailResponse = new GameApiServiceResponse<AssetLocationDetail>
             {
@@ -426,7 +432,7 @@ namespace OE2EmpireTracker.Tests.Services
                     },
                 },
             };
-            string detailJson = JsonConvert.SerializeObject(detailResponse);
+            string detailJson = JsonConvert.SerializeObject(detailResponse, CamelCaseSettings);
 
             int requestCount = 0;
             SetupMultipleResponses(ctx =>

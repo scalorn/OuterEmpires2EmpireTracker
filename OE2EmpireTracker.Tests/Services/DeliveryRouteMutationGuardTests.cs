@@ -37,6 +37,7 @@ namespace OE2EmpireTracker.Tests.Services
             "FormContacts.cs",
             "FormDeliveryExecution.cs",
             "FormDeliveryRoute.cs",
+            "FormMarket.cs",
             "FormShipInstance.cs",
             "FormShipTemplate.cs",
             "FormStation.cs",

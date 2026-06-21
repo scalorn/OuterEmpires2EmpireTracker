@@ -36,7 +36,7 @@ namespace OE2EmpireTracker.Tests.Services
             _tempSecretsPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + "-secrets.dat");
             _credentialManager = new GameApiCredentialManager(_tempSecretsPath);
             _credentialManager.StoreKey("test-uuid", "test-api-key-12345");
-            _client = new GameApiClient("http://localhost:99999");
+            _client = new GameApiClient("http://localhost:59999");
             _monitor = new GameApiConnectionMonitor(_client, _credentialManager, "test-uuid", "test-app-id", "test-client-id");
         }
 
@@ -73,7 +73,7 @@ namespace OE2EmpireTracker.Tests.Services
             return Prop.ForAll(Arb.From(stateGen), targetState =>
             {
                 // Arrange: create a fresh monitor and transition to the target state
-                using (var client = new GameApiClient("http://localhost:99999"))
+                using (var client = new GameApiClient("http://localhost:59999"))
                 using (var monitor = new GameApiConnectionMonitor(client, _credentialManager, "test-uuid", "test-app-id", "test-client-id"))
                 {
                     // First transition to the target state (from NotConfigured)
@@ -133,7 +133,7 @@ namespace OE2EmpireTracker.Tests.Services
 
             return Prop.ForAll(Arb.From(transitionGen), transition =>
             {
-                using (var client = new GameApiClient("http://localhost:99999"))
+                using (var client = new GameApiClient("http://localhost:59999"))
                 using (var monitor = new GameApiConnectionMonitor(client, _credentialManager, "test-uuid", "test-app-id", "test-client-id"))
                 {
                     // Set up source state
@@ -187,7 +187,7 @@ namespace OE2EmpireTracker.Tests.Services
 
             return Prop.ForAll(Arb.From(targetGen), targetState =>
             {
-                using (var client = new GameApiClient("http://localhost:99999"))
+                using (var client = new GameApiClient("http://localhost:59999"))
                 using (var monitor = new GameApiConnectionMonitor(client, _credentialManager, "test-uuid", "test-app-id", "test-client-id"))
                 {
                     // Subscribe a handler that throws
@@ -224,7 +224,7 @@ namespace OE2EmpireTracker.Tests.Services
 
             return Prop.ForAll(Arb.From(failureCountGen), failureCount =>
             {
-                using (var client = new GameApiClient("http://localhost:99999"))
+                using (var client = new GameApiClient("http://localhost:59999"))
                 using (var monitor = new GameApiConnectionMonitor(client, _credentialManager, "test-uuid", "test-app-id", "test-client-id"))
                 {
                     // First transition to Connected so HandleHealthCheckFailure

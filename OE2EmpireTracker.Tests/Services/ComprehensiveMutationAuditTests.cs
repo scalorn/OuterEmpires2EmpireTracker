@@ -89,6 +89,7 @@ namespace OE2EmpireTracker.Tests.Services
             "FormBuildPlanner.cs",
             "FormColonyDailyBuild.cs",
             "FormColonyV2.cs",
+            "FormMarket.cs",
             "FormShipTemplate.cs",
             "FormStockTargets.cs",
 

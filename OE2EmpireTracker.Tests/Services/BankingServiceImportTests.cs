@@ -6,7 +6,6 @@ using System;
 using System.Net;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using OE2EmpireTracker.Client;
 using OE2EmpireTracker.Models;
@@ -111,23 +110,23 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public async Task ImportTransactionsAsync_Deduplication_SkipsExistingTransactions()
         {
-            // Build the same transactions that BuildTransactionArray(5, 0) will produce
-            // so we can pre-populate matching composite keys.
-            // Composite key = TransactionDateTime|CreditChange|Detail
-            var page = BuildTransactionArray(5, 0);
-            string pageJson = JsonConvert.SerializeObject(page);
-            var pageArray = JArray.Parse(pageJson);
-
-            // Pre-populate with 2 transactions matching the first 2 from the page
+            // Pre-populate 2 transactions with composite keys matching what
+            // BankingService will compute from the API response.
+            // BankingService formats: DateTimeOffset.ToString("o") | (decimal)creditChange | detail
             for (int i = 0; i < 2; i++)
             {
-                var item = pageArray[i];
+                int hours = i / 3600;
+                int minutes = (i % 3600) / 60;
+                int seconds = i % 60;
+                var dt = new DateTimeOffset(2025, 1, 1, hours, minutes, seconds, TimeSpan.Zero);
+                string formattedDT = dt.ToString("o", System.Globalization.CultureInfo.InvariantCulture);
+
                 _playerContext.AddBankingTransaction(new BankingTransaction
                 {
                     UUID = Guid.NewGuid().ToString(),
-                    TransactionDateTime = item.Value<string>("transactionDT"),
-                    CreditChange = item.Value<decimal>("creditChange"),
-                    Detail = item.Value<string>("detail"),
+                    TransactionDateTime = formattedDT,
+                    CreditChange = 100m,
+                    Detail = "Txn-" + i,
                 });
             }
 
@@ -225,14 +224,23 @@ namespace OE2EmpireTracker.Tests.Services
             return port;
         }
 
-        private static string BuildEnvelopeJson(object data)
+        private static string BuildEnvelopeJson(object[] transactionArray)
         {
             var envelope = new
             {
                 success = true,
                 returnCode = 0,
                 returnString = string.Empty,
-                data = data,
+                data = new
+                {
+                    transactions = transactionArray,
+                    totalRecords = transactionArray.Length,
+                    offset = 0,
+                    limit = 100,
+                    totalChange = 0.0,
+                    totalIncome = 0.0,
+                    totalExpenses = 0.0,
+                },
             };
             return JsonConvert.SerializeObject(envelope);
         }

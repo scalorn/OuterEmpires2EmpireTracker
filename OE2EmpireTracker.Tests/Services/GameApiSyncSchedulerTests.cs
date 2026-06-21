@@ -84,7 +84,7 @@ namespace OE2EmpireTracker.Tests.Services
                 param =>
                 {
                     var credManager = CreateCredentialManagerWithKeys(param.K);
-                    var client = new GameApiClient("http://localhost:99999");
+                    var client = new GameApiClient("http://localhost:59999");
                     var firstUUID = credManager.GetConfiguredPlayerUUIDs()[0];
                     var monitor = new GameApiConnectionMonitor(client, credManager, firstUUID, "test-app-id", "test-client-id");
 
@@ -142,7 +142,7 @@ namespace OE2EmpireTracker.Tests.Services
                 param =>
                 {
                     var credManager = CreateCredentialManagerWithKeys(param.K);
-                    var client = new GameApiClient("http://localhost:99999");
+                    var client = new GameApiClient("http://localhost:59999");
                     var firstUUID = credManager.GetConfiguredPlayerUUIDs()[0];
                     var monitor = new GameApiConnectionMonitor(client, credManager, firstUUID, "test-app-id", "test-client-id");
 
@@ -176,7 +176,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void SyncNowAsyncCallsSyncForAllCharacters()
         {
             var credManager = CreateCredentialManagerWithKeys(3);
-            var client = new GameApiClient("http://localhost:99999");
+            var client = new GameApiClient("http://localhost:59999");
             var firstUUID = credManager.GetConfiguredPlayerUUIDs()[0];
             var monitor = new GameApiConnectionMonitor(client, credManager, firstUUID, "test-app-id", "test-client-id");
 
@@ -200,7 +200,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void IndexWrapsAroundAtCharacterCount()
         {
             var credManager = CreateCredentialManagerWithKeys(3);
-            var client = new GameApiClient("http://localhost:99999");
+            var client = new GameApiClient("http://localhost:59999");
             var firstUUID = credManager.GetConfiguredPlayerUUIDs()[0];
             var monitor = new GameApiConnectionMonitor(client, credManager, firstUUID, "test-app-id", "test-client-id");
 
@@ -225,7 +225,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void FailedCharacterSkippedIndexStillAdvances()
         {
             var credManager = CreateCredentialManagerWithKeys(4);
-            var client = new GameApiClient("http://localhost:99999");
+            var client = new GameApiClient("http://localhost:59999");
             var firstUUID = credManager.GetConfiguredPlayerUUIDs()[0];
             var monitor = new GameApiConnectionMonitor(client, credManager, firstUUID, "test-app-id", "test-client-id");
 
