@@ -33,7 +33,7 @@ namespace OE2EmpireTracker.Common.Storage
         /// Schema DDL concatenated from tasks 5.2-5.11. ExecuteSchema runs this
         /// against a fresh database.
         /// </summary>
-        private static readonly string SchemaDdl = ColonySchema + ItemsBlueprintSchema + SurveyPlayerProfileSchema + DeliveryRouteShipSchema + DeliveryPlanMarketSchema + PricingBuildStockSchema + RemainingPlayerEntitySchema + ServerGlobalSchema;
+        private static readonly string SchemaDdl = ColonySchema + ItemsBlueprintSchema + SurveyPlayerProfileSchema + DeliveryRouteShipSchema + DeliveryPlanMarketSchema + PricingBuildStockSchema + RemainingPlayerEntitySchema + ServerGlobalSchema + PermissionSchema;
 
         private const string ColonySchema = @"
 CREATE TABLE IF NOT EXISTS Colonies (
@@ -714,6 +714,126 @@ CREATE TABLE IF NOT EXISTS SharingRules (
 CREATE TABLE IF NOT EXISTS CharacterPreferences (
     CharacterUUID TEXT PRIMARY KEY,
     ServerProcessing INTEGER NOT NULL DEFAULT 0
+);
+";
+
+        private const string PermissionSchema = @"
+-- FACTION CAPABILITIES
+CREATE TABLE IF NOT EXISTS FactionCapabilities (
+    UUID TEXT PRIMARY KEY,
+    FactionUUID TEXT NOT NULL DEFAULT '',
+    Name TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT ''
+);
+
+-- FACTION CLEARANCE LEVELS
+CREATE TABLE IF NOT EXISTS FactionClearanceLevels (
+    UUID TEXT PRIMARY KEY,
+    FactionUUID TEXT NOT NULL DEFAULT '',
+    Level INTEGER NOT NULL DEFAULT 0,
+    Name TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT ''
+);
+
+-- FACTION PERMISSION GROUPS
+CREATE TABLE IF NOT EXISTS FactionPermissionGroups (
+    UUID TEXT PRIMARY KEY,
+    FactionUUID TEXT NOT NULL DEFAULT '',
+    Name TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT '',
+    DefaultClearanceLevelUUID TEXT NOT NULL DEFAULT ''
+);
+
+-- FACTION GROUP CAPABILITIES (junction)
+CREATE TABLE IF NOT EXISTS FactionGroupCapabilities (
+    GroupUUID TEXT NOT NULL,
+    CapabilityUUID TEXT NOT NULL,
+    PRIMARY KEY (GroupUUID, CapabilityUUID)
+);
+
+-- FACTION GROUP SHARING RULES
+CREATE TABLE IF NOT EXISTS FactionGroupSharingRules (
+    UUID TEXT PRIMARY KEY,
+    GroupUUID TEXT NOT NULL DEFAULT '',
+    DataType TEXT,
+    EntityUUID TEXT,
+    MinClearanceLevelUUID TEXT NOT NULL DEFAULT ''
+);
+
+-- FACTION MEMBER PERMISSIONS
+CREATE TABLE IF NOT EXISTS FactionMemberPermissions (
+    FactionUUID TEXT NOT NULL,
+    CharacterUUID TEXT NOT NULL,
+    GroupUUID TEXT,
+    ClearanceLevelUUID TEXT NOT NULL DEFAULT '',
+    PRIMARY KEY (FactionUUID, CharacterUUID)
+);
+
+-- FACTION MEMBER CAPABILITIES (junction)
+CREATE TABLE IF NOT EXISTS FactionMemberCapabilities (
+    FactionUUID TEXT NOT NULL,
+    CharacterUUID TEXT NOT NULL,
+    CapabilityUUID TEXT NOT NULL,
+    PRIMARY KEY (FactionUUID, CharacterUUID, CapabilityUUID)
+);
+
+-- CHARACTER CAPABILITIES
+CREATE TABLE IF NOT EXISTS CharacterCapabilities (
+    UUID TEXT PRIMARY KEY,
+    OwnerCharacterUUID TEXT NOT NULL DEFAULT '',
+    Name TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT ''
+);
+
+-- CHARACTER CLEARANCE LEVELS
+CREATE TABLE IF NOT EXISTS CharacterClearanceLevels (
+    UUID TEXT PRIMARY KEY,
+    OwnerCharacterUUID TEXT NOT NULL DEFAULT '',
+    Level INTEGER NOT NULL DEFAULT 0,
+    Name TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT ''
+);
+
+-- CHARACTER PERMISSION GROUPS
+CREATE TABLE IF NOT EXISTS CharacterPermissionGroups (
+    UUID TEXT PRIMARY KEY,
+    OwnerCharacterUUID TEXT NOT NULL DEFAULT '',
+    Name TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT '',
+    DefaultClearanceLevelUUID TEXT NOT NULL DEFAULT ''
+);
+
+-- CHARACTER GROUP CAPABILITIES (junction)
+CREATE TABLE IF NOT EXISTS CharacterGroupCapabilities (
+    GroupUUID TEXT NOT NULL,
+    CapabilityUUID TEXT NOT NULL,
+    PRIMARY KEY (GroupUUID, CapabilityUUID)
+);
+
+-- CHARACTER GROUP SHARING RULES
+CREATE TABLE IF NOT EXISTS CharacterGroupSharingRules (
+    UUID TEXT PRIMARY KEY,
+    GroupUUID TEXT NOT NULL DEFAULT '',
+    DataType TEXT,
+    EntityUUID TEXT
+);
+
+-- CHARACTER GRANTEE PERMISSIONS
+CREATE TABLE IF NOT EXISTS CharacterGranteePermissions (
+    OwnerCharacterUUID TEXT NOT NULL,
+    GranteeType INTEGER NOT NULL DEFAULT 0,
+    GranteeUUID TEXT NOT NULL,
+    GroupUUID TEXT,
+    ClearanceLevelUUID TEXT,
+    PRIMARY KEY (OwnerCharacterUUID, GranteeUUID)
+);
+
+-- CHARACTER GRANTEE CAPABILITIES (junction)
+CREATE TABLE IF NOT EXISTS CharacterGranteeCapabilities (
+    OwnerCharacterUUID TEXT NOT NULL,
+    GranteeUUID TEXT NOT NULL,
+    CapabilityUUID TEXT NOT NULL,
+    PRIMARY KEY (OwnerCharacterUUID, GranteeUUID, CapabilityUUID)
 );
 ";
 

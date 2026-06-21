@@ -175,12 +175,12 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Inputs: design.md (remaining player entity schemas)
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (schema string extended)
     - Verification: getDiagnostics — compiles cleanly
-  - [-] 5.9 SQLite schema DDL: ServerFactions, ServerFactionLeaders, ServerCharacters, ApiTokens, MembershipActions, StarSystems, SharingRules, CharacterPreferences tables
+  - [x] 5.9 SQLite schema DDL: ServerFactions, ServerFactionLeaders, ServerCharacters, ApiTokens, MembershipActions, StarSystems, SharingRules, CharacterPreferences tables
     - Satisfies: Req 4, Criteria 2, 10
     - Inputs: design.md (server-global entity schemas)
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (schema string extended)
     - Verification: getDiagnostics — compiles cleanly
-  - [~] 5.10 SQLite schema DDL: All permission tables (FactionCapabilities, FactionClearanceLevels, FactionPermissionGroups, FactionGroupCapabilities, FactionGroupSharingRules, FactionMemberPermissions, FactionMemberCapabilities, CharacterCapabilities, CharacterClearanceLevels, CharacterPermissionGroups, CharacterGroupCapabilities, CharacterGroupSharingRules, CharacterGranteePermissions, CharacterGranteeCapabilities)
+  - [-] 5.10 SQLite schema DDL: All permission tables (FactionCapabilities, FactionClearanceLevels, FactionPermissionGroups, FactionGroupCapabilities, FactionGroupSharingRules, FactionMemberPermissions, FactionMemberCapabilities, CharacterCapabilities, CharacterClearanceLevels, CharacterPermissionGroups, CharacterGroupCapabilities, CharacterGroupSharingRules, CharacterGranteePermissions, CharacterGranteeCapabilities)
     - Satisfies: Req 4, Criteria 2, 10
     - Inputs: design.md (permission entity schemas)
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (schema string extended)
