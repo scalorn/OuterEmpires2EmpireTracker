@@ -49,6 +49,24 @@ namespace OE2EmpireTracker.Common.Storage
             _client = new AmazonDynamoDBClient(RegionEndpoint.GetBySystemName(region ?? "us-east-1"));
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DynamoDbBackend"/> class
+        /// with a custom service URL (for DynamoDB Local testing).
+        /// </summary>
+        /// <param name="tableName">The DynamoDB table name.</param>
+        /// <param name="region">The AWS region name (e.g. "us-east-1").</param>
+        /// <param name="serviceUrl">The DynamoDB service endpoint URL (e.g. "http://localhost:8111").</param>
+        public DynamoDbBackend(string tableName, string region, string serviceUrl)
+        {
+            _tableName = tableName ?? "OE2EmpireTracker";
+            var config = new AmazonDynamoDBConfig
+            {
+                RegionEndpoint = RegionEndpoint.GetBySystemName(region ?? "us-east-1"),
+                ServiceURL = serviceUrl,
+            };
+            _client = new AmazonDynamoDBClient(config);
+        }
+
         // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // Lifecycle
         // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•

@@ -322,17 +322,17 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Verification: vstest.console — new tests pass
 
 - [ ] 11. DynamoDB Backend Unit Tests (DynamoDB Local)
-  - [-] 11.1 Create DynamoDB Local test fixture: start/stop process, table creation/teardown, endpoint configuration
+  - [x] 11.1 Create DynamoDB Local test fixture: start/stop process, table creation/teardown, endpoint configuration
     - Satisfies: Req 5, Criteria 1, 4; design.md (DynamoDB Local test infrastructure)
     - Inputs: design.md (DynamoDB Local config: JDK path, JAR path, port 8111, -inMemory flag)
     - Output: OE2EmpireTracker.Tests/Storage/DynamoDbLocalFixture.cs
     - Verification: vstest.console — fixture starts DynamoDB Local and creates tables successfully
-  - [~] 11.2 Write unit tests for DynamoDbBackend: InitializeAsync, ValidateConnectionAsync, GetStorageInfo, table creation
+  - [-] 11.2 Write unit tests for DynamoDbBackend: InitializeAsync, ValidateConnectionAsync, GetStorageInfo, table creation
     - Satisfies: Req 5, Criteria 1-2, 4
     - Inputs: Common/Storage/DynamoDbBackend.cs, DynamoDbLocalFixture
     - Output: OE2EmpireTracker.Tests/Storage/DynamoDbBackendLifecycleTests.cs
     - Verification: vstest.console — tests pass with DynamoDB Local
-  - [~] 11.3 Write unit tests for DynamoDbBackend: Server-global entity CRUD (Faction, Character, Token, MembershipAction, StarSystem)
+  - [-] 11.3 Write unit tests for DynamoDbBackend: Server-global entity CRUD (Faction, Character, Token, MembershipAction, StarSystem)
     - Satisfies: Req 5, Criteria 1-2
     - Inputs: Common/Storage/DynamoDbBackend.cs, DynamoDbLocalFixture
     - Output: OE2EmpireTracker.Tests/Storage/DynamoDbBackendGlobalEntityTests.cs
