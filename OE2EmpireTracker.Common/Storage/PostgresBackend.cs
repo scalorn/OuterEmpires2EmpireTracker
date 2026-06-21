@@ -28,13 +28,590 @@ namespace OE2EmpireTracker.Common.Storage
         private const int CurrentSchemaVersion = 1;
         private const int MaxRetries = 3;
 
+        private const string PlayerEntitySchemaA = @"
+CREATE TABLE IF NOT EXISTS Colonies (
+    UUID TEXT PRIMARY KEY,
+    OwnerUUID TEXT NOT NULL,
+    LegacyUUID TEXT,
+    PlanetName TEXT,
+    SystemName TEXT NOT NULL DEFAULT '',
+    ColonyName TEXT,
+    LastImportDateTime TEXT,
+    ColonyId INTEGER NOT NULL DEFAULT 0,
+    SystemId INTEGER NOT NULL DEFAULT 0,
+    ColonySize INTEGER NOT NULL DEFAULT 0,
+    Distance DOUBLE PRECISION NOT NULL DEFAULT 0,
+    SurfaceVariation INTEGER NOT NULL DEFAULT 0,
+    AtmosVariation INTEGER NOT NULL DEFAULT 0,
+    HexValue TEXT NOT NULL DEFAULT '',
+    SystemObjectTypeName TEXT NOT NULL DEFAULT '',
+    ImagePreFix TEXT NOT NULL DEFAULT '',
+    ManufacturingBlocked BOOLEAN NOT NULL DEFAULT FALSE,
+    WorkerCurrentAttitude INTEGER NOT NULL DEFAULT 0,
+    ContentmentIndex INTEGER NOT NULL DEFAULT 0,
+    BlueCollarAllocated INTEGER NOT NULL DEFAULT 0,
+    BlueCollarUnallocated INTEGER NOT NULL DEFAULT 0,
+    WhiteCollarAllocated INTEGER NOT NULL DEFAULT 0,
+    WhiteCollarUnallocated INTEGER NOT NULL DEFAULT 0,
+    SpecialistAllocated INTEGER NOT NULL DEFAULT 0,
+    SpecialistUnallocated INTEGER NOT NULL DEFAULT 0,
+    WageLevel INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS ColonyStructures (
+    UUID TEXT PRIMARY KEY,
+    ColonyUUID TEXT NOT NULL REFERENCES Colonies(UUID) ON DELETE CASCADE,
+    Sequence INTEGER NOT NULL DEFAULT 0,
+    FlatpackBlueprintUUID TEXT,
+    DisplaySequence INTEGER NOT NULL DEFAULT 0,
+    BuildingID INTEGER NOT NULL DEFAULT 0,
+    BuildQueueSequence INTEGER NOT NULL DEFAULT 0,
+    MiningSurvey TEXT,
+    MiningSurveyResource TEXT,
+    MiningLeftOvers DOUBLE PRECISION NOT NULL DEFAULT 0,
+    RefiningResource TEXT,
+    RefiningResourcePurity TEXT,
+    ResearchingBlueprintUUID TEXT,
+    ManufacturingBlueprintUUID TEXT,
+    ManufacturingCommodityName TEXT,
+    ManufacturingQuantity INTEGER NOT NULL DEFAULT 0,
+    ManufacturingCompleted INTEGER NOT NULL DEFAULT 0,
+    StagingResources INTEGER NOT NULL DEFAULT 0,
+    ColonyBuildingTypeId INTEGER NOT NULL DEFAULT 0,
+    ResourceId INTEGER NOT NULL DEFAULT 0,
+    ResourceIcon TEXT NOT NULL DEFAULT '',
+    ManufactureAmountPerRun INTEGER NOT NULL DEFAULT 0,
+    DurabilityCurrent DOUBLE PRECISION NOT NULL DEFAULT 0,
+    DurabilityMax DOUBLE PRECISION NOT NULL DEFAULT 0,
+    WageLevel INTEGER NOT NULL DEFAULT 0,
+    BuildCompletion_StartTime TEXT,
+    BuildCompletion_RepeatIntervalSeconds INTEGER,
+    BuildCompletion_IsRepeating INTEGER,
+    ProcessCompletion_StartTime TEXT,
+    ProcessCompletion_RepeatIntervalSeconds INTEGER,
+    ProcessCompletion_IsRepeating INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS ColonyStructureProperties (
+    StructureUUID TEXT NOT NULL REFERENCES ColonyStructures(UUID) ON DELETE CASCADE,
+    Key TEXT NOT NULL,
+    Value TEXT NOT NULL,
+    PRIMARY KEY (StructureUUID, Key)
+);
+
+CREATE TABLE IF NOT EXISTS ColonyStructureWorkers (
+    StructureUUID TEXT NOT NULL REFERENCES ColonyStructures(UUID) ON DELETE CASCADE,
+    Key TEXT NOT NULL,
+    Value TEXT NOT NULL,
+    PRIMARY KEY (StructureUUID, Key)
+);
+
+CREATE TABLE IF NOT EXISTS Items (
+    UUID TEXT PRIMARY KEY,
+    ParentUUID TEXT NOT NULL,
+    ParentType TEXT NOT NULL,
+    ItemType TEXT NOT NULL,
+    BaseItemTypeID TEXT NOT NULL DEFAULT '',
+    Name TEXT NOT NULL DEFAULT '',
+    NickName TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT '',
+    Quantity INTEGER NOT NULL DEFAULT 0,
+    ResourcePurity TEXT NOT NULL DEFAULT '',
+    Volume DOUBLE PRECISION NOT NULL DEFAULT 0,
+    CurrentHP INTEGER NOT NULL DEFAULT 0,
+    MaxHP INTEGER NOT NULL DEFAULT 0,
+    MaxRepairPercent DOUBLE PRECISION NOT NULL DEFAULT 0,
+    Mass DOUBLE PRECISION,
+    GameItemId INTEGER,
+    JobRef INTEGER,
+    JobDeliveryLoc INTEGER,
+    HealthPercentage DOUBLE PRECISION,
+    LastRepairHealthPercentage DOUBLE PRECISION,
+    Evolution INTEGER,
+    ShipPartType TEXT NOT NULL DEFAULT '',
+    JobName TEXT NOT NULL DEFAULT '',
+    JobTrack TEXT NOT NULL DEFAULT ''
+);
+
+CREATE INDEX IF NOT EXISTS IX_Items_Parent ON Items (ParentUUID, ParentType);
+
+CREATE TABLE IF NOT EXISTS Blueprints (
+    UUID TEXT PRIMARY KEY,
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    BaseBlueprintUUID TEXT,
+    LegacyUUID TEXT,
+    BluePrintType TEXT,
+    TechLevel TEXT,
+    Class INTEGER NOT NULL DEFAULT 0,
+    Evolution INTEGER NOT NULL DEFAULT 0,
+    CopyCost INTEGER NOT NULL DEFAULT 0,
+    ItemType TEXT NOT NULL,
+    BaseItemTypeID TEXT NOT NULL DEFAULT '',
+    Name TEXT NOT NULL DEFAULT '',
+    NickName TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT '',
+    Quantity INTEGER NOT NULL DEFAULT 0,
+    Volume DOUBLE PRECISION NOT NULL DEFAULT 0,
+    GameApiBlueprintId INTEGER,
+    LastDetailImportUtc TEXT
+);
+
+CREATE TABLE IF NOT EXISTS BlueprintProperties (
+    BlueprintUUID TEXT NOT NULL REFERENCES Blueprints(UUID) ON DELETE CASCADE,
+    Key TEXT NOT NULL,
+    Value TEXT NOT NULL,
+    PRIMARY KEY (BlueprintUUID, Key)
+);
+
+CREATE TABLE IF NOT EXISTS BlueprintResources (
+    BlueprintUUID TEXT NOT NULL REFERENCES Blueprints(UUID) ON DELETE CASCADE,
+    ResourceName TEXT NOT NULL,
+    Amount INTEGER NOT NULL,
+    PRIMARY KEY (BlueprintUUID, ResourceName)
+);
+
+CREATE TABLE IF NOT EXISTS Surveys (
+    UUID TEXT PRIMARY KEY,
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    ItemType TEXT NOT NULL,
+    BaseItemTypeID TEXT NOT NULL DEFAULT '',
+    Name TEXT NOT NULL DEFAULT '',
+    NickName TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT '',
+    Quantity INTEGER NOT NULL DEFAULT 0,
+    Volume DOUBLE PRECISION NOT NULL DEFAULT 0,
+    ScannedBy TEXT,
+    DateTime TEXT,
+    PlanetName TEXT,
+    SystemName TEXT NOT NULL DEFAULT '',
+    SurveyID TEXT,
+    ScannerBlueprintUUID TEXT,
+    SurveyType TEXT NOT NULL DEFAULT 'Planet',
+    AsteroidUUID TEXT NOT NULL DEFAULT '',
+    SystemObjectId INTEGER NOT NULL DEFAULT 0,
+    GameApiSurveyId INTEGER,
+    LastDetailImportUtc TEXT
+);
+
+CREATE TABLE IF NOT EXISTS SurveyProperties (
+    SurveyUUID TEXT NOT NULL REFERENCES Surveys(UUID) ON DELETE CASCADE,
+    Key TEXT NOT NULL,
+    Value TEXT NOT NULL,
+    PRIMARY KEY (SurveyUUID, Key)
+);
+
+CREATE TABLE IF NOT EXISTS SurveyResources (
+    SurveyUUID TEXT NOT NULL REFERENCES Surveys(UUID) ON DELETE CASCADE,
+    ResourceKey TEXT NOT NULL,
+    Resource TEXT NOT NULL DEFAULT '',
+    Purity TEXT NOT NULL DEFAULT '',
+    Amount INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (SurveyUUID, ResourceKey)
+);
+
+CREATE TABLE IF NOT EXISTS PlayerProfiles (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    Faction TEXT NOT NULL DEFAULT '',
+    FactionUUID TEXT NOT NULL DEFAULT '',
+    TotalCredits NUMERIC NOT NULL DEFAULT 0,
+    SkillPoints INTEGER NOT NULL DEFAULT 0,
+    CitizenId TEXT NOT NULL DEFAULT '',
+    RegistrationDate TEXT NOT NULL DEFAULT '',
+    ActiveTime TEXT NOT NULL DEFAULT '',
+    CharacterId INTEGER NOT NULL DEFAULT 0,
+    FirstName TEXT NOT NULL DEFAULT '',
+    LastName TEXT NOT NULL DEFAULT '',
+    ActiveTimeMinutes INTEGER NOT NULL DEFAULT 0,
+    PublicRank_Rank INTEGER NOT NULL DEFAULT 0,
+    PublicRank_CurrentXp INTEGER NOT NULL DEFAULT 0,
+    PublicRank_XpToNextLevel INTEGER NOT NULL DEFAULT 0,
+    PublicRank_RankName TEXT NOT NULL DEFAULT '',
+    PrivateRank_Rank INTEGER NOT NULL DEFAULT 0,
+    PrivateRank_CurrentXp INTEGER NOT NULL DEFAULT 0,
+    PrivateRank_XpToNextLevel INTEGER NOT NULL DEFAULT 0,
+    PrivateRank_RankName TEXT NOT NULL DEFAULT '',
+    MilitaryRank_Rank INTEGER NOT NULL DEFAULT 0,
+    MilitaryRank_CurrentXp INTEGER NOT NULL DEFAULT 0,
+    MilitaryRank_XpToNextLevel INTEGER NOT NULL DEFAULT 0,
+    MilitaryRank_RankName TEXT NOT NULL DEFAULT ''
+);
+
+CREATE TABLE IF NOT EXISTS PlayerSkills (
+    PlayerUUID TEXT NOT NULL REFERENCES PlayerProfiles(UUID) ON DELETE CASCADE,
+    SkillName TEXT NOT NULL,
+    Level INTEGER NOT NULL DEFAULT 0,
+    TrainingStarted INTEGER NOT NULL DEFAULT 0,
+    SkillId INTEGER NOT NULL DEFAULT 0,
+    EffectDescription TEXT NOT NULL DEFAULT '',
+    AmountPerLevel INTEGER NOT NULL DEFAULT 0,
+    SkillGroupName TEXT NOT NULL DEFAULT '',
+    IsUnlocked BOOLEAN NOT NULL DEFAULT FALSE,
+    TargetLevel INTEGER NOT NULL DEFAULT 0,
+    TrainingPercentageComplete INTEGER NOT NULL DEFAULT 0,
+    RemainingMinutes INTEGER NOT NULL DEFAULT 0,
+    Completion_StartTime TEXT,
+    Completion_RepeatIntervalSeconds INTEGER,
+    Completion_IsRepeating INTEGER,
+    PRIMARY KEY (PlayerUUID, SkillName)
+);
+";
+
+        private const string PlayerEntitySchemaB = @"
+CREATE TABLE IF NOT EXISTS DeliveryRoutes (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    OwnerUUID TEXT NOT NULL DEFAULT ''
+);
+
+CREATE TABLE IF NOT EXISTS DeliveryRouteStops (
+    DeliveryRouteUUID TEXT NOT NULL REFERENCES DeliveryRoutes(UUID) ON DELETE CASCADE,
+    Sequence INTEGER NOT NULL,
+    ColonyUUID TEXT NOT NULL DEFAULT '',
+    DestinationType TEXT NOT NULL DEFAULT 'Colony',
+    DestinationUUID TEXT NOT NULL DEFAULT '',
+    Purpose TEXT NOT NULL DEFAULT 'Cargo',
+    FuelEstimate DOUBLE PRECISION NOT NULL DEFAULT 0,
+    PRIMARY KEY (DeliveryRouteUUID, Sequence)
+);
+
+CREATE TABLE IF NOT EXISTS Ships (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    TemplateUUID TEXT NOT NULL DEFAULT '',
+    HullBlueprintUUID TEXT NOT NULL DEFAULT '',
+    LocationType TEXT NOT NULL DEFAULT 'Station',
+    LocationUUID TEXT NOT NULL DEFAULT '',
+    GameLocationId INTEGER,
+    HullCurrentHP INTEGER NOT NULL DEFAULT 0,
+    HullMaxHP INTEGER NOT NULL DEFAULT 0,
+    HullMaxRepairPercent DOUBLE PRECISION NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS ShipComponents (
+    ShipUUID TEXT NOT NULL REFERENCES Ships(UUID) ON DELETE CASCADE,
+    Sequence INTEGER NOT NULL,
+    SlotType TEXT NOT NULL DEFAULT '',
+    BlueprintUUID TEXT NOT NULL DEFAULT '',
+    CurrentHP INTEGER NOT NULL DEFAULT 0,
+    MaxHP INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (ShipUUID, Sequence)
+);
+
+CREATE TABLE IF NOT EXISTS ShipTemplates (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    HullBlueprintUUID TEXT NOT NULL DEFAULT ''
+);
+
+CREATE TABLE IF NOT EXISTS ShipTemplateComponents (
+    ShipTemplateUUID TEXT NOT NULL REFERENCES ShipTemplates(UUID) ON DELETE CASCADE,
+    Sequence INTEGER NOT NULL,
+    SlotType TEXT NOT NULL DEFAULT '',
+    SlotIndex INTEGER NOT NULL DEFAULT 0,
+    BlueprintUUID TEXT NOT NULL DEFAULT '',
+    CurrentHP INTEGER NOT NULL DEFAULT 0,
+    MaxHP INTEGER NOT NULL DEFAULT 0,
+    MaxRepairPercent DOUBLE PRECISION NOT NULL DEFAULT 0,
+    PRIMARY KEY (ShipTemplateUUID, Sequence)
+);
+
+CREATE TABLE IF NOT EXISTS DeliveryPlans (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    RouteUUID TEXT NOT NULL DEFAULT '',
+    ShipUUID TEXT NOT NULL DEFAULT '',
+    Completed BOOLEAN NOT NULL DEFAULT FALSE
+);
+
+CREATE TABLE IF NOT EXISTS DeliveryPlanStops (
+    DeliveryPlanUUID TEXT NOT NULL REFERENCES DeliveryPlans(UUID) ON DELETE CASCADE,
+    Sequence INTEGER NOT NULL,
+    ColonyUUID TEXT NOT NULL DEFAULT '',
+    StopCompleted BOOLEAN NOT NULL DEFAULT FALSE,
+    DestinationType TEXT NOT NULL DEFAULT 'Colony',
+    DestinationUUID TEXT NOT NULL DEFAULT '',
+    PRIMARY KEY (DeliveryPlanUUID, Sequence)
+);
+
+CREATE TABLE IF NOT EXISTS DeliveryPlanItems (
+    DeliveryPlanUUID TEXT NOT NULL,
+    StopSequence INTEGER NOT NULL,
+    Direction TEXT NOT NULL,
+    Sequence INTEGER NOT NULL,
+    ItemType TEXT NOT NULL DEFAULT 'None',
+    BaseItemTypeID TEXT NOT NULL DEFAULT '',
+    Name TEXT NOT NULL DEFAULT '',
+    ResourcePurity TEXT NOT NULL DEFAULT '',
+    Quantity INTEGER NOT NULL DEFAULT 0,
+    Delivered INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (DeliveryPlanUUID, StopSequence, Direction, Sequence),
+    FOREIGN KEY (DeliveryPlanUUID, StopSequence) REFERENCES DeliveryPlanStops(DeliveryPlanUUID, Sequence) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS MarketListings (
+    UUID TEXT PRIMARY KEY,
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    StationUUID TEXT NOT NULL DEFAULT '',
+    ItemType TEXT NOT NULL DEFAULT 'None',
+    ItemReferenceID TEXT NOT NULL DEFAULT '',
+    ItemName TEXT NOT NULL DEFAULT '',
+    Quantity INTEGER NOT NULL DEFAULT 0,
+    PricePerUnit NUMERIC NOT NULL DEFAULT 0,
+    CurrentHP INTEGER NOT NULL DEFAULT 0,
+    MaxHP INTEGER NOT NULL DEFAULT 0,
+    MaxRepairPercent DOUBLE PRECISION NOT NULL DEFAULT 0,
+    MarketId INTEGER,
+    BuyOrder INTEGER NOT NULL DEFAULT 0,
+    BaseItemTypeID TEXT NOT NULL DEFAULT '',
+    ResourcePurity TEXT NOT NULL DEFAULT '',
+    GameTypeCode TEXT NOT NULL DEFAULT '',
+    GameTypeId INTEGER,
+    GameSubTypeId TEXT NOT NULL DEFAULT '',
+    LocationName TEXT NOT NULL DEFAULT '',
+    SystemId INTEGER,
+    SystemName TEXT NOT NULL DEFAULT '',
+    GameLocationId INTEGER,
+    AmountRemaining INTEGER,
+    AmountOriginal INTEGER,
+    AmountSold INTEGER,
+    EscrowRemaining NUMERIC,
+    SalesTaxEstimate NUMERIC,
+    ValueRemaining NUMERIC,
+    Evolution INTEGER,
+    HealthPercentage DOUBLE PRECISION,
+    SellerName TEXT NOT NULL DEFAULT '',
+    SellerFactionTag TEXT NOT NULL DEFAULT '',
+    PrivateSale BOOLEAN NOT NULL DEFAULT FALSE,
+    BuyerName TEXT NOT NULL DEFAULT '',
+    BuyerFactionTag TEXT NOT NULL DEFAULT '',
+    IsOutbid BOOLEAN NOT NULL DEFAULT FALSE,
+    IsUndercut BOOLEAN NOT NULL DEFAULT FALSE,
+    PlacedDT TEXT NOT NULL DEFAULT '',
+    ExpiresDT TEXT NOT NULL DEFAULT '',
+    CompetitorForMarketId INTEGER,
+    SyncedByCharacterUUID TEXT NOT NULL DEFAULT '',
+    SyncTimestamp TEXT NOT NULL DEFAULT ''
+);
+
+CREATE TABLE IF NOT EXISTS MarketTransactions (
+    UUID TEXT PRIMARY KEY,
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    TransactionType TEXT NOT NULL DEFAULT 'Buy',
+    ItemType TEXT NOT NULL DEFAULT 'None',
+    ItemReferenceID TEXT NOT NULL DEFAULT '',
+    ItemName TEXT NOT NULL DEFAULT '',
+    Quantity INTEGER NOT NULL DEFAULT 0,
+    PricePerUnit NUMERIC NOT NULL DEFAULT 0,
+    TotalPrice NUMERIC NOT NULL DEFAULT 0,
+    Counterparty TEXT NOT NULL DEFAULT '',
+    CounterpartyFaction TEXT NOT NULL DEFAULT '',
+    StationUUID TEXT NOT NULL DEFAULT '',
+    Timestamp TEXT NOT NULL DEFAULT '',
+    Notes TEXT NOT NULL DEFAULT '',
+    ListingUUID TEXT NOT NULL DEFAULT '',
+    CurrentHP INTEGER NOT NULL DEFAULT 0,
+    MaxHP INTEGER NOT NULL DEFAULT 0,
+    MaxRepairPercent DOUBLE PRECISION NOT NULL DEFAULT 0
+);
+";
+
+        private const string PlayerEntitySchemaC = @"
+CREATE TABLE IF NOT EXISTS PricingPlans (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT '',
+    FixedCostPerItem NUMERIC NOT NULL DEFAULT 0,
+    HourlyCostRate NUMERIC NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS PricingPlanPrices (
+    PricingPlanUUID TEXT NOT NULL REFERENCES PricingPlans(UUID) ON DELETE CASCADE,
+    ResourceName TEXT NOT NULL,
+    Price NUMERIC NOT NULL DEFAULT 0,
+    PRIMARY KEY (PricingPlanUUID, ResourceName)
+);
+
+CREATE TABLE IF NOT EXISTS BuildPlans (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    ColonyUUID TEXT NOT NULL DEFAULT '',
+    BlueprintUUID TEXT NOT NULL DEFAULT '',
+    Quantity INTEGER NOT NULL DEFAULT 0,
+    Priority INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS BuildItems (
+    BuildPlanUUID TEXT NOT NULL REFERENCES BuildPlans(UUID) ON DELETE CASCADE,
+    Sequence INTEGER NOT NULL,
+    ResourceName TEXT NOT NULL DEFAULT '',
+    Quantity INTEGER NOT NULL DEFAULT 0,
+    Fulfilled INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (BuildPlanUUID, Sequence)
+);
+
+CREATE TABLE IF NOT EXISTS StockPlans (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    ColonyUUID TEXT NOT NULL DEFAULT ''
+);
+
+CREATE TABLE IF NOT EXISTS StockTargets (
+    StockPlanUUID TEXT NOT NULL REFERENCES StockPlans(UUID) ON DELETE CASCADE,
+    Sequence INTEGER NOT NULL,
+    ResourceName TEXT NOT NULL DEFAULT '',
+    TargetQuantity INTEGER NOT NULL DEFAULT 0,
+    Priority INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (StockPlanUUID, Sequence)
+);
+
+CREATE TABLE IF NOT EXISTS StockProfiles (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT ''
+);
+
+CREATE TABLE IF NOT EXISTS StockProfileEntries (
+    StockProfileUUID TEXT NOT NULL REFERENCES StockProfiles(UUID) ON DELETE CASCADE,
+    Sequence INTEGER NOT NULL,
+    ResourceName TEXT NOT NULL DEFAULT '',
+    MinQuantity INTEGER NOT NULL DEFAULT 0,
+    MaxQuantity INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (StockProfileUUID, Sequence)
+);
+
+CREATE TABLE IF NOT EXISTS SupplyChains (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT ''
+);
+
+CREATE TABLE IF NOT EXISTS SupplyChainStages (
+    SupplyChainUUID TEXT NOT NULL REFERENCES SupplyChains(UUID) ON DELETE CASCADE,
+    Sequence INTEGER NOT NULL,
+    ColonyUUID TEXT NOT NULL DEFAULT '',
+    BlueprintUUID TEXT NOT NULL DEFAULT '',
+    OutputItemType TEXT NOT NULL DEFAULT '',
+    OutputQuantity INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (SupplyChainUUID, Sequence)
+);
+
+CREATE TABLE IF NOT EXISTS Asteroids (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    SystemName TEXT NOT NULL DEFAULT '',
+    SystemId INTEGER NOT NULL DEFAULT 0,
+    SystemObjectId INTEGER NOT NULL DEFAULT 0,
+    GameApiAsteroidId INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS AsteroidReserves (
+    AsteroidUUID TEXT NOT NULL REFERENCES Asteroids(UUID) ON DELETE CASCADE,
+    Sequence INTEGER NOT NULL,
+    ResourceName TEXT NOT NULL DEFAULT '',
+    Purity TEXT NOT NULL DEFAULT '',
+    MaxReserve INTEGER NOT NULL DEFAULT 0,
+    CurrentReserve INTEGER,
+    ResetTimestamp TEXT,
+    PRIMARY KEY (AsteroidUUID, Sequence)
+);
+
+CREATE TABLE IF NOT EXISTS Stations (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    SystemName TEXT NOT NULL DEFAULT '',
+    SystemId INTEGER NOT NULL DEFAULT 0,
+    SystemObjectId INTEGER NOT NULL DEFAULT 0,
+    GameLocationId INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS StationComponents (
+    StationUUID TEXT NOT NULL REFERENCES Stations(UUID) ON DELETE CASCADE,
+    Sequence INTEGER NOT NULL,
+    SlotType TEXT NOT NULL DEFAULT '',
+    BlueprintUUID TEXT NOT NULL DEFAULT '',
+    CurrentHP INTEGER NOT NULL DEFAULT 0,
+    MaxHP INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (StationUUID, Sequence)
+);
+
+CREATE TABLE IF NOT EXISTS Factions (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    Tag TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT ''
+);
+
+CREATE TABLE IF NOT EXISTS ExternalCharacters (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    FactionUUID TEXT NOT NULL DEFAULT '',
+    FactionName TEXT NOT NULL DEFAULT '',
+    CharacterId INTEGER NOT NULL DEFAULT 0,
+    Notes TEXT NOT NULL DEFAULT ''
+);
+
+CREATE TABLE IF NOT EXISTS WarehouseOverflowRules (
+    UUID TEXT PRIMARY KEY,
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    ColonyUUID TEXT NOT NULL DEFAULT '',
+    ResourceName TEXT NOT NULL DEFAULT '',
+    RuleType INTEGER NOT NULL DEFAULT 0,
+    Threshold INTEGER NOT NULL DEFAULT 0,
+    DestinationColonyUUID TEXT NOT NULL DEFAULT ''
+);
+
+CREATE TABLE IF NOT EXISTS MailMessages (
+    MailId INTEGER NOT NULL,
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    CharacterIdFrom INTEGER NOT NULL DEFAULT 0,
+    FromName TEXT NOT NULL DEFAULT '',
+    CharacterIdTo INTEGER NOT NULL DEFAULT 0,
+    ToName TEXT NOT NULL DEFAULT '',
+    SentTime TEXT NOT NULL DEFAULT '',
+    Subject TEXT NOT NULL DEFAULT '',
+    MailRead BOOLEAN NOT NULL DEFAULT FALSE,
+    MailType TEXT,
+    MailContent TEXT NOT NULL DEFAULT '',
+    LocalRead BOOLEAN NOT NULL DEFAULT FALSE,
+    PRIMARY KEY (OwnerUUID, MailId)
+);
+
+CREATE TABLE IF NOT EXISTS BankingTransactions (
+    UUID TEXT PRIMARY KEY,
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    TransactionDateTime TEXT NOT NULL DEFAULT '',
+    CreditChange NUMERIC NOT NULL DEFAULT 0,
+    OldBalance NUMERIC NOT NULL DEFAULT 0,
+    NewBalance NUMERIC NOT NULL DEFAULT 0,
+    TransactionType INTEGER NOT NULL DEFAULT 0,
+    Detail TEXT NOT NULL DEFAULT '',
+    CharacterId INTEGER,
+    SystemObjectId INTEGER,
+    SystemId INTEGER,
+    IsManualEntry BOOLEAN NOT NULL DEFAULT FALSE
+);
+";
+
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         /// Schema DDL concatenated from tasks 7.2-7.3. ExecuteSchema runs this
         /// against a fresh database.
         /// </summary>
-        private static readonly string SchemaDdl = string.Empty;
+        private static readonly string SchemaDdl = PlayerEntitySchemaA + PlayerEntitySchemaB + PlayerEntitySchemaC;
 
         private readonly string _connectionString;
         private readonly RetryPolicy _retryPolicy;
