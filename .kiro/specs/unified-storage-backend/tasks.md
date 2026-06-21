@@ -180,12 +180,12 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Inputs: design.md (server-global entity schemas)
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (schema string extended)
     - Verification: getDiagnostics — compiles cleanly
-  - [-] 5.10 SQLite schema DDL: All permission tables (FactionCapabilities, FactionClearanceLevels, FactionPermissionGroups, FactionGroupCapabilities, FactionGroupSharingRules, FactionMemberPermissions, FactionMemberCapabilities, CharacterCapabilities, CharacterClearanceLevels, CharacterPermissionGroups, CharacterGroupCapabilities, CharacterGroupSharingRules, CharacterGranteePermissions, CharacterGranteeCapabilities)
+  - [x] 5.10 SQLite schema DDL: All permission tables (FactionCapabilities, FactionClearanceLevels, FactionPermissionGroups, FactionGroupCapabilities, FactionGroupSharingRules, FactionMemberPermissions, FactionMemberCapabilities, CharacterCapabilities, CharacterClearanceLevels, CharacterPermissionGroups, CharacterGroupCapabilities, CharacterGroupSharingRules, CharacterGranteePermissions, CharacterGranteeCapabilities)
     - Satisfies: Req 4, Criteria 2, 10
     - Inputs: design.md (permission entity schemas)
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (schema string extended)
     - Verification: getDiagnostics — compiles cleanly
-  - [~] 5.11 SQLite schema DDL: IntelComments, IntelCommentFactionShares, PermissionAuditEntries, BaselineGameConstants, BlueprintTypes, BlueprintTypeProperties, BlueprintTypeResearchableProperties, ShipClasses, TechLevels, Commodities, CommodityResources, RefiningRecipes, ResearchTimes, PropertyTypeDefinitions tables
+  - [ ] 5.11 SQLite schema DDL: IntelComments, IntelCommentFactionShares, PermissionAuditEntries, BaselineGameConstants, BlueprintTypes, BlueprintTypeProperties, BlueprintTypeResearchableProperties, ShipClasses, TechLevels, Commodities, CommodityResources, RefiningRecipes, ResearchTimes, PropertyTypeDefinitions tables
     - Satisfies: Req 4, Criteria 2, 10; Req 1, Criterion 9
     - Inputs: design.md (intel + audit + baseline schemas)
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (schema complete)

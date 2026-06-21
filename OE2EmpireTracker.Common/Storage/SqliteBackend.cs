@@ -26,14 +26,14 @@ namespace OE2EmpireTracker.Common.Storage
 
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-        private readonly string _connectionString;
-        private readonly string _databasePath;
-
         /// <summary>
         /// Schema DDL concatenated from tasks 5.2-5.11. ExecuteSchema runs this
         /// against a fresh database.
         /// </summary>
-        private static readonly string SchemaDdl = ColonySchema + ItemsBlueprintSchema + SurveyPlayerProfileSchema + DeliveryRouteShipSchema + DeliveryPlanMarketSchema + PricingBuildStockSchema + RemainingPlayerEntitySchema + ServerGlobalSchema + PermissionSchema;
+        private static readonly string SchemaDdl = ColonySchema + ItemsBlueprintSchema + SurveyPlayerProfileSchema + DeliveryRouteShipSchema + DeliveryPlanMarketSchema + PricingBuildStockSchema + RemainingPlayerEntitySchema + ServerGlobalSchema + PermissionSchema + IntelAuditBaselineSchema;
+
+        private readonly string _connectionString;
+        private readonly string _databasePath;
 
         private const string ColonySchema = @"
 CREATE TABLE IF NOT EXISTS Colonies (
@@ -834,6 +834,135 @@ CREATE TABLE IF NOT EXISTS CharacterGranteeCapabilities (
     GranteeUUID TEXT NOT NULL,
     CapabilityUUID TEXT NOT NULL,
     PRIMARY KEY (OwnerCharacterUUID, GranteeUUID, CapabilityUUID)
+);
+";
+
+        private const string IntelAuditBaselineSchema = @"
+-- INTEL COMMENTS
+CREATE TABLE IF NOT EXISTS IntelComments (
+    UUID TEXT PRIMARY KEY,
+    TargetCharacterUUID TEXT NOT NULL DEFAULT '',
+    SubmitterCharacterUUID TEXT NOT NULL DEFAULT '',
+    Text TEXT NOT NULL DEFAULT '',
+    CreatedUtc TEXT NOT NULL DEFAULT ''
+);
+
+-- INTEL COMMENT FACTION SHARES
+CREATE TABLE IF NOT EXISTS IntelCommentFactionShares (
+    UUID TEXT PRIMARY KEY,
+    IntelCommentUUID TEXT NOT NULL REFERENCES IntelComments(UUID) ON DELETE CASCADE,
+    FactionUUID TEXT NOT NULL DEFAULT '',
+    ClassificationLevelUUID TEXT,
+    ClassifiedByCharacterUUID TEXT,
+    SharedUtc TEXT NOT NULL DEFAULT '',
+    ClassifiedUtc TEXT
+);
+
+-- PERMISSION AUDIT ENTRIES
+CREATE TABLE IF NOT EXISTS PermissionAuditEntries (
+    UUID TEXT PRIMARY KEY,
+    Timestamp TEXT NOT NULL DEFAULT '',
+    ActorCharacterUUID TEXT NOT NULL DEFAULT '',
+    TargetCharacterUUID TEXT NOT NULL DEFAULT '',
+    ActionType INTEGER NOT NULL DEFAULT 0,
+    OldValue TEXT NOT NULL DEFAULT '',
+    NewValue TEXT NOT NULL DEFAULT ''
+);
+
+-- BASELINE GAME CONSTANTS
+CREATE TABLE IF NOT EXISTS BaselineGameConstants (
+    Id INTEGER PRIMARY KEY DEFAULT 1,
+    DataVersion INTEGER NOT NULL DEFAULT 0,
+    LastUpdatedUtc TEXT
+);
+
+-- BLUEPRINT TYPES
+CREATE TABLE IF NOT EXISTS BlueprintTypes (
+    Name TEXT PRIMARY KEY,
+    Category TEXT NOT NULL DEFAULT '',
+    TechLevel TEXT NOT NULL DEFAULT '',
+    BaseVolume REAL NOT NULL DEFAULT 0,
+    BaseMass REAL NOT NULL DEFAULT 0
+);
+
+-- BLUEPRINT TYPE PROPERTIES (default properties for a blueprint type)
+CREATE TABLE IF NOT EXISTS BlueprintTypeProperties (
+    BlueprintTypeName TEXT NOT NULL REFERENCES BlueprintTypes(Name) ON DELETE CASCADE,
+    Key TEXT NOT NULL,
+    DefaultValue TEXT NOT NULL DEFAULT '',
+    PRIMARY KEY (BlueprintTypeName, Key)
+);
+
+-- BLUEPRINT TYPE RESEARCHABLE PROPERTIES
+CREATE TABLE IF NOT EXISTS BlueprintTypeResearchableProperties (
+    BlueprintTypeName TEXT NOT NULL REFERENCES BlueprintTypes(Name) ON DELETE CASCADE,
+    Key TEXT NOT NULL,
+    MinValue TEXT NOT NULL DEFAULT '',
+    MaxValue TEXT NOT NULL DEFAULT '',
+    PRIMARY KEY (BlueprintTypeName, Key)
+);
+
+-- SHIP CLASSES
+CREATE TABLE IF NOT EXISTS ShipClasses (
+    Name TEXT PRIMARY KEY,
+    HullType TEXT NOT NULL DEFAULT '',
+    CargoCapacity INTEGER NOT NULL DEFAULT 0,
+    HopperCapacity INTEGER NOT NULL DEFAULT 0,
+    ComponentSlots INTEGER NOT NULL DEFAULT 0,
+    BaseHP INTEGER NOT NULL DEFAULT 0
+);
+
+-- TECH LEVELS
+CREATE TABLE IF NOT EXISTS TechLevels (
+    Name TEXT PRIMARY KEY,
+    Level INTEGER NOT NULL DEFAULT 0,
+    Description TEXT NOT NULL DEFAULT ''
+);
+
+-- COMMODITIES
+CREATE TABLE IF NOT EXISTS Commodities (
+    Name TEXT PRIMARY KEY,
+    Category TEXT NOT NULL DEFAULT '',
+    BaseVolume REAL NOT NULL DEFAULT 0,
+    BaseMass REAL NOT NULL DEFAULT 0,
+    BaseValue REAL NOT NULL DEFAULT 0
+);
+
+-- COMMODITY RESOURCES (construction recipe)
+CREATE TABLE IF NOT EXISTS CommodityResources (
+    CommodityName TEXT NOT NULL REFERENCES Commodities(Name) ON DELETE CASCADE,
+    ResourceName TEXT NOT NULL,
+    Quantity INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (CommodityName, ResourceName)
+);
+
+-- REFINING RECIPES
+CREATE TABLE IF NOT EXISTS RefiningRecipes (
+    Id TEXT PRIMARY KEY,
+    InputResource TEXT NOT NULL DEFAULT '',
+    InputPurity TEXT NOT NULL DEFAULT '',
+    OutputResource TEXT NOT NULL DEFAULT '',
+    OutputPurity TEXT NOT NULL DEFAULT '',
+    OutputQuantity INTEGER NOT NULL DEFAULT 0,
+    ProcessingTime INTEGER NOT NULL DEFAULT 0
+);
+
+-- RESEARCH TIMES
+CREATE TABLE IF NOT EXISTS ResearchTimes (
+    Id TEXT PRIMARY KEY,
+    BlueprintType TEXT NOT NULL DEFAULT '',
+    TechLevel TEXT NOT NULL DEFAULT '',
+    PropertyKey TEXT NOT NULL DEFAULT '',
+    BaseTimeMinutes INTEGER NOT NULL DEFAULT 0
+);
+
+-- PROPERTY TYPE DEFINITIONS
+CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
+    Key TEXT PRIMARY KEY,
+    DisplayName TEXT NOT NULL DEFAULT '',
+    Category TEXT NOT NULL DEFAULT '',
+    DataType TEXT NOT NULL DEFAULT 'string',
+    Unit TEXT NOT NULL DEFAULT ''
 );
 ";
 
