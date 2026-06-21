@@ -4,18 +4,15 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 using OE2EmpireTracker.Common.Models;
+using OE2EmpireTracker.Common.Storage;
 using OE2EmpireTracker.Models;
-using OE2EmpireTracker.Server.Storage;
 
 namespace OE2EmpireTracker.Server.Tests.Storage;
 
 /// <summary>
-/// Integration tests for JsonFileStorageBackend typed methods.
+/// Integration tests for JsonMultiFileBackend typed methods.
 /// Validates: Requirements 22.3, 22.7, 22.8.
 /// </summary>
 [TestFixture]
@@ -24,7 +21,7 @@ public class JsonFileStorageBackendTypedTests
     private const string CharUUID = "test-char-001";
 
     private string _dataPath = null!;
-    private JsonFileStorageBackend _backend = null!;
+    private JsonMultiFileBackend _backend = null!;
 
     /// <summary>
     /// Creates a temp directory and initializes the storage backend.
@@ -37,15 +34,7 @@ public class JsonFileStorageBackendTypedTests
             "oe2-storage-test-" + Guid.NewGuid().ToString("N")[..8]);
         Directory.CreateDirectory(_dataPath);
 
-        var config = new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string?>
-            {
-                ["Storage:DataPath"] = _dataPath,
-            })
-            .Build();
-
-        var logger = NullLogger<JsonFileStorageBackend>.Instance;
-        _backend = new JsonFileStorageBackend(config, logger);
+        _backend = new JsonMultiFileBackend(_dataPath);
     }
 
     /// <summary>

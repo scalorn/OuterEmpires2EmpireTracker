@@ -6,17 +6,16 @@
 
 using OE2EmpireTracker.Common.Models;
 using OE2EmpireTracker.Models;
-using OE2EmpireTracker.Server.Storage;
 using OE2EmpireTracker.Server.Tests.Endpoints;
 
 namespace OE2EmpireTracker.Server.Tests.Services;
 
 /// <summary>
 /// Recording stub that captures UpsertGlobalDataAsync and UpsertBlueprintAsync calls.
-/// Inherits from <see cref="StubStorageBackend"/> and explicitly re-implements
+/// Inherits from <see cref="StubStorageBackend"/> and overrides
 /// the storage methods used by <see cref="OE2EmpireTracker.Server.Services.BaselineDecompositionService"/>.
 /// </summary>
-internal class RecordingStorageBackend : StubStorageBackend, IStorageBackend
+internal class RecordingStorageBackend : StubStorageBackend
 {
     /// <summary>
     /// Gets the list of recorded UpsertGlobalDataAsync calls.
@@ -29,14 +28,14 @@ internal class RecordingStorageBackend : StubStorageBackend, IStorageBackend
     public List<(string CharUUID, Blueprint Blueprint)> BlueprintCalls { get; } = new();
 
     /// <inheritdoc/>
-    Task IStorageBackend.UpsertGlobalDataAsync(string dataType, string json)
+    public override Task UpsertGlobalDataAsync(string dataType, string json)
     {
         GlobalDataCalls.Add((dataType, json));
         return Task.CompletedTask;
     }
 
     /// <inheritdoc/>
-    Task IStorageBackend.UpsertBlueprintAsync(
+    public override Task UpsertBlueprintAsync(
         string characterUUID,
         Blueprint entity)
     {

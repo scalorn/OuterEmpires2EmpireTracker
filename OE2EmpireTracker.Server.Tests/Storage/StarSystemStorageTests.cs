@@ -4,24 +4,22 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 using OE2EmpireTracker.Common.Models;
+using OE2EmpireTracker.Common.Storage;
 using OE2EmpireTracker.Models;
-using OE2EmpireTracker.Server.Storage;
 
 namespace OE2EmpireTracker.Server.Tests.Storage;
 
 /// <summary>
-/// Unit tests for JsonFileStorageBackend star system methods.
+/// Unit tests for JsonMultiFileBackend star system methods.
 /// Validates: Requirements 8.1, 8.2, 8.3, 8.4.
 /// </summary>
 [TestFixture]
 public class StarSystemStorageTests
 {
     private string _dataPath = null!;
-    private JsonFileStorageBackend _backend = null!;
+    private JsonMultiFileBackend _backend = null!;
 
     /// <summary>
     /// Creates a temp directory and initializes the storage backend.
@@ -34,15 +32,7 @@ public class StarSystemStorageTests
             "oe2-starsys-test-" + Guid.NewGuid().ToString("N")[..8]);
         Directory.CreateDirectory(_dataPath);
 
-        var config = new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string?>
-            {
-                ["Storage:DataPath"] = _dataPath,
-            })
-            .Build();
-
-        var logger = NullLogger<JsonFileStorageBackend>.Instance;
-        _backend = new JsonFileStorageBackend(config, logger);
+        _backend = new JsonMultiFileBackend(_dataPath);
         await _backend.InitializeAsync();
     }
 

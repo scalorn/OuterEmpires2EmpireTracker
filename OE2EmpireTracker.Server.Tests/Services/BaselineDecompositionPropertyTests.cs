@@ -6,13 +6,12 @@
 
 using FsCheck;
 using FsCheck.NUnit;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using OE2EmpireTracker.Common.Storage;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Server.Services;
-using OE2EmpireTracker.Server.Storage;
 using OE2EmpireTracker.Server.Tests.Endpoints;
 
 namespace OE2EmpireTracker.Server.Tests.Services;
@@ -36,7 +35,7 @@ public class BaselineDecompositionPropertyTests
     };
 
     private string _dataPath = null!;
-    private JsonFileStorageBackend _backend = null!;
+    private JsonMultiFileBackend _backend = null!;
     private BaselineDecompositionService _service = null!;
 
     /// <summary>
@@ -50,16 +49,7 @@ public class BaselineDecompositionPropertyTests
             "oe2-prop-test-" + Guid.NewGuid().ToString("N")[..8]);
         Directory.CreateDirectory(_dataPath);
 
-        var config = new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string?>
-            {
-                ["Storage:DataPath"] = _dataPath,
-            })
-            .Build();
-
-        _backend = new JsonFileStorageBackend(
-            config,
-            NullLogger<JsonFileStorageBackend>.Instance);
+        _backend = new JsonMultiFileBackend(_dataPath);
         await _backend.InitializeAsync();
 
         _service = new BaselineDecompositionService(
@@ -345,9 +335,9 @@ public class BaselineDecompositionPropertyTests
 /// <summary>
 /// In-memory storage backend for idempotency testing.
 /// Implements replace semantics for global data and upsert-by-UUID for blueprints.
-/// Re-declares IStorageBackend to override non-virtual base methods.
+/// Overrides base methods to capture data in memory.
 /// </summary>
-internal class IdempotencyStorageBackend : StubStorageBackend, IStorageBackend
+internal class IdempotencyStorageBackend : StubStorageBackend
 {
     /// <summary>
     /// Gets the stored global data keyed by data type.
@@ -360,14 +350,14 @@ internal class IdempotencyStorageBackend : StubStorageBackend, IStorageBackend
     public Dictionary<string, Blueprint> Blueprints { get; } = new();
 
     /// <inheritdoc/>
-    Task IStorageBackend.UpsertGlobalDataAsync(string dataType, string json)
+    public override Task UpsertGlobalDataAsync(string dataType, string json)
     {
         GlobalData[dataType] = json;
         return Task.CompletedTask;
     }
 
     /// <inheritdoc/>
-    Task IStorageBackend.UpsertBlueprintAsync(string characterUUID, Blueprint entity)
+    public override Task UpsertBlueprintAsync(string characterUUID, Blueprint entity)
     {
         Blueprints[entity.UUID] = entity;
         return Task.CompletedTask;

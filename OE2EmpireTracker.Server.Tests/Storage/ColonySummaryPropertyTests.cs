@@ -7,12 +7,10 @@
 using System.Text.Json;
 using FsCheck;
 using FsCheck.NUnit;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 using OE2EmpireTracker.Common.Models;
+using OE2EmpireTracker.Common.Storage;
 using OE2EmpireTracker.Models;
-using OE2EmpireTracker.Server.Storage;
 using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Server.Tests.Storage;
@@ -28,7 +26,7 @@ namespace OE2EmpireTracker.Server.Tests.Storage;
 public class ColonySummaryPropertyTests
 {
     private string _dataPath = null!;
-    private JsonFileStorageBackend _backend = null!;
+    private JsonMultiFileBackend _backend = null!;
 
     /// <summary>
     /// Creates a temp directory and initializes the storage backend.
@@ -41,15 +39,7 @@ public class ColonySummaryPropertyTests
             "oe2-colsummary-test-" + Guid.NewGuid().ToString("N")[..8]);
         Directory.CreateDirectory(_dataPath);
 
-        var config = new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string?>
-            {
-                ["Storage:DataPath"] = _dataPath,
-            })
-            .Build();
-
-        var logger = NullLogger<JsonFileStorageBackend>.Instance;
-        _backend = new JsonFileStorageBackend(config, logger);
+        _backend = new JsonMultiFileBackend(_dataPath);
         await _backend.InitializeAsync();
     }
 

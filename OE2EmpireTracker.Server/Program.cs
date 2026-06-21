@@ -39,8 +39,8 @@ if (args.Contains("--regenerate-owner-token"))
             storage = new DynamoStorageBackend(cliConfig, dynamoLogger);
             break;
         default:
-            var storageLogger = cliLoggerFactory.CreateLogger<JsonFileStorageBackend>();
-            storage = new JsonFileStorageBackend(cliConfig, storageLogger);
+            var dataPath = cliConfig.GetValue<string>("Storage:DataPath") ?? "./data";
+            storage = new JsonMultiFileStorageAdapter(dataPath);
             break;
     }
 
@@ -77,7 +77,12 @@ switch (backendType)
         builder.Services.AddSingleton<IStorageBackend, DynamoStorageBackend>();
         break;
     default:
-        builder.Services.AddSingleton<IStorageBackend, JsonFileStorageBackend>();
+        builder.Services.AddSingleton<IStorageBackend>(sp =>
+        {
+            var config = sp.GetRequiredService<IConfiguration>();
+            var dataPath = config.GetValue<string>("Storage:DataPath") ?? "./data";
+            return new JsonMultiFileStorageAdapter(dataPath);
+        });
         break;
 }
 

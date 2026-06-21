@@ -84,12 +84,12 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Inputs: Server/Storage/Models.cs
     - Output: OE2EmpireTracker.Common/Models/ServerModels.cs; Server file deleted; using statements updated in Server
     - Verification: Full solution build — zero errors, zero warnings
-  - [-] 2.2 Move PermissionModels.cs from Server/Storage to Common/Models
+  - [x] 2.2 Move PermissionModels.cs from Server/Storage to Common/Models
     - Satisfies: Req 1, Criteria 6-8 (permission model availability in Common)
     - Inputs: Server/Storage/PermissionModels.cs
     - Output: OE2EmpireTracker.Common/Models/PermissionModels.cs; Server file deleted; using statements updated in Server
     - Verification: Full solution build — zero errors, zero warnings
-  - [~] 2.3 Move JsonFileStorageBackend from Server to Common as JsonMultiFileBackend
+  - [-] 2.3 Move JsonFileStorageBackend from Server to Common as JsonMultiFileBackend
     - Satisfies: Req 3, Criteria 1-9
     - Inputs: Server/Storage/JsonFileStorageBackend.cs, Common/Interfaces/IStorageBackend.cs
     - Output: OE2EmpireTracker.Common/Storage/JsonMultiFileBackend.cs; Server file deleted; Server references updated

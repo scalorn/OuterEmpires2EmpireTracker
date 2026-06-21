@@ -91,9 +91,9 @@ internal class StubStorageBackend : IStorageBackend
 
     public Task DeleteCharacterAsync(string uuid) => throw new NotImplementedException();
 
-    public Task<string?> GetGlobalDataAsync(string dataType) => throw new NotImplementedException();
+    public virtual Task<string?> GetGlobalDataAsync(string dataType) => throw new NotImplementedException();
 
-    public Task UpsertGlobalDataAsync(string dataType, string json) => throw new NotImplementedException();
+    public virtual Task UpsertGlobalDataAsync(string dataType, string json) => throw new NotImplementedException();
 
     public Task<ApiToken?> FindTokenByHashAsync(string tokenHash) => throw new NotImplementedException();
 
@@ -233,13 +233,13 @@ internal class StubStorageBackend : IStorageBackend
 
     public Task DeleteColonyAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
 
-    public Task<IReadOnlyList<Blueprint>> GetAllBlueprintsAsync(string characterUUID) => throw new NotImplementedException();
+    public virtual Task<IReadOnlyList<Blueprint>> GetAllBlueprintsAsync(string characterUUID) => throw new NotImplementedException();
 
-    public Task<Blueprint?> GetBlueprintAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    public virtual Task<Blueprint?> GetBlueprintAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
 
-    public Task UpsertBlueprintAsync(string characterUUID, Blueprint entity) => throw new NotImplementedException();
+    public virtual Task UpsertBlueprintAsync(string characterUUID, Blueprint entity) => throw new NotImplementedException();
 
-    public Task DeleteBlueprintAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    public virtual Task DeleteBlueprintAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
 
     public Task<IReadOnlyList<Survey>> GetAllSurveysAsync(string characterUUID) => throw new NotImplementedException();
 
@@ -376,4 +376,72 @@ internal class StubStorageBackend : IStorageBackend
     public Task UpsertExternalCharacterAsync(string characterUUID, ExternalCharacter entity) => throw new NotImplementedException();
 
     public Task DeleteExternalCharacterAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+
+    // ===== Warehouse Overflow Rules =====
+
+    public Task<IReadOnlyList<WarehouseOverflowRule>> GetAllWarehouseOverflowRulesAsync(string characterUUID) => throw new NotImplementedException();
+
+    public Task<WarehouseOverflowRule?> GetWarehouseOverflowRuleAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+
+    public Task UpsertWarehouseOverflowRuleAsync(string characterUUID, WarehouseOverflowRule entity) => throw new NotImplementedException();
+
+    public Task DeleteWarehouseOverflowRuleAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+
+    // ===== Mail Messages =====
+
+    public Task<IReadOnlyList<MailMessage>> GetAllMailMessagesAsync(string characterUUID) => throw new NotImplementedException();
+
+    public Task<MailMessage?> GetMailMessageAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+
+    public Task UpsertMailMessageAsync(string characterUUID, MailMessage entity) => throw new NotImplementedException();
+
+    public Task DeleteMailMessageAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+
+    // ===== Banking Transactions =====
+
+    public Task<IReadOnlyList<BankingTransaction>> GetAllBankingTransactionsAsync(string characterUUID) => throw new NotImplementedException();
+
+    public Task<BankingTransaction?> GetBankingTransactionAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+
+    public Task UpsertBankingTransactionAsync(string characterUUID, BankingTransaction entity) => throw new NotImplementedException();
+
+    public Task DeleteBankingTransactionAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+
+    // ===== Storage Info =====
+
+    public OE2EmpireTracker.Common.Interfaces.StorageInfo GetStorageInfo() => new OE2EmpireTracker.Common.Interfaces.StorageInfo { BackendType = "Stub", Location = "in-memory" };
+
+    // ===== Baseline / Global Lookup Data =====
+
+    public Task<BaselineGameConstants?> GetBaselineGameConstantsAsync() => throw new NotImplementedException();
+
+    public Task UpsertBaselineGameConstantsAsync(BaselineGameConstants constants) => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<BlueprintType>> GetAllBlueprintTypesAsync() => throw new NotImplementedException();
+
+    public Task UpsertBlueprintTypesAsync(IReadOnlyList<BlueprintType> types) => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<ShipClass>> GetAllShipClassesAsync() => throw new NotImplementedException();
+
+    public Task UpsertShipClassesAsync(IReadOnlyList<ShipClass> classes) => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<TechLevel>> GetAllTechLevelsAsync() => throw new NotImplementedException();
+
+    public Task UpsertTechLevelsAsync(IReadOnlyList<TechLevel> levels) => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<Commodity>> GetAllCommoditiesAsync() => throw new NotImplementedException();
+
+    public Task UpsertCommoditiesAsync(IReadOnlyList<Commodity> commodities) => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<RefiningRecipe>> GetAllRefiningRecipesAsync() => throw new NotImplementedException();
+
+    public Task UpsertRefiningRecipesAsync(IReadOnlyList<RefiningRecipe> recipes) => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<ResearchTimeEntry>> GetAllResearchTimesAsync() => throw new NotImplementedException();
+
+    public Task UpsertResearchTimesAsync(IReadOnlyList<ResearchTimeEntry> entries) => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<PropertyTypeDefinition>> GetAllPropertyTypeDefinitionsAsync() => throw new NotImplementedException();
+
+    public Task UpsertPropertyTypeDefinitionsAsync(IReadOnlyList<PropertyTypeDefinition> definitions) => throw new NotImplementedException();
 }
