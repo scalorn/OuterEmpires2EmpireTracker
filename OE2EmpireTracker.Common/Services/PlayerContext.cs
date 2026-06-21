@@ -739,12 +739,86 @@ namespace OE2EmpireTracker.Services
                 return;
             }
 
-            if (string.IsNullOrEmpty(FilePath))
+            // ServerOnly mode: existing delegate-based behavior unchanged
+            bool isServerOnly = IsServerOnlyMode?.Invoke() == true;
+            if (isServerOnly)
             {
-                Log.Debug("WriteContext skipped -- no file path set (not yet saved)");
+                WriteContextServerOnly();
                 return;
             }
 
+            // No backend configured: backward-compatible behavior
+            if (_storageBackend == null)
+            {
+                if (string.IsNullOrEmpty(FilePath))
+                {
+                    Log.Warn("WriteContext skipped -- no backend or file path configured");
+                    return;
+                }
+
+                WriteContextLegacyFile();
+                return;
+            }
+
+            // Backend dispatch
+            WriteContextBackend();
+        }
+
+        /// <summary>
+        /// Handles WriteContext in ServerOnly mode. Serializes full PlayerRoot
+        /// and pushes to server via the configured delegate.
+        /// </summary>
+        private void WriteContextServerOnly()
+        {
+            string jsonContent = SerializePlayerRoot();
+            Log.Debug("WriteContext: ServerOnly mode -- local file write skipped");
+            PushToServerAsync(jsonContent).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Handles WriteContext with no backend configured (legacy file path).
+        /// Preserves existing file write behavior for backward compatibility.
+        /// </summary>
+        private void WriteContextLegacyFile()
+        {
+            string jsonContent = SerializePlayerRoot();
+            SafeFileWriter.WriteAllText(FilePath, jsonContent);
+            Log.Info("Player data saved to {0}", FilePath);
+            PushToServerAsync(jsonContent).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Handles WriteContext with a configured storage backend.
+        /// Routes to full-file serialization for JsonSingleFileBackend,
+        /// or incremental dirty-entity persistence for other backends.
+        /// </summary>
+        private void WriteContextBackend()
+        {
+            var backend = _storageBackend;
+            string charUUID = _currentPlayerUUID;
+
+            if (backend is JsonSingleFileBackend)
+            {
+                string jsonContent = SerializePlayerRoot();
+                Task.Run(() => backend.UpsertGlobalDataAsync("PlayerRoot:" + charUUID, jsonContent))
+                    .GetAwaiter().GetResult();
+                DirtyTracker.ClearAll();
+                Log.Info("Player data persisted to JsonSingleFileBackend for {0}", charUUID);
+            }
+            else
+            {
+                // Incremental write: only dirty entities (task 7.2)
+                PersistDirtyEntities(backend, charUUID);
+            }
+        }
+
+        /// <summary>
+        /// Serializes the current in-memory state to a JSON string.
+        /// Builds PlayerRoot, runs integrity checks, and returns the serialized content.
+        /// </summary>
+        /// <returns>The serialized JSON string of the player root.</returns>
+        private string SerializePlayerRoot()
+        {
             PlayerRoot playerRoot;
             lock (_listLock)
             {
@@ -789,24 +863,41 @@ namespace OE2EmpireTracker.Services
                 }
             }
 
-            string jsonContent = JsonConvert.SerializeObject(playerRoot, JsonSettings.SerializerSettings);
+            return JsonConvert.SerializeObject(playerRoot, JsonSettings.SerializerSettings);
+        }
 
-            // In ServerOnly mode, skip local file write â€” data lives on the server only.
-            // In LocalOnly or DualWrite (ServerAndLocal) mode, always write locally.
-            bool isServerOnly = IsServerOnlyMode?.Invoke() == true;
-
-            if (!isServerOnly)
+        /// <summary>
+        /// Persists only dirty (modified or deleted) entities to the storage backend.
+        /// Iterates EntityPersistenceMap entries, finds dirty UUIDs via DirtyTracker,
+        /// looks up entities in-memory, and calls the appropriate Upsert or Delete delegate.
+        /// Clears dirty/deleted flags per-entity on successful persistence.
+        /// </summary>
+        /// <param name="backend">The storage backend to persist to.</param>
+        /// <param name="charUUID">The character UUID that owns the entities.</param>
+        private void PersistDirtyEntities(IStorageBackend backend, string charUUID)
+        {
+            foreach (var entry in EntityPersistenceMap.Entries)
             {
-                SafeFileWriter.WriteAllText(FilePath, jsonContent);
-                Log.Info("Player data saved to {0}", FilePath);
-            }
-            else
-            {
-                Log.Debug("WriteContext: ServerOnly mode â€” local file write skipped");
-            }
+                var dirtyUUIDs = DirtyTracker.GetDirtyUUIDs(entry.EntityType);
+                foreach (var uuid in dirtyUUIDs)
+                {
+                    var entity = entry.FindInList(this, uuid);
+                    if (entity != null)
+                    {
+                        Task.Run(() => entry.Upsert(backend, charUUID, entity))
+                            .GetAwaiter().GetResult();
+                        DirtyTracker.ClearDirty(entry.EntityType, uuid);
+                    }
+                }
 
-            // Write-through: push data to server when configured
-            PushToServerAsync(jsonContent).ConfigureAwait(false);
+                var deletedUUIDs = DirtyTracker.GetDeletedUUIDs(entry.EntityType);
+                foreach (var uuid in deletedUUIDs)
+                {
+                    Task.Run(() => entry.Delete(backend, charUUID, uuid))
+                        .GetAwaiter().GetResult();
+                    DirtyTracker.ClearDeleted(entry.EntityType, uuid);
+                }
+            }
         }
 
         /// <summary>

@@ -226,7 +226,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/PlayerContext.cs (modified)_
     - _Verification: Build succeeds_
 
-  - [-] 7.2 Implement PersistDirtyEntities using EntityPersistenceMap
+  - [x] 7.2 Implement PersistDirtyEntities using EntityPersistenceMap
     - Add private `PersistDirtyEntities(IStorageBackend backend, string charUUID)` method
     - Iterate EntityPersistenceMap: for each entry, get dirty UUIDs, find entity, call Upsert delegate via Task.Run
     - Clear dirty flag per-entity on success
@@ -457,7 +457,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Models/UIPreferences.cs (modified)_
     - _Verification: Build succeeds_
 
-  - [-] 14.2 Add ResolveStorageConfig and ParseStorageBackendType to PreferencesStore
+  - [x] 14.2 Add ResolveStorageConfig and ParseStorageBackendType to PreferencesStore
     - ParseStorageBackendType: Enum.TryParse with fallback to JsonSingleFile + warning log
     - ResolveStorageConfig: switch on type, apply default paths per backend type
     - JsonSingleFile/JsonMultiFile default: AppDomain.CurrentDomain.BaseDirectory
