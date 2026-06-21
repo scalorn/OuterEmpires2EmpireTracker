@@ -446,184 +446,289 @@ namespace OE2EmpireTracker.Common.Storage
         // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<FactionCapability>> GetFactionCapabilitiesAsync(string factionUUID)
-            => throw new NotImplementedException();
+        public async Task<IReadOnlyList<FactionCapability>> GetFactionCapabilitiesAsync(string factionUUID)
+        {
+            var items = await ScanByPrefixAsync($"FactionPerm#{factionUUID}", "Capability#");
+            return items.Select(j => JsonConvert.DeserializeObject<FactionCapability>(j)).Where(c => c != null).Cast<FactionCapability>().ToList();
+        }
 
         /// <inheritdoc/>
-        public Task UpsertFactionCapabilityAsync(FactionCapability capability)
-            => throw new NotImplementedException();
+        public async Task UpsertFactionCapabilityAsync(FactionCapability capability)
+        {
+            await PutItemDataAsync($"FactionPerm#{capability.FactionUUID}", $"Capability#{capability.UUID}", JsonConvert.SerializeObject(capability, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task DeleteFactionCapabilityAsync(string factionUUID, string capabilityUUID)
-            => throw new NotImplementedException();
+        public async Task DeleteFactionCapabilityAsync(string factionUUID, string capabilityUUID)
+        {
+            await DeleteItemAsync($"FactionPerm#{factionUUID}", $"Capability#{capabilityUUID}");
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<FactionClearanceLevel>> GetFactionClearanceLevelsAsync(string factionUUID)
-            => throw new NotImplementedException();
+        public async Task<IReadOnlyList<FactionClearanceLevel>> GetFactionClearanceLevelsAsync(string factionUUID)
+        {
+            var items = await ScanByPrefixAsync($"FactionPerm#{factionUUID}", "ClearanceLevel#");
+            return items.Select(j => JsonConvert.DeserializeObject<FactionClearanceLevel>(j)).Where(c => c != null).Cast<FactionClearanceLevel>().ToList();
+        }
 
         /// <inheritdoc/>
-        public Task UpsertFactionClearanceLevelAsync(FactionClearanceLevel level)
-            => throw new NotImplementedException();
+        public async Task UpsertFactionClearanceLevelAsync(FactionClearanceLevel level)
+        {
+            await PutItemDataAsync($"FactionPerm#{level.FactionUUID}", $"ClearanceLevel#{level.UUID}", JsonConvert.SerializeObject(level, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task DeleteFactionClearanceLevelAsync(string factionUUID, string levelUUID)
-            => throw new NotImplementedException();
+        public async Task DeleteFactionClearanceLevelAsync(string factionUUID, string levelUUID)
+        {
+            await DeleteItemAsync($"FactionPerm#{factionUUID}", $"ClearanceLevel#{levelUUID}");
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<FactionPermissionGroup>> GetFactionGroupsAsync(string factionUUID)
-            => throw new NotImplementedException();
+        public async Task<IReadOnlyList<FactionPermissionGroup>> GetFactionGroupsAsync(string factionUUID)
+        {
+            var items = await ScanByPrefixAsync($"FactionPerm#{factionUUID}", "Group#");
+            return items.Select(j => JsonConvert.DeserializeObject<FactionPermissionGroup>(j)).Where(c => c != null).Cast<FactionPermissionGroup>().ToList();
+        }
 
         /// <inheritdoc/>
-        public Task<FactionPermissionGroup> GetFactionGroupAsync(string factionUUID, string groupUUID)
-            => throw new NotImplementedException();
+        public async Task<FactionPermissionGroup> GetFactionGroupAsync(string factionUUID, string groupUUID)
+        {
+            var json = await GetItemDataAsync($"FactionPerm#{factionUUID}", $"Group#{groupUUID}");
+            return json != null ? JsonConvert.DeserializeObject<FactionPermissionGroup>(json) : null;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertFactionGroupAsync(FactionPermissionGroup group)
-            => throw new NotImplementedException();
+        public async Task UpsertFactionGroupAsync(FactionPermissionGroup group)
+        {
+            await PutItemDataAsync($"FactionPerm#{group.FactionUUID}", $"Group#{group.UUID}", JsonConvert.SerializeObject(group, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task DeleteFactionGroupAsync(string factionUUID, string groupUUID)
-            => throw new NotImplementedException();
+        public async Task DeleteFactionGroupAsync(string factionUUID, string groupUUID)
+        {
+            await DeleteItemAsync($"FactionPerm#{factionUUID}", $"Group#{groupUUID}");
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<FactionGroupCapability>> GetFactionGroupCapabilitiesAsync(string groupUUID)
-            => throw new NotImplementedException();
+        public async Task<IReadOnlyList<FactionGroupCapability>> GetFactionGroupCapabilitiesAsync(string groupUUID)
+        {
+            var items = await ScanByPrefixAsync($"FactionPerm#Group#{groupUUID}", "GroupCap#");
+            return items.Select(j => JsonConvert.DeserializeObject<FactionGroupCapability>(j)).Where(c => c != null).Cast<FactionGroupCapability>().ToList();
+        }
 
         /// <inheritdoc/>
-        public Task AddFactionGroupCapabilityAsync(FactionGroupCapability item)
-            => throw new NotImplementedException();
+        public async Task AddFactionGroupCapabilityAsync(FactionGroupCapability item)
+        {
+            await PutItemDataAsync($"FactionPerm#Group#{item.GroupUUID}", $"GroupCap#{item.CapabilityUUID}", JsonConvert.SerializeObject(item, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task RemoveFactionGroupCapabilityAsync(string groupUUID, string capabilityUUID)
-            => throw new NotImplementedException();
+        public async Task RemoveFactionGroupCapabilityAsync(string groupUUID, string capabilityUUID)
+        {
+            await DeleteItemAsync($"FactionPerm#Group#{groupUUID}", $"GroupCap#{capabilityUUID}");
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<FactionGroupSharingRule>> GetFactionGroupSharingRulesAsync(string groupUUID)
-            => throw new NotImplementedException();
+        public async Task<IReadOnlyList<FactionGroupSharingRule>> GetFactionGroupSharingRulesAsync(string groupUUID)
+        {
+            var items = await ScanByPrefixAsync($"FactionPerm#Group#{groupUUID}", "GroupRule#");
+            return items.Select(j => JsonConvert.DeserializeObject<FactionGroupSharingRule>(j)).Where(c => c != null).Cast<FactionGroupSharingRule>().ToList();
+        }
 
         /// <inheritdoc/>
-        public Task UpsertFactionGroupSharingRuleAsync(FactionGroupSharingRule rule)
-            => throw new NotImplementedException();
+        public async Task UpsertFactionGroupSharingRuleAsync(FactionGroupSharingRule rule)
+        {
+            await PutItemDataAsync($"FactionPerm#Group#{rule.GroupUUID}", $"GroupRule#{rule.UUID}", JsonConvert.SerializeObject(rule, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task DeleteFactionGroupSharingRuleAsync(string groupUUID, string ruleUUID)
-            => throw new NotImplementedException();
+        public async Task DeleteFactionGroupSharingRuleAsync(string groupUUID, string ruleUUID)
+        {
+            await DeleteItemAsync($"FactionPerm#Group#{groupUUID}", $"GroupRule#{ruleUUID}");
+        }
 
         /// <inheritdoc/>
-        public Task<FactionMemberPermissions> GetFactionMemberPermissionsAsync(string factionUUID, string characterUUID)
-            => throw new NotImplementedException();
+        public async Task<FactionMemberPermissions> GetFactionMemberPermissionsAsync(string factionUUID, string characterUUID)
+        {
+            var json = await GetItemDataAsync($"FactionPerm#{factionUUID}", $"Member#{characterUUID}");
+            return json != null ? JsonConvert.DeserializeObject<FactionMemberPermissions>(json) : null;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertFactionMemberPermissionsAsync(FactionMemberPermissions perms)
-            => throw new NotImplementedException();
+        public async Task UpsertFactionMemberPermissionsAsync(FactionMemberPermissions perms)
+        {
+            await PutItemDataAsync($"FactionPerm#{perms.FactionUUID}", $"Member#{perms.CharacterUUID}", JsonConvert.SerializeObject(perms, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<FactionMemberPermissions>> GetAllFactionMembersPermissionsAsync(string factionUUID)
-            => throw new NotImplementedException();
+        public async Task<IReadOnlyList<FactionMemberPermissions>> GetAllFactionMembersPermissionsAsync(string factionUUID)
+        {
+            var items = await ScanByPrefixAsync($"FactionPerm#{factionUUID}", "Member#");
+            return items.Select(j => JsonConvert.DeserializeObject<FactionMemberPermissions>(j)).Where(c => c != null).Cast<FactionMemberPermissions>().ToList();
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<FactionMemberCapability>> GetFactionMemberCapabilitiesAsync(string factionUUID, string characterUUID)
-            => throw new NotImplementedException();
+        public async Task<IReadOnlyList<FactionMemberCapability>> GetFactionMemberCapabilitiesAsync(string factionUUID, string characterUUID)
+        {
+            var items = await ScanByPrefixAsync($"FactionPerm#{factionUUID}", $"MemberCap#{characterUUID}#");
+            return items.Select(j => JsonConvert.DeserializeObject<FactionMemberCapability>(j)).Where(c => c != null).Cast<FactionMemberCapability>().ToList();
+        }
 
         /// <inheritdoc/>
-        public Task AddFactionMemberCapabilityAsync(FactionMemberCapability item)
-            => throw new NotImplementedException();
+        public async Task AddFactionMemberCapabilityAsync(FactionMemberCapability item)
+        {
+            await PutItemDataAsync($"FactionPerm#{item.FactionUUID}", $"MemberCap#{item.CharacterUUID}#{item.CapabilityUUID}", JsonConvert.SerializeObject(item, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task RemoveFactionMemberCapabilityAsync(string factionUUID, string characterUUID, string capabilityUUID)
-            => throw new NotImplementedException();
+        public async Task RemoveFactionMemberCapabilityAsync(string factionUUID, string characterUUID, string capabilityUUID)
+        {
+            await DeleteItemAsync($"FactionPerm#{factionUUID}", $"MemberCap#{characterUUID}#{capabilityUUID}");
+        }
 
         // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // Character Permission Entities (stubs)
         // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<CharacterCapability>> GetCharacterCapabilitiesAsync(string characterUUID)
-            => throw new NotImplementedException();
+        public async Task<IReadOnlyList<CharacterCapability>> GetCharacterCapabilitiesAsync(string characterUUID)
+        {
+            var items = await ScanByPrefixAsync($"CharPerm#{characterUUID}", "Capability#");
+            return items.Select(j => JsonConvert.DeserializeObject<CharacterCapability>(j)).Where(c => c != null).Cast<CharacterCapability>().ToList();
+        }
 
         /// <inheritdoc/>
-        public Task UpsertCharacterCapabilityAsync(CharacterCapability capability)
-            => throw new NotImplementedException();
+        public async Task UpsertCharacterCapabilityAsync(CharacterCapability capability)
+        {
+            await PutItemDataAsync($"CharPerm#{capability.OwnerCharacterUUID}", $"Capability#{capability.UUID}", JsonConvert.SerializeObject(capability, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task DeleteCharacterCapabilityAsync(string characterUUID, string capabilityUUID)
-            => throw new NotImplementedException();
+        public async Task DeleteCharacterCapabilityAsync(string characterUUID, string capabilityUUID)
+        {
+            await DeleteItemAsync($"CharPerm#{characterUUID}", $"Capability#{capabilityUUID}");
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<CharacterClearanceLevel>> GetCharacterClearanceLevelsAsync(string characterUUID)
-            => throw new NotImplementedException();
+        public async Task<IReadOnlyList<CharacterClearanceLevel>> GetCharacterClearanceLevelsAsync(string characterUUID)
+        {
+            var items = await ScanByPrefixAsync($"CharPerm#{characterUUID}", "ClearanceLevel#");
+            return items.Select(j => JsonConvert.DeserializeObject<CharacterClearanceLevel>(j)).Where(c => c != null).Cast<CharacterClearanceLevel>().ToList();
+        }
 
         /// <inheritdoc/>
-        public Task UpsertCharacterClearanceLevelAsync(CharacterClearanceLevel level)
-            => throw new NotImplementedException();
+        public async Task UpsertCharacterClearanceLevelAsync(CharacterClearanceLevel level)
+        {
+            await PutItemDataAsync($"CharPerm#{level.OwnerCharacterUUID}", $"ClearanceLevel#{level.UUID}", JsonConvert.SerializeObject(level, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task DeleteCharacterClearanceLevelAsync(string characterUUID, string levelUUID)
-            => throw new NotImplementedException();
+        public async Task DeleteCharacterClearanceLevelAsync(string characterUUID, string levelUUID)
+        {
+            await DeleteItemAsync($"CharPerm#{characterUUID}", $"ClearanceLevel#{levelUUID}");
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<CharacterPermissionGroup>> GetCharacterGroupsAsync(string characterUUID)
-            => throw new NotImplementedException();
+        public async Task<IReadOnlyList<CharacterPermissionGroup>> GetCharacterGroupsAsync(string characterUUID)
+        {
+            var items = await ScanByPrefixAsync($"CharPerm#{characterUUID}", "Group#");
+            return items.Select(j => JsonConvert.DeserializeObject<CharacterPermissionGroup>(j)).Where(c => c != null).Cast<CharacterPermissionGroup>().ToList();
+        }
 
         /// <inheritdoc/>
-        public Task<CharacterPermissionGroup> GetCharacterGroupAsync(string characterUUID, string groupUUID)
-            => throw new NotImplementedException();
+        public async Task<CharacterPermissionGroup> GetCharacterGroupAsync(string characterUUID, string groupUUID)
+        {
+            var json = await GetItemDataAsync($"CharPerm#{characterUUID}", $"Group#{groupUUID}");
+            return json != null ? JsonConvert.DeserializeObject<CharacterPermissionGroup>(json) : null;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertCharacterGroupAsync(CharacterPermissionGroup group)
-            => throw new NotImplementedException();
+        public async Task UpsertCharacterGroupAsync(CharacterPermissionGroup group)
+        {
+            await PutItemDataAsync($"CharPerm#{group.OwnerCharacterUUID}", $"Group#{group.UUID}", JsonConvert.SerializeObject(group, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task DeleteCharacterGroupAsync(string characterUUID, string groupUUID)
-            => throw new NotImplementedException();
+        public async Task DeleteCharacterGroupAsync(string characterUUID, string groupUUID)
+        {
+            await DeleteItemAsync($"CharPerm#{characterUUID}", $"Group#{groupUUID}");
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<CharacterGroupCapability>> GetCharacterGroupCapabilitiesAsync(string groupUUID)
-            => throw new NotImplementedException();
+        public async Task<IReadOnlyList<CharacterGroupCapability>> GetCharacterGroupCapabilitiesAsync(string groupUUID)
+        {
+            var items = await ScanByPrefixAsync($"CharPerm#Group#{groupUUID}", "GroupCap#");
+            return items.Select(j => JsonConvert.DeserializeObject<CharacterGroupCapability>(j)).Where(c => c != null).Cast<CharacterGroupCapability>().ToList();
+        }
 
         /// <inheritdoc/>
-        public Task AddCharacterGroupCapabilityAsync(CharacterGroupCapability item)
-            => throw new NotImplementedException();
+        public async Task AddCharacterGroupCapabilityAsync(CharacterGroupCapability item)
+        {
+            await PutItemDataAsync($"CharPerm#Group#{item.GroupUUID}", $"GroupCap#{item.CapabilityUUID}", JsonConvert.SerializeObject(item, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task RemoveCharacterGroupCapabilityAsync(string groupUUID, string capabilityUUID)
-            => throw new NotImplementedException();
+        public async Task RemoveCharacterGroupCapabilityAsync(string groupUUID, string capabilityUUID)
+        {
+            await DeleteItemAsync($"CharPerm#Group#{groupUUID}", $"GroupCap#{capabilityUUID}");
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<CharacterGroupSharingRule>> GetCharacterGroupSharingRulesAsync(string groupUUID)
-            => throw new NotImplementedException();
+        public async Task<IReadOnlyList<CharacterGroupSharingRule>> GetCharacterGroupSharingRulesAsync(string groupUUID)
+        {
+            var items = await ScanByPrefixAsync($"CharPerm#Group#{groupUUID}", "GroupRule#");
+            return items.Select(j => JsonConvert.DeserializeObject<CharacterGroupSharingRule>(j)).Where(c => c != null).Cast<CharacterGroupSharingRule>().ToList();
+        }
 
         /// <inheritdoc/>
-        public Task UpsertCharacterGroupSharingRuleAsync(CharacterGroupSharingRule rule)
-            => throw new NotImplementedException();
+        public async Task UpsertCharacterGroupSharingRuleAsync(CharacterGroupSharingRule rule)
+        {
+            await PutItemDataAsync($"CharPerm#Group#{rule.GroupUUID}", $"GroupRule#{rule.UUID}", JsonConvert.SerializeObject(rule, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task DeleteCharacterGroupSharingRuleAsync(string groupUUID, string ruleUUID)
-            => throw new NotImplementedException();
+        public async Task DeleteCharacterGroupSharingRuleAsync(string groupUUID, string ruleUUID)
+        {
+            await DeleteItemAsync($"CharPerm#Group#{groupUUID}", $"GroupRule#{ruleUUID}");
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<CharacterGranteePermissions>> GetCharacterGranteesAsync(string ownerCharacterUUID)
-            => throw new NotImplementedException();
+        public async Task<IReadOnlyList<CharacterGranteePermissions>> GetCharacterGranteesAsync(string ownerCharacterUUID)
+        {
+            var items = await ScanByPrefixAsync($"CharPerm#{ownerCharacterUUID}", "Grantee#");
+            return items.Select(j => JsonConvert.DeserializeObject<CharacterGranteePermissions>(j)).Where(c => c != null).Cast<CharacterGranteePermissions>().ToList();
+        }
 
         /// <inheritdoc/>
-        public Task UpsertCharacterGranteePermissionsAsync(CharacterGranteePermissions perms)
-            => throw new NotImplementedException();
+        public async Task UpsertCharacterGranteePermissionsAsync(CharacterGranteePermissions perms)
+        {
+            await PutItemDataAsync($"CharPerm#{perms.OwnerCharacterUUID}", $"Grantee#{perms.GranteeUUID}", JsonConvert.SerializeObject(perms, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task DeleteCharacterGranteePermissionsAsync(string ownerCharacterUUID, string granteeUUID)
-            => throw new NotImplementedException();
+        public async Task DeleteCharacterGranteePermissionsAsync(string ownerCharacterUUID, string granteeUUID)
+        {
+            await DeleteItemAsync($"CharPerm#{ownerCharacterUUID}", $"Grantee#{granteeUUID}");
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<CharacterGranteeCapability>> GetCharacterGranteeCapabilitiesAsync(string ownerCharacterUUID, string granteeUUID)
-            => throw new NotImplementedException();
+        public async Task<IReadOnlyList<CharacterGranteeCapability>> GetCharacterGranteeCapabilitiesAsync(string ownerCharacterUUID, string granteeUUID)
+        {
+            var items = await ScanByPrefixAsync($"CharPerm#{ownerCharacterUUID}", $"GranteeCap#{granteeUUID}#");
+            return items.Select(j => JsonConvert.DeserializeObject<CharacterGranteeCapability>(j)).Where(c => c != null).Cast<CharacterGranteeCapability>().ToList();
+        }
 
         /// <inheritdoc/>
-        public Task AddCharacterGranteeCapabilityAsync(CharacterGranteeCapability item)
-            => throw new NotImplementedException();
+        public async Task AddCharacterGranteeCapabilityAsync(CharacterGranteeCapability item)
+        {
+            await PutItemDataAsync($"CharPerm#{item.OwnerCharacterUUID}", $"GranteeCap#{item.GranteeUUID}#{item.CapabilityUUID}", JsonConvert.SerializeObject(item, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task RemoveCharacterGranteeCapabilityAsync(string ownerCharacterUUID, string granteeUUID, string capabilityUUID)
-            => throw new NotImplementedException();
+        public async Task RemoveCharacterGranteeCapabilityAsync(string ownerCharacterUUID, string granteeUUID, string capabilityUUID)
+        {
+            await DeleteItemAsync($"CharPerm#{ownerCharacterUUID}", $"GranteeCap#{granteeUUID}#{capabilityUUID}");
+        }
 
         // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // Intel and Audit (stubs)
@@ -876,203 +981,427 @@ namespace OE2EmpireTracker.Common.Storage
         }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<Ship>> GetAllShipsAsync(string characterUUID) => throw new NotImplementedException();
+        public async Task<IReadOnlyList<Ship>> GetAllShipsAsync(string characterUUID)
+        {
+            var items = await ScanByPrefixAsync($"Char#{characterUUID}", "Ship#");
+            return items.Select(j => JsonConvert.DeserializeObject<Ship>(j)).Where(c => c != null).Cast<Ship>().ToList();
+        }
 
         /// <inheritdoc/>
-        public Task<Ship> GetShipAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task<Ship> GetShipAsync(string characterUUID, string entityUUID)
+        {
+            var json = await GetItemDataAsync($"Char#{characterUUID}", $"Ship#{entityUUID}");
+            return json != null ? JsonConvert.DeserializeObject<Ship>(json) : null;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertShipAsync(string characterUUID, Ship entity) => throw new NotImplementedException();
+        public async Task UpsertShipAsync(string characterUUID, Ship entity)
+        {
+            await PutItemDataAsync($"Char#{characterUUID}", $"Ship#{entity.UUID}", JsonConvert.SerializeObject(entity, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task DeleteShipAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task DeleteShipAsync(string characterUUID, string entityUUID)
+        {
+            await DeleteItemAsync($"Char#{characterUUID}", $"Ship#{entityUUID}");
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<ShipTemplate>> GetAllShipTemplatesAsync(string characterUUID) => throw new NotImplementedException();
+        public async Task<IReadOnlyList<ShipTemplate>> GetAllShipTemplatesAsync(string characterUUID)
+        {
+            var items = await ScanByPrefixAsync($"Char#{characterUUID}", "ShipTemplate#");
+            return items.Select(j => JsonConvert.DeserializeObject<ShipTemplate>(j)).Where(c => c != null).Cast<ShipTemplate>().ToList();
+        }
 
         /// <inheritdoc/>
-        public Task<ShipTemplate> GetShipTemplateAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task<ShipTemplate> GetShipTemplateAsync(string characterUUID, string entityUUID)
+        {
+            var json = await GetItemDataAsync($"Char#{characterUUID}", $"ShipTemplate#{entityUUID}");
+            return json != null ? JsonConvert.DeserializeObject<ShipTemplate>(json) : null;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertShipTemplateAsync(string characterUUID, ShipTemplate entity) => throw new NotImplementedException();
+        public async Task UpsertShipTemplateAsync(string characterUUID, ShipTemplate entity)
+        {
+            await PutItemDataAsync($"Char#{characterUUID}", $"ShipTemplate#{entity.UUID}", JsonConvert.SerializeObject(entity, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task DeleteShipTemplateAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task DeleteShipTemplateAsync(string characterUUID, string entityUUID)
+        {
+            await DeleteItemAsync($"Char#{characterUUID}", $"ShipTemplate#{entityUUID}");
+        }
 
         // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // Baseline / Global Lookup Data (stubs)
         // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         /// <inheritdoc/>
-        public Task<IReadOnlyList<MarketListing>> GetAllMarketListingsAsync(string characterUUID) => throw new NotImplementedException();
+        public async Task<IReadOnlyList<MarketListing>> GetAllMarketListingsAsync(string characterUUID)
+        {
+            var items = await ScanByPrefixAsync($"Char#{characterUUID}", "MarketListing#");
+            return items.Select(j => JsonConvert.DeserializeObject<MarketListing>(j)).Where(c => c != null).Cast<MarketListing>().ToList();
+        }
 
         /// <inheritdoc/>
-        public Task<MarketListing> GetMarketListingAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task<MarketListing> GetMarketListingAsync(string characterUUID, string entityUUID)
+        {
+            var json = await GetItemDataAsync($"Char#{characterUUID}", $"MarketListing#{entityUUID}");
+            return json != null ? JsonConvert.DeserializeObject<MarketListing>(json) : null;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertMarketListingAsync(string characterUUID, MarketListing entity) => throw new NotImplementedException();
+        public async Task UpsertMarketListingAsync(string characterUUID, MarketListing entity)
+        {
+            await PutItemDataAsync($"Char#{characterUUID}", $"MarketListing#{entity.UUID}", JsonConvert.SerializeObject(entity, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task DeleteMarketListingAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task DeleteMarketListingAsync(string characterUUID, string entityUUID)
+        {
+            await DeleteItemAsync($"Char#{characterUUID}", $"MarketListing#{entityUUID}");
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<MarketTransaction>> GetAllMarketTransactionsAsync(string characterUUID) => throw new NotImplementedException();
+        public async Task<IReadOnlyList<MarketTransaction>> GetAllMarketTransactionsAsync(string characterUUID)
+        {
+            var items = await ScanByPrefixAsync($"Char#{characterUUID}", "MarketTransaction#");
+            return items.Select(j => JsonConvert.DeserializeObject<MarketTransaction>(j)).Where(c => c != null).Cast<MarketTransaction>().ToList();
+        }
 
         /// <inheritdoc/>
-        public Task<MarketTransaction> GetMarketTransactionAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task<MarketTransaction> GetMarketTransactionAsync(string characterUUID, string entityUUID)
+        {
+            var json = await GetItemDataAsync($"Char#{characterUUID}", $"MarketTransaction#{entityUUID}");
+            return json != null ? JsonConvert.DeserializeObject<MarketTransaction>(json) : null;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertMarketTransactionAsync(string characterUUID, MarketTransaction entity) => throw new NotImplementedException();
+        public async Task UpsertMarketTransactionAsync(string characterUUID, MarketTransaction entity)
+        {
+            await PutItemDataAsync($"Char#{characterUUID}", $"MarketTransaction#{entity.UUID}", JsonConvert.SerializeObject(entity, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task DeleteMarketTransactionAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task DeleteMarketTransactionAsync(string characterUUID, string entityUUID)
+        {
+            await DeleteItemAsync($"Char#{characterUUID}", $"MarketTransaction#{entityUUID}");
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<PricingPlan>> GetAllPricingPlansAsync(string characterUUID) => throw new NotImplementedException();
+        public async Task<IReadOnlyList<PricingPlan>> GetAllPricingPlansAsync(string characterUUID)
+        {
+            var items = await ScanByPrefixAsync($"Char#{characterUUID}", "PricingPlan#");
+            return items.Select(j => JsonConvert.DeserializeObject<PricingPlan>(j)).Where(c => c != null).Cast<PricingPlan>().ToList();
+        }
 
         /// <inheritdoc/>
-        public Task<PricingPlan> GetPricingPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task<PricingPlan> GetPricingPlanAsync(string characterUUID, string entityUUID)
+        {
+            var json = await GetItemDataAsync($"Char#{characterUUID}", $"PricingPlan#{entityUUID}");
+            return json != null ? JsonConvert.DeserializeObject<PricingPlan>(json) : null;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertPricingPlanAsync(string characterUUID, PricingPlan entity) => throw new NotImplementedException();
+        public async Task UpsertPricingPlanAsync(string characterUUID, PricingPlan entity)
+        {
+            await PutItemDataAsync($"Char#{characterUUID}", $"PricingPlan#{entity.UUID}", JsonConvert.SerializeObject(entity, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task DeletePricingPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task DeletePricingPlanAsync(string characterUUID, string entityUUID)
+        {
+            await DeleteItemAsync($"Char#{characterUUID}", $"PricingPlan#{entityUUID}");
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<StockPlan>> GetAllStockPlansAsync(string characterUUID) => throw new NotImplementedException();
+        public async Task<IReadOnlyList<StockPlan>> GetAllStockPlansAsync(string characterUUID)
+        {
+            var items = await ScanByPrefixAsync($"Char#{characterUUID}", "StockPlan#");
+            return items.Select(j => JsonConvert.DeserializeObject<StockPlan>(j)).Where(c => c != null).Cast<StockPlan>().ToList();
+        }
 
         /// <inheritdoc/>
-        public Task<StockPlan> GetStockPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task<StockPlan> GetStockPlanAsync(string characterUUID, string entityUUID)
+        {
+            var json = await GetItemDataAsync($"Char#{characterUUID}", $"StockPlan#{entityUUID}");
+            return json != null ? JsonConvert.DeserializeObject<StockPlan>(json) : null;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertStockPlanAsync(string characterUUID, StockPlan entity) => throw new NotImplementedException();
+        public async Task UpsertStockPlanAsync(string characterUUID, StockPlan entity)
+        {
+            await PutItemDataAsync($"Char#{characterUUID}", $"StockPlan#{entity.UUID}", JsonConvert.SerializeObject(entity, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task DeleteStockPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task DeleteStockPlanAsync(string characterUUID, string entityUUID)
+        {
+            await DeleteItemAsync($"Char#{characterUUID}", $"StockPlan#{entityUUID}");
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<StockProfile>> GetAllStockProfilesAsync(string characterUUID) => throw new NotImplementedException();
+        public async Task<IReadOnlyList<StockProfile>> GetAllStockProfilesAsync(string characterUUID)
+        {
+            var items = await ScanByPrefixAsync($"Char#{characterUUID}", "StockProfile#");
+            return items.Select(j => JsonConvert.DeserializeObject<StockProfile>(j)).Where(c => c != null).Cast<StockProfile>().ToList();
+        }
 
         /// <inheritdoc/>
-        public Task<StockProfile> GetStockProfileAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task<StockProfile> GetStockProfileAsync(string characterUUID, string entityUUID)
+        {
+            var json = await GetItemDataAsync($"Char#{characterUUID}", $"StockProfile#{entityUUID}");
+            return json != null ? JsonConvert.DeserializeObject<StockProfile>(json) : null;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertStockProfileAsync(string characterUUID, StockProfile entity) => throw new NotImplementedException();
+        public async Task UpsertStockProfileAsync(string characterUUID, StockProfile entity)
+        {
+            await PutItemDataAsync($"Char#{characterUUID}", $"StockProfile#{entity.UUID}", JsonConvert.SerializeObject(entity, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task DeleteStockProfileAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task DeleteStockProfileAsync(string characterUUID, string entityUUID)
+        {
+            await DeleteItemAsync($"Char#{characterUUID}", $"StockProfile#{entityUUID}");
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<BuildPlan>> GetAllBuildPlansAsync(string characterUUID) => throw new NotImplementedException();
+        public async Task<IReadOnlyList<BuildPlan>> GetAllBuildPlansAsync(string characterUUID)
+        {
+            var items = await ScanByPrefixAsync($"Char#{characterUUID}", "BuildPlan#");
+            return items.Select(j => JsonConvert.DeserializeObject<BuildPlan>(j)).Where(c => c != null).Cast<BuildPlan>().ToList();
+        }
 
         /// <inheritdoc/>
-        public Task<BuildPlan> GetBuildPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task<BuildPlan> GetBuildPlanAsync(string characterUUID, string entityUUID)
+        {
+            var json = await GetItemDataAsync($"Char#{characterUUID}", $"BuildPlan#{entityUUID}");
+            return json != null ? JsonConvert.DeserializeObject<BuildPlan>(json) : null;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertBuildPlanAsync(string characterUUID, BuildPlan entity) => throw new NotImplementedException();
+        public async Task UpsertBuildPlanAsync(string characterUUID, BuildPlan entity)
+        {
+            await PutItemDataAsync($"Char#{characterUUID}", $"BuildPlan#{entity.UUID}", JsonConvert.SerializeObject(entity, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task DeleteBuildPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task DeleteBuildPlanAsync(string characterUUID, string entityUUID)
+        {
+            await DeleteItemAsync($"Char#{characterUUID}", $"BuildPlan#{entityUUID}");
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<SupplyChain>> GetAllSupplyChainsAsync(string characterUUID) => throw new NotImplementedException();
+        public async Task<IReadOnlyList<SupplyChain>> GetAllSupplyChainsAsync(string characterUUID)
+        {
+            var items = await ScanByPrefixAsync($"Char#{characterUUID}", "SupplyChain#");
+            return items.Select(j => JsonConvert.DeserializeObject<SupplyChain>(j)).Where(c => c != null).Cast<SupplyChain>().ToList();
+        }
 
         /// <inheritdoc/>
-        public Task<SupplyChain> GetSupplyChainAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task<SupplyChain> GetSupplyChainAsync(string characterUUID, string entityUUID)
+        {
+            var json = await GetItemDataAsync($"Char#{characterUUID}", $"SupplyChain#{entityUUID}");
+            return json != null ? JsonConvert.DeserializeObject<SupplyChain>(json) : null;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertSupplyChainAsync(string characterUUID, SupplyChain entity) => throw new NotImplementedException();
+        public async Task UpsertSupplyChainAsync(string characterUUID, SupplyChain entity)
+        {
+            await PutItemDataAsync($"Char#{characterUUID}", $"SupplyChain#{entity.UUID}", JsonConvert.SerializeObject(entity, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task DeleteSupplyChainAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task DeleteSupplyChainAsync(string characterUUID, string entityUUID)
+        {
+            await DeleteItemAsync($"Char#{characterUUID}", $"SupplyChain#{entityUUID}");
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<Asteroid>> GetAllAsteroidsAsync(string characterUUID) => throw new NotImplementedException();
+        public async Task<IReadOnlyList<Asteroid>> GetAllAsteroidsAsync(string characterUUID)
+        {
+            var items = await ScanByPrefixAsync($"Char#{characterUUID}", "Asteroid#");
+            return items.Select(j => JsonConvert.DeserializeObject<Asteroid>(j)).Where(c => c != null).Cast<Asteroid>().ToList();
+        }
 
         /// <inheritdoc/>
-        public Task<Asteroid> GetAsteroidAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task<Asteroid> GetAsteroidAsync(string characterUUID, string entityUUID)
+        {
+            var json = await GetItemDataAsync($"Char#{characterUUID}", $"Asteroid#{entityUUID}");
+            return json != null ? JsonConvert.DeserializeObject<Asteroid>(json) : null;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertAsteroidAsync(string characterUUID, Asteroid entity) => throw new NotImplementedException();
+        public async Task UpsertAsteroidAsync(string characterUUID, Asteroid entity)
+        {
+            await PutItemDataAsync($"Char#{characterUUID}", $"Asteroid#{entity.UUID}", JsonConvert.SerializeObject(entity, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task DeleteAsteroidAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task DeleteAsteroidAsync(string characterUUID, string entityUUID)
+        {
+            await DeleteItemAsync($"Char#{characterUUID}", $"Asteroid#{entityUUID}");
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<Station>> GetAllStationsAsync(string characterUUID) => throw new NotImplementedException();
+        public async Task<IReadOnlyList<Station>> GetAllStationsAsync(string characterUUID)
+        {
+            var items = await ScanByPrefixAsync($"Char#{characterUUID}", "Station#");
+            return items.Select(j => JsonConvert.DeserializeObject<Station>(j)).Where(c => c != null).Cast<Station>().ToList();
+        }
 
         /// <inheritdoc/>
-        public Task<Station> GetStationAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task<Station> GetStationAsync(string characterUUID, string entityUUID)
+        {
+            var json = await GetItemDataAsync($"Char#{characterUUID}", $"Station#{entityUUID}");
+            return json != null ? JsonConvert.DeserializeObject<Station>(json) : null;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertStationAsync(string characterUUID, Station entity) => throw new NotImplementedException();
+        public async Task UpsertStationAsync(string characterUUID, Station entity)
+        {
+            await PutItemDataAsync($"Char#{characterUUID}", $"Station#{entity.UUID}", JsonConvert.SerializeObject(entity, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task DeleteStationAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task DeleteStationAsync(string characterUUID, string entityUUID)
+        {
+            await DeleteItemAsync($"Char#{characterUUID}", $"Station#{entityUUID}");
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<Faction>> GetAllFactionsForCharacterAsync(string characterUUID) => throw new NotImplementedException();
+        public async Task<IReadOnlyList<Faction>> GetAllFactionsForCharacterAsync(string characterUUID)
+        {
+            var items = await ScanByPrefixAsync($"Char#{characterUUID}", "FactionContact#");
+            return items.Select(j => JsonConvert.DeserializeObject<Faction>(j)).Where(c => c != null).Cast<Faction>().ToList();
+        }
 
         /// <inheritdoc/>
-        public Task<Faction> GetFactionForCharacterAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task<Faction> GetFactionForCharacterAsync(string characterUUID, string entityUUID)
+        {
+            var json = await GetItemDataAsync($"Char#{characterUUID}", $"FactionContact#{entityUUID}");
+            return json != null ? JsonConvert.DeserializeObject<Faction>(json) : null;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertFactionForCharacterAsync(string characterUUID, Faction entity) => throw new NotImplementedException();
+        public async Task UpsertFactionForCharacterAsync(string characterUUID, Faction entity)
+        {
+            await PutItemDataAsync($"Char#{characterUUID}", $"FactionContact#{entity.UUID}", JsonConvert.SerializeObject(entity, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task DeleteFactionForCharacterAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task DeleteFactionForCharacterAsync(string characterUUID, string entityUUID)
+        {
+            await DeleteItemAsync($"Char#{characterUUID}", $"FactionContact#{entityUUID}");
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<ExternalCharacter>> GetAllExternalCharactersAsync(string characterUUID) => throw new NotImplementedException();
+        public async Task<IReadOnlyList<ExternalCharacter>> GetAllExternalCharactersAsync(string characterUUID)
+        {
+            var items = await ScanByPrefixAsync($"Char#{characterUUID}", "ExternalCharacter#");
+            return items.Select(j => JsonConvert.DeserializeObject<ExternalCharacter>(j)).Where(c => c != null).Cast<ExternalCharacter>().ToList();
+        }
 
         /// <inheritdoc/>
-        public Task<ExternalCharacter> GetExternalCharacterAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task<ExternalCharacter> GetExternalCharacterAsync(string characterUUID, string entityUUID)
+        {
+            var json = await GetItemDataAsync($"Char#{characterUUID}", $"ExternalCharacter#{entityUUID}");
+            return json != null ? JsonConvert.DeserializeObject<ExternalCharacter>(json) : null;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertExternalCharacterAsync(string characterUUID, ExternalCharacter entity) => throw new NotImplementedException();
+        public async Task UpsertExternalCharacterAsync(string characterUUID, ExternalCharacter entity)
+        {
+            await PutItemDataAsync($"Char#{characterUUID}", $"ExternalCharacter#{entity.UUID}", JsonConvert.SerializeObject(entity, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task DeleteExternalCharacterAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task DeleteExternalCharacterAsync(string characterUUID, string entityUUID)
+        {
+            await DeleteItemAsync($"Char#{characterUUID}", $"ExternalCharacter#{entityUUID}");
+        }
 
         // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // WarehouseOverflowRule, MailMessage, BankingTransaction (stubs)
         // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<WarehouseOverflowRule>> GetAllWarehouseOverflowRulesAsync(string characterUUID) => throw new NotImplementedException();
+        public async Task<IReadOnlyList<WarehouseOverflowRule>> GetAllWarehouseOverflowRulesAsync(string characterUUID)
+        {
+            var items = await ScanByPrefixAsync($"Char#{characterUUID}", "WarehouseOverflowRule#");
+            return items.Select(j => JsonConvert.DeserializeObject<WarehouseOverflowRule>(j)).Where(c => c != null).Cast<WarehouseOverflowRule>().ToList();
+        }
 
         /// <inheritdoc/>
-        public Task<WarehouseOverflowRule> GetWarehouseOverflowRuleAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task<WarehouseOverflowRule> GetWarehouseOverflowRuleAsync(string characterUUID, string entityUUID)
+        {
+            var json = await GetItemDataAsync($"Char#{characterUUID}", $"WarehouseOverflowRule#{entityUUID}");
+            return json != null ? JsonConvert.DeserializeObject<WarehouseOverflowRule>(json) : null;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertWarehouseOverflowRuleAsync(string characterUUID, WarehouseOverflowRule entity) => throw new NotImplementedException();
+        public async Task UpsertWarehouseOverflowRuleAsync(string characterUUID, WarehouseOverflowRule entity)
+        {
+            await PutItemDataAsync($"Char#{characterUUID}", $"WarehouseOverflowRule#{entity.UUID}", JsonConvert.SerializeObject(entity, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task DeleteWarehouseOverflowRuleAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task DeleteWarehouseOverflowRuleAsync(string characterUUID, string entityUUID)
+        {
+            await DeleteItemAsync($"Char#{characterUUID}", $"WarehouseOverflowRule#{entityUUID}");
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<MailMessage>> GetAllMailMessagesAsync(string characterUUID) => throw new NotImplementedException();
+        public async Task<IReadOnlyList<MailMessage>> GetAllMailMessagesAsync(string characterUUID)
+        {
+            var items = await ScanByPrefixAsync($"Char#{characterUUID}", "MailMessage#");
+            return items.Select(j => JsonConvert.DeserializeObject<MailMessage>(j)).Where(c => c != null).Cast<MailMessage>().ToList();
+        }
 
         /// <inheritdoc/>
-        public Task<MailMessage> GetMailMessageAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task<MailMessage> GetMailMessageAsync(string characterUUID, string entityUUID)
+        {
+            var json = await GetItemDataAsync($"Char#{characterUUID}", $"MailMessage#{entityUUID}");
+            return json != null ? JsonConvert.DeserializeObject<MailMessage>(json) : null;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertMailMessageAsync(string characterUUID, MailMessage entity) => throw new NotImplementedException();
+        public async Task UpsertMailMessageAsync(string characterUUID, MailMessage entity)
+        {
+            await PutItemDataAsync($"Char#{characterUUID}", $"MailMessage#{entity.UUID}", JsonConvert.SerializeObject(entity, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task DeleteMailMessageAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task DeleteMailMessageAsync(string characterUUID, string entityUUID)
+        {
+            await DeleteItemAsync($"Char#{characterUUID}", $"MailMessage#{entityUUID}");
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<BankingTransaction>> GetAllBankingTransactionsAsync(string characterUUID) => throw new NotImplementedException();
+        public async Task<IReadOnlyList<BankingTransaction>> GetAllBankingTransactionsAsync(string characterUUID)
+        {
+            var items = await ScanByPrefixAsync($"Char#{characterUUID}", "BankingTransaction#");
+            return items.Select(j => JsonConvert.DeserializeObject<BankingTransaction>(j)).Where(c => c != null).Cast<BankingTransaction>().ToList();
+        }
 
         /// <inheritdoc/>
-        public Task<BankingTransaction> GetBankingTransactionAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task<BankingTransaction> GetBankingTransactionAsync(string characterUUID, string entityUUID)
+        {
+            var json = await GetItemDataAsync($"Char#{characterUUID}", $"BankingTransaction#{entityUUID}");
+            return json != null ? JsonConvert.DeserializeObject<BankingTransaction>(json) : null;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertBankingTransactionAsync(string characterUUID, BankingTransaction entity) => throw new NotImplementedException();
+        public async Task UpsertBankingTransactionAsync(string characterUUID, BankingTransaction entity)
+        {
+            await PutItemDataAsync($"Char#{characterUUID}", $"BankingTransaction#{entity.UUID}", JsonConvert.SerializeObject(entity, SerializerSettings));
+        }
 
         /// <inheritdoc/>
-        public Task DeleteBankingTransactionAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public async Task DeleteBankingTransactionAsync(string characterUUID, string entityUUID)
+        {
+            await DeleteItemAsync($"Char#{characterUUID}", $"BankingTransaction#{entityUUID}");
+        }
 
         // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // Baseline Data (stubs)
