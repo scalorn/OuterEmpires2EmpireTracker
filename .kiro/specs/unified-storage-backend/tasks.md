@@ -197,12 +197,12 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Inputs: Common/Storage/SqliteBackend.cs (from 5.11), IStorageBackend interface
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (extended — server-global CRUD methods)
     - Verification: getDiagnostics — compiles cleanly
-  - [-] 6.2 SQLite CRUD: Colony (with Structures child table, ColonyStructureProperties, ColonyStructureWorkers, Items)
+  - [x] 6.2 SQLite CRUD: Colony (with Structures child table, ColonyStructureProperties, ColonyStructureWorkers, Items)
     - Satisfies: Req 4, Criteria 1, 9-14
     - Inputs: Common/Storage/SqliteBackend.cs, Colony model, ColonyStructure model
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (extended — Colony Get/GetAll/Upsert/Delete with child tables)
     - Verification: getDiagnostics — compiles cleanly
-  - [~] 6.3 SQLite CRUD: Blueprint (with Properties and Resources child tables), Survey (with Properties and Resources child tables)
+  - [-] 6.3 SQLite CRUD: Blueprint (with Properties and Resources child tables), Survey (with Properties and Resources child tables)
     - Satisfies: Req 4, Criteria 1, 9-11, 14
     - Inputs: Common/Storage/SqliteBackend.cs, Blueprint model, Survey model
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (extended — Blueprint + Survey CRUD)

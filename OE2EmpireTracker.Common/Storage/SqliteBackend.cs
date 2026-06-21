@@ -1733,36 +1733,176 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
         }
 
         // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — Blueprint (stubs — Phase 6)
+        // Per-Character Entity CRUD — Blueprint
         // ═══════════════════════════════════════════════════════════
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<Blueprint>> GetAllBlueprintsAsync(string characterUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<Blueprint>> GetAllBlueprintsAsync(string characterUUID)
+        {
+            var results = new List<Blueprint>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM Blueprints WHERE OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(ReadBlueprintParent(reader));
+                    }
+                }
+
+                foreach (var bp in results)
+                {
+                    bp.Properties = LoadPropertyBag(conn, "BlueprintProperties", "BlueprintUUID", bp.UUID);
+                    bp.Resources = LoadBlueprintResources(conn, bp.UUID);
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<Blueprint>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task<Blueprint> GetBlueprintAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task<Blueprint> GetBlueprintAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM Blueprints WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        var bp = ReadBlueprintParent(reader);
+                        bp.Properties = LoadPropertyBag(conn, "BlueprintProperties", "BlueprintUUID", bp.UUID);
+                        bp.Resources = LoadBlueprintResources(conn, bp.UUID);
+                        return Task.FromResult(bp);
+                    }
+                }
+            }
+
+            return Task.FromResult<Blueprint>(null);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertBlueprintAsync(string characterUUID, Blueprint entity) => throw new NotImplementedException();
+        public Task UpsertBlueprintAsync(string characterUUID, Blueprint entity)
+        {
+            using (var conn = OpenConnection())
+            using (var tx = conn.BeginTransaction())
+            {
+                UpsertBlueprintParent(conn, tx, characterUUID, entity);
+                DeleteBlueprintChildren(conn, tx, entity.UUID);
+                InsertBlueprintChildren(conn, tx, entity);
+                tx.Commit();
+            }
+
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteBlueprintAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task DeleteBlueprintAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                // CASCADE handles BlueprintProperties and BlueprintResources
+                cmd.CommandText = "DELETE FROM Blueprints WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
 
         // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — Survey (stubs — Phase 6)
+        // Per-Character Entity CRUD — Survey
         // ═══════════════════════════════════════════════════════════
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<Survey>> GetAllSurveysAsync(string characterUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<Survey>> GetAllSurveysAsync(string characterUUID)
+        {
+            var results = new List<Survey>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM Surveys WHERE OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(ReadSurveyParent(reader));
+                    }
+                }
+
+                foreach (var survey in results)
+                {
+                    survey.Properties = LoadSurveyProperties(conn, survey.UUID);
+                    survey.Resources = LoadSurveyResources(conn, survey.UUID);
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<Survey>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task<Survey> GetSurveyAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task<Survey> GetSurveyAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM Surveys WHERE SurveyID = @surveyId AND OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@surveyId", entityUUID);
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        var survey = ReadSurveyParent(reader);
+                        survey.Properties = LoadSurveyProperties(conn, survey.UUID);
+                        survey.Resources = LoadSurveyResources(conn, survey.UUID);
+                        return Task.FromResult(survey);
+                    }
+                }
+            }
+
+            return Task.FromResult<Survey>(null);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertSurveyAsync(string characterUUID, Survey entity) => throw new NotImplementedException();
+        public Task UpsertSurveyAsync(string characterUUID, Survey entity)
+        {
+            using (var conn = OpenConnection())
+            using (var tx = conn.BeginTransaction())
+            {
+                UpsertSurveyParent(conn, tx, characterUUID, entity);
+                DeleteSurveyChildren(conn, tx, entity.UUID);
+                InsertSurveyChildren(conn, tx, entity);
+                tx.Commit();
+            }
+
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteSurveyAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task DeleteSurveyAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                // CASCADE handles SurveyProperties and SurveyResources
+                cmd.CommandText = "DELETE FROM Surveys WHERE SurveyID = @surveyId AND OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@surveyId", entityUUID);
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
 
         // ═══════════════════════════════════════════════════════════
         // Per-Character Entity CRUD — PlayerProfile (stubs — Phase 6)
@@ -2752,6 +2892,365 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
                     cmd.Parameters.AddWithValue("@jobName", item.JobName ?? string.Empty);
                     cmd.Parameters.AddWithValue("@jobTrack", item.JobTrack ?? string.Empty);
                     cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // Blueprint Helpers
+        // ═══════════════════════════════════════════════════════════
+
+        private static Blueprint ReadBlueprintParent(SqliteDataReader reader)
+        {
+            var bp = new Blueprint
+            {
+                UUID = reader["UUID"] as string,
+                OwnerUUID = reader["OwnerUUID"] as string ?? string.Empty,
+                BaseBlueprintUUID = reader["BaseBlueprintUUID"] as string,
+                LegacyUUID = reader["LegacyUUID"] as string,
+                BluePrintType = reader["BluePrintType"] as string,
+                TechLevel = reader["TechLevel"] as string,
+                Class = Convert.ToInt32(reader["Class"]),
+                Evolution = Convert.ToInt32(reader["Evolution"]),
+                CopyCost = Convert.ToInt32(reader["CopyCost"]),
+                BaseItemTypeID = reader["BaseItemTypeID"] as string ?? string.Empty,
+                Name = reader["Name"] as string ?? string.Empty,
+                NickName = reader["NickName"] as string ?? string.Empty,
+                Description = reader["Description"] as string ?? string.Empty,
+                Quantity = Convert.ToInt32(reader["Quantity"]),
+                Volume = Convert.ToDecimal(reader["Volume"]),
+            };
+
+            var itemTypeStr = reader["ItemType"] as string;
+            if (Enum.TryParse<ItemType.ItemTypeEnum>(itemTypeStr, true, out var it))
+            {
+                bp.ItemType = it;
+            }
+
+            if (reader["GameApiBlueprintId"] != DBNull.Value)
+            {
+                bp.GameApiBlueprintId = Convert.ToInt32(reader["GameApiBlueprintId"]);
+            }
+
+            if (reader["LastDetailImportUtc"] != DBNull.Value)
+            {
+                var dtStr = reader["LastDetailImportUtc"] as string;
+                if (dtStr != null)
+                {
+                    bp.LastDetailImportUtc = DateTime.Parse(dtStr);
+                }
+            }
+
+            return bp;
+        }
+
+        private static Dictionary<string, string> LoadBlueprintResources(SqliteConnection conn, string blueprintUUID)
+        {
+            var resources = new Dictionary<string, string>();
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT ResourceName, Amount FROM BlueprintResources WHERE BlueprintUUID = @bpUUID";
+                cmd.Parameters.AddWithValue("@bpUUID", blueprintUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var name = reader.GetString(0);
+                        var amount = Convert.ToInt32(reader[1]);
+                        resources[name] = amount.ToString();
+                    }
+                }
+            }
+
+            return resources;
+        }
+
+        private static void UpsertBlueprintParent(SqliteConnection conn, SqliteTransaction tx, string characterUUID, Blueprint entity)
+        {
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = @"INSERT OR REPLACE INTO Blueprints (
+                    UUID, OwnerUUID, BaseBlueprintUUID, LegacyUUID, BluePrintType,
+                    TechLevel, Class, Evolution, CopyCost, ItemType,
+                    BaseItemTypeID, Name, NickName, Description, Quantity, Volume,
+                    GameApiBlueprintId, LastDetailImportUtc
+                ) VALUES (
+                    @uuid, @owner, @baseBp, @legacy, @bpType,
+                    @tech, @class, @evo, @copyCost, @itemType,
+                    @baseId, @name, @nick, @desc, @qty, @vol,
+                    @gameApiId, @lastImport
+                )";
+                cmd.Parameters.AddWithValue("@uuid", entity.UUID);
+                cmd.Parameters.AddWithValue("@owner", characterUUID);
+                cmd.Parameters.AddWithValue("@baseBp", (object)entity.BaseBlueprintUUID ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@legacy", (object)entity.LegacyUUID ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@bpType", (object)entity.BluePrintType ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@tech", (object)entity.TechLevel ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@class", entity.Class);
+                cmd.Parameters.AddWithValue("@evo", entity.Evolution);
+                cmd.Parameters.AddWithValue("@copyCost", entity.CopyCost);
+                cmd.Parameters.AddWithValue("@itemType", entity.ItemType.ToString());
+                cmd.Parameters.AddWithValue("@baseId", entity.BaseItemTypeID ?? string.Empty);
+                cmd.Parameters.AddWithValue("@name", entity.Name ?? string.Empty);
+                cmd.Parameters.AddWithValue("@nick", entity.NickName ?? string.Empty);
+                cmd.Parameters.AddWithValue("@desc", entity.Description ?? string.Empty);
+                cmd.Parameters.AddWithValue("@qty", entity.Quantity);
+                cmd.Parameters.AddWithValue("@vol", (double)entity.Volume);
+                cmd.Parameters.AddWithValue("@gameApiId", entity.GameApiBlueprintId.HasValue ? (object)entity.GameApiBlueprintId.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@lastImport", entity.LastDetailImportUtc.HasValue ? (object)entity.LastDetailImportUtc.Value.ToString("O") : DBNull.Value);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        private static void DeleteBlueprintChildren(SqliteConnection conn, SqliteTransaction tx, string blueprintUUID)
+        {
+            // CASCADE handles these, but explicit delete within transaction is cleaner for INSERT OR REPLACE
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = "DELETE FROM BlueprintProperties WHERE BlueprintUUID = @uuid";
+                cmd.Parameters.AddWithValue("@uuid", blueprintUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = "DELETE FROM BlueprintResources WHERE BlueprintUUID = @uuid";
+                cmd.Parameters.AddWithValue("@uuid", blueprintUUID);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        private static void InsertBlueprintChildren(SqliteConnection conn, SqliteTransaction tx, Blueprint entity)
+        {
+            if (entity.Properties != null)
+            {
+                foreach (var kvp in entity.Properties.Properties)
+                {
+                    using (var cmd = conn.CreateCommand())
+                    {
+                        cmd.Transaction = tx;
+                        cmd.CommandText = "INSERT INTO BlueprintProperties (BlueprintUUID, Key, Value) VALUES (@bpUUID, @key, @val)";
+                        cmd.Parameters.AddWithValue("@bpUUID", entity.UUID);
+                        cmd.Parameters.AddWithValue("@key", kvp.Key);
+                        cmd.Parameters.AddWithValue("@val", kvp.Value);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+
+            if (entity.Resources != null)
+            {
+                foreach (var kvp in entity.Resources)
+                {
+                    using (var cmd = conn.CreateCommand())
+                    {
+                        cmd.Transaction = tx;
+                        cmd.CommandText = "INSERT INTO BlueprintResources (BlueprintUUID, ResourceName, Amount) VALUES (@bpUUID, @resName, @amount)";
+                        cmd.Parameters.AddWithValue("@bpUUID", entity.UUID);
+                        cmd.Parameters.AddWithValue("@resName", kvp.Key);
+                        cmd.Parameters.AddWithValue("@amount", int.TryParse(kvp.Value, out var amt) ? amt : 0);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // Survey Helpers
+        // ═══════════════════════════════════════════════════════════
+
+        private static Survey ReadSurveyParent(SqliteDataReader reader)
+        {
+            var survey = new Survey
+            {
+                UUID = reader["UUID"] as string,
+                OwnerUUID = reader["OwnerUUID"] as string ?? string.Empty,
+                BaseItemTypeID = reader["BaseItemTypeID"] as string ?? string.Empty,
+                Name = reader["Name"] as string ?? string.Empty,
+                NickName = reader["NickName"] as string ?? string.Empty,
+                Description = reader["Description"] as string ?? string.Empty,
+                Quantity = Convert.ToInt32(reader["Quantity"]),
+                Volume = Convert.ToDecimal(reader["Volume"]),
+                ScannedBy = reader["ScannedBy"] as string,
+                DateTime = reader["DateTime"] as string,
+                PlanetName = reader["PlanetName"] as string,
+                SystemName = reader["SystemName"] as string ?? string.Empty,
+                SurveyID = reader["SurveyID"] as string,
+                ScannerBlueprintUUID = reader["ScannerBlueprintUUID"] as string,
+                AsteroidUUID = reader["AsteroidUUID"] as string ?? string.Empty,
+                SystemObjectId = Convert.ToInt32(reader["SystemObjectId"]),
+            };
+
+            var itemTypeStr = reader["ItemType"] as string;
+            if (Enum.TryParse<ItemType.ItemTypeEnum>(itemTypeStr, true, out var it))
+            {
+                survey.ItemType = it;
+            }
+
+            var surveyTypeStr = reader["SurveyType"] as string;
+            if (Enum.TryParse<SurveyType>(surveyTypeStr, true, out var st))
+            {
+                survey.SurveyType = st;
+            }
+
+            if (reader["GameApiSurveyId"] != DBNull.Value)
+            {
+                survey.GameApiSurveyId = Convert.ToInt32(reader["GameApiSurveyId"]);
+            }
+
+            if (reader["LastDetailImportUtc"] != DBNull.Value)
+            {
+                var dtStr = reader["LastDetailImportUtc"] as string;
+                if (dtStr != null)
+                {
+                    survey.LastDetailImportUtc = DateTime.Parse(dtStr);
+                }
+            }
+
+            return survey;
+        }
+
+        private static Dictionary<string, string> LoadSurveyProperties(SqliteConnection conn, string surveyUUID)
+        {
+            var props = new Dictionary<string, string>();
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT Key, Value FROM SurveyProperties WHERE SurveyUUID = @sUUID";
+                cmd.Parameters.AddWithValue("@sUUID", surveyUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        props[reader.GetString(0)] = reader.GetString(1);
+                    }
+                }
+            }
+
+            return props;
+        }
+
+        private static Dictionary<string, SurveyResource> LoadSurveyResources(SqliteConnection conn, string surveyUUID)
+        {
+            var resources = new Dictionary<string, SurveyResource>();
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT ResourceKey, Resource, Purity, Amount FROM SurveyResources WHERE SurveyUUID = @sUUID";
+                cmd.Parameters.AddWithValue("@sUUID", surveyUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var key = reader.GetString(0);
+                        resources[key] = new SurveyResource
+                        {
+                            Resource = reader["Resource"] as string ?? string.Empty,
+                            Purity = reader["Purity"] as string ?? string.Empty,
+                            Amount = Convert.ToInt32(reader["Amount"]).ToString(),
+                        };
+                    }
+                }
+            }
+
+            return resources;
+        }
+
+        private static void UpsertSurveyParent(SqliteConnection conn, SqliteTransaction tx, string characterUUID, Survey entity)
+        {
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = @"INSERT OR REPLACE INTO Surveys (
+                    UUID, OwnerUUID, ItemType, BaseItemTypeID, Name, NickName,
+                    Description, Quantity, Volume, ScannedBy, DateTime,
+                    PlanetName, SystemName, SurveyID, ScannerBlueprintUUID,
+                    SurveyType, AsteroidUUID, SystemObjectId,
+                    GameApiSurveyId, LastDetailImportUtc
+                ) VALUES (
+                    @uuid, @owner, @itemType, @baseId, @name, @nick,
+                    @desc, @qty, @vol, @scannedBy, @dateTime,
+                    @planet, @system, @surveyId, @scannerBp,
+                    @surveyType, @asteroidUUID, @sysObjId,
+                    @gameApiId, @lastImport
+                )";
+                cmd.Parameters.AddWithValue("@uuid", entity.UUID);
+                cmd.Parameters.AddWithValue("@owner", characterUUID);
+                cmd.Parameters.AddWithValue("@itemType", entity.ItemType.ToString());
+                cmd.Parameters.AddWithValue("@baseId", entity.BaseItemTypeID ?? string.Empty);
+                cmd.Parameters.AddWithValue("@name", entity.Name ?? string.Empty);
+                cmd.Parameters.AddWithValue("@nick", entity.NickName ?? string.Empty);
+                cmd.Parameters.AddWithValue("@desc", entity.Description ?? string.Empty);
+                cmd.Parameters.AddWithValue("@qty", entity.Quantity);
+                cmd.Parameters.AddWithValue("@vol", (double)entity.Volume);
+                cmd.Parameters.AddWithValue("@scannedBy", (object)entity.ScannedBy ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@dateTime", (object)entity.DateTime ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@planet", (object)entity.PlanetName ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@system", entity.SystemName ?? string.Empty);
+                cmd.Parameters.AddWithValue("@surveyId", (object)entity.SurveyID ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@scannerBp", (object)entity.ScannerBlueprintUUID ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@surveyType", entity.SurveyType.ToString());
+                cmd.Parameters.AddWithValue("@asteroidUUID", entity.AsteroidUUID ?? string.Empty);
+                cmd.Parameters.AddWithValue("@sysObjId", entity.SystemObjectId);
+                cmd.Parameters.AddWithValue("@gameApiId", entity.GameApiSurveyId.HasValue ? (object)entity.GameApiSurveyId.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@lastImport", entity.LastDetailImportUtc.HasValue ? (object)entity.LastDetailImportUtc.Value.ToString("O") : DBNull.Value);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        private static void DeleteSurveyChildren(SqliteConnection conn, SqliteTransaction tx, string surveyUUID)
+        {
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = "DELETE FROM SurveyProperties WHERE SurveyUUID = @uuid";
+                cmd.Parameters.AddWithValue("@uuid", surveyUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = "DELETE FROM SurveyResources WHERE SurveyUUID = @uuid";
+                cmd.Parameters.AddWithValue("@uuid", surveyUUID);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        private static void InsertSurveyChildren(SqliteConnection conn, SqliteTransaction tx, Survey entity)
+        {
+            if (entity.Properties != null)
+            {
+                foreach (var kvp in entity.Properties)
+                {
+                    using (var cmd = conn.CreateCommand())
+                    {
+                        cmd.Transaction = tx;
+                        cmd.CommandText = "INSERT INTO SurveyProperties (SurveyUUID, Key, Value) VALUES (@sUUID, @key, @val)";
+                        cmd.Parameters.AddWithValue("@sUUID", entity.UUID);
+                        cmd.Parameters.AddWithValue("@key", kvp.Key);
+                        cmd.Parameters.AddWithValue("@val", kvp.Value);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+
+            if (entity.Resources != null)
+            {
+                foreach (var kvp in entity.Resources)
+                {
+                    using (var cmd = conn.CreateCommand())
+                    {
+                        cmd.Transaction = tx;
+                        cmd.CommandText = "INSERT INTO SurveyResources (SurveyUUID, ResourceKey, Resource, Purity, Amount) VALUES (@sUUID, @resKey, @res, @purity, @amount)";
+                        cmd.Parameters.AddWithValue("@sUUID", entity.UUID);
+                        cmd.Parameters.AddWithValue("@resKey", kvp.Key);
+                        cmd.Parameters.AddWithValue("@res", kvp.Value.Resource ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@purity", kvp.Value.Purity ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@amount", int.TryParse(kvp.Value.Amount, out var amt) ? amt : 0);
+                        cmd.ExecuteNonQuery();
+                    }
                 }
             }
         }
