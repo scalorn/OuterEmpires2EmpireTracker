@@ -135,12 +135,12 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Verification: getDiagnostics — compiles cleanly
 
 - [ ] 5. SQLite Backend — Full Relational Rewrite (Schema DDL)
-  - [-] 5.1 Create SqliteBackend scaffolding: class, constructor, InitializeAsync, OpenConnection, WAL pragma, _metadata table
+  - [x] 5.1 Create SqliteBackend scaffolding: class, constructor, InitializeAsync, OpenConnection, WAL pragma, _metadata table
     - Satisfies: Req 4, Criteria 5-6; Req 9, Criterion 1
     - Inputs: design.md (SqliteBackend section), Common/Interfaces/IStorageBackend.cs
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (scaffolding only)
     - Verification: getDiagnostics — compiles cleanly
-  - [~] 5.2 SQLite schema DDL: Colonies, ColonyStructures, ColonyStructureProperties, ColonyStructureWorkers tables
+  - [-] 5.2 SQLite schema DDL: Colonies, ColonyStructures, ColonyStructureProperties, ColonyStructureWorkers tables
     - Satisfies: Req 4, Criteria 1-4, 10-11, 13; Req 9, Criterion 3
     - Inputs: design.md (Colony schema), Common/Storage/SqliteBackend.cs (from 5.1)
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (schema string extended)

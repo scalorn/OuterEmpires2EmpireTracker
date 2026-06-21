@@ -33,7 +33,86 @@ namespace OE2EmpireTracker.Common.Storage
         /// Schema DDL concatenated from tasks 5.2-5.11. ExecuteSchema runs this
         /// against a fresh database.
         /// </summary>
-        private string _schemaDdl = string.Empty;
+        private static readonly string SchemaDdl = ColonySchema;
+
+        private const string ColonySchema = @"
+CREATE TABLE IF NOT EXISTS Colonies (
+    UUID TEXT PRIMARY KEY,
+    OwnerUUID TEXT NOT NULL,
+    LegacyUUID TEXT,
+    PlanetName TEXT,
+    SystemName TEXT NOT NULL DEFAULT '',
+    ColonyName TEXT,
+    LastImportDateTime TEXT,
+    ColonyId INTEGER NOT NULL DEFAULT 0,
+    SystemId INTEGER NOT NULL DEFAULT 0,
+    ColonySize INTEGER NOT NULL DEFAULT 0,
+    Distance REAL NOT NULL DEFAULT 0,
+    SurfaceVariation INTEGER NOT NULL DEFAULT 0,
+    AtmosVariation INTEGER NOT NULL DEFAULT 0,
+    HexValue TEXT NOT NULL DEFAULT '',
+    SystemObjectTypeName TEXT NOT NULL DEFAULT '',
+    ImagePreFix TEXT NOT NULL DEFAULT '',
+    ManufacturingBlocked INTEGER NOT NULL DEFAULT 0,
+    WorkerCurrentAttitude INTEGER NOT NULL DEFAULT 0,
+    ContentmentIndex INTEGER NOT NULL DEFAULT 0,
+    BlueCollarAllocated INTEGER NOT NULL DEFAULT 0,
+    BlueCollarUnallocated INTEGER NOT NULL DEFAULT 0,
+    WhiteCollarAllocated INTEGER NOT NULL DEFAULT 0,
+    WhiteCollarUnallocated INTEGER NOT NULL DEFAULT 0,
+    SpecialistAllocated INTEGER NOT NULL DEFAULT 0,
+    SpecialistUnallocated INTEGER NOT NULL DEFAULT 0,
+    WageLevel INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS ColonyStructures (
+    UUID TEXT PRIMARY KEY,
+    ColonyUUID TEXT NOT NULL REFERENCES Colonies(UUID) ON DELETE CASCADE,
+    Sequence INTEGER NOT NULL DEFAULT 0,
+    FlatpackBlueprintUUID TEXT,
+    DisplaySequence INTEGER NOT NULL DEFAULT 0,
+    BuildingID INTEGER NOT NULL DEFAULT 0,
+    BuildQueueSequence INTEGER NOT NULL DEFAULT 0,
+    MiningSurvey TEXT,
+    MiningSurveyResource TEXT,
+    MiningLeftOvers REAL NOT NULL DEFAULT 0,
+    RefiningResource TEXT,
+    RefiningResourcePurity TEXT,
+    ResearchingBlueprintUUID TEXT,
+    ManufacturingBlueprintUUID TEXT,
+    ManufacturingCommodityName TEXT,
+    ManufacturingQuantity INTEGER NOT NULL DEFAULT 0,
+    ManufacturingCompleted INTEGER NOT NULL DEFAULT 0,
+    StagingResources INTEGER NOT NULL DEFAULT 0,
+    ColonyBuildingTypeId INTEGER NOT NULL DEFAULT 0,
+    ResourceId INTEGER NOT NULL DEFAULT 0,
+    ResourceIcon TEXT NOT NULL DEFAULT '',
+    ManufactureAmountPerRun INTEGER NOT NULL DEFAULT 0,
+    DurabilityCurrent REAL NOT NULL DEFAULT 0,
+    DurabilityMax REAL NOT NULL DEFAULT 0,
+    WageLevel INTEGER NOT NULL DEFAULT 0,
+    BuildCompletion_StartTime TEXT,
+    BuildCompletion_RepeatIntervalSeconds INTEGER,
+    BuildCompletion_IsRepeating INTEGER,
+    ProcessCompletion_StartTime TEXT,
+    ProcessCompletion_RepeatIntervalSeconds INTEGER,
+    ProcessCompletion_IsRepeating INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS ColonyStructureProperties (
+    StructureUUID TEXT NOT NULL REFERENCES ColonyStructures(UUID) ON DELETE CASCADE,
+    Key TEXT NOT NULL,
+    Value TEXT NOT NULL,
+    PRIMARY KEY (StructureUUID, Key)
+);
+
+CREATE TABLE IF NOT EXISTS ColonyStructureWorkers (
+    StructureUUID TEXT NOT NULL REFERENCES ColonyStructures(UUID) ON DELETE CASCADE,
+    Key TEXT NOT NULL,
+    Value TEXT NOT NULL,
+    PRIMARY KEY (StructureUUID, Key)
+);
+";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqliteBackend"/> class.
@@ -848,7 +927,7 @@ namespace OE2EmpireTracker.Common.Storage
 
         private void ExecuteSchema(SqliteConnection conn)
         {
-            if (string.IsNullOrWhiteSpace(_schemaDdl))
+            if (string.IsNullOrWhiteSpace(SchemaDdl))
             {
                 Log.Debug("No schema DDL to execute (will be populated in tasks 5.2-5.11)");
                 return;
@@ -856,7 +935,7 @@ namespace OE2EmpireTracker.Common.Storage
 
             using (var cmd = conn.CreateCommand())
             {
-                cmd.CommandText = _schemaDdl;
+                cmd.CommandText = SchemaDdl;
                 cmd.ExecuteNonQuery();
             }
         }
