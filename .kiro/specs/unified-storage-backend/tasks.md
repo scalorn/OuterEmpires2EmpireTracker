@@ -78,7 +78,7 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Output: OE2EmpireTracker.Common/Interfaces/IStorageBackend.cs (complete interface)
     - Verification: getDiagnostics — compiles cleanly
 
-- [ ] 2. Move Server Models to Common
+- [x] 2. Move Server Models to Common
   - [x] 2.1 Move ServerModels.cs from Server/Storage to Common/Models
     - Satisfies: Req 1, Criteria 3 (model availability in Common)
     - Inputs: Server/Storage/Models.cs
@@ -89,19 +89,19 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Inputs: Server/Storage/PermissionModels.cs
     - Output: OE2EmpireTracker.Common/Models/PermissionModels.cs; Server file deleted; using statements updated in Server
     - Verification: Full solution build — zero errors, zero warnings
-  - [-] 2.3 Move JsonFileStorageBackend from Server to Common as JsonMultiFileBackend
+  - [x] 2.3 Move JsonFileStorageBackend from Server to Common as JsonMultiFileBackend
     - Satisfies: Req 3, Criteria 1-9
     - Inputs: Server/Storage/JsonFileStorageBackend.cs, Common/Interfaces/IStorageBackend.cs
     - Output: OE2EmpireTracker.Common/Storage/JsonMultiFileBackend.cs; Server file deleted; Server references updated
     - Verification: Full solution build — zero errors, zero warnings
 
 - [ ] 3. Move DynamoDB Backend and Create Factory Scaffolding
-  - [~] 3.1 Move DynamoStorageBackend from Server to Common as DynamoDbBackend
+  - [-] 3.1 Move DynamoStorageBackend from Server to Common as DynamoDbBackend
     - Satisfies: Req 5, Criteria 1-5
     - Inputs: Server/Storage/DynamoStorageBackend.cs, Common/Interfaces/IStorageBackend.cs
     - Output: OE2EmpireTracker.Common/Storage/DynamoDbBackend.cs; Server file deleted
     - Verification: Full solution build — zero errors, zero warnings
-  - [~] 3.2 Create StorageBackendConfig and StorageBackendFactory in Common/Storage
+  - [-] 3.2 Create StorageBackendConfig and StorageBackendFactory in Common/Storage
     - Satisfies: Req 8, Criteria 1-4
     - Inputs: design.md (factory pattern, config class)
     - Output: OE2EmpireTracker.Common/Storage/StorageBackendConfig.cs, OE2EmpireTracker.Common/Storage/StorageBackendFactory.cs

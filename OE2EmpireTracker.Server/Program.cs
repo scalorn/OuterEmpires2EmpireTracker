@@ -35,8 +35,7 @@ if (args.Contains("--regenerate-owner-token"))
             storage = new PostgresStorageBackend(cliConfig, pgLogger);
             break;
         case "DynamoDB":
-            var dynamoLogger = cliLoggerFactory.CreateLogger<DynamoStorageBackend>();
-            storage = new DynamoStorageBackend(cliConfig, dynamoLogger);
+            storage = new DynamoDbStorageAdapter(cliConfig);
             break;
         default:
             var dataPath = cliConfig.GetValue<string>("Storage:DataPath") ?? "./data";
@@ -74,7 +73,7 @@ switch (backendType)
         builder.Services.AddSingleton<IStorageBackend, PostgresStorageBackend>();
         break;
     case "DynamoDB":
-        builder.Services.AddSingleton<IStorageBackend, DynamoStorageBackend>();
+        builder.Services.AddSingleton<IStorageBackend, DynamoDbStorageAdapter>();
         break;
     default:
         builder.Services.AddSingleton<IStorageBackend>(sp =>
