@@ -203,6 +203,195 @@ namespace OE2EmpireTracker.Common.Storage
         public Task UpsertCharacterPreferencesAsync(CharacterPreferences prefs) => throw new NotSupportedException(NotSupportedMessage);
 
         // ═══════════════════════════════════════════════════════════
+        // Character Discovery
+        // ═══════════════════════════════════════════════════════════
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<string>> GetAllCharacterUUIDsAsync()
+        {
+            var uuids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var e in _playerRoot.Colony)
+            {
+                if (!string.IsNullOrEmpty(e.OwnerUUID))
+                {
+                    uuids.Add(e.OwnerUUID);
+                }
+            }
+
+            foreach (var e in _playerRoot.Blueprint)
+            {
+                if (!string.IsNullOrEmpty(e.OwnerUUID))
+                {
+                    uuids.Add(e.OwnerUUID);
+                }
+            }
+
+            foreach (var e in _playerRoot.Survey)
+            {
+                if (!string.IsNullOrEmpty(e.OwnerUUID))
+                {
+                    uuids.Add(e.OwnerUUID);
+                }
+            }
+
+            foreach (var e in _playerRoot.PlayerProfile)
+            {
+                if (!string.IsNullOrEmpty(e.UUID))
+                {
+                    uuids.Add(e.UUID);
+                }
+            }
+
+            foreach (var e in _playerRoot.DeliveryRoute)
+            {
+                if (!string.IsNullOrEmpty(e.OwnerUUID))
+                {
+                    uuids.Add(e.OwnerUUID);
+                }
+            }
+
+            foreach (var e in _playerRoot.DeliveryPlan)
+            {
+                if (!string.IsNullOrEmpty(e.OwnerUUID))
+                {
+                    uuids.Add(e.OwnerUUID);
+                }
+            }
+
+            foreach (var e in _playerRoot.Ship)
+            {
+                if (!string.IsNullOrEmpty(e.OwnerUUID))
+                {
+                    uuids.Add(e.OwnerUUID);
+                }
+            }
+
+            foreach (var e in _playerRoot.ShipTemplate)
+            {
+                if (!string.IsNullOrEmpty(e.OwnerUUID))
+                {
+                    uuids.Add(e.OwnerUUID);
+                }
+            }
+
+            foreach (var e in _playerRoot.MarketListing)
+            {
+                if (!string.IsNullOrEmpty(e.OwnerUUID))
+                {
+                    uuids.Add(e.OwnerUUID);
+                }
+            }
+
+            foreach (var e in _playerRoot.MarketTransaction)
+            {
+                if (!string.IsNullOrEmpty(e.OwnerUUID))
+                {
+                    uuids.Add(e.OwnerUUID);
+                }
+            }
+
+            foreach (var e in _playerRoot.PricingPlan)
+            {
+                if (!string.IsNullOrEmpty(e.OwnerUUID))
+                {
+                    uuids.Add(e.OwnerUUID);
+                }
+            }
+
+            foreach (var e in _playerRoot.StockPlan)
+            {
+                if (!string.IsNullOrEmpty(e.OwnerUUID))
+                {
+                    uuids.Add(e.OwnerUUID);
+                }
+            }
+
+            foreach (var e in _playerRoot.StockProfile)
+            {
+                if (!string.IsNullOrEmpty(e.OwnerUUID))
+                {
+                    uuids.Add(e.OwnerUUID);
+                }
+            }
+
+            foreach (var e in _playerRoot.BuildPlan)
+            {
+                if (!string.IsNullOrEmpty(e.OwnerUUID))
+                {
+                    uuids.Add(e.OwnerUUID);
+                }
+            }
+
+            foreach (var e in _playerRoot.SupplyChain)
+            {
+                if (!string.IsNullOrEmpty(e.OwnerUUID))
+                {
+                    uuids.Add(e.OwnerUUID);
+                }
+            }
+
+            foreach (var e in _playerRoot.Asteroid)
+            {
+                if (!string.IsNullOrEmpty(e.OwnerUUID))
+                {
+                    uuids.Add(e.OwnerUUID);
+                }
+            }
+
+            foreach (var e in _playerRoot.Station)
+            {
+                if (!string.IsNullOrEmpty(e.OwnerUUID))
+                {
+                    uuids.Add(e.OwnerUUID);
+                }
+            }
+
+            foreach (var e in _playerRoot.Faction)
+            {
+                if (!string.IsNullOrEmpty(e.OwnerUUID))
+                {
+                    uuids.Add(e.OwnerUUID);
+                }
+            }
+
+            foreach (var e in _playerRoot.ExternalCharacter)
+            {
+                if (!string.IsNullOrEmpty(e.OwnerUUID))
+                {
+                    uuids.Add(e.OwnerUUID);
+                }
+            }
+
+            foreach (var e in _playerRoot.WarehouseOverflowRule)
+            {
+                if (!string.IsNullOrEmpty(e.OwnerUUID))
+                {
+                    uuids.Add(e.OwnerUUID);
+                }
+            }
+
+            foreach (var e in _playerRoot.BankingTransaction)
+            {
+                if (!string.IsNullOrEmpty(e.OwnerUUID))
+                {
+                    uuids.Add(e.OwnerUUID);
+                }
+            }
+
+            foreach (var e in _playerRoot.MailMessage)
+            {
+                if (!string.IsNullOrEmpty(e.OwnerUUID))
+                {
+                    uuids.Add(e.OwnerUUID);
+                }
+            }
+
+            IReadOnlyList<string> result = uuids.ToList();
+            return Task.FromResult(result);
+        }
+
+        // ═══════════════════════════════════════════════════════════
         // Per-Character Entity CRUD
         // ═══════════════════════════════════════════════════════════
 

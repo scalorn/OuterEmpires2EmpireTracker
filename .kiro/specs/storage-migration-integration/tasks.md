@@ -28,7 +28,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
 ## Tasks
 
 - [ ] 1. Prerequisite: Decimal precision fix in SQLite backend
-  - [-] 1.1 Fix SQLite BankingTransaction decimal columns (REAL→TEXT)
+  - [x] 1.1 Fix SQLite BankingTransaction decimal columns (REAL→TEXT)
     - Modify table-rebuild logic for BankingTransactions: CreditChange, OldBalance, NewBalance columns to TEXT
     - Remove `(double)` casts in BankingTransaction read/write methods; use `value.ToString("G")` and `decimal.Parse(...)`
     - Add schema migration method that rebuilds the table with TEXT columns
@@ -37,7 +37,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Storage/SqliteBackend.cs (modified)_
     - _Verification: Build succeeds; existing SQLite backend tests pass; decimal round-trip test added_
 
-  - [~] 1.2 Fix SQLite MarketTransaction decimal columns (REAL→TEXT)
+  - [-] 1.2 Fix SQLite MarketTransaction decimal columns (REAL→TEXT)
     - Modify table-rebuild logic for MarketTransactions: PricePerUnit, TotalPrice columns to TEXT
     - Remove `(double)` casts in MarketTransaction read/write methods
     - Add schema migration method for MarketTransactions table rebuild
@@ -46,7 +46,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Storage/SqliteBackend.cs (modified)_
     - _Verification: Build succeeds; existing SQLite backend tests pass_
 
-  - [-] 1.3 Fix Postgres BankingTransaction decimal columns (DOUBLE PRECISION→NUMERIC)
+  - [x] 1.3 Fix Postgres BankingTransaction decimal columns (DOUBLE PRECISION→NUMERIC)
     - ALTER COLUMN CreditChange, OldBalance, NewBalance to NUMERIC
     - Remove `(double)` casts in BankingTransaction read/write methods
     - Add schema migration SQL that uses `ALTER TABLE ... ALTER COLUMN col TYPE NUMERIC USING col::NUMERIC`
@@ -55,7 +55,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Storage/PostgresBackend.cs (modified)_
     - _Verification: Build succeeds; existing Postgres backend tests pass_
 
-  - [~] 1.4 Fix Postgres MarketTransaction decimal columns (DOUBLE PRECISION→NUMERIC)
+  - [-] 1.4 Fix Postgres MarketTransaction decimal columns (DOUBLE PRECISION→NUMERIC)
     - ALTER COLUMN PricePerUnit, TotalPrice to NUMERIC
     - Remove `(double)` casts in MarketTransaction read/write methods
     - _Satisfies: Req 7, Criterion 2_
@@ -65,28 +65,28 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
 
 
 - [ ] 2. Prerequisite: Add GetAllCharacterUUIDsAsync to IStorageBackend
-  - [-] 2.1 Add GetAllCharacterUUIDsAsync to IStorageBackend interface
+  - [x] 2.1 Add GetAllCharacterUUIDsAsync to IStorageBackend interface
     - Add `Task<IReadOnlyList<string>> GetAllCharacterUUIDsAsync()` to IStorageBackend
     - _Satisfies: Req 6, Criterion 3_
     - _Inputs: Common/Interfaces/IStorageBackend.cs_
     - _Output: Common/Interfaces/IStorageBackend.cs (modified)_
     - _Verification: Build will fail until implementations added — that's expected_
 
-  - [~] 2.2 Implement GetAllCharacterUUIDsAsync in JsonSingleFileBackend
+  - [-] 2.2 Implement GetAllCharacterUUIDsAsync in JsonSingleFileBackend
     - Parse the single JSON file, extract distinct OwnerUUID values from all per-character entity arrays
     - _Satisfies: Req 6, Criterion 3_
     - _Inputs: Common/Storage/JsonSingleFileBackend.cs (1369 lines — search for existing GetAll pattern)_
     - _Output: Common/Storage/JsonSingleFileBackend.cs (modified)_
     - _Verification: Build succeeds; unit test for character discovery_
 
-  - [~] 2.3 Implement GetAllCharacterUUIDsAsync in JsonMultiFileBackend
+  - [-] 2.3 Implement GetAllCharacterUUIDsAsync in JsonMultiFileBackend
     - Enumerate character subdirectories in the data folder
     - _Satisfies: Req 6, Criterion 3_
     - _Inputs: Common/Storage/JsonMultiFileBackend.cs (2207 lines — search for directory enumeration pattern)_
     - _Output: Common/Storage/JsonMultiFileBackend.cs (modified)_
     - _Verification: Build succeeds; unit test for character discovery_
 
-  - [~] 2.4 Implement GetAllCharacterUUIDsAsync in SqliteBackend
+  - [-] 2.4 Implement GetAllCharacterUUIDsAsync in SqliteBackend
     - SELECT DISTINCT CharacterUUID via UNION across all 22 per-character tables
     - Note: the UNION query will be ~22 lines (one SELECT per table). Use existing table name constants.
     - _Satisfies: Req 6, Criterion 3_

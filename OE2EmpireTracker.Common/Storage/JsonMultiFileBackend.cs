@@ -104,6 +104,23 @@ namespace OE2EmpireTracker.Common.Storage
             };
         }
 
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<string>> GetAllCharacterUUIDsAsync()
+        {
+            var charsDir = Path.Combine(_dataPath, "characters");
+            if (!Directory.Exists(charsDir))
+            {
+                return Task.FromResult<IReadOnlyList<string>>(Array.Empty<string>());
+            }
+
+            var uuids = Directory.GetDirectories(charsDir)
+                .Select(Path.GetFileName)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            return Task.FromResult<IReadOnlyList<string>>(uuids);
+        }
+
         // ═══════════════════════════════════════════════════════════
         // Server Factions
         // ═══════════════════════════════════════════════════════════

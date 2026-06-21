@@ -26,7 +26,7 @@ namespace OE2EmpireTracker.Common.Storage
     /// </summary>
     internal class SqliteBackend : IStorageBackend
     {
-        private const int CurrentSchemaVersion = 2;
+        private const int CurrentSchemaVersion = 3;
 
         private const string ColonySchema = @"
 CREATE TABLE IF NOT EXISTS Colonies (
@@ -420,8 +420,8 @@ CREATE TABLE IF NOT EXISTS MarketTransactions (
     ItemReferenceID TEXT NOT NULL DEFAULT '',
     ItemName TEXT NOT NULL DEFAULT '',
     Quantity INTEGER NOT NULL DEFAULT 0,
-    PricePerUnit REAL NOT NULL DEFAULT 0,
-    TotalPrice REAL NOT NULL DEFAULT 0,
+    PricePerUnit TEXT NOT NULL DEFAULT '0',
+    TotalPrice TEXT NOT NULL DEFAULT '0',
     Counterparty TEXT NOT NULL DEFAULT '',
     CounterpartyFaction TEXT NOT NULL DEFAULT '',
     StationUUID TEXT NOT NULL DEFAULT '',
@@ -430,7 +430,7 @@ CREATE TABLE IF NOT EXISTS MarketTransactions (
     ListingUUID TEXT NOT NULL DEFAULT '',
     CurrentHP INTEGER NOT NULL DEFAULT 0,
     MaxHP INTEGER NOT NULL DEFAULT 0,
-    MaxRepairPercent REAL NOT NULL DEFAULT 0
+    MaxRepairPercent TEXT NOT NULL DEFAULT '0'
 );
 ";
 
@@ -984,6 +984,9 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
         {
             // Version 1 → 2: BankingTransactions decimal columns REAL → TEXT
             MigrateBankingTransactionsDecimalToText,
+
+            // Version 2 → 3: MarketTransactions decimal columns REAL → TEXT
+            MigrateMarketTransactionsDecimalToText,
         };
 
         private readonly string _connectionString;
@@ -1676,6 +1679,57 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
             }
 
             return Task.CompletedTask;
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // Character Discovery
+        // ═══════════════════════════════════════════════════════════
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<string>> GetAllCharacterUUIDsAsync()
+        {
+            var results = new List<string>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = @"
+SELECT DISTINCT OwnerUUID FROM Colonies
+UNION SELECT DISTINCT OwnerUUID FROM Blueprints
+UNION SELECT DISTINCT OwnerUUID FROM Surveys
+UNION SELECT DISTINCT UUID FROM PlayerProfiles
+UNION SELECT DISTINCT OwnerUUID FROM DeliveryRoutes
+UNION SELECT DISTINCT OwnerUUID FROM DeliveryPlans
+UNION SELECT DISTINCT OwnerUUID FROM Ships
+UNION SELECT DISTINCT OwnerUUID FROM ShipTemplates
+UNION SELECT DISTINCT OwnerUUID FROM MarketListings
+UNION SELECT DISTINCT OwnerUUID FROM MarketTransactions
+UNION SELECT DISTINCT OwnerUUID FROM PricingPlans
+UNION SELECT DISTINCT OwnerUUID FROM StockPlans
+UNION SELECT DISTINCT OwnerUUID FROM StockProfiles
+UNION SELECT DISTINCT OwnerUUID FROM BuildPlans
+UNION SELECT DISTINCT OwnerUUID FROM SupplyChains
+UNION SELECT DISTINCT OwnerUUID FROM Asteroids
+UNION SELECT DISTINCT OwnerUUID FROM Stations
+UNION SELECT DISTINCT OwnerUUID FROM Factions
+UNION SELECT DISTINCT OwnerUUID FROM ExternalCharacters
+UNION SELECT DISTINCT OwnerUUID FROM WarehouseOverflowRules
+UNION SELECT DISTINCT OwnerUUID FROM MailMessages
+UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var uuid = reader.GetString(0);
+                        if (!string.IsNullOrEmpty(uuid))
+                        {
+                            results.Add(uuid);
+                        }
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<string>>(results);
         }
 
         // ═══════════════════════════════════════════════════════════
@@ -2609,8 +2663,8 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
                 cmd.Parameters.AddWithValue("@itemRefId", entity.ItemReferenceID ?? string.Empty);
                 cmd.Parameters.AddWithValue("@itemName", entity.ItemName ?? string.Empty);
                 cmd.Parameters.AddWithValue("@qty", entity.Quantity);
-                cmd.Parameters.AddWithValue("@price", (double)entity.PricePerUnit);
-                cmd.Parameters.AddWithValue("@total", (double)entity.TotalPrice);
+                cmd.Parameters.AddWithValue("@price", entity.PricePerUnit.ToString("G"));
+                cmd.Parameters.AddWithValue("@total", entity.TotalPrice.ToString("G"));
                 cmd.Parameters.AddWithValue("@counterparty", entity.Counterparty ?? string.Empty);
                 cmd.Parameters.AddWithValue("@counterpartyFaction", entity.CounterpartyFaction ?? string.Empty);
                 cmd.Parameters.AddWithValue("@stationUUID", entity.StationUUID ?? string.Empty);
@@ -2619,7 +2673,7 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
                 cmd.Parameters.AddWithValue("@listingUUID", entity.ListingUUID ?? string.Empty);
                 cmd.Parameters.AddWithValue("@curHp", entity.CurrentHP);
                 cmd.Parameters.AddWithValue("@maxHp", entity.MaxHP);
-                cmd.Parameters.AddWithValue("@maxRepair", (double)entity.MaxRepairPercent);
+                cmd.Parameters.AddWithValue("@maxRepair", entity.MaxRepairPercent.ToString("G"));
                 cmd.ExecuteNonQuery();
             }
 
@@ -5533,6 +5587,50 @@ DROP TABLE BankingTransactions_old;
             }
         }
 
+        /// <summary>
+        /// Migration v2 → v3: Rebuilds the MarketTransactions table to use TEXT
+        /// columns for PricePerUnit, TotalPrice, and MaxRepairPercent instead of REAL,
+        /// preserving decimal precision on round-trip.
+        /// </summary>
+        private static void MigrateMarketTransactionsDecimalToText(SqliteConnection conn, SqliteTransaction tx)
+        {
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = @"
+ALTER TABLE MarketTransactions RENAME TO MarketTransactions_old;
+
+CREATE TABLE MarketTransactions (
+    UUID TEXT PRIMARY KEY,
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    TransactionType TEXT NOT NULL DEFAULT 'Buy',
+    ItemType TEXT NOT NULL DEFAULT 'None',
+    ItemReferenceID TEXT NOT NULL DEFAULT '',
+    ItemName TEXT NOT NULL DEFAULT '',
+    Quantity INTEGER NOT NULL DEFAULT 0,
+    PricePerUnit TEXT NOT NULL DEFAULT '0',
+    TotalPrice TEXT NOT NULL DEFAULT '0',
+    Counterparty TEXT NOT NULL DEFAULT '',
+    CounterpartyFaction TEXT NOT NULL DEFAULT '',
+    StationUUID TEXT NOT NULL DEFAULT '',
+    Timestamp TEXT NOT NULL DEFAULT '',
+    Notes TEXT NOT NULL DEFAULT '',
+    ListingUUID TEXT NOT NULL DEFAULT '',
+    CurrentHP INTEGER NOT NULL DEFAULT 0,
+    MaxHP INTEGER NOT NULL DEFAULT 0,
+    MaxRepairPercent TEXT NOT NULL DEFAULT '0'
+);
+
+INSERT INTO MarketTransactions (UUID, OwnerUUID, TransactionType, ItemType, ItemReferenceID, ItemName, Quantity, PricePerUnit, TotalPrice, Counterparty, CounterpartyFaction, StationUUID, Timestamp, Notes, ListingUUID, CurrentHP, MaxHP, MaxRepairPercent)
+SELECT UUID, OwnerUUID, TransactionType, ItemType, ItemReferenceID, ItemName, Quantity, CAST(PricePerUnit AS TEXT), CAST(TotalPrice AS TEXT), Counterparty, CounterpartyFaction, StationUUID, Timestamp, Notes, ListingUUID, CurrentHP, MaxHP, CAST(MaxRepairPercent AS TEXT)
+FROM MarketTransactions_old;
+
+DROP TABLE MarketTransactions_old;
+";
+                cmd.ExecuteNonQuery();
+            }
+        }
+
         private static Colony ReadColonyParent(SqliteDataReader reader)
         {
             var colony = new Colony
@@ -7928,8 +8026,8 @@ DROP TABLE BankingTransactions_old;
                 ItemReferenceID = reader["ItemReferenceID"] as string ?? string.Empty,
                 ItemName = reader["ItemName"] as string ?? string.Empty,
                 Quantity = Convert.ToInt32(reader["Quantity"]),
-                PricePerUnit = Convert.ToDecimal(reader["PricePerUnit"]),
-                TotalPrice = Convert.ToDecimal(reader["TotalPrice"]),
+                PricePerUnit = decimal.Parse(reader["PricePerUnit"].ToString(), CultureInfo.InvariantCulture),
+                TotalPrice = decimal.Parse(reader["TotalPrice"].ToString(), CultureInfo.InvariantCulture),
                 Counterparty = reader["Counterparty"] as string ?? string.Empty,
                 CounterpartyFaction = reader["CounterpartyFaction"] as string ?? string.Empty,
                 StationUUID = reader["StationUUID"] as string ?? string.Empty,
@@ -7938,7 +8036,7 @@ DROP TABLE BankingTransactions_old;
                 ListingUUID = reader["ListingUUID"] as string ?? string.Empty,
                 CurrentHP = Convert.ToInt32(reader["CurrentHP"]),
                 MaxHP = Convert.ToInt32(reader["MaxHP"]),
-                MaxRepairPercent = Convert.ToDecimal(reader["MaxRepairPercent"]),
+                MaxRepairPercent = decimal.Parse(reader["MaxRepairPercent"].ToString(), CultureInfo.InvariantCulture),
             };
 
             var txTypeStr = reader["TransactionType"] as string;

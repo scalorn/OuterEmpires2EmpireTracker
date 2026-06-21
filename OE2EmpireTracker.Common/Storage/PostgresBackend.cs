@@ -2789,8 +2789,8 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
                     cmd.Parameters.AddWithValue("@itemRefId", entity.ItemReferenceID ?? string.Empty);
                     cmd.Parameters.AddWithValue("@itemName", entity.ItemName ?? string.Empty);
                     cmd.Parameters.AddWithValue("@qty", entity.Quantity);
-                    cmd.Parameters.AddWithValue("@price", (double)entity.PricePerUnit);
-                    cmd.Parameters.AddWithValue("@total", (double)entity.TotalPrice);
+                    cmd.Parameters.AddWithValue("@price", entity.PricePerUnit);
+                    cmd.Parameters.AddWithValue("@total", entity.TotalPrice);
                     cmd.Parameters.AddWithValue("@counterparty", entity.Counterparty ?? string.Empty);
                     cmd.Parameters.AddWithValue("@counterpartyFaction", entity.CounterpartyFaction ?? string.Empty);
                     cmd.Parameters.AddWithValue("@stationUUID", entity.StationUUID ?? string.Empty);
@@ -2799,7 +2799,7 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
                     cmd.Parameters.AddWithValue("@listingUUID", entity.ListingUUID ?? string.Empty);
                     cmd.Parameters.AddWithValue("@curHp", entity.CurrentHP);
                     cmd.Parameters.AddWithValue("@maxHp", entity.MaxHP);
-                    cmd.Parameters.AddWithValue("@maxRepair", (double)entity.MaxRepairPercent);
+                    cmd.Parameters.AddWithValue("@maxRepair", entity.MaxRepairPercent);
                     cmd.ExecuteNonQuery();
                 }
             });
