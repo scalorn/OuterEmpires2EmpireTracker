@@ -96,17 +96,17 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Verification: Full solution build — zero errors, zero warnings
 
 - [ ] 3. Move DynamoDB Backend and Create Factory Scaffolding
-  - [-] 3.1 Move DynamoStorageBackend from Server to Common as DynamoDbBackend
+  - [x] 3.1 Move DynamoStorageBackend from Server to Common as DynamoDbBackend
     - Satisfies: Req 5, Criteria 1-5
     - Inputs: Server/Storage/DynamoStorageBackend.cs, Common/Interfaces/IStorageBackend.cs
     - Output: OE2EmpireTracker.Common/Storage/DynamoDbBackend.cs; Server file deleted
     - Verification: Full solution build — zero errors, zero warnings
-  - [-] 3.2 Create StorageBackendConfig and StorageBackendFactory in Common/Storage
+  - [x] 3.2 Create StorageBackendConfig and StorageBackendFactory in Common/Storage
     - Satisfies: Req 8, Criteria 1-4
     - Inputs: design.md (factory pattern, config class)
     - Output: OE2EmpireTracker.Common/Storage/StorageBackendConfig.cs, OE2EmpireTracker.Common/Storage/StorageBackendFactory.cs
     - Verification: getDiagnostics — compiles cleanly
-  - [~] 3.3 Update Server Program.cs to use Common backends and factory; delete Server/Storage/IStorageBackend.cs
+  - [-] 3.3 Update Server Program.cs to use Common backends and factory; delete Server/Storage/IStorageBackend.cs
     - Satisfies: Req 8, Criterion 2; design.md Server Project Migration section
     - Inputs: Server/Program.cs, Server/Storage/IStorageBackend.cs (to be deleted)
     - Output: Server/Program.cs updated; Server/Storage/IStorageBackend.cs deleted; old SQLite and Postgres backend files deleted from Server

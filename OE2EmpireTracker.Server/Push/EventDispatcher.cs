@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-
 using OE2EmpireTracker.Services;
+
 namespace OE2EmpireTracker.Server.Push;
 
 /// <summary>Event types dispatched to WebSocket clients.</summary>

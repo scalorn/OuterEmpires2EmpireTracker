@@ -6,8 +6,8 @@
 
 using System.Reflection;
 using NUnit.Framework;
+using OE2EmpireTracker.Common.Interfaces;
 using OE2EmpireTracker.Common.Models;
-using OE2EmpireTracker.Server.Storage;
 
 namespace OE2EmpireTracker.Server.Tests.Endpoints;
 
@@ -105,7 +105,7 @@ public class Property1_NoUnvalidatedWritePathTests
     [Test]
     public void EndpointClasses_DoNotReferenceRawMethodNames()
     {
-        var serverAssembly = typeof(IStorageBackend).Assembly;
+        var serverAssembly = typeof(Program).Assembly;
         var endpointNamespace = "OE2EmpireTracker.Server.Endpoints";
 
         var endpointTypes = serverAssembly.GetTypes()
@@ -146,9 +146,9 @@ public class Property1_NoUnvalidatedWritePathTests
     [Test]
     public void StorageImplementations_DoNotContainRawMethods()
     {
-        var serverAssembly = typeof(IStorageBackend).Assembly;
+        var commonAssembly = typeof(IStorageBackend).Assembly;
 
-        var storageImplementations = serverAssembly.GetTypes()
+        var storageImplementations = commonAssembly.GetTypes()
             .Where(t => t.IsClass
                 && !t.IsAbstract
                 && typeof(IStorageBackend).IsAssignableFrom(t))
@@ -157,7 +157,7 @@ public class Property1_NoUnvalidatedWritePathTests
         Assert.That(
             storageImplementations,
             Is.Not.Empty,
-            "No IStorageBackend implementations found in assembly.");
+            "No IStorageBackend implementations found in Common assembly.");
 
         foreach (var implType in storageImplementations)
         {

@@ -7,10 +7,10 @@
 using System.Text.Json;
 using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
+using OE2EmpireTracker.Common.Interfaces;
 using OE2EmpireTracker.Common.Models;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Server.Services;
-using OE2EmpireTracker.Server.Storage;
 using OE2EmpireTracker.Server.Tests.Endpoints;
 
 namespace OE2EmpireTracker.Server.Tests.Services;

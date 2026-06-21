@@ -1,4 +1,4 @@
-using OE2EmpireTracker.Server.Storage;
+using OE2EmpireTracker.Common.Interfaces;
 
 namespace OE2EmpireTracker.Server.Endpoints;
 

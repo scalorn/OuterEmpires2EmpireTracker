@@ -5,8 +5,8 @@
 // -----------------------------------------------------------------------
 
 using System.Text.Json;
-using FsCheck;
 using FsCheck.NUnit;
+using FsCheck;
 using NUnit.Framework;
 using OE2EmpireTracker.Common.Models;
 using OE2EmpireTracker.Common.Storage;

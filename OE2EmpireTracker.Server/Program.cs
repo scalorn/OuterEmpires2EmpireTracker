@@ -3,7 +3,9 @@ using System.Reflection;
 using System.Text;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.HttpOverrides;
+using OE2EmpireTracker.Common.Interfaces;
 using OE2EmpireTracker.Common.Models;
+using OE2EmpireTracker.Common.Storage;
 using OE2EmpireTracker.Server.Auth;
 using OE2EmpireTracker.Server.Config;
 using OE2EmpireTracker.Server.Endpoints;
@@ -12,7 +14,6 @@ using OE2EmpireTracker.Server.Middleware;
 using OE2EmpireTracker.Server.Processing;
 using OE2EmpireTracker.Server.Push;
 using OE2EmpireTracker.Server.Services;
-using OE2EmpireTracker.Server.Storage;
 
 // --- CLI: --regenerate-owner-token ---
 if (args.Contains("--regenerate-owner-token"))
@@ -27,19 +28,18 @@ if (args.Contains("--regenerate-owner-token"))
     switch (cliBackendType)
     {
         case "Sqlite":
-            var sqliteLogger = cliLoggerFactory.CreateLogger<SqliteStorageBackend>();
-            storage = new SqliteStorageBackend(cliConfig, sqliteLogger);
-            break;
         case "Postgres":
-            var pgLogger = cliLoggerFactory.CreateLogger<PostgresStorageBackend>();
-            storage = new PostgresStorageBackend(cliConfig, pgLogger);
-            break;
+            throw new NotSupportedException(
+                $"Backend '{cliBackendType}' is not yet available in the unified storage system. " +
+                "Use JsonFile or DynamoDB.");
         case "DynamoDB":
-            storage = new DynamoDbStorageAdapter(cliConfig);
+            var tableName = cliConfig["Storage:DynamoTableName"] ?? "OE2EmpireTracker";
+            var region = cliConfig["Storage:DynamoRegion"] ?? "us-east-1";
+            storage = new DynamoDbBackend(tableName, region);
             break;
         default:
             var dataPath = cliConfig.GetValue<string>("Storage:DataPath") ?? "./data";
-            storage = new JsonMultiFileStorageAdapter(dataPath);
+            storage = new JsonMultiFileBackend(dataPath);
             break;
     }
 
@@ -67,20 +67,25 @@ var backendType = builder.Configuration.GetValue<string>("Storage:Backend", "Jso
 switch (backendType)
 {
     case "Sqlite":
-        builder.Services.AddSingleton<IStorageBackend, SqliteStorageBackend>();
-        break;
     case "Postgres":
-        builder.Services.AddSingleton<IStorageBackend, PostgresStorageBackend>();
-        break;
+        throw new NotSupportedException(
+            $"Backend '{backendType}' is not yet available in the unified storage system. " +
+            "Use JsonFile or DynamoDB.");
     case "DynamoDB":
-        builder.Services.AddSingleton<IStorageBackend, DynamoDbStorageAdapter>();
+        builder.Services.AddSingleton<IStorageBackend>(sp =>
+        {
+            var config = sp.GetRequiredService<IConfiguration>();
+            var tableName = config["Storage:DynamoTableName"] ?? "OE2EmpireTracker";
+            var region = config["Storage:DynamoRegion"] ?? "us-east-1";
+            return new DynamoDbBackend(tableName, region);
+        });
         break;
     default:
         builder.Services.AddSingleton<IStorageBackend>(sp =>
         {
             var config = sp.GetRequiredService<IConfiguration>();
             var dataPath = config.GetValue<string>("Storage:DataPath") ?? "./data";
-            return new JsonMultiFileStorageAdapter(dataPath);
+            return new JsonMultiFileBackend(dataPath);
         });
         break;
 }

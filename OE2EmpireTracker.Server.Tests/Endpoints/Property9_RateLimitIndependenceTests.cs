@@ -4,8 +4,8 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using System.Net;
 using System.Net.Http.Json;
+using System.Net;
 using System.Text.Json;
 using NUnit.Framework;
 using OE2EmpireTracker.Server.Tests;

@@ -4,7 +4,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using OE2EmpireTracker.Server.Storage;
+using OE2EmpireTracker.Common.Interfaces;
 using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Server.Endpoints;

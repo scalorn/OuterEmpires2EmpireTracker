@@ -4,9 +4,9 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using FsCheck;
-using FsCheck.NUnit;
 using Microsoft.Extensions.Logging.Abstractions;
+using FsCheck.NUnit;
+using FsCheck;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using OE2EmpireTracker.Common.Storage;

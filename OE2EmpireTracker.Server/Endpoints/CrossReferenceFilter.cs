@@ -1,6 +1,6 @@
 using System.Text.Json;
+using OE2EmpireTracker.Common.Interfaces;
 using OE2EmpireTracker.Common.Models;
-using OE2EmpireTracker.Server.Storage;
 
 namespace OE2EmpireTracker.Server.Endpoints;
 

@@ -5,8 +5,8 @@
 // -----------------------------------------------------------------------
 
 using System.Text.Json;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Http;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Server.Endpoints.Typed;
