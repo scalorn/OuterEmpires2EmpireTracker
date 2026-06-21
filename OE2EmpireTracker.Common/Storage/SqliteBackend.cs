@@ -2161,68 +2161,442 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
         }
 
         // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — Ship (stubs — Phase 6)
+        // Per-Character Entity CRUD — Ship
         // ═══════════════════════════════════════════════════════════
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<Ship>> GetAllShipsAsync(string characterUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<Ship>> GetAllShipsAsync(string characterUUID)
+        {
+            var results = new List<Ship>();
+            using (var conn = OpenConnection())
+            {
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT * FROM Ships WHERE OwnerUUID = @ownerUUID";
+                    cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            results.Add(ReadShipParent(reader));
+                        }
+                    }
+                }
+
+                foreach (var ship in results)
+                {
+                    ship.Components = LoadShipComponents(conn, ship.UUID);
+                    ship.Cargo = LoadItems(conn, ship.UUID, "ShipCargo");
+                    ship.Hopper = LoadItems(conn, ship.UUID, "ShipHopper");
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<Ship>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task<Ship> GetShipAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task<Ship> GetShipAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM Ships WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        var ship = ReadShipParent(reader);
+                        ship.Components = LoadShipComponents(conn, ship.UUID);
+                        ship.Cargo = LoadItems(conn, ship.UUID, "ShipCargo");
+                        ship.Hopper = LoadItems(conn, ship.UUID, "ShipHopper");
+                        return Task.FromResult(ship);
+                    }
+                }
+            }
+
+            return Task.FromResult<Ship>(null);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertShipAsync(string characterUUID, Ship entity) => throw new NotImplementedException();
+        public Task UpsertShipAsync(string characterUUID, Ship entity)
+        {
+            using (var conn = OpenConnection())
+            using (var tx = conn.BeginTransaction())
+            {
+                UpsertShipParent(conn, tx, characterUUID, entity);
+                DeleteShipChildren(conn, tx, entity.UUID);
+                InsertShipComponents(conn, tx, entity);
+                InsertItems(conn, tx, entity.UUID, "ShipCargo", entity.Cargo);
+                InsertItems(conn, tx, entity.UUID, "ShipHopper", entity.Hopper);
+                tx.Commit();
+            }
+
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteShipAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task DeleteShipAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            {
+                // Delete items first (polymorphic FK, no CASCADE)
+                using (var delItems = conn.CreateCommand())
+                {
+                    delItems.CommandText = "DELETE FROM Items WHERE ParentUUID = @uuid AND (ParentType = 'ShipCargo' OR ParentType = 'ShipHopper')";
+                    delItems.Parameters.AddWithValue("@uuid", entityUUID);
+                    delItems.ExecuteNonQuery();
+                }
+
+                // CASCADE handles ShipComponents
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "DELETE FROM Ships WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                    cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                    cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+
+            return Task.CompletedTask;
+        }
 
         // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — ShipTemplate (stubs — Phase 6)
+        // Per-Character Entity CRUD — ShipTemplate
         // ═══════════════════════════════════════════════════════════
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<ShipTemplate>> GetAllShipTemplatesAsync(string characterUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<ShipTemplate>> GetAllShipTemplatesAsync(string characterUUID)
+        {
+            var results = new List<ShipTemplate>();
+            using (var conn = OpenConnection())
+            {
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT * FROM ShipTemplates WHERE OwnerUUID = @ownerUUID";
+                    cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            results.Add(ReadShipTemplateParent(reader));
+                        }
+                    }
+                }
+
+                foreach (var template in results)
+                {
+                    template.Components = LoadShipTemplateComponents(conn, template.UUID);
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<ShipTemplate>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task<ShipTemplate> GetShipTemplateAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task<ShipTemplate> GetShipTemplateAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM ShipTemplates WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        var template = ReadShipTemplateParent(reader);
+                        template.Components = LoadShipTemplateComponents(conn, template.UUID);
+                        return Task.FromResult(template);
+                    }
+                }
+            }
+
+            return Task.FromResult<ShipTemplate>(null);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertShipTemplateAsync(string characterUUID, ShipTemplate entity) => throw new NotImplementedException();
+        public Task UpsertShipTemplateAsync(string characterUUID, ShipTemplate entity)
+        {
+            using (var conn = OpenConnection())
+            using (var tx = conn.BeginTransaction())
+            {
+                UpsertShipTemplateParent(conn, tx, characterUUID, entity);
+                DeleteShipTemplateChildren(conn, tx, entity.UUID);
+                InsertShipTemplateComponents(conn, tx, entity);
+                tx.Commit();
+            }
+
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteShipTemplateAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task DeleteShipTemplateAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                // CASCADE handles ShipTemplateComponents
+                cmd.CommandText = "DELETE FROM ShipTemplates WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
 
         // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — MarketListing (stubs — Phase 6)
+        // Per-Character Entity CRUD — MarketListing
         // ═══════════════════════════════════════════════════════════
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<MarketListing>> GetAllMarketListingsAsync(string characterUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<MarketListing>> GetAllMarketListingsAsync(string characterUUID)
+        {
+            var results = new List<MarketListing>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM MarketListings WHERE OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(ReadMarketListing(reader));
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<MarketListing>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task<MarketListing> GetMarketListingAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task<MarketListing> GetMarketListingAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM MarketListings WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return Task.FromResult(ReadMarketListing(reader));
+                    }
+                }
+            }
+
+            return Task.FromResult<MarketListing>(null);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertMarketListingAsync(string characterUUID, MarketListing entity) => throw new NotImplementedException();
+        public Task UpsertMarketListingAsync(string characterUUID, MarketListing entity)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = @"INSERT OR REPLACE INTO MarketListings (
+                    UUID, OwnerUUID, StationUUID, ItemType, ItemReferenceID, ItemName,
+                    Quantity, PricePerUnit, CurrentHP, MaxHP, MaxRepairPercent,
+                    MarketId, BuyOrder, BaseItemTypeID, ResourcePurity,
+                    GameTypeCode, GameTypeId, GameSubTypeId,
+                    LocationName, SystemId, SystemName, GameLocationId,
+                    AmountRemaining, AmountOriginal, AmountSold,
+                    EscrowRemaining, SalesTaxEstimate, ValueRemaining,
+                    Evolution, HealthPercentage,
+                    SellerName, SellerFactionTag, PrivateSale,
+                    BuyerName, BuyerFactionTag,
+                    IsOutbid, IsUndercut,
+                    PlacedDT, ExpiresDT,
+                    CompetitorForMarketId,
+                    SyncedByCharacterUUID, SyncTimestamp
+                ) VALUES (
+                    @uuid, @owner, @stationUUID, @itemType, @itemRefId, @itemName,
+                    @qty, @price, @curHp, @maxHp, @maxRepair,
+                    @marketId, @buyOrder, @baseItemTypeId, @resPurity,
+                    @gameTypeCode, @gameTypeId, @gameSubTypeId,
+                    @locName, @systemId, @systemName, @gameLocId,
+                    @amtRemain, @amtOrig, @amtSold,
+                    @escrow, @salesTax, @valueRemain,
+                    @evo, @healthPct,
+                    @sellerName, @sellerFaction, @privateSale,
+                    @buyerName, @buyerFaction,
+                    @isOutbid, @isUndercut,
+                    @placedDT, @expiresDT,
+                    @competitorId,
+                    @syncBy, @syncTs
+                )";
+                cmd.Parameters.AddWithValue("@uuid", entity.UUID);
+                cmd.Parameters.AddWithValue("@owner", characterUUID);
+                cmd.Parameters.AddWithValue("@stationUUID", entity.StationUUID ?? string.Empty);
+                cmd.Parameters.AddWithValue("@itemType", entity.ItemType.ToString());
+                cmd.Parameters.AddWithValue("@itemRefId", entity.ItemReferenceID ?? string.Empty);
+                cmd.Parameters.AddWithValue("@itemName", entity.ItemName ?? string.Empty);
+                cmd.Parameters.AddWithValue("@qty", entity.Quantity);
+                cmd.Parameters.AddWithValue("@price", (double)entity.PricePerUnit);
+                cmd.Parameters.AddWithValue("@curHp", entity.CurrentHP);
+                cmd.Parameters.AddWithValue("@maxHp", entity.MaxHP);
+                cmd.Parameters.AddWithValue("@maxRepair", (double)entity.MaxRepairPercent);
+                cmd.Parameters.AddWithValue("@marketId", entity.MarketId.HasValue ? (object)entity.MarketId.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@buyOrder", entity.BuyOrder ? 1 : 0);
+                cmd.Parameters.AddWithValue("@baseItemTypeId", entity.BaseItemTypeID ?? string.Empty);
+                cmd.Parameters.AddWithValue("@resPurity", entity.ResourcePurity ?? string.Empty);
+                cmd.Parameters.AddWithValue("@gameTypeCode", entity.GameTypeCode ?? string.Empty);
+                cmd.Parameters.AddWithValue("@gameTypeId", entity.GameTypeId.HasValue ? (object)entity.GameTypeId.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@gameSubTypeId", entity.GameSubTypeId ?? string.Empty);
+                cmd.Parameters.AddWithValue("@locName", entity.LocationName ?? string.Empty);
+                cmd.Parameters.AddWithValue("@systemId", entity.SystemId.HasValue ? (object)entity.SystemId.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@systemName", entity.SystemName ?? string.Empty);
+                cmd.Parameters.AddWithValue("@gameLocId", entity.GameLocationId.HasValue ? (object)entity.GameLocationId.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@amtRemain", entity.AmountRemaining.HasValue ? (object)entity.AmountRemaining.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@amtOrig", entity.AmountOriginal.HasValue ? (object)entity.AmountOriginal.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@amtSold", entity.AmountSold.HasValue ? (object)entity.AmountSold.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@escrow", entity.EscrowRemaining.HasValue ? (object)(double)entity.EscrowRemaining.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@salesTax", entity.SalesTaxEstimate.HasValue ? (object)(double)entity.SalesTaxEstimate.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@valueRemain", entity.ValueRemaining.HasValue ? (object)(double)entity.ValueRemaining.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@evo", entity.Evolution.HasValue ? (object)entity.Evolution.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@healthPct", entity.HealthPercentage.HasValue ? (object)entity.HealthPercentage.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@sellerName", entity.SellerName ?? string.Empty);
+                cmd.Parameters.AddWithValue("@sellerFaction", entity.SellerFactionTag ?? string.Empty);
+                cmd.Parameters.AddWithValue("@privateSale", entity.PrivateSale ? 1 : 0);
+                cmd.Parameters.AddWithValue("@buyerName", entity.BuyerName ?? string.Empty);
+                cmd.Parameters.AddWithValue("@buyerFaction", entity.BuyerFactionTag ?? string.Empty);
+                cmd.Parameters.AddWithValue("@isOutbid", entity.IsOutbid ? 1 : 0);
+                cmd.Parameters.AddWithValue("@isUndercut", entity.IsUndercut ? 1 : 0);
+                cmd.Parameters.AddWithValue("@placedDT", entity.PlacedDT ?? string.Empty);
+                cmd.Parameters.AddWithValue("@expiresDT", entity.ExpiresDT ?? string.Empty);
+                cmd.Parameters.AddWithValue("@competitorId", entity.CompetitorForMarketId.HasValue ? (object)entity.CompetitorForMarketId.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@syncBy", entity.SyncedByCharacterUUID ?? string.Empty);
+                cmd.Parameters.AddWithValue("@syncTs", entity.SyncTimestamp ?? string.Empty);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteMarketListingAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task DeleteMarketListingAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "DELETE FROM MarketListings WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
 
         // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — MarketTransaction (stubs — Phase 6)
+        // Per-Character Entity CRUD — MarketTransaction
         // ═══════════════════════════════════════════════════════════
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<MarketTransaction>> GetAllMarketTransactionsAsync(string characterUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<MarketTransaction>> GetAllMarketTransactionsAsync(string characterUUID)
+        {
+            var results = new List<MarketTransaction>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM MarketTransactions WHERE OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(ReadMarketTransaction(reader));
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<MarketTransaction>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task<MarketTransaction> GetMarketTransactionAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task<MarketTransaction> GetMarketTransactionAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM MarketTransactions WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return Task.FromResult(ReadMarketTransaction(reader));
+                    }
+                }
+            }
+
+            return Task.FromResult<MarketTransaction>(null);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertMarketTransactionAsync(string characterUUID, MarketTransaction entity) => throw new NotImplementedException();
+        public Task UpsertMarketTransactionAsync(string characterUUID, MarketTransaction entity)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = @"INSERT OR REPLACE INTO MarketTransactions (
+                    UUID, OwnerUUID, TransactionType, ItemType, ItemReferenceID, ItemName,
+                    Quantity, PricePerUnit, TotalPrice,
+                    Counterparty, CounterpartyFaction, StationUUID,
+                    Timestamp, Notes, ListingUUID,
+                    CurrentHP, MaxHP, MaxRepairPercent
+                ) VALUES (
+                    @uuid, @owner, @txType, @itemType, @itemRefId, @itemName,
+                    @qty, @price, @total,
+                    @counterparty, @counterpartyFaction, @stationUUID,
+                    @timestamp, @notes, @listingUUID,
+                    @curHp, @maxHp, @maxRepair
+                )";
+                cmd.Parameters.AddWithValue("@uuid", entity.UUID);
+                cmd.Parameters.AddWithValue("@owner", characterUUID);
+                cmd.Parameters.AddWithValue("@txType", entity.TransactionType.ToString());
+                cmd.Parameters.AddWithValue("@itemType", entity.ItemType.ToString());
+                cmd.Parameters.AddWithValue("@itemRefId", entity.ItemReferenceID ?? string.Empty);
+                cmd.Parameters.AddWithValue("@itemName", entity.ItemName ?? string.Empty);
+                cmd.Parameters.AddWithValue("@qty", entity.Quantity);
+                cmd.Parameters.AddWithValue("@price", (double)entity.PricePerUnit);
+                cmd.Parameters.AddWithValue("@total", (double)entity.TotalPrice);
+                cmd.Parameters.AddWithValue("@counterparty", entity.Counterparty ?? string.Empty);
+                cmd.Parameters.AddWithValue("@counterpartyFaction", entity.CounterpartyFaction ?? string.Empty);
+                cmd.Parameters.AddWithValue("@stationUUID", entity.StationUUID ?? string.Empty);
+                cmd.Parameters.AddWithValue("@timestamp", entity.Timestamp ?? string.Empty);
+                cmd.Parameters.AddWithValue("@notes", entity.Notes ?? string.Empty);
+                cmd.Parameters.AddWithValue("@listingUUID", entity.ListingUUID ?? string.Empty);
+                cmd.Parameters.AddWithValue("@curHp", entity.CurrentHP);
+                cmd.Parameters.AddWithValue("@maxHp", entity.MaxHP);
+                cmd.Parameters.AddWithValue("@maxRepair", (double)entity.MaxRepairPercent);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteMarketTransactionAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task DeleteMarketTransactionAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "DELETE FROM MarketTransactions WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
 
         // ═══════════════════════════════════════════════════════════
         // Per-Character Entity CRUD — PricingPlan (stubs — Phase 6)
@@ -3978,6 +4352,389 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
                     cmd.ExecuteNonQuery();
                 }
             }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // Ship Helpers
+        // ═══════════════════════════════════════════════════════════
+
+        private static Ship ReadShipParent(SqliteDataReader reader)
+        {
+            var ship = new Ship
+            {
+                UUID = reader["UUID"] as string,
+                Name = reader["Name"] as string ?? string.Empty,
+                OwnerUUID = reader["OwnerUUID"] as string ?? string.Empty,
+                TemplateUUID = reader["TemplateUUID"] as string ?? string.Empty,
+                HullBlueprintUUID = reader["HullBlueprintUUID"] as string ?? string.Empty,
+                LocationUUID = reader["LocationUUID"] as string ?? string.Empty,
+                HullCurrentHP = Convert.ToInt32(reader["HullCurrentHP"]),
+                HullMaxHP = Convert.ToInt32(reader["HullMaxHP"]),
+                HullMaxRepairPercent = Convert.ToDecimal(reader["HullMaxRepairPercent"]),
+            };
+
+            var locTypeStr = reader["LocationType"] as string;
+            if (Enum.TryParse<DestinationType>(locTypeStr, true, out var lt))
+            {
+                ship.LocationType = lt;
+            }
+
+            if (reader["GameLocationId"] != DBNull.Value)
+            {
+                ship.GameLocationId = Convert.ToInt32(reader["GameLocationId"]);
+            }
+
+            return ship;
+        }
+
+        private static List<ShipComponentSlot> LoadShipComponents(SqliteConnection conn, string shipUUID)
+        {
+            var components = new List<ShipComponentSlot>();
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM ShipComponents WHERE ShipUUID = @sUUID ORDER BY Sequence";
+                cmd.Parameters.AddWithValue("@sUUID", shipUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        components.Add(new ShipComponentSlot
+                        {
+                            SlotType = reader["SlotType"] as string ?? string.Empty,
+                            BlueprintUUID = reader["BlueprintUUID"] as string ?? string.Empty,
+                            CurrentHP = Convert.ToInt32(reader["CurrentHP"]),
+                            MaxHP = Convert.ToInt32(reader["MaxHP"]),
+                        });
+                    }
+                }
+            }
+
+            return components;
+        }
+
+        private static void UpsertShipParent(SqliteConnection conn, SqliteTransaction tx, string characterUUID, Ship entity)
+        {
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = @"INSERT OR REPLACE INTO Ships (
+                    UUID, Name, OwnerUUID, TemplateUUID, HullBlueprintUUID,
+                    LocationType, LocationUUID, GameLocationId,
+                    HullCurrentHP, HullMaxHP, HullMaxRepairPercent
+                ) VALUES (
+                    @uuid, @name, @owner, @template, @hullBp,
+                    @locType, @locUUID, @gameLocId,
+                    @hullCurHp, @hullMaxHp, @hullMaxRepair
+                )";
+                cmd.Parameters.AddWithValue("@uuid", entity.UUID);
+                cmd.Parameters.AddWithValue("@name", entity.Name ?? string.Empty);
+                cmd.Parameters.AddWithValue("@owner", characterUUID);
+                cmd.Parameters.AddWithValue("@template", entity.TemplateUUID ?? string.Empty);
+                cmd.Parameters.AddWithValue("@hullBp", entity.HullBlueprintUUID ?? string.Empty);
+                cmd.Parameters.AddWithValue("@locType", entity.LocationType.ToString());
+                cmd.Parameters.AddWithValue("@locUUID", entity.LocationUUID ?? string.Empty);
+                cmd.Parameters.AddWithValue("@gameLocId", entity.GameLocationId.HasValue ? (object)entity.GameLocationId.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@hullCurHp", entity.HullCurrentHP);
+                cmd.Parameters.AddWithValue("@hullMaxHp", entity.HullMaxHP);
+                cmd.Parameters.AddWithValue("@hullMaxRepair", (double)entity.HullMaxRepairPercent);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        private static void DeleteShipChildren(SqliteConnection conn, SqliteTransaction tx, string shipUUID)
+        {
+            // Delete items (polymorphic FK, no CASCADE)
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = "DELETE FROM Items WHERE ParentUUID = @uuid AND (ParentType = 'ShipCargo' OR ParentType = 'ShipHopper')";
+                cmd.Parameters.AddWithValue("@uuid", shipUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            // Delete components (CASCADE would handle this on parent delete, but for upsert we delete explicitly)
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = "DELETE FROM ShipComponents WHERE ShipUUID = @uuid";
+                cmd.Parameters.AddWithValue("@uuid", shipUUID);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        private static void InsertShipComponents(SqliteConnection conn, SqliteTransaction tx, Ship entity)
+        {
+            if (entity.Components == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < entity.Components.Count; i++)
+            {
+                var comp = entity.Components[i];
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.Transaction = tx;
+                    cmd.CommandText = @"INSERT INTO ShipComponents (ShipUUID, Sequence, SlotType, BlueprintUUID, CurrentHP, MaxHP)
+                                       VALUES (@sUUID, @seq, @slotType, @bpUUID, @curHp, @maxHp)";
+                    cmd.Parameters.AddWithValue("@sUUID", entity.UUID);
+                    cmd.Parameters.AddWithValue("@seq", i);
+                    cmd.Parameters.AddWithValue("@slotType", comp.SlotType ?? string.Empty);
+                    cmd.Parameters.AddWithValue("@bpUUID", comp.BlueprintUUID ?? string.Empty);
+                    cmd.Parameters.AddWithValue("@curHp", comp.CurrentHP);
+                    cmd.Parameters.AddWithValue("@maxHp", comp.MaxHP);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // ShipTemplate Helpers
+        // ═══════════════════════════════════════════════════════════
+
+        private static ShipTemplate ReadShipTemplateParent(SqliteDataReader reader)
+        {
+            return new ShipTemplate
+            {
+                UUID = reader["UUID"] as string,
+                Name = reader["Name"] as string ?? string.Empty,
+                OwnerUUID = reader["OwnerUUID"] as string ?? string.Empty,
+                HullBlueprintUUID = reader["HullBlueprintUUID"] as string ?? string.Empty,
+            };
+        }
+
+        private static List<ShipComponentSlot> LoadShipTemplateComponents(SqliteConnection conn, string templateUUID)
+        {
+            var components = new List<ShipComponentSlot>();
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM ShipTemplateComponents WHERE ShipTemplateUUID = @tUUID ORDER BY Sequence";
+                cmd.Parameters.AddWithValue("@tUUID", templateUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        components.Add(new ShipComponentSlot
+                        {
+                            SlotType = reader["SlotType"] as string ?? string.Empty,
+                            SlotIndex = Convert.ToInt32(reader["SlotIndex"]),
+                            BlueprintUUID = reader["BlueprintUUID"] as string ?? string.Empty,
+                            CurrentHP = Convert.ToInt32(reader["CurrentHP"]),
+                            MaxHP = Convert.ToInt32(reader["MaxHP"]),
+                            MaxRepairPercent = Convert.ToDecimal(reader["MaxRepairPercent"]),
+                        });
+                    }
+                }
+            }
+
+            return components;
+        }
+
+        private static void UpsertShipTemplateParent(SqliteConnection conn, SqliteTransaction tx, string characterUUID, ShipTemplate entity)
+        {
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = @"INSERT OR REPLACE INTO ShipTemplates (UUID, Name, OwnerUUID, HullBlueprintUUID)
+                                   VALUES (@uuid, @name, @owner, @hullBp)";
+                cmd.Parameters.AddWithValue("@uuid", entity.UUID);
+                cmd.Parameters.AddWithValue("@name", entity.Name ?? string.Empty);
+                cmd.Parameters.AddWithValue("@owner", characterUUID);
+                cmd.Parameters.AddWithValue("@hullBp", entity.HullBlueprintUUID ?? string.Empty);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        private static void DeleteShipTemplateChildren(SqliteConnection conn, SqliteTransaction tx, string templateUUID)
+        {
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = "DELETE FROM ShipTemplateComponents WHERE ShipTemplateUUID = @uuid";
+                cmd.Parameters.AddWithValue("@uuid", templateUUID);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        private static void InsertShipTemplateComponents(SqliteConnection conn, SqliteTransaction tx, ShipTemplate entity)
+        {
+            if (entity.Components == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < entity.Components.Count; i++)
+            {
+                var comp = entity.Components[i];
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.Transaction = tx;
+                    cmd.CommandText = @"INSERT INTO ShipTemplateComponents (ShipTemplateUUID, Sequence, SlotType, SlotIndex, BlueprintUUID, CurrentHP, MaxHP, MaxRepairPercent)
+                                       VALUES (@tUUID, @seq, @slotType, @slotIdx, @bpUUID, @curHp, @maxHp, @maxRepair)";
+                    cmd.Parameters.AddWithValue("@tUUID", entity.UUID);
+                    cmd.Parameters.AddWithValue("@seq", i);
+                    cmd.Parameters.AddWithValue("@slotType", comp.SlotType ?? string.Empty);
+                    cmd.Parameters.AddWithValue("@slotIdx", comp.SlotIndex);
+                    cmd.Parameters.AddWithValue("@bpUUID", comp.BlueprintUUID ?? string.Empty);
+                    cmd.Parameters.AddWithValue("@curHp", comp.CurrentHP);
+                    cmd.Parameters.AddWithValue("@maxHp", comp.MaxHP);
+                    cmd.Parameters.AddWithValue("@maxRepair", (double)comp.MaxRepairPercent);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // MarketListing Helpers
+        // ═══════════════════════════════════════════════════════════
+
+        private static MarketListing ReadMarketListing(SqliteDataReader reader)
+        {
+            var listing = new MarketListing
+            {
+                UUID = reader["UUID"] as string,
+                OwnerUUID = reader["OwnerUUID"] as string ?? string.Empty,
+                StationUUID = reader["StationUUID"] as string ?? string.Empty,
+                ItemReferenceID = reader["ItemReferenceID"] as string ?? string.Empty,
+                ItemName = reader["ItemName"] as string ?? string.Empty,
+                Quantity = Convert.ToInt32(reader["Quantity"]),
+                PricePerUnit = Convert.ToDecimal(reader["PricePerUnit"]),
+                CurrentHP = Convert.ToInt32(reader["CurrentHP"]),
+                MaxHP = Convert.ToInt32(reader["MaxHP"]),
+                MaxRepairPercent = Convert.ToDecimal(reader["MaxRepairPercent"]),
+                BuyOrder = Convert.ToInt32(reader["BuyOrder"]) != 0,
+                BaseItemTypeID = reader["BaseItemTypeID"] as string ?? string.Empty,
+                ResourcePurity = reader["ResourcePurity"] as string ?? string.Empty,
+                GameTypeCode = reader["GameTypeCode"] as string ?? string.Empty,
+                GameSubTypeId = reader["GameSubTypeId"] as string ?? string.Empty,
+                LocationName = reader["LocationName"] as string ?? string.Empty,
+                SystemName = reader["SystemName"] as string ?? string.Empty,
+                SellerName = reader["SellerName"] as string ?? string.Empty,
+                SellerFactionTag = reader["SellerFactionTag"] as string ?? string.Empty,
+                PrivateSale = Convert.ToInt32(reader["PrivateSale"]) != 0,
+                BuyerName = reader["BuyerName"] as string ?? string.Empty,
+                BuyerFactionTag = reader["BuyerFactionTag"] as string ?? string.Empty,
+                IsOutbid = Convert.ToInt32(reader["IsOutbid"]) != 0,
+                IsUndercut = Convert.ToInt32(reader["IsUndercut"]) != 0,
+                PlacedDT = reader["PlacedDT"] as string ?? string.Empty,
+                ExpiresDT = reader["ExpiresDT"] as string ?? string.Empty,
+                SyncedByCharacterUUID = reader["SyncedByCharacterUUID"] as string ?? string.Empty,
+                SyncTimestamp = reader["SyncTimestamp"] as string ?? string.Empty,
+            };
+
+            var itemTypeStr = reader["ItemType"] as string;
+            if (Enum.TryParse<ItemType.ItemTypeEnum>(itemTypeStr, true, out var it))
+            {
+                listing.ItemType = it;
+            }
+
+            if (reader["MarketId"] != DBNull.Value)
+            {
+                listing.MarketId = Convert.ToInt64(reader["MarketId"]);
+            }
+
+            if (reader["GameTypeId"] != DBNull.Value)
+            {
+                listing.GameTypeId = Convert.ToInt64(reader["GameTypeId"]);
+            }
+
+            if (reader["SystemId"] != DBNull.Value)
+            {
+                listing.SystemId = Convert.ToInt32(reader["SystemId"]);
+            }
+
+            if (reader["GameLocationId"] != DBNull.Value)
+            {
+                listing.GameLocationId = Convert.ToInt32(reader["GameLocationId"]);
+            }
+
+            if (reader["AmountRemaining"] != DBNull.Value)
+            {
+                listing.AmountRemaining = Convert.ToInt32(reader["AmountRemaining"]);
+            }
+
+            if (reader["AmountOriginal"] != DBNull.Value)
+            {
+                listing.AmountOriginal = Convert.ToInt32(reader["AmountOriginal"]);
+            }
+
+            if (reader["AmountSold"] != DBNull.Value)
+            {
+                listing.AmountSold = Convert.ToInt32(reader["AmountSold"]);
+            }
+
+            if (reader["EscrowRemaining"] != DBNull.Value)
+            {
+                listing.EscrowRemaining = Convert.ToDecimal(reader["EscrowRemaining"]);
+            }
+
+            if (reader["SalesTaxEstimate"] != DBNull.Value)
+            {
+                listing.SalesTaxEstimate = Convert.ToDecimal(reader["SalesTaxEstimate"]);
+            }
+
+            if (reader["ValueRemaining"] != DBNull.Value)
+            {
+                listing.ValueRemaining = Convert.ToDecimal(reader["ValueRemaining"]);
+            }
+
+            if (reader["Evolution"] != DBNull.Value)
+            {
+                listing.Evolution = Convert.ToInt32(reader["Evolution"]);
+            }
+
+            if (reader["HealthPercentage"] != DBNull.Value)
+            {
+                listing.HealthPercentage = Convert.ToDouble(reader["HealthPercentage"]);
+            }
+
+            if (reader["CompetitorForMarketId"] != DBNull.Value)
+            {
+                listing.CompetitorForMarketId = Convert.ToInt64(reader["CompetitorForMarketId"]);
+            }
+
+            return listing;
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // MarketTransaction Helpers
+        // ═══════════════════════════════════════════════════════════
+
+        private static MarketTransaction ReadMarketTransaction(SqliteDataReader reader)
+        {
+            var tx = new MarketTransaction
+            {
+                UUID = reader["UUID"] as string,
+                OwnerUUID = reader["OwnerUUID"] as string ?? string.Empty,
+                ItemReferenceID = reader["ItemReferenceID"] as string ?? string.Empty,
+                ItemName = reader["ItemName"] as string ?? string.Empty,
+                Quantity = Convert.ToInt32(reader["Quantity"]),
+                PricePerUnit = Convert.ToDecimal(reader["PricePerUnit"]),
+                TotalPrice = Convert.ToDecimal(reader["TotalPrice"]),
+                Counterparty = reader["Counterparty"] as string ?? string.Empty,
+                CounterpartyFaction = reader["CounterpartyFaction"] as string ?? string.Empty,
+                StationUUID = reader["StationUUID"] as string ?? string.Empty,
+                Timestamp = reader["Timestamp"] as string ?? string.Empty,
+                Notes = reader["Notes"] as string ?? string.Empty,
+                ListingUUID = reader["ListingUUID"] as string ?? string.Empty,
+                CurrentHP = Convert.ToInt32(reader["CurrentHP"]),
+                MaxHP = Convert.ToInt32(reader["MaxHP"]),
+                MaxRepairPercent = Convert.ToDecimal(reader["MaxRepairPercent"]),
+            };
+
+            var txTypeStr = reader["TransactionType"] as string;
+            if (Enum.TryParse<TransactionType>(txTypeStr, true, out var tt))
+            {
+                tx.TransactionType = tt;
+            }
+
+            var itemTypeStr = reader["ItemType"] as string;
+            if (Enum.TryParse<ItemType.ItemTypeEnum>(itemTypeStr, true, out var it))
+            {
+                tx.ItemType = it;
+            }
+
+            return tx;
         }
 
         private static ServerFaction ReadServerFaction(SqliteDataReader reader)
