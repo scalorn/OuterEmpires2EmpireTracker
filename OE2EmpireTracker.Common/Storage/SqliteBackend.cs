@@ -33,7 +33,7 @@ namespace OE2EmpireTracker.Common.Storage
         /// Schema DDL concatenated from tasks 5.2-5.11. ExecuteSchema runs this
         /// against a fresh database.
         /// </summary>
-        private static readonly string SchemaDdl = ColonySchema + ItemsBlueprintSchema + SurveyPlayerProfileSchema + DeliveryRouteShipSchema + DeliveryPlanMarketSchema + PricingBuildStockSchema;
+        private static readonly string SchemaDdl = ColonySchema + ItemsBlueprintSchema + SurveyPlayerProfileSchema + DeliveryRouteShipSchema + DeliveryPlanMarketSchema + PricingBuildStockSchema + RemainingPlayerEntitySchema;
 
         private const string ColonySchema = @"
 CREATE TABLE IF NOT EXISTS Colonies (
@@ -511,6 +511,133 @@ CREATE TABLE IF NOT EXISTS StockProfileEntries (
     MinQuantity INTEGER NOT NULL DEFAULT 0,
     MaxQuantity INTEGER NOT NULL DEFAULT 0,
     PRIMARY KEY (StockProfileUUID, Sequence)
+);
+";
+
+        private const string RemainingPlayerEntitySchema = @"
+-- SUPPLY CHAIN
+CREATE TABLE IF NOT EXISTS SupplyChains (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT ''
+);
+
+CREATE TABLE IF NOT EXISTS SupplyChainStages (
+    SupplyChainUUID TEXT NOT NULL REFERENCES SupplyChains(UUID) ON DELETE CASCADE,
+    Sequence INTEGER NOT NULL,
+    ColonyUUID TEXT NOT NULL DEFAULT '',
+    BlueprintUUID TEXT NOT NULL DEFAULT '',
+    OutputItemType TEXT NOT NULL DEFAULT '',
+    OutputQuantity INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (SupplyChainUUID, Sequence)
+);
+
+-- ASTEROID
+CREATE TABLE IF NOT EXISTS Asteroids (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    SystemName TEXT NOT NULL DEFAULT '',
+    SystemId INTEGER NOT NULL DEFAULT 0,
+    SystemObjectId INTEGER NOT NULL DEFAULT 0,
+    GameApiAsteroidId INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS AsteroidReserves (
+    AsteroidUUID TEXT NOT NULL REFERENCES Asteroids(UUID) ON DELETE CASCADE,
+    Sequence INTEGER NOT NULL,
+    ResourceName TEXT NOT NULL DEFAULT '',
+    Purity TEXT NOT NULL DEFAULT '',
+    MaxReserve INTEGER NOT NULL DEFAULT 0,
+    CurrentReserve INTEGER,
+    ResetTimestamp TEXT,
+    PRIMARY KEY (AsteroidUUID, Sequence)
+);
+
+-- STATION
+CREATE TABLE IF NOT EXISTS Stations (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    SystemName TEXT NOT NULL DEFAULT '',
+    SystemId INTEGER NOT NULL DEFAULT 0,
+    SystemObjectId INTEGER NOT NULL DEFAULT 0,
+    GameLocationId INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS StationComponents (
+    StationUUID TEXT NOT NULL REFERENCES Stations(UUID) ON DELETE CASCADE,
+    Sequence INTEGER NOT NULL,
+    SlotType TEXT NOT NULL DEFAULT '',
+    BlueprintUUID TEXT NOT NULL DEFAULT '',
+    CurrentHP INTEGER NOT NULL DEFAULT 0,
+    MaxHP INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (StationUUID, Sequence)
+);
+
+-- FACTION (per-character contacts)
+CREATE TABLE IF NOT EXISTS Factions (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    Tag TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT ''
+);
+
+-- EXTERNAL CHARACTER (contacts)
+CREATE TABLE IF NOT EXISTS ExternalCharacters (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    FactionUUID TEXT NOT NULL DEFAULT '',
+    FactionName TEXT NOT NULL DEFAULT '',
+    CharacterId INTEGER NOT NULL DEFAULT 0,
+    Notes TEXT NOT NULL DEFAULT ''
+);
+
+-- WAREHOUSE OVERFLOW RULES
+CREATE TABLE IF NOT EXISTS WarehouseOverflowRules (
+    UUID TEXT PRIMARY KEY,
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    ColonyUUID TEXT NOT NULL DEFAULT '',
+    ResourceName TEXT NOT NULL DEFAULT '',
+    RuleType INTEGER NOT NULL DEFAULT 0,
+    Threshold INTEGER NOT NULL DEFAULT 0,
+    DestinationColonyUUID TEXT NOT NULL DEFAULT ''
+);
+
+-- MAIL
+CREATE TABLE IF NOT EXISTS MailMessages (
+    MailId INTEGER NOT NULL,
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    CharacterIdFrom INTEGER NOT NULL DEFAULT 0,
+    FromName TEXT NOT NULL DEFAULT '',
+    CharacterIdTo INTEGER NOT NULL DEFAULT 0,
+    ToName TEXT NOT NULL DEFAULT '',
+    SentTime TEXT NOT NULL DEFAULT '',
+    Subject TEXT NOT NULL DEFAULT '',
+    MailRead INTEGER NOT NULL DEFAULT 0,
+    MailType TEXT,
+    MailContent TEXT NOT NULL DEFAULT '',
+    LocalRead INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (OwnerUUID, MailId)
+);
+
+-- BANKING
+CREATE TABLE IF NOT EXISTS BankingTransactions (
+    UUID TEXT PRIMARY KEY,
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    TransactionDateTime TEXT NOT NULL DEFAULT '',
+    CreditChange REAL NOT NULL DEFAULT 0,
+    OldBalance REAL NOT NULL DEFAULT 0,
+    NewBalance REAL NOT NULL DEFAULT 0,
+    TransactionType INTEGER NOT NULL DEFAULT 0,
+    Detail TEXT NOT NULL DEFAULT '',
+    CharacterId INTEGER,
+    SystemObjectId INTEGER,
+    SystemId INTEGER,
+    IsManualEntry INTEGER NOT NULL DEFAULT 0
 );
 ";
 

@@ -165,12 +165,12 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Inputs: design.md (DeliveryPlan + Market schema)
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (schema string extended)
     - Verification: getDiagnostics — compiles cleanly
-  - [-] 5.7 SQLite schema DDL: PricingPlans, PricingPlanPrices, BuildPlans, BuildItems, StockPlans, StockTargets, StockProfiles, StockProfileEntries tables
+  - [x] 5.7 SQLite schema DDL: PricingPlans, PricingPlanPrices, BuildPlans, BuildItems, StockPlans, StockTargets, StockProfiles, StockProfileEntries tables
     - Satisfies: Req 4, Criteria 2-3, 10, 13-14
     - Inputs: design.md (PricingPlan + BuildPlan + StockPlan + StockProfile schema)
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (schema string extended)
     - Verification: getDiagnostics — compiles cleanly
-  - [~] 5.8 SQLite schema DDL: SupplyChains, SupplyChainStages, Asteroids, AsteroidReserves, Stations, StationComponents, Factions, ExternalCharacters, WarehouseOverflowRules, MailMessages, BankingTransactions tables
+  - [-] 5.8 SQLite schema DDL: SupplyChains, SupplyChainStages, Asteroids, AsteroidReserves, Stations, StationComponents, Factions, ExternalCharacters, WarehouseOverflowRules, MailMessages, BankingTransactions tables
     - Satisfies: Req 4, Criteria 2-3, 10, 13
     - Inputs: design.md (remaining player entity schemas)
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (schema string extended)
