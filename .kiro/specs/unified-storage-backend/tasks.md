@@ -268,22 +268,22 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Verification: getDiagnostics — compiles cleanly
 
 - [ ] 9. Unit Tests — JsonSingleFile and JsonMultiFile Backends
-  - [-] 9.1 Write unit tests for JsonSingleFileBackend: lifecycle, empty/missing file, malformed JSON error handling
+  - [x] 9.1 Write unit tests for JsonSingleFileBackend: lifecycle, empty/missing file, malformed JSON error handling
     - Satisfies: Req 2, Criteria 6-7; Req 10, Criteria 1-2; Req 11, Criterion 1
     - Inputs: Common/Storage/JsonSingleFileBackend.cs
     - Output: OE2EmpireTracker.Tests/Storage/JsonSingleFileBackendLifecycleTests.cs
     - Verification: vstest.console — new tests pass
-  - [-] 9.2 Write unit tests for JsonSingleFileBackend: CRUD operations and serialization byte-identical output
+  - [x] 9.2 Write unit tests for JsonSingleFileBackend: CRUD operations and serialization byte-identical output
     - Satisfies: Req 2, Criteria 1, 3-4, 8; Req 11, Criteria 1, 3
     - Inputs: Common/Storage/JsonSingleFileBackend.cs, existing PlayerData.json
     - Output: OE2EmpireTracker.Tests/Storage/JsonSingleFileBackendCrudTests.cs
     - Verification: vstest.console — new tests pass
-  - [~] 9.3 Write unit tests for JsonSingleFileBackend: DataVersion migration on load
+  - [-] 9.3 Write unit tests for JsonSingleFileBackend: DataVersion migration on load
     - Satisfies: Req 2, Criteria 9-10; Req 11, Criterion 6
     - Inputs: Common/Storage/JsonSingleFileBackend.cs
     - Output: OE2EmpireTracker.Tests/Storage/JsonSingleFileBackendMigrationTests.cs
     - Verification: vstest.console — new tests pass
-  - [~] 9.4 Write unit tests for JsonMultiFileBackend: initialization, CRUD, missing file, malformed JSON, directory structure
+  - [-] 9.4 Write unit tests for JsonMultiFileBackend: initialization, CRUD, missing file, malformed JSON, directory structure
     - Satisfies: Req 3, Criteria 1-2, 4, 6-8; Req 11, Criterion 4
     - Inputs: Common/Storage/JsonMultiFileBackend.cs
     - Output: OE2EmpireTracker.Tests/Storage/JsonMultiFileBackendTests.cs
