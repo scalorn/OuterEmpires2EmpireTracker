@@ -123,12 +123,12 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Inputs: Common/Storage/JsonSingleFileBackend.cs (from 4.1), PlayerRoot structure
     - Output: OE2EmpireTracker.Common/Storage/JsonSingleFileBackend.cs (extended — 6 entity types CRUD)
     - Verification: getDiagnostics — compiles cleanly
-  - [-] 4.3 Implement JsonSingleFileBackend: per-character entity CRUD (Ship, ShipTemplate, MarketListing, MarketTransaction, PricingPlan, StockPlan, StockProfile, BuildPlan, SupplyChain, Asteroid, Station, Faction, ExternalCharacter, WarehouseOverflowRule, Mail, Banking)
+  - [x] 4.3 Implement JsonSingleFileBackend: per-character entity CRUD (Ship, ShipTemplate, MarketListing, MarketTransaction, PricingPlan, StockPlan, StockProfile, BuildPlan, SupplyChain, Asteroid, Station, Faction, ExternalCharacter, WarehouseOverflowRule, Mail, Banking)
     - Satisfies: Req 2, Criteria 5, 8; Req 1, Criterion 4
     - Inputs: Common/Storage/JsonSingleFileBackend.cs (from 4.2), PlayerRoot structure
     - Output: OE2EmpireTracker.Common/Storage/JsonSingleFileBackend.cs (extended — remaining entity types)
     - Verification: getDiagnostics — compiles cleanly
-  - [~] 4.4 Implement JsonSingleFileBackend: baseline data, DataVersion migration, and NotSupported server-global stubs
+  - [-] 4.4 Implement JsonSingleFileBackend: baseline data, DataVersion migration, and NotSupported server-global stubs
     - Satisfies: Req 2, Criteria 2, 9-10; Req 11, Criteria 2, 6; Req 1, Criteria 3, 5-9
     - Inputs: Common/Storage/JsonSingleFileBackend.cs (from 4.3), BaselineRoot, existing migration logic in PlayerContext
     - Output: OE2EmpireTracker.Common/Storage/JsonSingleFileBackend.cs (complete)

@@ -17,6 +17,7 @@ using OE2EmpireTracker.Common.Models;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Persistence;
 using OE2EmpireTracker.Services;
+using OE2EmpireTracker.Services.Migration;
 
 namespace OE2EmpireTracker.Common.Storage
 {
@@ -28,6 +29,7 @@ namespace OE2EmpireTracker.Common.Storage
     internal class JsonSingleFileBackend : IStorageBackend
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static readonly string NotSupportedMessage = "Server-global operations not supported in single-file backend";
 
         private readonly string _playerDataPath;
         private readonly string _baselineDataPath;
@@ -69,6 +71,17 @@ namespace OE2EmpireTracker.Common.Storage
         {
             _playerRoot = LoadRoot<PlayerRoot>(_playerDataPath);
             _baselineRoot = LoadRoot<BaselineRoot>(_baselineDataPath);
+
+            // DataVersion migration check
+            int playerVersion = _playerRoot.DataVersion;
+            if (playerVersion < MigrationRunner.CurrentVersion)
+            {
+                Log.Info(
+                    "Player data version {0} is below current version {1}; migration may be needed",
+                    playerVersion,
+                    MigrationRunner.CurrentVersion);
+            }
+
             return Task.CompletedTask;
         }
 
@@ -171,87 +184,87 @@ namespace OE2EmpireTracker.Common.Storage
 
 
         // ═══════════════════════════════════════════════════════════
-        // STUBS — Server-global entities (Tasks 4.2-4.4 will implement)
+        // Server-Global Entities — NotSupported (WinForms does not use these)
         // ═══════════════════════════════════════════════════════════
 
         /// <inheritdoc/>
-        public Task<ServerFaction> GetFactionAsync(string uuid) => throw new NotImplementedException();
+        public Task<ServerFaction> GetFactionAsync(string uuid) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<ServerFaction>> GetAllFactionsAsync() => throw new NotImplementedException();
+        public Task<IReadOnlyList<ServerFaction>> GetAllFactionsAsync() => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task UpsertFactionAsync(ServerFaction faction) => throw new NotImplementedException();
+        public Task UpsertFactionAsync(ServerFaction faction) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task DeleteFactionAsync(string uuid) => throw new NotImplementedException();
+        public Task DeleteFactionAsync(string uuid) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task<ServerCharacter> GetCharacterAsync(string uuid) => throw new NotImplementedException();
+        public Task<ServerCharacter> GetCharacterAsync(string uuid) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<ServerCharacter>> GetAllCharactersAsync() => throw new NotImplementedException();
+        public Task<IReadOnlyList<ServerCharacter>> GetAllCharactersAsync() => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task UpsertCharacterAsync(ServerCharacter character) => throw new NotImplementedException();
+        public Task UpsertCharacterAsync(ServerCharacter character) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task DeleteCharacterAsync(string uuid) => throw new NotImplementedException();
+        public Task DeleteCharacterAsync(string uuid) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task<string> GetGlobalDataAsync(string dataType) => throw new NotImplementedException();
+        public Task<string> GetGlobalDataAsync(string dataType) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task UpsertGlobalDataAsync(string dataType, string json) => throw new NotImplementedException();
+        public Task UpsertGlobalDataAsync(string dataType, string json) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<StarSystem>> GetAllStarSystemsAsync() => throw new NotImplementedException();
+        public Task<IReadOnlyList<StarSystem>> GetAllStarSystemsAsync() => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task UpsertStarSystemsAsync(IReadOnlyList<StarSystem> systems) => throw new NotImplementedException();
+        public Task UpsertStarSystemsAsync(IReadOnlyList<StarSystem> systems) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<ColonySummary>> GetColonySummariesForSystemAsync(int systemId) => throw new NotImplementedException();
+        public Task<IReadOnlyList<ColonySummary>> GetColonySummariesForSystemAsync(int systemId) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task<ApiToken> FindTokenByHashAsync(string tokenHash) => throw new NotImplementedException();
+        public Task<ApiToken> FindTokenByHashAsync(string tokenHash) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<ApiToken>> GetAllTokensAsync() => throw new NotImplementedException();
+        public Task<IReadOnlyList<ApiToken>> GetAllTokensAsync() => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task UpsertTokenAsync(ApiToken token) => throw new NotImplementedException();
+        public Task UpsertTokenAsync(ApiToken token) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task DeleteTokenAsync(string id) => throw new NotImplementedException();
+        public Task DeleteTokenAsync(string id) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<MembershipAction>> GetFactionActionsAsync(string factionUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<MembershipAction>> GetFactionActionsAsync(string factionUUID) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task UpsertMembershipActionAsync(MembershipAction action) => throw new NotImplementedException();
+        public Task UpsertMembershipActionAsync(MembershipAction action) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task DeleteMembershipActionAsync(string id) => throw new NotImplementedException();
+        public Task DeleteMembershipActionAsync(string id) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task DeleteExpiredActionsAsync(DateTime cutoff) => throw new NotImplementedException();
+        public Task DeleteExpiredActionsAsync(DateTime cutoff) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<SharingRule>> GetSharingRulesForCharacterAsync(string characterUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<SharingRule>> GetSharingRulesForCharacterAsync(string characterUUID) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task UpsertSharingRulesAsync(string characterUUID, IReadOnlyList<SharingRule> rules) => throw new NotImplementedException();
+        public Task UpsertSharingRulesAsync(string characterUUID, IReadOnlyList<SharingRule> rules) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task<CharacterPreferences> GetCharacterPreferencesAsync(string characterUUID) => throw new NotImplementedException();
+        public Task<CharacterPreferences> GetCharacterPreferencesAsync(string characterUUID) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task UpsertCharacterPreferencesAsync(CharacterPreferences prefs) => throw new NotImplementedException();
+        public Task UpsertCharacterPreferencesAsync(CharacterPreferences prefs) => throw new NotSupportedException(NotSupportedMessage);
 
 
         // ═══════════════════════════════════════════════════════════
-        // STUBS — Per-Character Entity CRUD (Tasks 4.2-4.3 will implement)
+        // Per-Character Entity CRUD
         // ═══════════════════════════════════════════════════════════
 
         /// <inheritdoc/>
@@ -534,7 +547,6 @@ namespace OE2EmpireTracker.Common.Storage
             SavePlayerData();
             return Task.CompletedTask;
         }
-
 
         /// <inheritdoc/>
         public Task<IReadOnlyList<Ship>> GetAllShipsAsync(string characterUUID)
@@ -864,7 +876,6 @@ namespace OE2EmpireTracker.Common.Storage
             SavePlayerData();
             return Task.CompletedTask;
         }
-
 
         /// <inheritdoc/>
         public Task<IReadOnlyList<BuildPlan>> GetAllBuildPlansAsync(string characterUUID)
@@ -1291,238 +1302,310 @@ namespace OE2EmpireTracker.Common.Storage
 
 
         // ═══════════════════════════════════════════════════════════
-        // STUBS — Faction Permission Entities (Task 4.4 will implement)
+        // Faction Permission Entities — NotSupported
         // ═══════════════════════════════════════════════════════════
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<FactionCapability>> GetFactionCapabilitiesAsync(string factionUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<FactionCapability>> GetFactionCapabilitiesAsync(string factionUUID) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task UpsertFactionCapabilityAsync(FactionCapability capability) => throw new NotImplementedException();
+        public Task UpsertFactionCapabilityAsync(FactionCapability capability) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task DeleteFactionCapabilityAsync(string factionUUID, string capabilityUUID) => throw new NotImplementedException();
+        public Task DeleteFactionCapabilityAsync(string factionUUID, string capabilityUUID) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<FactionClearanceLevel>> GetFactionClearanceLevelsAsync(string factionUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<FactionClearanceLevel>> GetFactionClearanceLevelsAsync(string factionUUID) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task UpsertFactionClearanceLevelAsync(FactionClearanceLevel level) => throw new NotImplementedException();
+        public Task UpsertFactionClearanceLevelAsync(FactionClearanceLevel level) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task DeleteFactionClearanceLevelAsync(string factionUUID, string levelUUID) => throw new NotImplementedException();
+        public Task DeleteFactionClearanceLevelAsync(string factionUUID, string levelUUID) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<FactionPermissionGroup>> GetFactionGroupsAsync(string factionUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<FactionPermissionGroup>> GetFactionGroupsAsync(string factionUUID) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task<FactionPermissionGroup> GetFactionGroupAsync(string factionUUID, string groupUUID) => throw new NotImplementedException();
+        public Task<FactionPermissionGroup> GetFactionGroupAsync(string factionUUID, string groupUUID) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task UpsertFactionGroupAsync(FactionPermissionGroup group) => throw new NotImplementedException();
+        public Task UpsertFactionGroupAsync(FactionPermissionGroup group) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task DeleteFactionGroupAsync(string factionUUID, string groupUUID) => throw new NotImplementedException();
+        public Task DeleteFactionGroupAsync(string factionUUID, string groupUUID) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<FactionGroupCapability>> GetFactionGroupCapabilitiesAsync(string groupUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<FactionGroupCapability>> GetFactionGroupCapabilitiesAsync(string groupUUID) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task AddFactionGroupCapabilityAsync(FactionGroupCapability item) => throw new NotImplementedException();
+        public Task AddFactionGroupCapabilityAsync(FactionGroupCapability item) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task RemoveFactionGroupCapabilityAsync(string groupUUID, string capabilityUUID) => throw new NotImplementedException();
+        public Task RemoveFactionGroupCapabilityAsync(string groupUUID, string capabilityUUID) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<FactionGroupSharingRule>> GetFactionGroupSharingRulesAsync(string groupUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<FactionGroupSharingRule>> GetFactionGroupSharingRulesAsync(string groupUUID) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task UpsertFactionGroupSharingRuleAsync(FactionGroupSharingRule rule) => throw new NotImplementedException();
+        public Task UpsertFactionGroupSharingRuleAsync(FactionGroupSharingRule rule) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task DeleteFactionGroupSharingRuleAsync(string groupUUID, string ruleUUID) => throw new NotImplementedException();
+        public Task DeleteFactionGroupSharingRuleAsync(string groupUUID, string ruleUUID) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task<FactionMemberPermissions> GetFactionMemberPermissionsAsync(string factionUUID, string characterUUID) => throw new NotImplementedException();
+        public Task<FactionMemberPermissions> GetFactionMemberPermissionsAsync(string factionUUID, string characterUUID) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task UpsertFactionMemberPermissionsAsync(FactionMemberPermissions perms) => throw new NotImplementedException();
+        public Task UpsertFactionMemberPermissionsAsync(FactionMemberPermissions perms) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<FactionMemberPermissions>> GetAllFactionMembersPermissionsAsync(string factionUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<FactionMemberPermissions>> GetAllFactionMembersPermissionsAsync(string factionUUID) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<FactionMemberCapability>> GetFactionMemberCapabilitiesAsync(string factionUUID, string characterUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<FactionMemberCapability>> GetFactionMemberCapabilitiesAsync(string factionUUID, string characterUUID) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task AddFactionMemberCapabilityAsync(FactionMemberCapability item) => throw new NotImplementedException();
+        public Task AddFactionMemberCapabilityAsync(FactionMemberCapability item) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task RemoveFactionMemberCapabilityAsync(string factionUUID, string characterUUID, string capabilityUUID) => throw new NotImplementedException();
-
-
-        // ═══════════════════════════════════════════════════════════
-        // STUBS — Character Permission Entities (Task 4.4 will implement)
-        // ═══════════════════════════════════════════════════════════
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<CharacterCapability>> GetCharacterCapabilitiesAsync(string characterUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task UpsertCharacterCapabilityAsync(CharacterCapability capability) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task DeleteCharacterCapabilityAsync(string characterUUID, string capabilityUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<CharacterClearanceLevel>> GetCharacterClearanceLevelsAsync(string characterUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task UpsertCharacterClearanceLevelAsync(CharacterClearanceLevel level) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task DeleteCharacterClearanceLevelAsync(string characterUUID, string levelUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<CharacterPermissionGroup>> GetCharacterGroupsAsync(string characterUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task<CharacterPermissionGroup> GetCharacterGroupAsync(string characterUUID, string groupUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task UpsertCharacterGroupAsync(CharacterPermissionGroup group) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task DeleteCharacterGroupAsync(string characterUUID, string groupUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<CharacterGroupCapability>> GetCharacterGroupCapabilitiesAsync(string groupUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task AddCharacterGroupCapabilityAsync(CharacterGroupCapability item) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task RemoveCharacterGroupCapabilityAsync(string groupUUID, string capabilityUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<CharacterGroupSharingRule>> GetCharacterGroupSharingRulesAsync(string groupUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task UpsertCharacterGroupSharingRuleAsync(CharacterGroupSharingRule rule) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task DeleteCharacterGroupSharingRuleAsync(string groupUUID, string ruleUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<CharacterGranteePermissions>> GetCharacterGranteesAsync(string ownerCharacterUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task UpsertCharacterGranteePermissionsAsync(CharacterGranteePermissions perms) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task DeleteCharacterGranteePermissionsAsync(string ownerCharacterUUID, string granteeUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<CharacterGranteeCapability>> GetCharacterGranteeCapabilitiesAsync(string ownerCharacterUUID, string granteeUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task AddCharacterGranteeCapabilityAsync(CharacterGranteeCapability item) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task RemoveCharacterGranteeCapabilityAsync(string ownerCharacterUUID, string granteeUUID, string capabilityUUID) => throw new NotImplementedException();
+        public Task RemoveFactionMemberCapabilityAsync(string factionUUID, string characterUUID, string capabilityUUID) => throw new NotSupportedException(NotSupportedMessage);
 
 
         // ═══════════════════════════════════════════════════════════
-        // STUBS — Intel (Task 4.4 will implement)
+        // Character Permission Entities — NotSupported
         // ═══════════════════════════════════════════════════════════
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<IntelComment>> GetIntelCommentsForTargetAsync(string targetCharacterUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<CharacterCapability>> GetCharacterCapabilitiesAsync(string characterUUID) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task<IntelComment> GetIntelCommentAsync(string commentUUID) => throw new NotImplementedException();
+        public Task UpsertCharacterCapabilityAsync(CharacterCapability capability) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task UpsertIntelCommentAsync(IntelComment comment) => throw new NotImplementedException();
+        public Task DeleteCharacterCapabilityAsync(string characterUUID, string capabilityUUID) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task DeleteIntelCommentAsync(string commentUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<CharacterClearanceLevel>> GetCharacterClearanceLevelsAsync(string characterUUID) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<IntelCommentFactionShare>> GetIntelSharesForCommentAsync(string commentUUID) => throw new NotImplementedException();
+        public Task UpsertCharacterClearanceLevelAsync(CharacterClearanceLevel level) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<IntelCommentFactionShare>> GetIntelSharesForFactionAsync(string factionUUID) => throw new NotImplementedException();
+        public Task DeleteCharacterClearanceLevelAsync(string characterUUID, string levelUUID) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task UpsertIntelShareAsync(IntelCommentFactionShare share) => throw new NotImplementedException();
+        public Task<IReadOnlyList<CharacterPermissionGroup>> GetCharacterGroupsAsync(string characterUUID) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task DeleteIntelShareAsync(string shareUUID) => throw new NotImplementedException();
+        public Task<CharacterPermissionGroup> GetCharacterGroupAsync(string characterUUID, string groupUUID) => throw new NotSupportedException(NotSupportedMessage);
+
+        /// <inheritdoc/>
+        public Task UpsertCharacterGroupAsync(CharacterPermissionGroup group) => throw new NotSupportedException(NotSupportedMessage);
+
+        /// <inheritdoc/>
+        public Task DeleteCharacterGroupAsync(string characterUUID, string groupUUID) => throw new NotSupportedException(NotSupportedMessage);
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<CharacterGroupCapability>> GetCharacterGroupCapabilitiesAsync(string groupUUID) => throw new NotSupportedException(NotSupportedMessage);
+
+        /// <inheritdoc/>
+        public Task AddCharacterGroupCapabilityAsync(CharacterGroupCapability item) => throw new NotSupportedException(NotSupportedMessage);
+
+        /// <inheritdoc/>
+        public Task RemoveCharacterGroupCapabilityAsync(string groupUUID, string capabilityUUID) => throw new NotSupportedException(NotSupportedMessage);
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<CharacterGroupSharingRule>> GetCharacterGroupSharingRulesAsync(string groupUUID) => throw new NotSupportedException(NotSupportedMessage);
+
+        /// <inheritdoc/>
+        public Task UpsertCharacterGroupSharingRuleAsync(CharacterGroupSharingRule rule) => throw new NotSupportedException(NotSupportedMessage);
+
+        /// <inheritdoc/>
+        public Task DeleteCharacterGroupSharingRuleAsync(string groupUUID, string ruleUUID) => throw new NotSupportedException(NotSupportedMessage);
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<CharacterGranteePermissions>> GetCharacterGranteesAsync(string ownerCharacterUUID) => throw new NotSupportedException(NotSupportedMessage);
+
+        /// <inheritdoc/>
+        public Task UpsertCharacterGranteePermissionsAsync(CharacterGranteePermissions perms) => throw new NotSupportedException(NotSupportedMessage);
+
+        /// <inheritdoc/>
+        public Task DeleteCharacterGranteePermissionsAsync(string ownerCharacterUUID, string granteeUUID) => throw new NotSupportedException(NotSupportedMessage);
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<CharacterGranteeCapability>> GetCharacterGranteeCapabilitiesAsync(string ownerCharacterUUID, string granteeUUID) => throw new NotSupportedException(NotSupportedMessage);
+
+        /// <inheritdoc/>
+        public Task AddCharacterGranteeCapabilityAsync(CharacterGranteeCapability item) => throw new NotSupportedException(NotSupportedMessage);
+
+        /// <inheritdoc/>
+        public Task RemoveCharacterGranteeCapabilityAsync(string ownerCharacterUUID, string granteeUUID, string capabilityUUID) => throw new NotSupportedException(NotSupportedMessage);
+
 
         // ═══════════════════════════════════════════════════════════
-        // STUBS — Audit (Task 4.4 will implement)
+        // Intel — NotSupported
         // ═══════════════════════════════════════════════════════════
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<PermissionAuditEntry>> GetPermissionAuditEntriesAsync(DateTime? startDate = null, DateTime? endDate = null, PermissionActionType? actionType = null, string actorUUID = null, string targetUUID = null) => throw new NotImplementedException();
+        public Task<IReadOnlyList<IntelComment>> GetIntelCommentsForTargetAsync(string targetCharacterUUID) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task AppendPermissionAuditEntryAsync(PermissionAuditEntry entry) => throw new NotImplementedException();
+        public Task<IntelComment> GetIntelCommentAsync(string commentUUID) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task DeleteExpiredAuditEntriesAsync(DateTime cutoff) => throw new NotImplementedException();
+        public Task UpsertIntelCommentAsync(IntelComment comment) => throw new NotSupportedException(NotSupportedMessage);
+
+        /// <inheritdoc/>
+        public Task DeleteIntelCommentAsync(string commentUUID) => throw new NotSupportedException(NotSupportedMessage);
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<IntelCommentFactionShare>> GetIntelSharesForCommentAsync(string commentUUID) => throw new NotSupportedException(NotSupportedMessage);
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<IntelCommentFactionShare>> GetIntelSharesForFactionAsync(string factionUUID) => throw new NotSupportedException(NotSupportedMessage);
+
+        /// <inheritdoc/>
+        public Task UpsertIntelShareAsync(IntelCommentFactionShare share) => throw new NotSupportedException(NotSupportedMessage);
+
+        /// <inheritdoc/>
+        public Task DeleteIntelShareAsync(string shareUUID) => throw new NotSupportedException(NotSupportedMessage);
 
         // ═══════════════════════════════════════════════════════════
-        // STUBS — Baseline / Global Lookup Data (Task 4.4 will implement)
+        // Audit — NotSupported
         // ═══════════════════════════════════════════════════════════
 
         /// <inheritdoc/>
-        public Task<BaselineGameConstants> GetBaselineGameConstantsAsync() => throw new NotImplementedException();
+        public Task<IReadOnlyList<PermissionAuditEntry>> GetPermissionAuditEntriesAsync(DateTime? startDate = null, DateTime? endDate = null, PermissionActionType? actionType = null, string actorUUID = null, string targetUUID = null) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task UpsertBaselineGameConstantsAsync(BaselineGameConstants constants) => throw new NotImplementedException();
+        public Task AppendPermissionAuditEntryAsync(PermissionAuditEntry entry) => throw new NotSupportedException(NotSupportedMessage);
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<BlueprintType>> GetAllBlueprintTypesAsync() => throw new NotImplementedException();
+        public Task DeleteExpiredAuditEntriesAsync(DateTime cutoff) => throw new NotSupportedException(NotSupportedMessage);
+
+
+        // ═══════════════════════════════════════════════════════════
+        // Baseline / Global Lookup Data
+        // ═══════════════════════════════════════════════════════════
 
         /// <inheritdoc/>
-        public Task UpsertBlueprintTypesAsync(IReadOnlyList<BlueprintType> types) => throw new NotImplementedException();
+        public Task<BaselineGameConstants> GetBaselineGameConstantsAsync()
+        {
+            return Task.FromResult(_baselineRoot.GameConstants);
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<ShipClass>> GetAllShipClassesAsync() => throw new NotImplementedException();
+        public Task UpsertBaselineGameConstantsAsync(BaselineGameConstants constants)
+        {
+            _baselineRoot.GameConstants = constants;
+            SaveBaselineData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertShipClassesAsync(IReadOnlyList<ShipClass> classes) => throw new NotImplementedException();
+        public Task<IReadOnlyList<BlueprintType>> GetAllBlueprintTypesAsync()
+        {
+            IReadOnlyList<BlueprintType> result = _baselineRoot.BlueprintType ?? Array.Empty<BlueprintType>();
+            return Task.FromResult(result);
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<TechLevel>> GetAllTechLevelsAsync() => throw new NotImplementedException();
+        public Task UpsertBlueprintTypesAsync(IReadOnlyList<BlueprintType> types)
+        {
+            _baselineRoot.BlueprintType = types.ToArray();
+            SaveBaselineData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertTechLevelsAsync(IReadOnlyList<TechLevel> levels) => throw new NotImplementedException();
+        public Task<IReadOnlyList<ShipClass>> GetAllShipClassesAsync()
+        {
+            IReadOnlyList<ShipClass> result = _baselineRoot.ShipClass ?? Array.Empty<ShipClass>();
+            return Task.FromResult(result);
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<Commodity>> GetAllCommoditiesAsync() => throw new NotImplementedException();
+        public Task UpsertShipClassesAsync(IReadOnlyList<ShipClass> classes)
+        {
+            _baselineRoot.ShipClass = classes.ToArray();
+            SaveBaselineData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertCommoditiesAsync(IReadOnlyList<Commodity> commodities) => throw new NotImplementedException();
+        public Task<IReadOnlyList<TechLevel>> GetAllTechLevelsAsync()
+        {
+            IReadOnlyList<TechLevel> result = _baselineRoot.TechLevel ?? Array.Empty<TechLevel>();
+            return Task.FromResult(result);
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<RefiningRecipe>> GetAllRefiningRecipesAsync() => throw new NotImplementedException();
+        public Task UpsertTechLevelsAsync(IReadOnlyList<TechLevel> levels)
+        {
+            _baselineRoot.TechLevel = levels.ToArray();
+            SaveBaselineData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertRefiningRecipesAsync(IReadOnlyList<RefiningRecipe> recipes) => throw new NotImplementedException();
+        public Task<IReadOnlyList<Commodity>> GetAllCommoditiesAsync()
+        {
+            IReadOnlyList<Commodity> result = _baselineRoot.Commodity ?? Array.Empty<Commodity>();
+            return Task.FromResult(result);
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<ResearchTimeEntry>> GetAllResearchTimesAsync() => throw new NotImplementedException();
+        public Task UpsertCommoditiesAsync(IReadOnlyList<Commodity> commodities)
+        {
+            _baselineRoot.Commodity = commodities.ToArray();
+            SaveBaselineData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertResearchTimesAsync(IReadOnlyList<ResearchTimeEntry> entries) => throw new NotImplementedException();
+        public Task<IReadOnlyList<RefiningRecipe>> GetAllRefiningRecipesAsync()
+        {
+            IReadOnlyList<RefiningRecipe> result = _baselineRoot.RefiningRecipe ?? Array.Empty<RefiningRecipe>();
+            return Task.FromResult(result);
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<PropertyTypeDefinition>> GetAllPropertyTypeDefinitionsAsync() => throw new NotImplementedException();
+        public Task UpsertRefiningRecipesAsync(IReadOnlyList<RefiningRecipe> recipes)
+        {
+            _baselineRoot.RefiningRecipe = recipes.ToArray();
+            SaveBaselineData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertPropertyTypeDefinitionsAsync(IReadOnlyList<PropertyTypeDefinition> definitions) => throw new NotImplementedException();
+        public Task<IReadOnlyList<ResearchTimeEntry>> GetAllResearchTimesAsync()
+        {
+            IReadOnlyList<ResearchTimeEntry> result = _baselineRoot.ResearchTime ?? Array.Empty<ResearchTimeEntry>();
+            return Task.FromResult(result);
+        }
+
+        /// <inheritdoc/>
+        public Task UpsertResearchTimesAsync(IReadOnlyList<ResearchTimeEntry> entries)
+        {
+            _baselineRoot.ResearchTime = entries.ToArray();
+            SaveBaselineData();
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<PropertyTypeDefinition>> GetAllPropertyTypeDefinitionsAsync()
+        {
+            IReadOnlyList<PropertyTypeDefinition> result = _baselineRoot.PropertyType ?? Array.Empty<PropertyTypeDefinition>();
+            return Task.FromResult(result);
+        }
+
+        /// <inheritdoc/>
+        public Task UpsertPropertyTypeDefinitionsAsync(IReadOnlyList<PropertyTypeDefinition> definitions)
+        {
+            _baselineRoot.PropertyType = definitions.ToArray();
+            SaveBaselineData();
+            return Task.CompletedTask;
+        }
     }
 }
