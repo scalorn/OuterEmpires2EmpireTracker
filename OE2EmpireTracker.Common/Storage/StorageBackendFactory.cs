@@ -33,16 +33,20 @@ namespace OE2EmpireTracker.Common.Storage
             switch (type)
             {
                 case StorageBackendType.JsonSingleFile:
-                    throw new NotImplementedException("JsonSingleFileBackend not yet implemented");
+                    backend = new JsonSingleFileBackend(config);
+                    break;
                 case StorageBackendType.JsonMultiFile:
                     backend = new JsonMultiFileBackend(config.ConnectionString);
                     break;
                 case StorageBackendType.Sqlite:
-                    throw new NotImplementedException("SqliteBackend not yet implemented");
+                    backend = new SqliteBackend(config);
+                    break;
                 case StorageBackendType.DynamoDb:
-                    throw new NotImplementedException("DynamoDbBackend not yet implemented");
+                    backend = CreateDynamoDbBackend(config);
+                    break;
                 case StorageBackendType.Postgres:
-                    throw new NotImplementedException("PostgresBackend not yet implemented");
+                    backend = new PostgresBackend(config);
+                    break;
                 default:
                     throw new ArgumentException(
                         string.Format("Unsupported backend type: {0}", type),
@@ -51,6 +55,26 @@ namespace OE2EmpireTracker.Common.Storage
 
             await backend.InitializeAsync(ct).ConfigureAwait(false);
             return backend;
+        }
+
+        /// <summary>
+        /// Creates a DynamoDbBackend from configuration, choosing the 2-arg or
+        /// 3-arg constructor depending on whether ConnectionString is a URL.
+        /// </summary>
+        private static IStorageBackend CreateDynamoDbBackend(StorageBackendConfig config)
+        {
+            string tableName = !string.IsNullOrEmpty(config.TablePrefix)
+                ? config.TablePrefix
+                : config.ConnectionString;
+            string region = config.AwsRegion;
+
+            if (!string.IsNullOrEmpty(config.ConnectionString)
+                && config.ConnectionString.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+            {
+                return new DynamoDbBackend(tableName, region, config.ConnectionString);
+            }
+
+            return new DynamoDbBackend(tableName, region);
         }
     }
 }

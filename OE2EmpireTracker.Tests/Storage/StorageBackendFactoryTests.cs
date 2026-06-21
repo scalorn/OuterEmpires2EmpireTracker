@@ -7,6 +7,7 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.Data.Sqlite;
 using NUnit.Framework;
 using OE2EmpireTracker.Common.Interfaces;
 using OE2EmpireTracker.Common.Storage;
@@ -35,6 +36,9 @@ namespace OE2EmpireTracker.Tests.Storage
         [TearDown]
         public void TearDown()
         {
+            // Clear SQLite connection pool so file handles are released.
+            SqliteConnection.ClearAllPools();
+
             if (Directory.Exists(_tempDir))
             {
                 Directory.Delete(_tempDir, true);
@@ -116,30 +120,34 @@ namespace OE2EmpireTracker.Tests.Storage
         }
 
         /// <summary>
-        /// Req 8 Criterion 2: JsonSingleFile is a known type but currently
-        /// throws NotImplementedException from the factory.
+        /// Req 8 Criterion 2: JsonSingleFile type creates a JsonSingleFileBackend.
         /// </summary>
         [Test]
-        public void JsonSingleFile_ThrowsNotImplementedException()
+        public async Task JsonSingleFile_CreatesCorrectBackend()
         {
-            // Arrange
+            // Arrange — use the temp dir (constructor resolves files inside)
             var config = new StorageBackendConfig
             {
-                ConnectionString = Path.Combine(_tempDir, "PlayerData.json")
+                ConnectionString = _tempDir
             };
 
-            // Act & Assert
-            Assert.ThrowsAsync<NotImplementedException>(
-                () => StorageBackendFactory.CreateAsync(
-                    StorageBackendType.JsonSingleFile, config));
+            // Act
+            var backend = await StorageBackendFactory.CreateAsync(
+                StorageBackendType.JsonSingleFile, config);
+
+            // Assert
+            Assert.That(backend, Is.Not.Null);
+            Assert.That(backend, Is.InstanceOf<JsonSingleFileBackend>());
+            Assert.That(
+                backend.GetStorageInfo().BackendType,
+                Is.EqualTo("JsonSingleFile"));
         }
 
         /// <summary>
-        /// Req 8 Criterion 2: Sqlite is a known type but currently throws
-        /// NotImplementedException from the factory.
+        /// Req 8 Criterion 2: Sqlite type creates a SqliteBackend.
         /// </summary>
         [Test]
-        public void Sqlite_ThrowsNotImplementedException()
+        public async Task Sqlite_CreatesCorrectBackend()
         {
             // Arrange
             var config = new StorageBackendConfig
@@ -147,46 +155,56 @@ namespace OE2EmpireTracker.Tests.Storage
                 ConnectionString = Path.Combine(_tempDir, "test.db")
             };
 
-            // Act & Assert
-            Assert.ThrowsAsync<NotImplementedException>(
-                () => StorageBackendFactory.CreateAsync(
-                    StorageBackendType.Sqlite, config));
+            // Act
+            var backend = await StorageBackendFactory.CreateAsync(
+                StorageBackendType.Sqlite, config);
+
+            // Assert
+            Assert.That(backend, Is.Not.Null);
+            Assert.That(backend, Is.InstanceOf<SqliteBackend>());
+            Assert.That(
+                backend.GetStorageInfo().BackendType,
+                Is.EqualTo("Sqlite"));
         }
 
         /// <summary>
-        /// Req 8 Criterion 2: DynamoDb is a known type but currently throws
-        /// NotImplementedException from the factory.
+        /// Req 8 Criterion 2: DynamoDb type creates a DynamoDbBackend but
+        /// initialization fails when connecting to an invalid endpoint.
         /// </summary>
         [Test]
-        public void DynamoDb_ThrowsNotImplementedException()
+        public void DynamoDb_ThrowsOnInvalidEndpoint()
         {
-            // Arrange
+            // Arrange — point at a non-existent local endpoint
             var config = new StorageBackendConfig
             {
-                ConnectionString = "http://localhost:8111"
+                ConnectionString = "http://localhost:59999",
+                AwsRegion = "us-east-1",
+                TablePrefix = "TestTable"
             };
 
-            // Act & Assert
-            Assert.ThrowsAsync<NotImplementedException>(
+            // Act & Assert — CreateAsync calls InitializeAsync which
+            // attempts DescribeTable against the unreachable endpoint.
+            Assert.CatchAsync<Exception>(
                 () => StorageBackendFactory.CreateAsync(
                     StorageBackendType.DynamoDb, config));
         }
 
         /// <summary>
-        /// Req 8 Criterion 2: Postgres is a known type but currently throws
-        /// NotImplementedException from the factory.
+        /// Req 8 Criterion 2: Postgres type creates a PostgresBackend but
+        /// initialization fails when connecting to an invalid host.
         /// </summary>
         [Test]
-        public void Postgres_ThrowsNotImplementedException()
+        public void Postgres_ThrowsOnInvalidEndpoint()
         {
-            // Arrange
+            // Arrange — point at a non-existent Postgres server
             var config = new StorageBackendConfig
             {
-                ConnectionString = "Host=localhost;Database=test"
+                ConnectionString = "Host=localhost;Port=59999;Database=test;Timeout=2"
             };
 
-            // Act & Assert
-            Assert.ThrowsAsync<NotImplementedException>(
+            // Act & Assert — CreateAsync calls InitializeAsync which
+            // attempts to open the connection and run schema setup.
+            Assert.CatchAsync<Exception>(
                 () => StorageBackendFactory.CreateAsync(
                     StorageBackendType.Postgres, config));
         }
