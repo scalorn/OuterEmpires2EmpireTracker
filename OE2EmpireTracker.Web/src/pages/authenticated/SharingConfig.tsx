@@ -36,8 +36,8 @@ export function SharingConfig() {
       ownerCharacterUUID: characterUUID ?? '',
       targetType: editTargetType,
       targetUUID,
-      dataType: editDataType as string | null,
-      entityUUID: null,
+      dataType: (editDataType as string) ?? '',
+      entityUUID: '',
     };
     const updated = [...rules, newRule];
     setMutationError(null);

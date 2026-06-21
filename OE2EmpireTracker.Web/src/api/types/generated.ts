@@ -1,7 +1,7 @@
 // This file is auto-generated. Do not edit manually.
 // Regenerate with: npm run generate-types
-// Generated from: Models.cs, PermissionModels.cs
-// Generated at: 2026-05-26T01:10:22.040Z
+// Generated from: ServerModels.cs, PermissionModels.cs
+// Generated at: 2026-06-21T19:15:20.165Z
 
 export type TokenRole = 'Owner' | 'FactionLeader' | 'Character';
 
@@ -22,9 +22,9 @@ export interface RateLimitConfig {
 export interface ApiToken {
   id: string;
   tokenHash: string;
-  characterUUID: string | null;
+  characterUUID: string;
   role: TokenRole;
-  factionUUID: string | null;
+  factionUUID: string;
   createdUtc: string;
   lastUsedUtc: string | null;
   isRevoked: boolean;
@@ -45,8 +45,8 @@ export interface SharingRule {
   ownerCharacterUUID: string;
   targetUUID: string;
   targetType: SharingTargetType;
-  dataType: string | null;
-  entityUUID: string | null;
+  dataType: string;
+  entityUUID: string;
 }
 
 export interface CharacterPreferences {
@@ -56,7 +56,7 @@ export interface CharacterPreferences {
 
 export interface EntityMetadata {
   lastModifiedUtc: string;
-  modifiedByTokenId: string | null;
+  modifiedByTokenId: string;
 }
 
 export interface ServerFaction {
@@ -70,7 +70,7 @@ export interface ServerFaction {
 export interface ServerCharacter {
   uuid: string;
   name: string;
-  factionUUID: string | null;
+  factionUUID: string;
   metadata: EntityMetadata;
 }
 
@@ -133,17 +133,17 @@ export interface FactionGroupSharingRule {
   minClearanceLevelUUID: string;
 }
 
+export interface FactionMemberCapability {
+  characterUUID: string;
+  factionUUID: string;
+  capabilityUUID: string;
+}
+
 export interface FactionMemberPermissions {
   characterUUID: string;
   factionUUID: string;
   groupUUID: string | null;
   clearanceLevelUUID: string;
-}
-
-export interface FactionMemberCapability {
-  characterUUID: string;
-  factionUUID: string;
-  capabilityUUID: string;
 }
 
 export interface CharacterCapability {

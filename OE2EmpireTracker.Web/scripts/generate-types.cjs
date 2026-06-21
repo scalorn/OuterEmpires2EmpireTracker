@@ -11,13 +11,13 @@
 const fs = require('fs');
 const path = require('path');
 
-const SERVER_DIR = path.resolve(__dirname, '../../OE2EmpireTracker.Server/Storage');
+const COMMON_MODELS_DIR = path.resolve(__dirname, '../../OE2EmpireTracker.Common/Models');
 const OUTPUT_FILE = path.resolve(__dirname, '../src/api/types/generated.ts');
 
 // C# files to parse for models
 const MODEL_FILES = [
-  path.join(SERVER_DIR, 'Models.cs'),
-  path.join(SERVER_DIR, 'PermissionModels.cs'),
+  path.join(COMMON_MODELS_DIR, 'ServerModels.cs'),
+  path.join(COMMON_MODELS_DIR, 'PermissionModels.cs'),
 ];
 
 // C# type → TypeScript type mapping
