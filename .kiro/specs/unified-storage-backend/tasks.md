@@ -229,7 +229,7 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Verification: getDiagnostics — compiles cleanly
 
 - [ ] 7. Postgres Backend — Full Relational Rewrite
-  - [~] 7.1 Create PostgresBackend scaffolding: class, constructor, InitializeAsync, connection management, Polly retry policy
+  - [-] 7.1 Create PostgresBackend scaffolding: class, constructor, InitializeAsync, connection management, Polly retry policy
     - Satisfies: Req 6, Criteria 3-5; Req 9, Criterion 8
     - Inputs: design.md (PostgresBackend section), Common/Interfaces/IStorageBackend.cs
     - Output: OE2EmpireTracker.Common/Storage/PostgresBackend.cs (scaffolding + _metadata + retry)
