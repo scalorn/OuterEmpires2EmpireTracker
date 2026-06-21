@@ -140,12 +140,12 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Inputs: design.md (SqliteBackend section), Common/Interfaces/IStorageBackend.cs
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (scaffolding only)
     - Verification: getDiagnostics — compiles cleanly
-  - [-] 5.2 SQLite schema DDL: Colonies, ColonyStructures, ColonyStructureProperties, ColonyStructureWorkers tables
+  - [x] 5.2 SQLite schema DDL: Colonies, ColonyStructures, ColonyStructureProperties, ColonyStructureWorkers tables
     - Satisfies: Req 4, Criteria 1-4, 10-11, 13; Req 9, Criterion 3
     - Inputs: design.md (Colony schema), Common/Storage/SqliteBackend.cs (from 5.1)
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (schema string extended)
     - Verification: getDiagnostics — compiles cleanly
-  - [~] 5.3 SQLite schema DDL: Items (unified), Blueprints, BlueprintProperties, BlueprintResources tables
+  - [-] 5.3 SQLite schema DDL: Items (unified), Blueprints, BlueprintProperties, BlueprintResources tables
     - Satisfies: Req 4, Criteria 2-3, 10-12, 14
     - Inputs: design.md (Items + Blueprint schema)
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (schema string extended)

@@ -33,7 +33,7 @@ namespace OE2EmpireTracker.Common.Storage
         /// Schema DDL concatenated from tasks 5.2-5.11. ExecuteSchema runs this
         /// against a fresh database.
         /// </summary>
-        private static readonly string SchemaDdl = ColonySchema;
+        private static readonly string SchemaDdl = ColonySchema + ItemsBlueprintSchema;
 
         private const string ColonySchema = @"
 CREATE TABLE IF NOT EXISTS Colonies (
@@ -111,6 +111,74 @@ CREATE TABLE IF NOT EXISTS ColonyStructureWorkers (
     Key TEXT NOT NULL,
     Value TEXT NOT NULL,
     PRIMARY KEY (StructureUUID, Key)
+);
+";
+
+        private const string ItemsBlueprintSchema = @"
+-- UNIFIED ITEMS TABLE
+CREATE TABLE IF NOT EXISTS Items (
+    UUID TEXT PRIMARY KEY,
+    ParentUUID TEXT NOT NULL,
+    ParentType TEXT NOT NULL,
+    ItemType TEXT NOT NULL,
+    BaseItemTypeID TEXT NOT NULL DEFAULT '',
+    Name TEXT NOT NULL DEFAULT '',
+    NickName TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT '',
+    Quantity INTEGER NOT NULL DEFAULT 0,
+    ResourcePurity TEXT NOT NULL DEFAULT '',
+    Volume REAL NOT NULL DEFAULT 0,
+    CurrentHP INTEGER NOT NULL DEFAULT 0,
+    MaxHP INTEGER NOT NULL DEFAULT 0,
+    MaxRepairPercent REAL NOT NULL DEFAULT 0,
+    Mass REAL,
+    GameItemId INTEGER,
+    JobRef INTEGER,
+    JobDeliveryLoc INTEGER,
+    HealthPercentage REAL,
+    LastRepairHealthPercentage REAL,
+    Evolution INTEGER,
+    ShipPartType TEXT NOT NULL DEFAULT '',
+    JobName TEXT NOT NULL DEFAULT '',
+    JobTrack TEXT NOT NULL DEFAULT ''
+);
+
+CREATE INDEX IF NOT EXISTS IX_Items_Parent ON Items (ParentUUID, ParentType);
+
+-- BLUEPRINT
+CREATE TABLE IF NOT EXISTS Blueprints (
+    UUID TEXT PRIMARY KEY,
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    BaseBlueprintUUID TEXT,
+    LegacyUUID TEXT,
+    BluePrintType TEXT,
+    TechLevel TEXT,
+    Class INTEGER NOT NULL DEFAULT 0,
+    Evolution INTEGER NOT NULL DEFAULT 0,
+    CopyCost INTEGER NOT NULL DEFAULT 0,
+    ItemType TEXT NOT NULL,
+    BaseItemTypeID TEXT NOT NULL DEFAULT '',
+    Name TEXT NOT NULL DEFAULT '',
+    NickName TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT '',
+    Quantity INTEGER NOT NULL DEFAULT 0,
+    Volume REAL NOT NULL DEFAULT 0,
+    GameApiBlueprintId INTEGER,
+    LastDetailImportUtc TEXT
+);
+
+CREATE TABLE IF NOT EXISTS BlueprintProperties (
+    BlueprintUUID TEXT NOT NULL REFERENCES Blueprints(UUID) ON DELETE CASCADE,
+    Key TEXT NOT NULL,
+    Value TEXT NOT NULL,
+    PRIMARY KEY (BlueprintUUID, Key)
+);
+
+CREATE TABLE IF NOT EXISTS BlueprintResources (
+    BlueprintUUID TEXT NOT NULL REFERENCES Blueprints(UUID) ON DELETE CASCADE,
+    ResourceName TEXT NOT NULL,
+    Amount INTEGER NOT NULL,
+    PRIMARY KEY (BlueprintUUID, ResourceName)
 );
 ";
 
