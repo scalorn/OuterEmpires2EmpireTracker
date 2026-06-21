@@ -191,7 +191,7 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (schema complete)
     - Verification: getDiagnostics — compiles cleanly
 
-- [ ] 6. SQLite Backend — CRUD Implementation
+- [x] 6. SQLite Backend — CRUD Implementation
   - [x] 6.1 SQLite CRUD: Server-global entities (ServerFaction, ServerCharacter, ApiToken, MembershipAction, StarSystem, SharingRules, CharacterPreferences, ColonySummary)
     - Satisfies: Req 4, Criteria 1, 9-10; Req 1, Criterion 3
     - Inputs: Common/Storage/SqliteBackend.cs (from 5.11), IStorageBackend interface
@@ -228,7 +228,7 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (complete — all IStorageBackend methods implemented)
     - Verification: getDiagnostics — compiles cleanly
 
-- [ ] 7. Postgres Backend — Full Relational Rewrite
+- [x] 7. Postgres Backend — Full Relational Rewrite
   - [x] 7.1 Create PostgresBackend scaffolding: class, constructor, InitializeAsync, connection management, Polly retry policy
     - Satisfies: Req 6, Criteria 3-5; Req 9, Criterion 8
     - Inputs: design.md (PostgresBackend section), Common/Interfaces/IStorageBackend.cs
@@ -255,7 +255,7 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Output: OE2EmpireTracker.Common/Storage/PostgresBackend.cs (complete)
     - Verification: getDiagnostics — compiles cleanly
 
-- [ ] 8. SQLite Schema Migration and Legacy Migration
+- [x] 8. SQLite Schema Migration and Legacy Migration
   - [x] 8.1 Implement SQLite schema versioning: _metadata read/write, migration runner, rollback on failure, StorageCorruptionException
     - Satisfies: Req 9, Criteria 1-2, 6-7
     - Inputs: Common/Storage/SqliteBackend.cs (from 6.7)
@@ -348,13 +348,13 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Output: OE2EmpireTracker.Tests/Storage/DynamoDbBackendErrorTests.cs
     - Verification: vstest.console — tests pass (uses invalid endpoint to simulate unreachable)
 
-- [ ] 12. Property Tests
-  - [-] 12.1 Write property tests: Entity Count Preservation across JsonSingleFile and SQLite backends
+- [x] 12. Property Tests
+  - [x] 12.1 Write property tests: Entity Count Preservation across JsonSingleFile and SQLite backends
     - Satisfies: Correctness Property 1 (design.md)
     - Inputs: All backend implementations, FsCheck 2.16.6 patterns
     - Output: OE2EmpireTracker.Tests/Storage/StorageCountPreservationPropertyTests.cs
     - Verification: vstest.console — property tests pass
-  - [-] 12.2 Write property tests: Atomic Write Safety for JsonSingleFile and SQLite backends
+  - [x] 12.2 Write property tests: Atomic Write Safety for JsonSingleFile and SQLite backends
     - Satisfies: Correctness Property 3 (design.md); Req 10, Criteria 3-4
     - Inputs: All backend implementations, FsCheck 2.16.6 patterns
     - Output: OE2EmpireTracker.Tests/Storage/AtomicWritePropertyTests.cs
