@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.Data.Sqlite;
 using NUnit.Framework;
 using OE2EmpireTracker.Common.Storage;
 using OE2EmpireTracker.Models;
@@ -35,6 +36,7 @@ namespace OE2EmpireTracker.Tests.Storage
         [TearDown]
         public void TearDown()
         {
+            Microsoft.Data.Sqlite.SqliteConnection.ClearAllPools();
             if (File.Exists(_dbPath))
             {
                 File.Delete(_dbPath);

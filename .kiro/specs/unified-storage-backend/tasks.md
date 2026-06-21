@@ -300,7 +300,7 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Verification: vstest.console — new tests pass
 
 - [ ] 10. Unit Tests — SQLite and Postgres Backends
-  - [-] 10.1 Write unit tests for SqliteBackend: schema creation on new DB, WAL mode, _metadata table
+  - [x] 10.1 Write unit tests for SqliteBackend: schema creation on new DB, WAL mode, _metadata table
     - Satisfies: Req 4, Criteria 5-6; Req 9, Criteria 1-3
     - Inputs: Common/Storage/SqliteBackend.cs
     - Output: OE2EmpireTracker.Tests/Storage/SqliteBackendSchemaTests.cs
