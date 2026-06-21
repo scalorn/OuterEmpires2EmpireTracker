@@ -327,7 +327,7 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Inputs: design.md (DynamoDB Local config: JDK path, JAR path, port 8111, -inMemory flag)
     - Output: OE2EmpireTracker.Tests/Storage/DynamoDbLocalFixture.cs
     - Verification: vstest.console — fixture starts DynamoDB Local and creates tables successfully
-  - [-] 11.2 Write unit tests for DynamoDbBackend: InitializeAsync, ValidateConnectionAsync, GetStorageInfo, table creation
+  - [x] 11.2 Write unit tests for DynamoDbBackend: InitializeAsync, ValidateConnectionAsync, GetStorageInfo, table creation
     - Satisfies: Req 5, Criteria 1-2, 4
     - Inputs: Common/Storage/DynamoDbBackend.cs, DynamoDbLocalFixture
     - Output: OE2EmpireTracker.Tests/Storage/DynamoDbBackendLifecycleTests.cs
