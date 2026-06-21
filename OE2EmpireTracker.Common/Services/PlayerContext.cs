@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using NLog;
+using OE2EmpireTracker.Common.Interfaces;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Persistence;
 
@@ -300,6 +301,18 @@ namespace OE2EmpireTracker.Services
         public static string FilePath { get; set; } = "PlayerData.json";
 
         /// <summary>
+        /// The storage backend used for persistence. When null and not in ServerOnly mode,
+        /// WriteContext logs a warning and returns (backward compatibility for tests).
+        /// </summary>
+        public IStorageBackend StorageBackend { get; set; }
+
+        /// <summary>
+        /// The dirty tracker instance. Services call MarkDirty/MarkDeleted through
+        /// PlayerContext to record mutations.
+        /// </summary>
+        public DirtyTracker DirtyTracker { get; } = new DirtyTracker();
+
+        /// <summary>
         /// UUID of the currently selected player. Forms filter data by this value.
         /// </summary>
         public string CurrentPlayerUUID
@@ -408,8 +421,28 @@ namespace OE2EmpireTracker.Services
 
         public static void Reset()
         {
+            if (_instance != null)
+            {
+                _instance.DirtyTracker.ClearAll();
+                _instance.StorageBackend = null;
+            }
+
             _instance = null;
         }
+
+        /// <summary>
+        /// Marks an entity as dirty (modified). Delegates to DirtyTracker.
+        /// </summary>
+        /// <typeparam name="T">The entity type (Colony, Blueprint, etc.).</typeparam>
+        /// <param name="entityUUID">The UUID of the modified entity.</param>
+        public void MarkDirty<T>(string entityUUID) => DirtyTracker.MarkDirty<T>(entityUUID);
+
+        /// <summary>
+        /// Marks an entity as deleted. Delegates to DirtyTracker.
+        /// </summary>
+        /// <typeparam name="T">The entity type.</typeparam>
+        /// <param name="entityUUID">The UUID of the deleted entity.</param>
+        public void MarkDeleted<T>(string entityUUID) => DirtyTracker.MarkDeleted<T>(entityUUID);
 
         /// <summary>
         /// Notifies subscribers that the player profile list has changed.

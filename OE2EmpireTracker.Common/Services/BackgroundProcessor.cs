@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using NLog;
 using OE2EmpireTracker.Client;
 using OE2EmpireTracker.Constants;
-using OE2EmpireTracker.Interfaces;
 using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Services
@@ -20,7 +19,7 @@ namespace OE2EmpireTracker.Services
 
         private readonly PlayerContext _playerContext;
 
-        private readonly IColonyProcessingContext _colonyProcessingContext;
+        private readonly ColonyService _colonyService;
 
         private readonly Func<int> _getTickIntervalMs;
 
@@ -49,8 +48,7 @@ namespace OE2EmpireTracker.Services
         {
             _playerContext = playerContext ?? throw new ArgumentNullException(nameof(playerContext));
             _getTickIntervalMs = getTickIntervalMs ?? (() => TickIntervalMs);
-            _colonyProcessingContext = new ColonyProcessingContextAdapter(
-                playerContext, EmpireContext.GetInstance());
+            _colonyService = new ColonyService(playerContext);
         }
 
         /// <summary>
@@ -216,38 +214,17 @@ namespace OE2EmpireTracker.Services
 
                     try
                     {
-                        if (!colony.ColonyLock.TryEnterWriteLock(Colony.WriteLockTimeoutMs))
-                        {
-                            Log.Warn("BackgroundProcessor: write lock timeout on colony {0}, skipping", colony.UUID);
-                            continue;
-                        }
-
-                        try
-                        {
-                            colony.ProcessColony(_colonyProcessingContext);
-                        }
-                        finally
-                        {
-                            colony.ColonyLock.ExitWriteLock();
-                        }
-
+                        _colonyService.ProcessColonyTick(colony.UUID, 0);
                         processedCount++;
+                    }
+                    catch (TimeoutException)
+                    {
+                        Log.Warn("BackgroundProcessor: write lock timeout on colony {0}, skipping", colony.UUID);
                     }
                     catch (Exception ex)
                     {
                         Log.Error(ex, "Error processing colony {0} ({1})", colony.ColonyName, colony.UUID);
                         hadError = true;
-                    }
-
-                    // Fire event outside the per-colony try/catch so a UI handler
-                    // exception does not mark the colony as failed or skip the count.
-                    try
-                    {
-                        _playerContext.OnColonyDataChanged(colony.UUID);
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Error(ex, "Error firing ColonyDataChanged for colony {0} ({1})", colony.ColonyName, colony.UUID);
                     }
                 }
 
@@ -297,7 +274,7 @@ namespace OE2EmpireTracker.Services
 
                 bool cascadeModified = modifiedPlanUUIDs != null && modifiedPlanUUIDs.Count > 0;
 
-                if (processedCount > 0 || cascadeModified || overflowDeliveries > 0 || supplyChainRequests > 0)
+                if (cascadeModified || overflowDeliveries > 0 || supplyChainRequests > 0)
                 {
                     try
                     {
@@ -305,14 +282,14 @@ namespace OE2EmpireTracker.Services
                     }
                     catch (Exception ex)
                     {
-                        Log.Error(ex, "Error persisting context after processing {0} colonies", processedCount);
+                        Log.Error(ex, "Error persisting context after cascade/overflow/supply-chain processing");
                         hadError = true;
                     }
+                }
 
-                    if (processedCount > 0)
-                    {
-                        Log.Info("BackgroundProcessor cycle complete. Processed {0} colonies.", processedCount);
-                    }
+                if (processedCount > 0)
+                {
+                    Log.Info("BackgroundProcessor cycle complete. Processed {0} colonies.", processedCount);
                 }
 
                 LastCycleHadError = hadError;

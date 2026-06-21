@@ -64,7 +64,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Verification: Build succeeds; existing Postgres backend tests pass_
 
 
-- [ ] 2. Prerequisite: Add GetAllCharacterUUIDsAsync to IStorageBackend
+- [x] 2. Prerequisite: Add GetAllCharacterUUIDsAsync to IStorageBackend
   - [x] 2.1 Add GetAllCharacterUUIDsAsync to IStorageBackend interface
     - Add `Task<IReadOnlyList<string>> GetAllCharacterUUIDsAsync()` to IStorageBackend
     - _Satisfies: Req 6, Criterion 3_
@@ -108,7 +108,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Storage/DynamoDbBackend.cs (modified)_
     - _Verification: Build succeeds; unit test for character discovery_
 
-  - [-] 2.7 Write unit tests for GetAllCharacterUUIDsAsync
+  - [x] 2.7 Write unit tests for GetAllCharacterUUIDsAsync
     - Test each backend: empty returns empty list; after upserting entities for 2 characters, returns both UUIDs
     - Use JsonSingleFile and JsonMultiFile (can test locally without external services)
     - _Satisfies: Req 6, Criterion 3_
@@ -117,7 +117,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Verification: Tests pass in vstest.console_
 
 - [ ] 3. Prerequisite: BackgroundProcessor colony mutation routing
-  - [-] 3.1 Add ColonyService.ProcessColonyTick method
+  - [x] 3.1 Add ColonyService.ProcessColonyTick method
     - Create a new public method `ProcessColonyTick(string colonyUUID, double elapsedSeconds)` in ColonyService
     - Look up colony by UUID, call existing Colony.ProcessColony logic, then call MarkDirty<Colony>(uuid)
     - Note: ColonyService is 470 lines. Check how it accesses PlayerContext (likely via PlayerContext.GetInstance())
@@ -126,7 +126,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/ColonyService.cs (modified)_
     - _Verification: Build succeeds_
 
-  - [~] 3.2 Refactor BackgroundProcessor to use ColonyService.ProcessColonyTick
+  - [-] 3.2 Refactor BackgroundProcessor to use ColonyService.ProcessColonyTick
     - Replace direct `colony.ProcessColony(elapsed)` calls with `ColonyService.ProcessColonyTick(colony.UUID, elapsed)`
     - BackgroundProcessor is 644 lines. Search for "ProcessColony" to find call sites.
     - _Satisfies: Req 2, Criterion 4_
@@ -143,7 +143,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
   - Verify decimal precision fix and GetAllCharacterUUIDsAsync implementations are solid
 
 - [ ] 5. DirtyTracker implementation
-  - [-] 5.1 Create DirtyTracker class
+  - [x] 5.1 Create DirtyTracker class
     - Create Common/Services/DirtyTracker.cs with DirtyKey struct
     - Implement MarkDirty<T>, MarkDeleted<T>, GetDirtyUUIDs<T>, GetDeletedUUIDs<T>
     - Implement ClearDirty<T>, ClearDeleted<T>, ClearAll, HasChanges
@@ -154,7 +154,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/DirtyTracker.cs (NEW)_
     - _Verification: Build succeeds_
 
-  - [~] 5.2 Write unit tests for DirtyTracker
+  - [-] 5.2 Write unit tests for DirtyTracker
     - Test MarkDirty/MarkDeleted add entries, GetDirtyUUIDs/GetDeletedUUIDs return them
     - Test ClearDirty/ClearDeleted remove individual entries
     - Test ClearAll empties both sets
@@ -167,7 +167,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
 
 
 - [ ] 6. PlayerContext storage backend integration — properties, map, and load
-  - [~] 6.1 Add StorageBackend and DirtyTracker properties to PlayerContext
+  - [-] 6.1 Add StorageBackend and DirtyTracker properties to PlayerContext
     - Add `public IStorageBackend StorageBackend { get; set; }` property
     - Add `public DirtyTracker DirtyTracker { get; }` property (initialized in constructor)
     - Add `public void MarkDirty<T>(string entityUUID)` and `MarkDeleted<T>(string entityUUID)` delegate methods
