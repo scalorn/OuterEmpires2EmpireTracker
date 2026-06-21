@@ -256,12 +256,12 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Verification: getDiagnostics — compiles cleanly
 
 - [ ] 8. SQLite Schema Migration and Legacy Migration
-  - [-] 8.1 Implement SQLite schema versioning: _metadata read/write, migration runner, rollback on failure, StorageCorruptionException
+  - [x] 8.1 Implement SQLite schema versioning: _metadata read/write, migration runner, rollback on failure, StorageCorruptionException
     - Satisfies: Req 9, Criteria 1-2, 6-7
     - Inputs: Common/Storage/SqliteBackend.cs (from 6.7)
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (migration infrastructure added)
     - Verification: getDiagnostics — compiles cleanly
-  - [~] 8.2 Implement SQLite legacy JSON-blob migration: detect old schema, read JSON blobs, insert into normalized tables
+  - [-] 8.2 Implement SQLite legacy JSON-blob migration: detect old schema, read JSON blobs, insert into normalized tables
     - Satisfies: Req 11, Criterion 5
     - Inputs: Common/Storage/SqliteBackend.cs (from 8.1), old schema structure (JSON-blob tables)
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (legacy migration logic added)

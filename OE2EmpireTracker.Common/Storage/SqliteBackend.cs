@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
+using Newtonsoft.Json;
 using NLog;
 using OE2EmpireTracker.Common.Interfaces;
 using OE2EmpireTracker.Common.Models;
@@ -1031,6 +1032,11 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
                 else
                 {
                     Log.Debug("SQLite database already at schema version {0}", version);
+                }
+
+                if (DetectLegacySchema(conn))
+                {
+                    MigrateLegacyData(conn);
                 }
             }
 
@@ -5403,6 +5409,22 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
         // ═══════════════════════════════════════════════════════════
 
         /// <summary>
+        /// Detects whether the legacy JSON-blob EntityData table exists in the
+        /// database, indicating the old server schema (pre-normalized).
+        /// </summary>
+        /// <param name="conn">An open SQLite connection.</param>
+        /// <returns>True if the legacy EntityData table exists.</returns>
+        private static bool DetectLegacySchema(SqliteConnection conn)
+        {
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT name FROM sqlite_master WHERE type='table' AND name='EntityData'";
+                var result = cmd.ExecuteScalar();
+                return result != null;
+            }
+        }
+
+        /// <summary>
         /// Applies pending schema migrations sequentially from <paramref name="fromVersion"/>
         /// up to <see cref="CurrentSchemaVersion"/>. Each migration runs inside its own
         /// transaction; on failure the transaction is rolled back and a
@@ -8200,6 +8222,280 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
             return props.ToArray();
         }
 
+        /// <summary>
+        /// Migrates all data from the legacy JSON-blob EntityData table into the
+        /// new normalized relational tables. Each entity is deserialized from its
+        /// JSON blob and inserted via the existing Upsert methods. Individual
+        /// failures are logged and skipped so migration can continue with partial
+        /// data. The old EntityData table is dropped after migration completes.
+        /// </summary>
+        /// <param name="conn">An open SQLite connection.</param>
+        private void MigrateLegacyData(SqliteConnection conn)
+        {
+            Log.Info("Legacy JSON-blob schema detected. Migrating to normalized schema...");
+
+            var entities = new List<LegacyEntity>();
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT EntityType, EntityId, CharacterUUID, JsonData FROM EntityData";
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        entities.Add(new LegacyEntity
+                        {
+                            EntityType = reader.GetString(0),
+                            EntityId = reader.GetString(1),
+                            CharacterUUID = reader.IsDBNull(2) ? null : reader.GetString(2),
+                            JsonData = reader.GetString(3),
+                        });
+                    }
+                }
+            }
+
+            int migrated = 0;
+            foreach (var entity in entities)
+            {
+                try
+                {
+                    MigrateSingleEntity(entity);
+                    migrated++;
+                }
+                catch (Exception ex)
+                {
+                    Log.Warn(
+                        ex,
+                        "Failed to migrate legacy entity {0}/{1}, skipping",
+                        entity.EntityType,
+                        entity.EntityId);
+                }
+            }
+
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "DROP TABLE IF EXISTS EntityData";
+                cmd.ExecuteNonQuery();
+            }
+
+            Log.Info("Legacy migration complete. Migrated {0} of {1} entities.", migrated, entities.Count);
+        }
+
+        /// <summary>
+        /// Deserializes a single legacy entity from its JSON blob and inserts it
+        /// into the appropriate normalized table via the existing Upsert methods.
+        /// </summary>
+        /// <param name="entity">The legacy entity row data.</param>
+        private void MigrateSingleEntity(LegacyEntity entity)
+        {
+            string charUUID = entity.CharacterUUID ?? string.Empty;
+            string json = entity.JsonData;
+
+            switch (entity.EntityType)
+            {
+                case "Colony":
+                    var colony = JsonConvert.DeserializeObject<Colony>(json, JsonSettings.SerializerSettings);
+                    if (colony != null)
+                    {
+                        UpsertColonyAsync(charUUID.Length > 0 ? charUUID : colony.OwnerUUID, colony).GetAwaiter().GetResult();
+                    }
+
+                    break;
+
+                case "Blueprint":
+                    var bp = JsonConvert.DeserializeObject<Blueprint>(json, JsonSettings.SerializerSettings);
+                    if (bp != null)
+                    {
+                        UpsertBlueprintAsync(charUUID.Length > 0 ? charUUID : bp.OwnerUUID, bp).GetAwaiter().GetResult();
+                    }
+
+                    break;
+
+                case "Survey":
+                    var survey = JsonConvert.DeserializeObject<Survey>(json, JsonSettings.SerializerSettings);
+                    if (survey != null)
+                    {
+                        UpsertSurveyAsync(charUUID.Length > 0 ? charUUID : survey.OwnerUUID, survey).GetAwaiter().GetResult();
+                    }
+
+                    break;
+
+                case "PlayerProfile":
+                    var profile = JsonConvert.DeserializeObject<PlayerProfile>(json, JsonSettings.SerializerSettings);
+                    if (profile != null)
+                    {
+                        UpsertPlayerProfileAsync(charUUID.Length > 0 ? charUUID : profile.UUID, profile).GetAwaiter().GetResult();
+                    }
+
+                    break;
+
+                case "DeliveryRoute":
+                    var route = JsonConvert.DeserializeObject<DeliveryRoute>(json, JsonSettings.SerializerSettings);
+                    if (route != null)
+                    {
+                        UpsertDeliveryRouteAsync(charUUID.Length > 0 ? charUUID : route.OwnerUUID, route).GetAwaiter().GetResult();
+                    }
+
+                    break;
+
+                case "DeliveryPlan":
+                    var plan = JsonConvert.DeserializeObject<DeliveryPlan>(json, JsonSettings.SerializerSettings);
+                    if (plan != null)
+                    {
+                        UpsertDeliveryPlanAsync(charUUID.Length > 0 ? charUUID : plan.OwnerUUID, plan).GetAwaiter().GetResult();
+                    }
+
+                    break;
+
+                case "Ship":
+                    var ship = JsonConvert.DeserializeObject<Ship>(json, JsonSettings.SerializerSettings);
+                    if (ship != null)
+                    {
+                        UpsertShipAsync(charUUID.Length > 0 ? charUUID : ship.OwnerUUID, ship).GetAwaiter().GetResult();
+                    }
+
+                    break;
+
+                case "ShipTemplate":
+                    var template = JsonConvert.DeserializeObject<ShipTemplate>(json, JsonSettings.SerializerSettings);
+                    if (template != null)
+                    {
+                        UpsertShipTemplateAsync(charUUID.Length > 0 ? charUUID : template.OwnerUUID, template).GetAwaiter().GetResult();
+                    }
+
+                    break;
+
+                case "MarketListing":
+                    var listing = JsonConvert.DeserializeObject<MarketListing>(json, JsonSettings.SerializerSettings);
+                    if (listing != null)
+                    {
+                        UpsertMarketListingAsync(charUUID.Length > 0 ? charUUID : listing.OwnerUUID, listing).GetAwaiter().GetResult();
+                    }
+
+                    break;
+
+                case "MarketTransaction":
+                    var mtx = JsonConvert.DeserializeObject<MarketTransaction>(json, JsonSettings.SerializerSettings);
+                    if (mtx != null)
+                    {
+                        UpsertMarketTransactionAsync(charUUID.Length > 0 ? charUUID : mtx.OwnerUUID, mtx).GetAwaiter().GetResult();
+                    }
+
+                    break;
+
+                case "PricingPlan":
+                    var pricing = JsonConvert.DeserializeObject<PricingPlan>(json, JsonSettings.SerializerSettings);
+                    if (pricing != null)
+                    {
+                        UpsertPricingPlanAsync(charUUID.Length > 0 ? charUUID : pricing.OwnerUUID, pricing).GetAwaiter().GetResult();
+                    }
+
+                    break;
+
+                case "StockPlan":
+                    var stockPlan = JsonConvert.DeserializeObject<StockPlan>(json, JsonSettings.SerializerSettings);
+                    if (stockPlan != null)
+                    {
+                        UpsertStockPlanAsync(charUUID.Length > 0 ? charUUID : stockPlan.OwnerUUID, stockPlan).GetAwaiter().GetResult();
+                    }
+
+                    break;
+
+                case "StockProfile":
+                    var stockProfile = JsonConvert.DeserializeObject<StockProfile>(json, JsonSettings.SerializerSettings);
+                    if (stockProfile != null)
+                    {
+                        UpsertStockProfileAsync(charUUID.Length > 0 ? charUUID : stockProfile.OwnerUUID, stockProfile).GetAwaiter().GetResult();
+                    }
+
+                    break;
+
+                case "BuildPlan":
+                    var buildPlan = JsonConvert.DeserializeObject<BuildPlan>(json, JsonSettings.SerializerSettings);
+                    if (buildPlan != null)
+                    {
+                        UpsertBuildPlanAsync(charUUID.Length > 0 ? charUUID : buildPlan.OwnerUUID, buildPlan).GetAwaiter().GetResult();
+                    }
+
+                    break;
+
+                case "SupplyChain":
+                    var supplyChain = JsonConvert.DeserializeObject<SupplyChain>(json, JsonSettings.SerializerSettings);
+                    if (supplyChain != null)
+                    {
+                        UpsertSupplyChainAsync(charUUID.Length > 0 ? charUUID : supplyChain.OwnerUUID, supplyChain).GetAwaiter().GetResult();
+                    }
+
+                    break;
+
+                case "Asteroid":
+                    var asteroid = JsonConvert.DeserializeObject<Asteroid>(json, JsonSettings.SerializerSettings);
+                    if (asteroid != null)
+                    {
+                        UpsertAsteroidAsync(charUUID.Length > 0 ? charUUID : asteroid.OwnerUUID, asteroid).GetAwaiter().GetResult();
+                    }
+
+                    break;
+
+                case "Station":
+                    var station = JsonConvert.DeserializeObject<Station>(json, JsonSettings.SerializerSettings);
+                    if (station != null)
+                    {
+                        UpsertStationAsync(charUUID.Length > 0 ? charUUID : station.OwnerUUID, station).GetAwaiter().GetResult();
+                    }
+
+                    break;
+
+                case "Faction":
+                    var faction = JsonConvert.DeserializeObject<Faction>(json, JsonSettings.SerializerSettings);
+                    if (faction != null)
+                    {
+                        UpsertFactionForCharacterAsync(charUUID, faction).GetAwaiter().GetResult();
+                    }
+
+                    break;
+
+                case "ExternalCharacter":
+                    var extChar = JsonConvert.DeserializeObject<ExternalCharacter>(json, JsonSettings.SerializerSettings);
+                    if (extChar != null)
+                    {
+                        UpsertExternalCharacterAsync(charUUID, extChar).GetAwaiter().GetResult();
+                    }
+
+                    break;
+
+                case "WarehouseOverflowRule":
+                    var overflow = JsonConvert.DeserializeObject<WarehouseOverflowRule>(json, JsonSettings.SerializerSettings);
+                    if (overflow != null)
+                    {
+                        UpsertWarehouseOverflowRuleAsync(charUUID, overflow).GetAwaiter().GetResult();
+                    }
+
+                    break;
+
+                case "MailMessage":
+                    var mail = JsonConvert.DeserializeObject<MailMessage>(json, JsonSettings.SerializerSettings);
+                    if (mail != null)
+                    {
+                        UpsertMailMessageAsync(charUUID, mail).GetAwaiter().GetResult();
+                    }
+
+                    break;
+
+                case "BankingTransaction":
+                    var bankTx = JsonConvert.DeserializeObject<BankingTransaction>(json, JsonSettings.SerializerSettings);
+                    if (bankTx != null)
+                    {
+                        UpsertBankingTransactionAsync(charUUID, bankTx).GetAwaiter().GetResult();
+                    }
+
+                    break;
+
+                default:
+                    Log.Debug("Unknown legacy entity type: {0}", entity.EntityType);
+                    break;
+            }
+        }
+
         private SqliteConnection OpenConnection()
         {
             var conn = new SqliteConnection(_connectionString);
@@ -8226,6 +8522,24 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
                 cmd.CommandText = SchemaDdl;
                 cmd.ExecuteNonQuery();
             }
+        }
+
+        /// <summary>
+        /// Represents a single row from the legacy EntityData table.
+        /// </summary>
+        private sealed class LegacyEntity
+        {
+            /// <summary>Gets or sets the entity type discriminator (e.g. "Colony", "Blueprint").</summary>
+            public string EntityType { get; set; }
+
+            /// <summary>Gets or sets the entity ID (typically a UUID).</summary>
+            public string EntityId { get; set; }
+
+            /// <summary>Gets or sets the owning character UUID (may be null).</summary>
+            public string CharacterUUID { get; set; }
+
+            /// <summary>Gets or sets the serialized JSON blob.</summary>
+            public string JsonData { get; set; }
         }
     }
 }
