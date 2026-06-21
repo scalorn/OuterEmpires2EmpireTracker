@@ -33,7 +33,7 @@ namespace OE2EmpireTracker.Common.Storage
         /// Schema DDL concatenated from tasks 5.2-5.11. ExecuteSchema runs this
         /// against a fresh database.
         /// </summary>
-        private static readonly string SchemaDdl = ColonySchema + ItemsBlueprintSchema;
+        private static readonly string SchemaDdl = ColonySchema + ItemsBlueprintSchema + SurveyPlayerProfileSchema;
 
         private const string ColonySchema = @"
 CREATE TABLE IF NOT EXISTS Colonies (
@@ -179,6 +179,96 @@ CREATE TABLE IF NOT EXISTS BlueprintResources (
     ResourceName TEXT NOT NULL,
     Amount INTEGER NOT NULL,
     PRIMARY KEY (BlueprintUUID, ResourceName)
+);
+";
+
+        private const string SurveyPlayerProfileSchema = @"
+-- SURVEY
+CREATE TABLE IF NOT EXISTS Surveys (
+    UUID TEXT PRIMARY KEY,
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    ItemType TEXT NOT NULL,
+    BaseItemTypeID TEXT NOT NULL DEFAULT '',
+    Name TEXT NOT NULL DEFAULT '',
+    NickName TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT '',
+    Quantity INTEGER NOT NULL DEFAULT 0,
+    Volume REAL NOT NULL DEFAULT 0,
+    ScannedBy TEXT,
+    DateTime TEXT,
+    PlanetName TEXT,
+    SystemName TEXT NOT NULL DEFAULT '',
+    SurveyID TEXT,
+    ScannerBlueprintUUID TEXT,
+    SurveyType TEXT NOT NULL DEFAULT 'Planet',
+    AsteroidUUID TEXT NOT NULL DEFAULT '',
+    SystemObjectId INTEGER NOT NULL DEFAULT 0,
+    GameApiSurveyId INTEGER,
+    LastDetailImportUtc TEXT
+);
+
+CREATE TABLE IF NOT EXISTS SurveyProperties (
+    SurveyUUID TEXT NOT NULL REFERENCES Surveys(UUID) ON DELETE CASCADE,
+    Key TEXT NOT NULL,
+    Value TEXT NOT NULL,
+    PRIMARY KEY (SurveyUUID, Key)
+);
+
+CREATE TABLE IF NOT EXISTS SurveyResources (
+    SurveyUUID TEXT NOT NULL REFERENCES Surveys(UUID) ON DELETE CASCADE,
+    ResourceKey TEXT NOT NULL,
+    Resource TEXT NOT NULL DEFAULT '',
+    Purity TEXT NOT NULL DEFAULT '',
+    Amount INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (SurveyUUID, ResourceKey)
+);
+
+-- PLAYER PROFILE
+CREATE TABLE IF NOT EXISTS PlayerProfiles (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    Faction TEXT NOT NULL DEFAULT '',
+    FactionUUID TEXT NOT NULL DEFAULT '',
+    TotalCredits REAL NOT NULL DEFAULT 0,
+    SkillPoints INTEGER NOT NULL DEFAULT 0,
+    CitizenId TEXT NOT NULL DEFAULT '',
+    RegistrationDate TEXT NOT NULL DEFAULT '',
+    ActiveTime TEXT NOT NULL DEFAULT '',
+    CharacterId INTEGER NOT NULL DEFAULT 0,
+    FirstName TEXT NOT NULL DEFAULT '',
+    LastName TEXT NOT NULL DEFAULT '',
+    ActiveTimeMinutes INTEGER NOT NULL DEFAULT 0,
+    PublicRank_Rank INTEGER NOT NULL DEFAULT 0,
+    PublicRank_CurrentXp INTEGER NOT NULL DEFAULT 0,
+    PublicRank_XpToNextLevel INTEGER NOT NULL DEFAULT 0,
+    PublicRank_RankName TEXT NOT NULL DEFAULT '',
+    PrivateRank_Rank INTEGER NOT NULL DEFAULT 0,
+    PrivateRank_CurrentXp INTEGER NOT NULL DEFAULT 0,
+    PrivateRank_XpToNextLevel INTEGER NOT NULL DEFAULT 0,
+    PrivateRank_RankName TEXT NOT NULL DEFAULT '',
+    MilitaryRank_Rank INTEGER NOT NULL DEFAULT 0,
+    MilitaryRank_CurrentXp INTEGER NOT NULL DEFAULT 0,
+    MilitaryRank_XpToNextLevel INTEGER NOT NULL DEFAULT 0,
+    MilitaryRank_RankName TEXT NOT NULL DEFAULT ''
+);
+
+CREATE TABLE IF NOT EXISTS PlayerSkills (
+    PlayerUUID TEXT NOT NULL REFERENCES PlayerProfiles(UUID) ON DELETE CASCADE,
+    SkillName TEXT NOT NULL,
+    Level INTEGER NOT NULL DEFAULT 0,
+    TrainingStarted INTEGER NOT NULL DEFAULT 0,
+    SkillId INTEGER NOT NULL DEFAULT 0,
+    EffectDescription TEXT NOT NULL DEFAULT '',
+    AmountPerLevel INTEGER NOT NULL DEFAULT 0,
+    SkillGroupName TEXT NOT NULL DEFAULT '',
+    IsUnlocked INTEGER NOT NULL DEFAULT 0,
+    TargetLevel INTEGER NOT NULL DEFAULT 0,
+    TrainingPercentageComplete INTEGER NOT NULL DEFAULT 0,
+    RemainingMinutes INTEGER NOT NULL DEFAULT 0,
+    Completion_StartTime TEXT,
+    Completion_RepeatIntervalSeconds INTEGER,
+    Completion_IsRepeating INTEGER,
+    PRIMARY KEY (PlayerUUID, SkillName)
 );
 ";
 

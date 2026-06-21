@@ -145,12 +145,12 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Inputs: design.md (Colony schema), Common/Storage/SqliteBackend.cs (from 5.1)
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (schema string extended)
     - Verification: getDiagnostics — compiles cleanly
-  - [-] 5.3 SQLite schema DDL: Items (unified), Blueprints, BlueprintProperties, BlueprintResources tables
+  - [x] 5.3 SQLite schema DDL: Items (unified), Blueprints, BlueprintProperties, BlueprintResources tables
     - Satisfies: Req 4, Criteria 2-3, 10-12, 14
     - Inputs: design.md (Items + Blueprint schema)
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (schema string extended)
     - Verification: getDiagnostics — compiles cleanly
-  - [~] 5.4 SQLite schema DDL: Surveys, SurveyProperties, SurveyResources, PlayerProfiles, PlayerSkills tables
+  - [-] 5.4 SQLite schema DDL: Surveys, SurveyProperties, SurveyResources, PlayerProfiles, PlayerSkills tables
     - Satisfies: Req 4, Criteria 2-4, 10, 14
     - Inputs: design.md (Survey + PlayerProfile schema)
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (schema string extended)
