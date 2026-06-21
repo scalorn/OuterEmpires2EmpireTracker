@@ -244,12 +244,12 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Inputs: SQLite schema as reference
     - Output: OE2EmpireTracker.Common/Storage/PostgresBackend.cs (full schema DDL)
     - Verification: getDiagnostics — compiles cleanly
-  - [-] 7.4 Postgres CRUD: Server-global entities, Colony, Blueprint, Survey, PlayerProfile, DeliveryRoute, DeliveryPlan
+  - [x] 7.4 Postgres CRUD: Server-global entities, Colony, Blueprint, Survey, PlayerProfile, DeliveryRoute, DeliveryPlan
     - Satisfies: Req 6, Criteria 1, 5-7
     - Inputs: Common/Storage/PostgresBackend.cs (from 7.3), SqliteBackend CRUD as reference
     - Output: OE2EmpireTracker.Common/Storage/PostgresBackend.cs (extended — first batch of CRUD)
     - Verification: getDiagnostics — compiles cleanly
-  - [~] 7.5 Postgres CRUD: Ship, ShipTemplate, Market, PricingPlan, BuildPlan, StockPlan, StockProfile, SupplyChain, Asteroid, Station, Faction, ExternalCharacter, WarehouseOverflowRule, Mail, Banking, Permissions, Intel, Audit, Baseline
+  - [-] 7.5 Postgres CRUD: Ship, ShipTemplate, Market, PricingPlan, BuildPlan, StockPlan, StockProfile, SupplyChain, Asteroid, Station, Faction, ExternalCharacter, WarehouseOverflowRule, Mail, Banking, Permissions, Intel, Audit, Baseline
     - Satisfies: Req 6, Criteria 1, 5-7
     - Inputs: Common/Storage/PostgresBackend.cs (from 7.4), SqliteBackend CRUD as reference
     - Output: OE2EmpireTracker.Common/Storage/PostgresBackend.cs (complete)
