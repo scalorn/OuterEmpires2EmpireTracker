@@ -112,7 +112,7 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Output: Server/Program.cs updated; Server/Storage/IStorageBackend.cs deleted; old SQLite and Postgres backend files deleted from Server
     - Verification: Full solution build + dotnet test OE2EmpireTracker.Server.Tests — all existing tests pass
 
-- [ ] 4. JsonSingleFileBackend (New Implementation)
+- [x] 4. JsonSingleFileBackend (New Implementation)
   - [x] 4.1 Implement JsonSingleFileBackend: lifecycle, load/save, empty/malformed handling
     - Satisfies: Req 2, Criteria 1-4, 6-7; Req 11, Criteria 1, 3
     - Inputs: Common/Services/PlayerRoot.cs, Common/Services/SafeFileWriter.cs, Common/Services/JsonSettings.cs, Common/Services/SerializationSorter.cs
@@ -128,14 +128,14 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Inputs: Common/Storage/JsonSingleFileBackend.cs (from 4.2), PlayerRoot structure
     - Output: OE2EmpireTracker.Common/Storage/JsonSingleFileBackend.cs (extended — remaining entity types)
     - Verification: getDiagnostics — compiles cleanly
-  - [-] 4.4 Implement JsonSingleFileBackend: baseline data, DataVersion migration, and NotSupported server-global stubs
+  - [x] 4.4 Implement JsonSingleFileBackend: baseline data, DataVersion migration, and NotSupported server-global stubs
     - Satisfies: Req 2, Criteria 2, 9-10; Req 11, Criteria 2, 6; Req 1, Criteria 3, 5-9
     - Inputs: Common/Storage/JsonSingleFileBackend.cs (from 4.3), BaselineRoot, existing migration logic in PlayerContext
     - Output: OE2EmpireTracker.Common/Storage/JsonSingleFileBackend.cs (complete)
     - Verification: getDiagnostics — compiles cleanly
 
 - [ ] 5. SQLite Backend — Full Relational Rewrite (Schema DDL)
-  - [~] 5.1 Create SqliteBackend scaffolding: class, constructor, InitializeAsync, OpenConnection, WAL pragma, _metadata table
+  - [-] 5.1 Create SqliteBackend scaffolding: class, constructor, InitializeAsync, OpenConnection, WAL pragma, _metadata table
     - Satisfies: Req 4, Criteria 5-6; Req 9, Criterion 1
     - Inputs: design.md (SqliteBackend section), Common/Interfaces/IStorageBackend.cs
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (scaffolding only)
