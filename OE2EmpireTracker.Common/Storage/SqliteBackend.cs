@@ -12,7 +12,9 @@ using Microsoft.Data.Sqlite;
 using NLog;
 using OE2EmpireTracker.Common.Interfaces;
 using OE2EmpireTracker.Common.Models;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Common.Storage
 {
@@ -3214,317 +3216,2172 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
         }
 
         // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — Faction contacts (stubs — Phase 6)
+        // Per-Character Entity CRUD — Faction contacts
         // ═══════════════════════════════════════════════════════════
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<Faction>> GetAllFactionsForCharacterAsync(string characterUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<Faction>> GetAllFactionsForCharacterAsync(string characterUUID)
+        {
+            var results = new List<Faction>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM Factions WHERE OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(new Faction
+                        {
+                            UUID = reader["UUID"] as string,
+                            OwnerUUID = reader["OwnerUUID"] as string ?? string.Empty,
+                            Name = reader["Name"] as string ?? string.Empty,
+                            Description = reader["Description"] as string ?? string.Empty,
+                        });
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<Faction>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task<Faction> GetFactionForCharacterAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task<Faction> GetFactionForCharacterAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM Factions WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return Task.FromResult(new Faction
+                        {
+                            UUID = reader["UUID"] as string,
+                            OwnerUUID = reader["OwnerUUID"] as string ?? string.Empty,
+                            Name = reader["Name"] as string ?? string.Empty,
+                            Description = reader["Description"] as string ?? string.Empty,
+                        });
+                    }
+                }
+            }
+
+            return Task.FromResult<Faction>(null);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertFactionForCharacterAsync(string characterUUID, Faction entity) => throw new NotImplementedException();
+        public Task UpsertFactionForCharacterAsync(string characterUUID, Faction entity)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = @"INSERT OR REPLACE INTO Factions (UUID, Name, OwnerUUID, Tag, Description)
+                                   VALUES (@uuid, @name, @owner, @tag, @desc)";
+                cmd.Parameters.AddWithValue("@uuid", entity.UUID);
+                cmd.Parameters.AddWithValue("@name", entity.Name ?? string.Empty);
+                cmd.Parameters.AddWithValue("@owner", characterUUID);
+                cmd.Parameters.AddWithValue("@tag", string.Empty);
+                cmd.Parameters.AddWithValue("@desc", entity.Description ?? string.Empty);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteFactionForCharacterAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task DeleteFactionForCharacterAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "DELETE FROM Factions WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
 
         // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — ExternalCharacter (stubs — Phase 6)
-        // ═══════════════════════════════════════════════════════════
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<ExternalCharacter>> GetAllExternalCharactersAsync(string characterUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task<ExternalCharacter> GetExternalCharacterAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task UpsertExternalCharacterAsync(string characterUUID, ExternalCharacter entity) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task DeleteExternalCharacterAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
-
-        // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — WarehouseOverflowRule (stubs — Phase 6)
-        // ═══════════════════════════════════════════════════════════
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<WarehouseOverflowRule>> GetAllWarehouseOverflowRulesAsync(string characterUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task<WarehouseOverflowRule> GetWarehouseOverflowRuleAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task UpsertWarehouseOverflowRuleAsync(string characterUUID, WarehouseOverflowRule entity) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task DeleteWarehouseOverflowRuleAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
-
-        // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — MailMessage (stubs — Phase 6)
-        // ═══════════════════════════════════════════════════════════
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<MailMessage>> GetAllMailMessagesAsync(string characterUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task<MailMessage> GetMailMessageAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task UpsertMailMessageAsync(string characterUUID, MailMessage entity) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task DeleteMailMessageAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
-
-        // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — BankingTransaction (stubs — Phase 6)
-        // ═══════════════════════════════════════════════════════════
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<BankingTransaction>> GetAllBankingTransactionsAsync(string characterUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task<BankingTransaction> GetBankingTransactionAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task UpsertBankingTransactionAsync(string characterUUID, BankingTransaction entity) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task DeleteBankingTransactionAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
-
-        // ═══════════════════════════════════════════════════════════
-        // Faction Permission Entities (stubs — Phase 7)
-        // ═══════════════════════════════════════════════════════════
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<FactionCapability>> GetFactionCapabilitiesAsync(string factionUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task UpsertFactionCapabilityAsync(FactionCapability capability) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task DeleteFactionCapabilityAsync(string factionUUID, string capabilityUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<FactionClearanceLevel>> GetFactionClearanceLevelsAsync(string factionUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task UpsertFactionClearanceLevelAsync(FactionClearanceLevel level) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task DeleteFactionClearanceLevelAsync(string factionUUID, string levelUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<FactionPermissionGroup>> GetFactionGroupsAsync(string factionUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task<FactionPermissionGroup> GetFactionGroupAsync(string factionUUID, string groupUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task UpsertFactionGroupAsync(FactionPermissionGroup group) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task DeleteFactionGroupAsync(string factionUUID, string groupUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<FactionGroupCapability>> GetFactionGroupCapabilitiesAsync(string groupUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task AddFactionGroupCapabilityAsync(FactionGroupCapability item) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task RemoveFactionGroupCapabilityAsync(string groupUUID, string capabilityUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<FactionGroupSharingRule>> GetFactionGroupSharingRulesAsync(string groupUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task UpsertFactionGroupSharingRuleAsync(FactionGroupSharingRule rule) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task DeleteFactionGroupSharingRuleAsync(string groupUUID, string ruleUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task<FactionMemberPermissions> GetFactionMemberPermissionsAsync(string factionUUID, string characterUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task UpsertFactionMemberPermissionsAsync(FactionMemberPermissions perms) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<FactionMemberPermissions>> GetAllFactionMembersPermissionsAsync(string factionUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<FactionMemberCapability>> GetFactionMemberCapabilitiesAsync(string factionUUID, string characterUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task AddFactionMemberCapabilityAsync(FactionMemberCapability item) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task RemoveFactionMemberCapabilityAsync(string factionUUID, string characterUUID, string capabilityUUID) => throw new NotImplementedException();
-
-        // ═══════════════════════════════════════════════════════════
-        // Character Permission Entities (stubs — Phase 7)
+        // Per-Character Entity CRUD — ExternalCharacter
         // ═══════════════════════════════════════════════════════════
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<CharacterCapability>> GetCharacterCapabilitiesAsync(string characterUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<ExternalCharacter>> GetAllExternalCharactersAsync(string characterUUID)
+        {
+            var results = new List<ExternalCharacter>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM ExternalCharacters WHERE OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(new ExternalCharacter
+                        {
+                            UUID = reader["UUID"] as string,
+                            OwnerUUID = reader["OwnerUUID"] as string ?? string.Empty,
+                            Name = reader["Name"] as string ?? string.Empty,
+                            FactionUUID = reader["FactionUUID"] as string ?? string.Empty,
+                        });
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<ExternalCharacter>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertCharacterCapabilityAsync(CharacterCapability capability) => throw new NotImplementedException();
+        public Task<ExternalCharacter> GetExternalCharacterAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM ExternalCharacters WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return Task.FromResult(new ExternalCharacter
+                        {
+                            UUID = reader["UUID"] as string,
+                            OwnerUUID = reader["OwnerUUID"] as string ?? string.Empty,
+                            Name = reader["Name"] as string ?? string.Empty,
+                            FactionUUID = reader["FactionUUID"] as string ?? string.Empty,
+                        });
+                    }
+                }
+            }
+
+            return Task.FromResult<ExternalCharacter>(null);
+        }
 
         /// <inheritdoc/>
-        public Task DeleteCharacterCapabilityAsync(string characterUUID, string capabilityUUID) => throw new NotImplementedException();
+        public Task UpsertExternalCharacterAsync(string characterUUID, ExternalCharacter entity)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = @"INSERT OR REPLACE INTO ExternalCharacters (UUID, Name, OwnerUUID, FactionUUID, FactionName, CharacterId, Notes)
+                                   VALUES (@uuid, @name, @owner, @factionUUID, @factionName, @charId, @notes)";
+                cmd.Parameters.AddWithValue("@uuid", entity.UUID);
+                cmd.Parameters.AddWithValue("@name", entity.Name ?? string.Empty);
+                cmd.Parameters.AddWithValue("@owner", characterUUID);
+                cmd.Parameters.AddWithValue("@factionUUID", entity.FactionUUID ?? string.Empty);
+                cmd.Parameters.AddWithValue("@factionName", string.Empty);
+                cmd.Parameters.AddWithValue("@charId", 0);
+                cmd.Parameters.AddWithValue("@notes", string.Empty);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<CharacterClearanceLevel>> GetCharacterClearanceLevelsAsync(string characterUUID) => throw new NotImplementedException();
+        public Task DeleteExternalCharacterAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "DELETE FROM ExternalCharacters WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                cmd.ExecuteNonQuery();
+            }
 
-        /// <inheritdoc/>
-        public Task UpsertCharacterClearanceLevelAsync(CharacterClearanceLevel level) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task DeleteCharacterClearanceLevelAsync(string characterUUID, string levelUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<CharacterPermissionGroup>> GetCharacterGroupsAsync(string characterUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task<CharacterPermissionGroup> GetCharacterGroupAsync(string characterUUID, string groupUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task UpsertCharacterGroupAsync(CharacterPermissionGroup group) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task DeleteCharacterGroupAsync(string characterUUID, string groupUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<CharacterGroupCapability>> GetCharacterGroupCapabilitiesAsync(string groupUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task AddCharacterGroupCapabilityAsync(CharacterGroupCapability item) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task RemoveCharacterGroupCapabilityAsync(string groupUUID, string capabilityUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<CharacterGroupSharingRule>> GetCharacterGroupSharingRulesAsync(string groupUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task UpsertCharacterGroupSharingRuleAsync(CharacterGroupSharingRule rule) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task DeleteCharacterGroupSharingRuleAsync(string groupUUID, string ruleUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<CharacterGranteePermissions>> GetCharacterGranteesAsync(string ownerCharacterUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task UpsertCharacterGranteePermissionsAsync(CharacterGranteePermissions perms) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task DeleteCharacterGranteePermissionsAsync(string ownerCharacterUUID, string granteeUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<CharacterGranteeCapability>> GetCharacterGranteeCapabilitiesAsync(string ownerCharacterUUID, string granteeUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task AddCharacterGranteeCapabilityAsync(CharacterGranteeCapability item) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task RemoveCharacterGranteeCapabilityAsync(string ownerCharacterUUID, string granteeUUID, string capabilityUUID) => throw new NotImplementedException();
+            return Task.CompletedTask;
+        }
 
         // ═══════════════════════════════════════════════════════════
-        // Intel (stubs — Phase 7)
-        // ═══════════════════════════════════════════════════════════
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<IntelComment>> GetIntelCommentsForTargetAsync(string targetCharacterUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task<IntelComment> GetIntelCommentAsync(string commentUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task UpsertIntelCommentAsync(IntelComment comment) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task DeleteIntelCommentAsync(string commentUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<IntelCommentFactionShare>> GetIntelSharesForCommentAsync(string commentUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<IntelCommentFactionShare>> GetIntelSharesForFactionAsync(string factionUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task UpsertIntelShareAsync(IntelCommentFactionShare share) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task DeleteIntelShareAsync(string shareUUID) => throw new NotImplementedException();
-
-        // ═══════════════════════════════════════════════════════════
-        // Audit (stubs — Phase 7)
+        // Per-Character Entity CRUD — WarehouseOverflowRule
         // ═══════════════════════════════════════════════════════════
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<PermissionAuditEntry>> GetPermissionAuditEntriesAsync(DateTime? startDate = null, DateTime? endDate = null, PermissionActionType? actionType = null, string actorUUID = null, string targetUUID = null) => throw new NotImplementedException();
+        public Task<IReadOnlyList<WarehouseOverflowRule>> GetAllWarehouseOverflowRulesAsync(string characterUUID)
+        {
+            var results = new List<WarehouseOverflowRule>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM WarehouseOverflowRules WHERE OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(ReadWarehouseOverflowRule(reader));
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<WarehouseOverflowRule>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task AppendPermissionAuditEntryAsync(PermissionAuditEntry entry) => throw new NotImplementedException();
+        public Task<WarehouseOverflowRule> GetWarehouseOverflowRuleAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM WarehouseOverflowRules WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return Task.FromResult(ReadWarehouseOverflowRule(reader));
+                    }
+                }
+            }
+
+            return Task.FromResult<WarehouseOverflowRule>(null);
+        }
 
         /// <inheritdoc/>
-        public Task DeleteExpiredAuditEntriesAsync(DateTime cutoff) => throw new NotImplementedException();
+        public Task UpsertWarehouseOverflowRuleAsync(string characterUUID, WarehouseOverflowRule entity)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = @"INSERT OR REPLACE INTO WarehouseOverflowRules (UUID, OwnerUUID, ColonyUUID, ResourceName, RuleType, Threshold, DestinationColonyUUID)
+                                   VALUES (@uuid, @owner, @colony, @resource, @ruleType, @threshold, @dest)";
+                cmd.Parameters.AddWithValue("@uuid", entity.UUID);
+                cmd.Parameters.AddWithValue("@owner", characterUUID);
+                cmd.Parameters.AddWithValue("@colony", entity.ColonyUUID ?? string.Empty);
+                cmd.Parameters.AddWithValue("@resource", entity.ResourceName ?? string.Empty);
+                cmd.Parameters.AddWithValue("@ruleType", (int)entity.RuleType);
+                cmd.Parameters.AddWithValue("@threshold", (int)entity.TriggerThreshold);
+                cmd.Parameters.AddWithValue("@dest", entity.DestinationUUID ?? string.Empty);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task DeleteWarehouseOverflowRuleAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "DELETE FROM WarehouseOverflowRules WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
 
         // ═══════════════════════════════════════════════════════════
-        // Baseline / Global Lookup Data (stubs — Phase 6)
+        // Per-Character Entity CRUD — MailMessage
         // ═══════════════════════════════════════════════════════════
 
         /// <inheritdoc/>
-        public Task<BaselineGameConstants> GetBaselineGameConstantsAsync() => throw new NotImplementedException();
+        public Task<IReadOnlyList<MailMessage>> GetAllMailMessagesAsync(string characterUUID)
+        {
+            var results = new List<MailMessage>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM MailMessages WHERE OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(ReadMailMessage(reader));
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<MailMessage>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertBaselineGameConstantsAsync(BaselineGameConstants constants) => throw new NotImplementedException();
+        public Task<MailMessage> GetMailMessageAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM MailMessages WHERE OwnerUUID = @ownerUUID AND MailId = CAST(@mailId AS INTEGER)";
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                cmd.Parameters.AddWithValue("@mailId", entityUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return Task.FromResult(ReadMailMessage(reader));
+                    }
+                }
+            }
+
+            return Task.FromResult<MailMessage>(null);
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<BlueprintType>> GetAllBlueprintTypesAsync() => throw new NotImplementedException();
+        public Task UpsertMailMessageAsync(string characterUUID, MailMessage entity)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = @"INSERT OR REPLACE INTO MailMessages (MailId, OwnerUUID, CharacterIdFrom, FromName, CharacterIdTo, ToName, SentTime, Subject, MailRead, MailType, MailContent, LocalRead)
+                                   VALUES (@mailId, @owner, @fromId, @fromName, @toId, @toName, @sent, @subject, @mailRead, @mailType, @content, @localRead)";
+                cmd.Parameters.AddWithValue("@mailId", entity.MailId);
+                cmd.Parameters.AddWithValue("@owner", characterUUID);
+                cmd.Parameters.AddWithValue("@fromId", entity.CharacterIdFrom);
+                cmd.Parameters.AddWithValue("@fromName", entity.FromName ?? string.Empty);
+                cmd.Parameters.AddWithValue("@toId", entity.CharacterIdTo);
+                cmd.Parameters.AddWithValue("@toName", entity.ToName ?? string.Empty);
+                cmd.Parameters.AddWithValue("@sent", entity.SentTime ?? string.Empty);
+                cmd.Parameters.AddWithValue("@subject", entity.Subject ?? string.Empty);
+                cmd.Parameters.AddWithValue("@mailRead", entity.MailRead ? 1 : 0);
+                cmd.Parameters.AddWithValue("@mailType", (object)entity.MailType ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@content", entity.MailContent ?? string.Empty);
+                cmd.Parameters.AddWithValue("@localRead", entity.LocalRead ? 1 : 0);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertBlueprintTypesAsync(IReadOnlyList<BlueprintType> types) => throw new NotImplementedException();
+        public Task DeleteMailMessageAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "DELETE FROM MailMessages WHERE OwnerUUID = @ownerUUID AND MailId = CAST(@mailId AS INTEGER)";
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                cmd.Parameters.AddWithValue("@mailId", entityUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // Per-Character Entity CRUD — BankingTransaction
+        // ═══════════════════════════════════════════════════════════
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<ShipClass>> GetAllShipClassesAsync() => throw new NotImplementedException();
+        public Task<IReadOnlyList<BankingTransaction>> GetAllBankingTransactionsAsync(string characterUUID)
+        {
+            var results = new List<BankingTransaction>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM BankingTransactions WHERE OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(ReadBankingTransaction(reader));
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<BankingTransaction>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertShipClassesAsync(IReadOnlyList<ShipClass> classes) => throw new NotImplementedException();
+        public Task<BankingTransaction> GetBankingTransactionAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM BankingTransactions WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return Task.FromResult(ReadBankingTransaction(reader));
+                    }
+                }
+            }
+
+            return Task.FromResult<BankingTransaction>(null);
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<TechLevel>> GetAllTechLevelsAsync() => throw new NotImplementedException();
+        public Task UpsertBankingTransactionAsync(string characterUUID, BankingTransaction entity)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = @"INSERT OR REPLACE INTO BankingTransactions (UUID, OwnerUUID, TransactionDateTime, CreditChange, OldBalance, NewBalance, TransactionType, Detail, CharacterId, SystemObjectId, SystemId, IsManualEntry)
+                                   VALUES (@uuid, @owner, @txnDate, @credit, @oldBal, @newBal, @txnType, @detail, @charId, @sysObjId, @sysId, @manual)";
+                cmd.Parameters.AddWithValue("@uuid", entity.UUID);
+                cmd.Parameters.AddWithValue("@owner", characterUUID);
+                cmd.Parameters.AddWithValue("@txnDate", entity.TransactionDateTime ?? string.Empty);
+                cmd.Parameters.AddWithValue("@credit", (double)entity.CreditChange);
+                cmd.Parameters.AddWithValue("@oldBal", (double)entity.OldBalance);
+                cmd.Parameters.AddWithValue("@newBal", (double)entity.NewBalance);
+                cmd.Parameters.AddWithValue("@txnType", entity.TransactionType);
+                cmd.Parameters.AddWithValue("@detail", entity.Detail ?? string.Empty);
+                cmd.Parameters.AddWithValue("@charId", entity.CharacterId.HasValue ? (object)entity.CharacterId.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@sysObjId", entity.SystemObjectId.HasValue ? (object)entity.SystemObjectId.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@sysId", entity.SystemId.HasValue ? (object)entity.SystemId.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@manual", entity.IsManualEntry ? 1 : 0);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertTechLevelsAsync(IReadOnlyList<TechLevel> levels) => throw new NotImplementedException();
+        public Task DeleteBankingTransactionAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "DELETE FROM BankingTransactions WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // Faction Permission Entities
+        // ═══════════════════════════════════════════════════════════
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<Commodity>> GetAllCommoditiesAsync() => throw new NotImplementedException();
+        public Task<IReadOnlyList<FactionCapability>> GetFactionCapabilitiesAsync(string factionUUID)
+        {
+            var results = new List<FactionCapability>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM FactionCapabilities WHERE FactionUUID = @fid";
+                cmd.Parameters.AddWithValue("@fid", factionUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(new FactionCapability
+                        {
+                            UUID = reader["UUID"] as string ?? string.Empty,
+                            FactionUUID = reader["FactionUUID"] as string ?? string.Empty,
+                            Name = reader["Name"] as string ?? string.Empty,
+                            Description = reader["Description"] as string ?? string.Empty,
+                        });
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<FactionCapability>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertCommoditiesAsync(IReadOnlyList<Commodity> commodities) => throw new NotImplementedException();
+        public Task UpsertFactionCapabilityAsync(FactionCapability capability)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = @"INSERT OR REPLACE INTO FactionCapabilities (UUID, FactionUUID, Name, Description)
+                                   VALUES (@uuid, @fid, @name, @desc)";
+                cmd.Parameters.AddWithValue("@uuid", capability.UUID);
+                cmd.Parameters.AddWithValue("@fid", capability.FactionUUID);
+                cmd.Parameters.AddWithValue("@name", capability.Name ?? string.Empty);
+                cmd.Parameters.AddWithValue("@desc", capability.Description ?? string.Empty);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<RefiningRecipe>> GetAllRefiningRecipesAsync() => throw new NotImplementedException();
+        public Task DeleteFactionCapabilityAsync(string factionUUID, string capabilityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "DELETE FROM FactionCapabilities WHERE UUID = @uuid AND FactionUUID = @fid";
+                cmd.Parameters.AddWithValue("@uuid", capabilityUUID);
+                cmd.Parameters.AddWithValue("@fid", factionUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertRefiningRecipesAsync(IReadOnlyList<RefiningRecipe> recipes) => throw new NotImplementedException();
+        public Task<IReadOnlyList<FactionClearanceLevel>> GetFactionClearanceLevelsAsync(string factionUUID)
+        {
+            var results = new List<FactionClearanceLevel>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM FactionClearanceLevels WHERE FactionUUID = @fid";
+                cmd.Parameters.AddWithValue("@fid", factionUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(new FactionClearanceLevel
+                        {
+                            UUID = reader["UUID"] as string ?? string.Empty,
+                            FactionUUID = reader["FactionUUID"] as string ?? string.Empty,
+                            Level = Convert.ToInt32(reader["Level"]),
+                            Name = reader["Name"] as string ?? string.Empty,
+                            Description = reader["Description"] as string ?? string.Empty,
+                        });
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<FactionClearanceLevel>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<ResearchTimeEntry>> GetAllResearchTimesAsync() => throw new NotImplementedException();
+        public Task UpsertFactionClearanceLevelAsync(FactionClearanceLevel level)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = @"INSERT OR REPLACE INTO FactionClearanceLevels (UUID, FactionUUID, Level, Name, Description)
+                                   VALUES (@uuid, @fid, @level, @name, @desc)";
+                cmd.Parameters.AddWithValue("@uuid", level.UUID);
+                cmd.Parameters.AddWithValue("@fid", level.FactionUUID);
+                cmd.Parameters.AddWithValue("@level", level.Level);
+                cmd.Parameters.AddWithValue("@name", level.Name ?? string.Empty);
+                cmd.Parameters.AddWithValue("@desc", level.Description ?? string.Empty);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertResearchTimesAsync(IReadOnlyList<ResearchTimeEntry> entries) => throw new NotImplementedException();
+        public Task DeleteFactionClearanceLevelAsync(string factionUUID, string levelUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "DELETE FROM FactionClearanceLevels WHERE UUID = @uuid AND FactionUUID = @fid";
+                cmd.Parameters.AddWithValue("@uuid", levelUUID);
+                cmd.Parameters.AddWithValue("@fid", factionUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<PropertyTypeDefinition>> GetAllPropertyTypeDefinitionsAsync() => throw new NotImplementedException();
+        public Task<IReadOnlyList<FactionPermissionGroup>> GetFactionGroupsAsync(string factionUUID)
+        {
+            var results = new List<FactionPermissionGroup>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM FactionPermissionGroups WHERE FactionUUID = @fid";
+                cmd.Parameters.AddWithValue("@fid", factionUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(new FactionPermissionGroup
+                        {
+                            UUID = reader["UUID"] as string ?? string.Empty,
+                            FactionUUID = reader["FactionUUID"] as string ?? string.Empty,
+                            Name = reader["Name"] as string ?? string.Empty,
+                            Description = reader["Description"] as string ?? string.Empty,
+                            DefaultClearanceLevelUUID = reader["DefaultClearanceLevelUUID"] as string ?? string.Empty,
+                        });
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<FactionPermissionGroup>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertPropertyTypeDefinitionsAsync(IReadOnlyList<PropertyTypeDefinition> definitions) => throw new NotImplementedException();
+        public Task<FactionPermissionGroup> GetFactionGroupAsync(string factionUUID, string groupUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM FactionPermissionGroups WHERE UUID = @uuid AND FactionUUID = @fid";
+                cmd.Parameters.AddWithValue("@uuid", groupUUID);
+                cmd.Parameters.AddWithValue("@fid", factionUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return Task.FromResult(new FactionPermissionGroup
+                        {
+                            UUID = reader["UUID"] as string ?? string.Empty,
+                            FactionUUID = reader["FactionUUID"] as string ?? string.Empty,
+                            Name = reader["Name"] as string ?? string.Empty,
+                            Description = reader["Description"] as string ?? string.Empty,
+                            DefaultClearanceLevelUUID = reader["DefaultClearanceLevelUUID"] as string ?? string.Empty,
+                        });
+                    }
+                }
+            }
+
+            return Task.FromResult<FactionPermissionGroup>(null);
+        }
+
+        /// <inheritdoc/>
+        public Task UpsertFactionGroupAsync(FactionPermissionGroup group)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = @"INSERT OR REPLACE INTO FactionPermissionGroups (UUID, FactionUUID, Name, Description, DefaultClearanceLevelUUID)
+                                   VALUES (@uuid, @fid, @name, @desc, @defaultCl)";
+                cmd.Parameters.AddWithValue("@uuid", group.UUID);
+                cmd.Parameters.AddWithValue("@fid", group.FactionUUID);
+                cmd.Parameters.AddWithValue("@name", group.Name ?? string.Empty);
+                cmd.Parameters.AddWithValue("@desc", group.Description ?? string.Empty);
+                cmd.Parameters.AddWithValue("@defaultCl", group.DefaultClearanceLevelUUID ?? string.Empty);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task DeleteFactionGroupAsync(string factionUUID, string groupUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "DELETE FROM FactionPermissionGroups WHERE UUID = @uuid AND FactionUUID = @fid";
+                cmd.Parameters.AddWithValue("@uuid", groupUUID);
+                cmd.Parameters.AddWithValue("@fid", factionUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<FactionGroupCapability>> GetFactionGroupCapabilitiesAsync(string groupUUID)
+        {
+            var results = new List<FactionGroupCapability>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM FactionGroupCapabilities WHERE GroupUUID = @gid";
+                cmd.Parameters.AddWithValue("@gid", groupUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(new FactionGroupCapability
+                        {
+                            GroupUUID = reader["GroupUUID"] as string ?? string.Empty,
+                            CapabilityUUID = reader["CapabilityUUID"] as string ?? string.Empty,
+                        });
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<FactionGroupCapability>>(results);
+        }
+
+        /// <inheritdoc/>
+        public Task AddFactionGroupCapabilityAsync(FactionGroupCapability item)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = @"INSERT OR REPLACE INTO FactionGroupCapabilities (GroupUUID, CapabilityUUID)
+                                   VALUES (@gid, @cid)";
+                cmd.Parameters.AddWithValue("@gid", item.GroupUUID);
+                cmd.Parameters.AddWithValue("@cid", item.CapabilityUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task RemoveFactionGroupCapabilityAsync(string groupUUID, string capabilityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "DELETE FROM FactionGroupCapabilities WHERE GroupUUID = @gid AND CapabilityUUID = @cid";
+                cmd.Parameters.AddWithValue("@gid", groupUUID);
+                cmd.Parameters.AddWithValue("@cid", capabilityUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<FactionGroupSharingRule>> GetFactionGroupSharingRulesAsync(string groupUUID)
+        {
+            var results = new List<FactionGroupSharingRule>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM FactionGroupSharingRules WHERE GroupUUID = @gid";
+                cmd.Parameters.AddWithValue("@gid", groupUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(new FactionGroupSharingRule
+                        {
+                            UUID = reader["UUID"] as string ?? string.Empty,
+                            GroupUUID = reader["GroupUUID"] as string ?? string.Empty,
+                            DataType = reader["DataType"] as string,
+                            EntityUUID = reader["EntityUUID"] as string,
+                            MinClearanceLevelUUID = reader["MinClearanceLevelUUID"] as string ?? string.Empty,
+                        });
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<FactionGroupSharingRule>>(results);
+        }
+
+        /// <inheritdoc/>
+        public Task UpsertFactionGroupSharingRuleAsync(FactionGroupSharingRule rule)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = @"INSERT OR REPLACE INTO FactionGroupSharingRules (UUID, GroupUUID, DataType, EntityUUID, MinClearanceLevelUUID)
+                                   VALUES (@uuid, @gid, @dataType, @entityUUID, @minCl)";
+                cmd.Parameters.AddWithValue("@uuid", rule.UUID);
+                cmd.Parameters.AddWithValue("@gid", rule.GroupUUID);
+                cmd.Parameters.AddWithValue("@dataType", (object)rule.DataType ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@entityUUID", (object)rule.EntityUUID ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@minCl", rule.MinClearanceLevelUUID ?? string.Empty);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task DeleteFactionGroupSharingRuleAsync(string groupUUID, string ruleUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "DELETE FROM FactionGroupSharingRules WHERE UUID = @uuid AND GroupUUID = @gid";
+                cmd.Parameters.AddWithValue("@uuid", ruleUUID);
+                cmd.Parameters.AddWithValue("@gid", groupUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task<FactionMemberPermissions> GetFactionMemberPermissionsAsync(string factionUUID, string characterUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM FactionMemberPermissions WHERE FactionUUID = @fid AND CharacterUUID = @cid";
+                cmd.Parameters.AddWithValue("@fid", factionUUID);
+                cmd.Parameters.AddWithValue("@cid", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return Task.FromResult(new FactionMemberPermissions
+                        {
+                            CharacterUUID = reader["CharacterUUID"] as string ?? string.Empty,
+                            FactionUUID = reader["FactionUUID"] as string ?? string.Empty,
+                            GroupUUID = reader["GroupUUID"] as string,
+                            ClearanceLevelUUID = reader["ClearanceLevelUUID"] as string ?? string.Empty,
+                        });
+                    }
+                }
+            }
+
+            return Task.FromResult<FactionMemberPermissions>(null);
+        }
+
+        /// <inheritdoc/>
+        public Task UpsertFactionMemberPermissionsAsync(FactionMemberPermissions perms)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = @"INSERT OR REPLACE INTO FactionMemberPermissions (FactionUUID, CharacterUUID, GroupUUID, ClearanceLevelUUID)
+                                   VALUES (@fid, @cid, @gid, @clid)";
+                cmd.Parameters.AddWithValue("@fid", perms.FactionUUID);
+                cmd.Parameters.AddWithValue("@cid", perms.CharacterUUID);
+                cmd.Parameters.AddWithValue("@gid", (object)perms.GroupUUID ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@clid", perms.ClearanceLevelUUID ?? string.Empty);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<FactionMemberPermissions>> GetAllFactionMembersPermissionsAsync(string factionUUID)
+        {
+            var results = new List<FactionMemberPermissions>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM FactionMemberPermissions WHERE FactionUUID = @fid";
+                cmd.Parameters.AddWithValue("@fid", factionUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(new FactionMemberPermissions
+                        {
+                            CharacterUUID = reader["CharacterUUID"] as string ?? string.Empty,
+                            FactionUUID = reader["FactionUUID"] as string ?? string.Empty,
+                            GroupUUID = reader["GroupUUID"] as string,
+                            ClearanceLevelUUID = reader["ClearanceLevelUUID"] as string ?? string.Empty,
+                        });
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<FactionMemberPermissions>>(results);
+        }
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<FactionMemberCapability>> GetFactionMemberCapabilitiesAsync(string factionUUID, string characterUUID)
+        {
+            var results = new List<FactionMemberCapability>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM FactionMemberCapabilities WHERE FactionUUID = @fid AND CharacterUUID = @cid";
+                cmd.Parameters.AddWithValue("@fid", factionUUID);
+                cmd.Parameters.AddWithValue("@cid", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(new FactionMemberCapability
+                        {
+                            CharacterUUID = reader["CharacterUUID"] as string ?? string.Empty,
+                            FactionUUID = reader["FactionUUID"] as string ?? string.Empty,
+                            CapabilityUUID = reader["CapabilityUUID"] as string ?? string.Empty,
+                        });
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<FactionMemberCapability>>(results);
+        }
+
+        /// <inheritdoc/>
+        public Task AddFactionMemberCapabilityAsync(FactionMemberCapability item)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = @"INSERT OR REPLACE INTO FactionMemberCapabilities (FactionUUID, CharacterUUID, CapabilityUUID)
+                                   VALUES (@fid, @cid, @capId)";
+                cmd.Parameters.AddWithValue("@fid", item.FactionUUID);
+                cmd.Parameters.AddWithValue("@cid", item.CharacterUUID);
+                cmd.Parameters.AddWithValue("@capId", item.CapabilityUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task RemoveFactionMemberCapabilityAsync(string factionUUID, string characterUUID, string capabilityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "DELETE FROM FactionMemberCapabilities WHERE FactionUUID = @fid AND CharacterUUID = @cid AND CapabilityUUID = @capId";
+                cmd.Parameters.AddWithValue("@fid", factionUUID);
+                cmd.Parameters.AddWithValue("@cid", characterUUID);
+                cmd.Parameters.AddWithValue("@capId", capabilityUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // Character Permission Entities
+        // ═══════════════════════════════════════════════════════════
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<CharacterCapability>> GetCharacterCapabilitiesAsync(string characterUUID)
+        {
+            var results = new List<CharacterCapability>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM CharacterCapabilities WHERE OwnerCharacterUUID = @cid";
+                cmd.Parameters.AddWithValue("@cid", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(new CharacterCapability
+                        {
+                            UUID = reader["UUID"] as string ?? string.Empty,
+                            OwnerCharacterUUID = reader["OwnerCharacterUUID"] as string ?? string.Empty,
+                            Name = reader["Name"] as string ?? string.Empty,
+                            Description = reader["Description"] as string ?? string.Empty,
+                        });
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<CharacterCapability>>(results);
+        }
+
+        /// <inheritdoc/>
+        public Task UpsertCharacterCapabilityAsync(CharacterCapability capability)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = @"INSERT OR REPLACE INTO CharacterCapabilities (UUID, OwnerCharacterUUID, Name, Description)
+                                   VALUES (@uuid, @cid, @name, @desc)";
+                cmd.Parameters.AddWithValue("@uuid", capability.UUID);
+                cmd.Parameters.AddWithValue("@cid", capability.OwnerCharacterUUID);
+                cmd.Parameters.AddWithValue("@name", capability.Name ?? string.Empty);
+                cmd.Parameters.AddWithValue("@desc", capability.Description ?? string.Empty);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task DeleteCharacterCapabilityAsync(string characterUUID, string capabilityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "DELETE FROM CharacterCapabilities WHERE UUID = @uuid AND OwnerCharacterUUID = @cid";
+                cmd.Parameters.AddWithValue("@uuid", capabilityUUID);
+                cmd.Parameters.AddWithValue("@cid", characterUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<CharacterClearanceLevel>> GetCharacterClearanceLevelsAsync(string characterUUID)
+        {
+            var results = new List<CharacterClearanceLevel>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM CharacterClearanceLevels WHERE OwnerCharacterUUID = @cid";
+                cmd.Parameters.AddWithValue("@cid", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(new CharacterClearanceLevel
+                        {
+                            UUID = reader["UUID"] as string ?? string.Empty,
+                            OwnerCharacterUUID = reader["OwnerCharacterUUID"] as string ?? string.Empty,
+                            Level = Convert.ToInt32(reader["Level"]),
+                            Name = reader["Name"] as string ?? string.Empty,
+                            Description = reader["Description"] as string ?? string.Empty,
+                        });
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<CharacterClearanceLevel>>(results);
+        }
+
+        /// <inheritdoc/>
+        public Task UpsertCharacterClearanceLevelAsync(CharacterClearanceLevel level)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = @"INSERT OR REPLACE INTO CharacterClearanceLevels (UUID, OwnerCharacterUUID, Level, Name, Description)
+                                   VALUES (@uuid, @cid, @level, @name, @desc)";
+                cmd.Parameters.AddWithValue("@uuid", level.UUID);
+                cmd.Parameters.AddWithValue("@cid", level.OwnerCharacterUUID);
+                cmd.Parameters.AddWithValue("@level", level.Level);
+                cmd.Parameters.AddWithValue("@name", level.Name ?? string.Empty);
+                cmd.Parameters.AddWithValue("@desc", level.Description ?? string.Empty);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task DeleteCharacterClearanceLevelAsync(string characterUUID, string levelUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "DELETE FROM CharacterClearanceLevels WHERE UUID = @uuid AND OwnerCharacterUUID = @cid";
+                cmd.Parameters.AddWithValue("@uuid", levelUUID);
+                cmd.Parameters.AddWithValue("@cid", characterUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<CharacterPermissionGroup>> GetCharacterGroupsAsync(string characterUUID)
+        {
+            var results = new List<CharacterPermissionGroup>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM CharacterPermissionGroups WHERE OwnerCharacterUUID = @cid";
+                cmd.Parameters.AddWithValue("@cid", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(new CharacterPermissionGroup
+                        {
+                            UUID = reader["UUID"] as string ?? string.Empty,
+                            OwnerCharacterUUID = reader["OwnerCharacterUUID"] as string ?? string.Empty,
+                            Name = reader["Name"] as string ?? string.Empty,
+                            Description = reader["Description"] as string ?? string.Empty,
+                            DefaultClearanceLevelUUID = reader["DefaultClearanceLevelUUID"] as string ?? string.Empty,
+                        });
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<CharacterPermissionGroup>>(results);
+        }
+
+        /// <inheritdoc/>
+        public Task<CharacterPermissionGroup> GetCharacterGroupAsync(string characterUUID, string groupUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM CharacterPermissionGroups WHERE UUID = @uuid AND OwnerCharacterUUID = @cid";
+                cmd.Parameters.AddWithValue("@uuid", groupUUID);
+                cmd.Parameters.AddWithValue("@cid", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return Task.FromResult(new CharacterPermissionGroup
+                        {
+                            UUID = reader["UUID"] as string ?? string.Empty,
+                            OwnerCharacterUUID = reader["OwnerCharacterUUID"] as string ?? string.Empty,
+                            Name = reader["Name"] as string ?? string.Empty,
+                            Description = reader["Description"] as string ?? string.Empty,
+                            DefaultClearanceLevelUUID = reader["DefaultClearanceLevelUUID"] as string ?? string.Empty,
+                        });
+                    }
+                }
+            }
+
+            return Task.FromResult<CharacterPermissionGroup>(null);
+        }
+
+        /// <inheritdoc/>
+        public Task UpsertCharacterGroupAsync(CharacterPermissionGroup group)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = @"INSERT OR REPLACE INTO CharacterPermissionGroups (UUID, OwnerCharacterUUID, Name, Description, DefaultClearanceLevelUUID)
+                                   VALUES (@uuid, @cid, @name, @desc, @defaultCl)";
+                cmd.Parameters.AddWithValue("@uuid", group.UUID);
+                cmd.Parameters.AddWithValue("@cid", group.OwnerCharacterUUID);
+                cmd.Parameters.AddWithValue("@name", group.Name ?? string.Empty);
+                cmd.Parameters.AddWithValue("@desc", group.Description ?? string.Empty);
+                cmd.Parameters.AddWithValue("@defaultCl", group.DefaultClearanceLevelUUID ?? string.Empty);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task DeleteCharacterGroupAsync(string characterUUID, string groupUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "DELETE FROM CharacterPermissionGroups WHERE UUID = @uuid AND OwnerCharacterUUID = @cid";
+                cmd.Parameters.AddWithValue("@uuid", groupUUID);
+                cmd.Parameters.AddWithValue("@cid", characterUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<CharacterGroupCapability>> GetCharacterGroupCapabilitiesAsync(string groupUUID)
+        {
+            var results = new List<CharacterGroupCapability>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM CharacterGroupCapabilities WHERE GroupUUID = @gid";
+                cmd.Parameters.AddWithValue("@gid", groupUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(new CharacterGroupCapability
+                        {
+                            GroupUUID = reader["GroupUUID"] as string ?? string.Empty,
+                            CapabilityUUID = reader["CapabilityUUID"] as string ?? string.Empty,
+                        });
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<CharacterGroupCapability>>(results);
+        }
+
+        /// <inheritdoc/>
+        public Task AddCharacterGroupCapabilityAsync(CharacterGroupCapability item)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = @"INSERT OR REPLACE INTO CharacterGroupCapabilities (GroupUUID, CapabilityUUID)
+                                   VALUES (@gid, @cid)";
+                cmd.Parameters.AddWithValue("@gid", item.GroupUUID);
+                cmd.Parameters.AddWithValue("@cid", item.CapabilityUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task RemoveCharacterGroupCapabilityAsync(string groupUUID, string capabilityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "DELETE FROM CharacterGroupCapabilities WHERE GroupUUID = @gid AND CapabilityUUID = @cid";
+                cmd.Parameters.AddWithValue("@gid", groupUUID);
+                cmd.Parameters.AddWithValue("@cid", capabilityUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<CharacterGroupSharingRule>> GetCharacterGroupSharingRulesAsync(string groupUUID)
+        {
+            var results = new List<CharacterGroupSharingRule>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM CharacterGroupSharingRules WHERE GroupUUID = @gid";
+                cmd.Parameters.AddWithValue("@gid", groupUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(new CharacterGroupSharingRule
+                        {
+                            UUID = reader["UUID"] as string ?? string.Empty,
+                            GroupUUID = reader["GroupUUID"] as string ?? string.Empty,
+                            DataType = reader["DataType"] as string,
+                            EntityUUID = reader["EntityUUID"] as string,
+                        });
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<CharacterGroupSharingRule>>(results);
+        }
+
+        /// <inheritdoc/>
+        public Task UpsertCharacterGroupSharingRuleAsync(CharacterGroupSharingRule rule)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = @"INSERT OR REPLACE INTO CharacterGroupSharingRules (UUID, GroupUUID, DataType, EntityUUID)
+                                   VALUES (@uuid, @gid, @dataType, @entityUUID)";
+                cmd.Parameters.AddWithValue("@uuid", rule.UUID);
+                cmd.Parameters.AddWithValue("@gid", rule.GroupUUID);
+                cmd.Parameters.AddWithValue("@dataType", (object)rule.DataType ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@entityUUID", (object)rule.EntityUUID ?? DBNull.Value);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task DeleteCharacterGroupSharingRuleAsync(string groupUUID, string ruleUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "DELETE FROM CharacterGroupSharingRules WHERE UUID = @uuid AND GroupUUID = @gid";
+                cmd.Parameters.AddWithValue("@uuid", ruleUUID);
+                cmd.Parameters.AddWithValue("@gid", groupUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<CharacterGranteePermissions>> GetCharacterGranteesAsync(string ownerCharacterUUID)
+        {
+            var results = new List<CharacterGranteePermissions>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM CharacterGranteePermissions WHERE OwnerCharacterUUID = @cid";
+                cmd.Parameters.AddWithValue("@cid", ownerCharacterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(new CharacterGranteePermissions
+                        {
+                            OwnerCharacterUUID = reader["OwnerCharacterUUID"] as string ?? string.Empty,
+                            GranteeType = (GranteeType)Convert.ToInt32(reader["GranteeType"]),
+                            GranteeUUID = reader["GranteeUUID"] as string ?? string.Empty,
+                            GroupUUID = reader["GroupUUID"] as string,
+                            ClearanceLevelUUID = reader["ClearanceLevelUUID"] as string,
+                        });
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<CharacterGranteePermissions>>(results);
+        }
+
+        /// <inheritdoc/>
+        public Task UpsertCharacterGranteePermissionsAsync(CharacterGranteePermissions perms)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = @"INSERT OR REPLACE INTO CharacterGranteePermissions (OwnerCharacterUUID, GranteeType, GranteeUUID, GroupUUID, ClearanceLevelUUID)
+                                   VALUES (@cid, @granteeType, @granteeUUID, @gid, @clid)";
+                cmd.Parameters.AddWithValue("@cid", perms.OwnerCharacterUUID);
+                cmd.Parameters.AddWithValue("@granteeType", (int)perms.GranteeType);
+                cmd.Parameters.AddWithValue("@granteeUUID", perms.GranteeUUID);
+                cmd.Parameters.AddWithValue("@gid", (object)perms.GroupUUID ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@clid", (object)perms.ClearanceLevelUUID ?? DBNull.Value);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task DeleteCharacterGranteePermissionsAsync(string ownerCharacterUUID, string granteeUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "DELETE FROM CharacterGranteePermissions WHERE OwnerCharacterUUID = @cid AND GranteeUUID = @gid";
+                cmd.Parameters.AddWithValue("@cid", ownerCharacterUUID);
+                cmd.Parameters.AddWithValue("@gid", granteeUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<CharacterGranteeCapability>> GetCharacterGranteeCapabilitiesAsync(string ownerCharacterUUID, string granteeUUID)
+        {
+            var results = new List<CharacterGranteeCapability>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM CharacterGranteeCapabilities WHERE OwnerCharacterUUID = @cid AND GranteeUUID = @gid";
+                cmd.Parameters.AddWithValue("@cid", ownerCharacterUUID);
+                cmd.Parameters.AddWithValue("@gid", granteeUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(new CharacterGranteeCapability
+                        {
+                            OwnerCharacterUUID = reader["OwnerCharacterUUID"] as string ?? string.Empty,
+                            GranteeType = (GranteeType)Convert.ToInt32(reader["GranteeType"]),
+                            GranteeUUID = reader["GranteeUUID"] as string ?? string.Empty,
+                            CapabilityUUID = reader["CapabilityUUID"] as string ?? string.Empty,
+                        });
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<CharacterGranteeCapability>>(results);
+        }
+
+        /// <inheritdoc/>
+        public Task AddCharacterGranteeCapabilityAsync(CharacterGranteeCapability item)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = @"INSERT OR REPLACE INTO CharacterGranteeCapabilities (OwnerCharacterUUID, GranteeUUID, CapabilityUUID)
+                                   VALUES (@cid, @gid, @capId)";
+                cmd.Parameters.AddWithValue("@cid", item.OwnerCharacterUUID);
+                cmd.Parameters.AddWithValue("@gid", item.GranteeUUID);
+                cmd.Parameters.AddWithValue("@capId", item.CapabilityUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task RemoveCharacterGranteeCapabilityAsync(string ownerCharacterUUID, string granteeUUID, string capabilityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "DELETE FROM CharacterGranteeCapabilities WHERE OwnerCharacterUUID = @cid AND GranteeUUID = @gid AND CapabilityUUID = @capId";
+                cmd.Parameters.AddWithValue("@cid", ownerCharacterUUID);
+                cmd.Parameters.AddWithValue("@gid", granteeUUID);
+                cmd.Parameters.AddWithValue("@capId", capabilityUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // Intel
+        // ═══════════════════════════════════════════════════════════
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<IntelComment>> GetIntelCommentsForTargetAsync(string targetCharacterUUID)
+        {
+            var results = new List<IntelComment>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM IntelComments WHERE TargetCharacterUUID = @tid";
+                cmd.Parameters.AddWithValue("@tid", targetCharacterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(ReadIntelComment(reader));
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<IntelComment>>(results);
+        }
+
+        /// <inheritdoc/>
+        public Task<IntelComment> GetIntelCommentAsync(string commentUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM IntelComments WHERE UUID = @uuid";
+                cmd.Parameters.AddWithValue("@uuid", commentUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return Task.FromResult(ReadIntelComment(reader));
+                    }
+                }
+            }
+
+            return Task.FromResult<IntelComment>(null);
+        }
+
+        /// <inheritdoc/>
+        public Task UpsertIntelCommentAsync(IntelComment comment)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = @"INSERT OR REPLACE INTO IntelComments (UUID, TargetCharacterUUID, SubmitterCharacterUUID, Text, CreatedUtc)
+                                   VALUES (@uuid, @target, @submitter, @text, @created)";
+                cmd.Parameters.AddWithValue("@uuid", comment.UUID);
+                cmd.Parameters.AddWithValue("@target", comment.TargetCharacterUUID ?? string.Empty);
+                cmd.Parameters.AddWithValue("@submitter", comment.SubmitterCharacterUUID ?? string.Empty);
+                cmd.Parameters.AddWithValue("@text", comment.Text ?? string.Empty);
+                cmd.Parameters.AddWithValue("@created", comment.CreatedUtc.ToString("O"));
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task DeleteIntelCommentAsync(string commentUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "DELETE FROM IntelComments WHERE UUID = @uuid";
+                cmd.Parameters.AddWithValue("@uuid", commentUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<IntelCommentFactionShare>> GetIntelSharesForCommentAsync(string commentUUID)
+        {
+            var results = new List<IntelCommentFactionShare>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM IntelCommentFactionShares WHERE IntelCommentUUID = @cid";
+                cmd.Parameters.AddWithValue("@cid", commentUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(ReadIntelShare(reader));
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<IntelCommentFactionShare>>(results);
+        }
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<IntelCommentFactionShare>> GetIntelSharesForFactionAsync(string factionUUID)
+        {
+            var results = new List<IntelCommentFactionShare>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM IntelCommentFactionShares WHERE FactionUUID = @fid";
+                cmd.Parameters.AddWithValue("@fid", factionUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(ReadIntelShare(reader));
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<IntelCommentFactionShare>>(results);
+        }
+
+        /// <inheritdoc/>
+        public Task UpsertIntelShareAsync(IntelCommentFactionShare share)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = @"INSERT OR REPLACE INTO IntelCommentFactionShares (UUID, IntelCommentUUID, FactionUUID, ClassificationLevelUUID, ClassifiedByCharacterUUID, SharedUtc, ClassifiedUtc)
+                                   VALUES (@uuid, @commentId, @fid, @clLevel, @classifiedBy, @shared, @classifiedUtc)";
+                cmd.Parameters.AddWithValue("@uuid", share.UUID);
+                cmd.Parameters.AddWithValue("@commentId", share.IntelCommentUUID ?? string.Empty);
+                cmd.Parameters.AddWithValue("@fid", share.FactionUUID ?? string.Empty);
+                cmd.Parameters.AddWithValue("@clLevel", (object)share.ClassificationLevelUUID ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@classifiedBy", (object)share.ClassifiedByCharacterUUID ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@shared", share.SharedUtc.ToString("O"));
+                cmd.Parameters.AddWithValue("@classifiedUtc", share.ClassifiedUtc.HasValue ? (object)share.ClassifiedUtc.Value.ToString("O") : DBNull.Value);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task DeleteIntelShareAsync(string shareUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "DELETE FROM IntelCommentFactionShares WHERE UUID = @uuid";
+                cmd.Parameters.AddWithValue("@uuid", shareUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // Audit
+        // ═══════════════════════════════════════════════════════════
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<PermissionAuditEntry>> GetPermissionAuditEntriesAsync(DateTime? startDate = null, DateTime? endDate = null, PermissionActionType? actionType = null, string actorUUID = null, string targetUUID = null)
+        {
+            var results = new List<PermissionAuditEntry>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                var where = new List<string>();
+                if (startDate.HasValue)
+                {
+                    where.Add("Timestamp >= @startDate");
+                    cmd.Parameters.AddWithValue("@startDate", startDate.Value.ToString("O"));
+                }
+
+                if (endDate.HasValue)
+                {
+                    where.Add("Timestamp <= @endDate");
+                    cmd.Parameters.AddWithValue("@endDate", endDate.Value.ToString("O"));
+                }
+
+                if (actionType.HasValue)
+                {
+                    where.Add("ActionType = @actionType");
+                    cmd.Parameters.AddWithValue("@actionType", (int)actionType.Value);
+                }
+
+                if (actorUUID != null)
+                {
+                    where.Add("ActorCharacterUUID = @actorUUID");
+                    cmd.Parameters.AddWithValue("@actorUUID", actorUUID);
+                }
+
+                if (targetUUID != null)
+                {
+                    where.Add("TargetCharacterUUID = @targetUUID");
+                    cmd.Parameters.AddWithValue("@targetUUID", targetUUID);
+                }
+
+                cmd.CommandText = "SELECT * FROM PermissionAuditEntries"
+                    + (where.Count > 0 ? " WHERE " + string.Join(" AND ", where) : string.Empty)
+                    + " ORDER BY Timestamp DESC";
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(new PermissionAuditEntry
+                        {
+                            UUID = reader["UUID"] as string ?? string.Empty,
+                            Timestamp = DateTime.Parse(reader["Timestamp"] as string ?? DateTime.MinValue.ToString("O")),
+                            ActorCharacterUUID = reader["ActorCharacterUUID"] as string ?? string.Empty,
+                            TargetCharacterUUID = reader["TargetCharacterUUID"] as string ?? string.Empty,
+                            ActionType = (PermissionActionType)Convert.ToInt32(reader["ActionType"]),
+                            OldValue = reader["OldValue"] as string ?? string.Empty,
+                            NewValue = reader["NewValue"] as string ?? string.Empty,
+                        });
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<PermissionAuditEntry>>(results);
+        }
+
+        /// <inheritdoc/>
+        public Task AppendPermissionAuditEntryAsync(PermissionAuditEntry entry)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = @"INSERT INTO PermissionAuditEntries (UUID, Timestamp, ActorCharacterUUID, TargetCharacterUUID, ActionType, OldValue, NewValue)
+                                   VALUES (@uuid, @ts, @actor, @target, @action, @oldVal, @newVal)";
+                cmd.Parameters.AddWithValue("@uuid", entry.UUID);
+                cmd.Parameters.AddWithValue("@ts", entry.Timestamp.ToString("O"));
+                cmd.Parameters.AddWithValue("@actor", entry.ActorCharacterUUID ?? string.Empty);
+                cmd.Parameters.AddWithValue("@target", entry.TargetCharacterUUID ?? string.Empty);
+                cmd.Parameters.AddWithValue("@action", (int)entry.ActionType);
+                cmd.Parameters.AddWithValue("@oldVal", entry.OldValue ?? string.Empty);
+                cmd.Parameters.AddWithValue("@newVal", entry.NewValue ?? string.Empty);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task DeleteExpiredAuditEntriesAsync(DateTime cutoff)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "DELETE FROM PermissionAuditEntries WHERE Timestamp < @cutoff";
+                cmd.Parameters.AddWithValue("@cutoff", cutoff.ToString("O"));
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // Baseline / Global Lookup Data
+        // ═══════════════════════════════════════════════════════════
+
+        /// <inheritdoc/>
+        public Task<BaselineGameConstants> GetBaselineGameConstantsAsync()
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM BaselineGameConstants WHERE Id = 1";
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return Task.FromResult(new BaselineGameConstants
+                        {
+                            RefiningBaseRate = 25,
+                            CommoditiesPerCycle = 10,
+                            CommodityCycleSeconds = 600,
+                            StructureCap = 65,
+                            WorkerVolume = 50m,
+                        });
+                    }
+                }
+            }
+
+            return Task.FromResult<BaselineGameConstants>(null);
+        }
+
+        /// <inheritdoc/>
+        public Task UpsertBaselineGameConstantsAsync(BaselineGameConstants constants)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = @"INSERT OR REPLACE INTO BaselineGameConstants (Id, DataVersion, LastUpdatedUtc)
+                                   VALUES (1, 1, @utc)";
+                cmd.Parameters.AddWithValue("@utc", SystemClock.UtcNow.ToString("O"));
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<BlueprintType>> GetAllBlueprintTypesAsync()
+        {
+            var results = new List<BlueprintType>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM BlueprintTypes";
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var bt = new BlueprintType
+                        {
+                            Id = reader["Name"] as string ?? string.Empty,
+                            Name = reader["Name"] as string ?? string.Empty,
+                        };
+                        results.Add(bt);
+                    }
+                }
+
+                // Load properties and researchable properties
+                foreach (var bt in results)
+                {
+                    bt.Properties = LoadBlueprintTypeProperties(conn, bt.Name);
+                    bt.ResearchableProperties = LoadBlueprintTypeResearchableProperties(conn, bt.Name);
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<BlueprintType>>(results);
+        }
+
+        /// <inheritdoc/>
+        public Task UpsertBlueprintTypesAsync(IReadOnlyList<BlueprintType> types)
+        {
+            using (var conn = OpenConnection())
+            using (var tx = conn.BeginTransaction())
+            {
+                using (var del = conn.CreateCommand())
+                {
+                    del.Transaction = tx;
+                    del.CommandText = "DELETE FROM BlueprintTypes";
+                    del.ExecuteNonQuery();
+                }
+
+                foreach (var bt in types)
+                {
+                    using (var cmd = conn.CreateCommand())
+                    {
+                        cmd.Transaction = tx;
+                        cmd.CommandText = @"INSERT INTO BlueprintTypes (Name, Category, TechLevel, BaseVolume, BaseMass)
+                                           VALUES (@name, @cat, @tech, @vol, @mass)";
+                        cmd.Parameters.AddWithValue("@name", bt.Name ?? bt.Id ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@cat", string.Empty);
+                        cmd.Parameters.AddWithValue("@tech", string.Empty);
+                        cmd.Parameters.AddWithValue("@vol", 0.0);
+                        cmd.Parameters.AddWithValue("@mass", 0.0);
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    if (bt.Properties != null)
+                    {
+                        foreach (var prop in bt.Properties)
+                        {
+                            using (var cmd = conn.CreateCommand())
+                            {
+                                cmd.Transaction = tx;
+                                cmd.CommandText = @"INSERT INTO BlueprintTypeProperties (BlueprintTypeName, Key, DefaultValue)
+                                                   VALUES (@name, @key, @val)";
+                                cmd.Parameters.AddWithValue("@name", bt.Name ?? bt.Id ?? string.Empty);
+                                cmd.Parameters.AddWithValue("@key", prop ?? string.Empty);
+                                cmd.Parameters.AddWithValue("@val", string.Empty);
+                                cmd.ExecuteNonQuery();
+                            }
+                        }
+                    }
+
+                    if (bt.ResearchableProperties != null)
+                    {
+                        foreach (var prop in bt.ResearchableProperties)
+                        {
+                            using (var cmd = conn.CreateCommand())
+                            {
+                                cmd.Transaction = tx;
+                                cmd.CommandText = @"INSERT INTO BlueprintTypeResearchableProperties (BlueprintTypeName, Key, MinValue, MaxValue)
+                                                   VALUES (@name, @key, @min, @max)";
+                                cmd.Parameters.AddWithValue("@name", bt.Name ?? bt.Id ?? string.Empty);
+                                cmd.Parameters.AddWithValue("@key", prop ?? string.Empty);
+                                cmd.Parameters.AddWithValue("@min", string.Empty);
+                                cmd.Parameters.AddWithValue("@max", string.Empty);
+                                cmd.ExecuteNonQuery();
+                            }
+                        }
+                    }
+                }
+
+                tx.Commit();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<ShipClass>> GetAllShipClassesAsync()
+        {
+            var results = new List<ShipClass>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM ShipClasses";
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(new ShipClass
+                        {
+                            Id = 0,
+                            Name = reader["Name"] as string ?? string.Empty,
+                        });
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<ShipClass>>(results);
+        }
+
+        /// <inheritdoc/>
+        public Task UpsertShipClassesAsync(IReadOnlyList<ShipClass> classes)
+        {
+            using (var conn = OpenConnection())
+            using (var tx = conn.BeginTransaction())
+            {
+                using (var del = conn.CreateCommand())
+                {
+                    del.Transaction = tx;
+                    del.CommandText = "DELETE FROM ShipClasses";
+                    del.ExecuteNonQuery();
+                }
+
+                foreach (var sc in classes)
+                {
+                    using (var cmd = conn.CreateCommand())
+                    {
+                        cmd.Transaction = tx;
+                        cmd.CommandText = @"INSERT INTO ShipClasses (Name, HullType, CargoCapacity, HopperCapacity, ComponentSlots, BaseHP)
+                                           VALUES (@name, @hull, @cargo, @hopper, @slots, @hp)";
+                        cmd.Parameters.AddWithValue("@name", sc.Name ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@hull", string.Empty);
+                        cmd.Parameters.AddWithValue("@cargo", 0);
+                        cmd.Parameters.AddWithValue("@hopper", 0);
+                        cmd.Parameters.AddWithValue("@slots", 0);
+                        cmd.Parameters.AddWithValue("@hp", 0);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                tx.Commit();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<TechLevel>> GetAllTechLevelsAsync()
+        {
+            var results = new List<TechLevel>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM TechLevels";
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(new TechLevel
+                        {
+                            Name = reader["Name"] as string ?? string.Empty,
+                        });
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<TechLevel>>(results);
+        }
+
+        /// <inheritdoc/>
+        public Task UpsertTechLevelsAsync(IReadOnlyList<TechLevel> levels)
+        {
+            using (var conn = OpenConnection())
+            using (var tx = conn.BeginTransaction())
+            {
+                using (var del = conn.CreateCommand())
+                {
+                    del.Transaction = tx;
+                    del.CommandText = "DELETE FROM TechLevels";
+                    del.ExecuteNonQuery();
+                }
+
+                foreach (var tl in levels)
+                {
+                    using (var cmd = conn.CreateCommand())
+                    {
+                        cmd.Transaction = tx;
+                        cmd.CommandText = @"INSERT INTO TechLevels (Name, Level, Description)
+                                           VALUES (@name, @level, @desc)";
+                        cmd.Parameters.AddWithValue("@name", tl.Name ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@level", 0);
+                        cmd.Parameters.AddWithValue("@desc", string.Empty);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                tx.Commit();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<Commodity>> GetAllCommoditiesAsync()
+        {
+            var results = new List<Commodity>();
+            using (var conn = OpenConnection())
+            {
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT * FROM Commodities";
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            results.Add(new Commodity
+                            {
+                                ID = reader["Name"] as string ?? string.Empty,
+                                Name = reader["Name"] as string ?? string.Empty,
+                            });
+                        }
+                    }
+                }
+
+                // Load construction resources for each commodity
+                foreach (var c in results)
+                {
+                    using (var cmd = conn.CreateCommand())
+                    {
+                        cmd.CommandText = "SELECT ResourceName, Quantity FROM CommodityResources WHERE CommodityName = @name";
+                        cmd.Parameters.AddWithValue("@name", c.Name);
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                c.ConstructionResources[reader["ResourceName"] as string ?? string.Empty] =
+                                    Convert.ToInt32(reader["Quantity"]).ToString();
+                            }
+                        }
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<Commodity>>(results);
+        }
+
+        /// <inheritdoc/>
+        public Task UpsertCommoditiesAsync(IReadOnlyList<Commodity> commodities)
+        {
+            using (var conn = OpenConnection())
+            using (var tx = conn.BeginTransaction())
+            {
+                using (var del = conn.CreateCommand())
+                {
+                    del.Transaction = tx;
+                    del.CommandText = "DELETE FROM Commodities";
+                    del.ExecuteNonQuery();
+                }
+
+                foreach (var c in commodities)
+                {
+                    using (var cmd = conn.CreateCommand())
+                    {
+                        cmd.Transaction = tx;
+                        cmd.CommandText = @"INSERT INTO Commodities (Name, Category, BaseVolume, BaseMass, BaseValue)
+                                           VALUES (@name, @cat, @vol, @mass, @val)";
+                        cmd.Parameters.AddWithValue("@name", c.Name ?? c.ID ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@cat", string.Empty);
+                        cmd.Parameters.AddWithValue("@vol", 0.0);
+                        cmd.Parameters.AddWithValue("@mass", 0.0);
+                        cmd.Parameters.AddWithValue("@val", 0.0);
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    if (c.ConstructionResources != null)
+                    {
+                        foreach (var kvp in c.ConstructionResources)
+                        {
+                            using (var cmd = conn.CreateCommand())
+                            {
+                                cmd.Transaction = tx;
+                                cmd.CommandText = @"INSERT INTO CommodityResources (CommodityName, ResourceName, Quantity)
+                                                   VALUES (@commName, @resName, @qty)";
+                                cmd.Parameters.AddWithValue("@commName", c.Name ?? c.ID ?? string.Empty);
+                                cmd.Parameters.AddWithValue("@resName", kvp.Key ?? string.Empty);
+                                int qty = 0;
+                                int.TryParse(kvp.Value, out qty);
+                                cmd.Parameters.AddWithValue("@qty", qty);
+                                cmd.ExecuteNonQuery();
+                            }
+                        }
+                    }
+                }
+
+                tx.Commit();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<RefiningRecipe>> GetAllRefiningRecipesAsync()
+        {
+            var results = new List<RefiningRecipe>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM RefiningRecipes";
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(new RefiningRecipe
+                        {
+                            InputResource = reader["InputResource"] as string ?? string.Empty,
+                            InputPurity = reader["InputPurity"] as string ?? string.Empty,
+                            OutputResource = reader["OutputResource"] as string ?? string.Empty,
+                            ConsumeRate = Convert.ToInt32(reader["OutputQuantity"]),
+                            ProduceRate = Convert.ToInt32(reader["OutputQuantity"]),
+                            Tier = 0,
+                        });
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<RefiningRecipe>>(results);
+        }
+
+        /// <inheritdoc/>
+        public Task UpsertRefiningRecipesAsync(IReadOnlyList<RefiningRecipe> recipes)
+        {
+            using (var conn = OpenConnection())
+            using (var tx = conn.BeginTransaction())
+            {
+                using (var del = conn.CreateCommand())
+                {
+                    del.Transaction = tx;
+                    del.CommandText = "DELETE FROM RefiningRecipes";
+                    del.ExecuteNonQuery();
+                }
+
+                int idx = 0;
+                foreach (var r in recipes)
+                {
+                    using (var cmd = conn.CreateCommand())
+                    {
+                        cmd.Transaction = tx;
+                        cmd.CommandText = @"INSERT INTO RefiningRecipes (Id, InputResource, InputPurity, OutputResource, OutputPurity, OutputQuantity, ProcessingTime)
+                                           VALUES (@id, @inRes, @inPur, @outRes, @outPur, @outQty, @procTime)";
+                        cmd.Parameters.AddWithValue("@id", $"recipe_{idx++}");
+                        cmd.Parameters.AddWithValue("@inRes", r.InputResource ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@inPur", r.InputPurity ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@outRes", r.OutputResource ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@outPur", string.Empty);
+                        cmd.Parameters.AddWithValue("@outQty", r.ProduceRate);
+                        cmd.Parameters.AddWithValue("@procTime", 0);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                tx.Commit();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<ResearchTimeEntry>> GetAllResearchTimesAsync()
+        {
+            var results = new List<ResearchTimeEntry>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM ResearchTimes";
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(new ResearchTimeEntry
+                        {
+                            Evolution = Convert.ToInt32(reader["BaseTimeMinutes"]),
+                            ResearchTimeSeconds = Convert.ToInt64(reader["BaseTimeMinutes"]) * 60,
+                        });
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<ResearchTimeEntry>>(results);
+        }
+
+        /// <inheritdoc/>
+        public Task UpsertResearchTimesAsync(IReadOnlyList<ResearchTimeEntry> entries)
+        {
+            using (var conn = OpenConnection())
+            using (var tx = conn.BeginTransaction())
+            {
+                using (var del = conn.CreateCommand())
+                {
+                    del.Transaction = tx;
+                    del.CommandText = "DELETE FROM ResearchTimes";
+                    del.ExecuteNonQuery();
+                }
+
+                int idx = 0;
+                foreach (var e in entries)
+                {
+                    using (var cmd = conn.CreateCommand())
+                    {
+                        cmd.Transaction = tx;
+                        cmd.CommandText = @"INSERT INTO ResearchTimes (Id, BlueprintType, TechLevel, PropertyKey, BaseTimeMinutes)
+                                           VALUES (@id, @bpType, @tech, @propKey, @minutes)";
+                        cmd.Parameters.AddWithValue("@id", $"rt_{idx++}");
+                        cmd.Parameters.AddWithValue("@bpType", string.Empty);
+                        cmd.Parameters.AddWithValue("@tech", string.Empty);
+                        cmd.Parameters.AddWithValue("@propKey", string.Empty);
+                        cmd.Parameters.AddWithValue("@minutes", (int)(e.ResearchTimeSeconds / 60));
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                tx.Commit();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<PropertyTypeDefinition>> GetAllPropertyTypeDefinitionsAsync()
+        {
+            var results = new List<PropertyTypeDefinition>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM PropertyTypeDefinitions";
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(new PropertyTypeDefinition
+                        {
+                            ModTypeId = 0,
+                            PropertyName = reader["Key"] as string ?? string.Empty,
+                            FriendlyPropertyName = reader["DisplayName"] as string ?? string.Empty,
+                            Unit = reader["Unit"] as string ?? string.Empty,
+                        });
+                    }
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<PropertyTypeDefinition>>(results);
+        }
+
+        /// <inheritdoc/>
+        public Task UpsertPropertyTypeDefinitionsAsync(IReadOnlyList<PropertyTypeDefinition> definitions)
+        {
+            using (var conn = OpenConnection())
+            using (var tx = conn.BeginTransaction())
+            {
+                using (var del = conn.CreateCommand())
+                {
+                    del.Transaction = tx;
+                    del.CommandText = "DELETE FROM PropertyTypeDefinitions";
+                    del.ExecuteNonQuery();
+                }
+
+                foreach (var d in definitions)
+                {
+                    using (var cmd = conn.CreateCommand())
+                    {
+                        cmd.Transaction = tx;
+                        cmd.CommandText = @"INSERT INTO PropertyTypeDefinitions (Key, DisplayName, Category, DataType, Unit)
+                                           VALUES (@key, @display, @cat, @dataType, @unit)";
+                        cmd.Parameters.AddWithValue("@key", d.PropertyName ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@display", d.FriendlyPropertyName ?? string.Empty);
+                        cmd.Parameters.AddWithValue("@cat", string.Empty);
+                        cmd.Parameters.AddWithValue("@dataType", "string");
+                        cmd.Parameters.AddWithValue("@unit", d.Unit ?? string.Empty);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                tx.Commit();
+            }
+
+            return Task.CompletedTask;
+        }
 
         // ═══════════════════════════════════════════════════════════
         // Private Helpers
@@ -3686,9 +5543,9 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
                             JobTrack = reader["JobTrack"] as string ?? string.Empty,
                         };
 
-                        if (reader["Mass"] != DBNull.Value)
+                        if (reader[BlueprintPropertyKeys.Mass] != DBNull.Value)
                         {
-                            item.Mass = Convert.ToDecimal(reader["Mass"]);
+                            item.Mass = Convert.ToDecimal(reader[BlueprintPropertyKeys.Mass]);
                         }
 
                         if (reader["GameItemId"] != DBNull.Value)
@@ -6133,6 +7990,148 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
                 cmd.Parameters.AddWithValue("@v", version.ToString());
                 cmd.ExecuteNonQuery();
             }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // Task 6.7 Helpers — WarehouseOverflowRule, Mail, Banking, Intel
+        // ═══════════════════════════════════════════════════════════
+
+        private static WarehouseOverflowRule ReadWarehouseOverflowRule(SqliteDataReader reader)
+        {
+            return new WarehouseOverflowRule
+            {
+                UUID = reader["UUID"] as string,
+                OwnerUUID = reader["OwnerUUID"] as string ?? string.Empty,
+                ColonyUUID = reader["ColonyUUID"] as string ?? string.Empty,
+                ResourceName = reader["ResourceName"] as string ?? string.Empty,
+                RuleType = (OverflowRuleType)Convert.ToInt32(reader["RuleType"]),
+                TriggerThreshold = Convert.ToDecimal(reader["Threshold"]),
+                DestinationUUID = reader["DestinationColonyUUID"] as string ?? string.Empty,
+            };
+        }
+
+        private static MailMessage ReadMailMessage(SqliteDataReader reader)
+        {
+            return new MailMessage
+            {
+                UUID = (reader["OwnerUUID"] as string ?? string.Empty) + "_" + Convert.ToInt32(reader["MailId"]).ToString(),
+                OwnerUUID = reader["OwnerUUID"] as string ?? string.Empty,
+                MailId = Convert.ToInt32(reader["MailId"]),
+                CharacterIdFrom = Convert.ToInt32(reader["CharacterIdFrom"]),
+                FromName = reader["FromName"] as string ?? string.Empty,
+                CharacterIdTo = Convert.ToInt32(reader["CharacterIdTo"]),
+                ToName = reader["ToName"] as string ?? string.Empty,
+                SentTime = reader["SentTime"] as string ?? string.Empty,
+                Subject = reader["Subject"] as string ?? string.Empty,
+                MailRead = Convert.ToInt32(reader["MailRead"]) != 0,
+                MailType = reader["MailType"] as string,
+                MailContent = reader["MailContent"] as string ?? string.Empty,
+                LocalRead = Convert.ToInt32(reader["LocalRead"]) != 0,
+            };
+        }
+
+        private static BankingTransaction ReadBankingTransaction(SqliteDataReader reader)
+        {
+            var tx = new BankingTransaction
+            {
+                UUID = reader["UUID"] as string ?? string.Empty,
+                OwnerUUID = reader["OwnerUUID"] as string ?? string.Empty,
+                TransactionDateTime = reader["TransactionDateTime"] as string ?? string.Empty,
+                CreditChange = Convert.ToDecimal(reader["CreditChange"]),
+                OldBalance = Convert.ToDecimal(reader["OldBalance"]),
+                NewBalance = Convert.ToDecimal(reader["NewBalance"]),
+                TransactionType = Convert.ToInt32(reader["TransactionType"]),
+                Detail = reader["Detail"] as string ?? string.Empty,
+                IsManualEntry = Convert.ToInt32(reader["IsManualEntry"]) != 0,
+            };
+
+            if (reader["CharacterId"] != DBNull.Value)
+            {
+                tx.CharacterId = Convert.ToInt32(reader["CharacterId"]);
+            }
+
+            if (reader["SystemObjectId"] != DBNull.Value)
+            {
+                tx.SystemObjectId = Convert.ToInt32(reader["SystemObjectId"]);
+            }
+
+            if (reader["SystemId"] != DBNull.Value)
+            {
+                tx.SystemId = Convert.ToInt32(reader["SystemId"]);
+            }
+
+            return tx;
+        }
+
+        private static IntelComment ReadIntelComment(SqliteDataReader reader)
+        {
+            return new IntelComment
+            {
+                UUID = reader["UUID"] as string ?? string.Empty,
+                TargetCharacterUUID = reader["TargetCharacterUUID"] as string ?? string.Empty,
+                SubmitterCharacterUUID = reader["SubmitterCharacterUUID"] as string ?? string.Empty,
+                Text = reader["Text"] as string ?? string.Empty,
+                CreatedUtc = DateTime.Parse(reader["CreatedUtc"] as string ?? DateTime.MinValue.ToString("O")),
+            };
+        }
+
+        private static IntelCommentFactionShare ReadIntelShare(SqliteDataReader reader)
+        {
+            var share = new IntelCommentFactionShare
+            {
+                UUID = reader["UUID"] as string ?? string.Empty,
+                IntelCommentUUID = reader["IntelCommentUUID"] as string ?? string.Empty,
+                FactionUUID = reader["FactionUUID"] as string ?? string.Empty,
+                ClassificationLevelUUID = reader["ClassificationLevelUUID"] as string,
+                ClassifiedByCharacterUUID = reader["ClassifiedByCharacterUUID"] as string,
+                SharedUtc = DateTime.Parse(reader["SharedUtc"] as string ?? DateTime.MinValue.ToString("O")),
+            };
+
+            var classifiedUtcStr = reader["ClassifiedUtc"] as string;
+            if (classifiedUtcStr != null)
+            {
+                share.ClassifiedUtc = DateTime.Parse(classifiedUtcStr);
+            }
+
+            return share;
+        }
+
+        private static string[] LoadBlueprintTypeProperties(SqliteConnection conn, string blueprintTypeName)
+        {
+            var props = new List<string>();
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT Key FROM BlueprintTypeProperties WHERE BlueprintTypeName = @name";
+                cmd.Parameters.AddWithValue("@name", blueprintTypeName);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        props.Add(reader.GetString(0));
+                    }
+                }
+            }
+
+            return props.ToArray();
+        }
+
+        private static string[] LoadBlueprintTypeResearchableProperties(SqliteConnection conn, string blueprintTypeName)
+        {
+            var props = new List<string>();
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT Key FROM BlueprintTypeResearchableProperties WHERE BlueprintTypeName = @name";
+                cmd.Parameters.AddWithValue("@name", blueprintTypeName);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        props.Add(reader.GetString(0));
+                    }
+                }
+            }
+
+            return props.ToArray();
         }
 
         private SqliteConnection OpenConnection()
