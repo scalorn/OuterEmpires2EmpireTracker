@@ -25,7 +25,7 @@ namespace OE2EmpireTracker.Common.Storage
     /// </summary>
     internal partial class PostgresBackend : IStorageBackend
     {
-        private const int CurrentSchemaVersion = 1;
+        private const int CurrentSchemaVersion = 2;
         private const int MaxRetries = 3;
 
         private const string PlayerEntitySchemaA = @"
@@ -998,6 +998,12 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
                         ExecuteSchema(conn);
                         SetSchemaVersion(conn, CurrentSchemaVersion);
                         Log.Info("Postgres database initialized with schema version {0}", CurrentSchemaVersion);
+                    }
+                    else if (version < CurrentSchemaVersion)
+                    {
+                        MigrateSchema(conn, version);
+                        SetSchemaVersion(conn, CurrentSchemaVersion);
+                        Log.Info("Postgres database migrated from version {0} to {1}", version, CurrentSchemaVersion);
                     }
                     else
                     {
@@ -4002,9 +4008,9 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
                     cmd.Parameters.AddWithValue("@uuid", entity.UUID);
                     cmd.Parameters.AddWithValue("@owner", characterUUID);
                     cmd.Parameters.AddWithValue("@txnDate", entity.TransactionDateTime ?? string.Empty);
-                    cmd.Parameters.AddWithValue("@credit", (double)entity.CreditChange);
-                    cmd.Parameters.AddWithValue("@oldBal", (double)entity.OldBalance);
-                    cmd.Parameters.AddWithValue("@newBal", (double)entity.NewBalance);
+                    cmd.Parameters.AddWithValue("@credit", entity.CreditChange);
+                    cmd.Parameters.AddWithValue("@oldBal", entity.OldBalance);
+                    cmd.Parameters.AddWithValue("@newBal", entity.NewBalance);
                     cmd.Parameters.AddWithValue("@txnType", entity.TransactionType);
                     cmd.Parameters.AddWithValue("@detail", entity.Detail ?? string.Empty);
                     cmd.Parameters.AddWithValue("@charId", entity.CharacterId.HasValue ? (object)entity.CharacterId.Value : DBNull.Value);
@@ -6039,6 +6045,30 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
                 cmd.Parameters.AddWithValue("@v", version.ToString());
                 cmd.ExecuteNonQuery();
             }
+        }
+
+        private static void MigrateSchema(NpgsqlConnection conn, int fromVersion)
+        {
+            if (fromVersion < 2)
+            {
+                MigrateToVersion2(conn);
+            }
+        }
+
+        private static void MigrateToVersion2(NpgsqlConnection conn)
+        {
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = @"
+ALTER TABLE BankingTransactions ALTER COLUMN CreditChange TYPE NUMERIC USING CreditChange::NUMERIC;
+ALTER TABLE BankingTransactions ALTER COLUMN OldBalance TYPE NUMERIC USING OldBalance::NUMERIC;
+ALTER TABLE BankingTransactions ALTER COLUMN NewBalance TYPE NUMERIC USING NewBalance::NUMERIC;
+ALTER TABLE MarketTransactions ALTER COLUMN PricePerUnit TYPE NUMERIC USING PricePerUnit::NUMERIC;
+ALTER TABLE MarketTransactions ALTER COLUMN TotalPrice TYPE NUMERIC USING TotalPrice::NUMERIC;";
+                cmd.ExecuteNonQuery();
+            }
+
+            Log.Info("Migrated BankingTransactions and MarketTransactions decimal columns from DOUBLE PRECISION to NUMERIC");
         }
 
         // ═══════════════════════════════════════════════════════════

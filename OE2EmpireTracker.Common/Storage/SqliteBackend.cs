@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
@@ -25,7 +26,7 @@ namespace OE2EmpireTracker.Common.Storage
     /// </summary>
     internal class SqliteBackend : IStorageBackend
     {
-        private const int CurrentSchemaVersion = 1;
+        private const int CurrentSchemaVersion = 2;
 
         private const string ColonySchema = @"
 CREATE TABLE IF NOT EXISTS Colonies (
@@ -621,9 +622,9 @@ CREATE TABLE IF NOT EXISTS BankingTransactions (
     UUID TEXT PRIMARY KEY,
     OwnerUUID TEXT NOT NULL DEFAULT '',
     TransactionDateTime TEXT NOT NULL DEFAULT '',
-    CreditChange REAL NOT NULL DEFAULT 0,
-    OldBalance REAL NOT NULL DEFAULT 0,
-    NewBalance REAL NOT NULL DEFAULT 0,
+    CreditChange TEXT NOT NULL DEFAULT '0',
+    OldBalance TEXT NOT NULL DEFAULT '0',
+    NewBalance TEXT NOT NULL DEFAULT '0',
     TransactionType INTEGER NOT NULL DEFAULT 0,
     Detail TEXT NOT NULL DEFAULT '',
     CharacterId INTEGER,
@@ -981,8 +982,8 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
         /// </summary>
         private static readonly List<Action<SqliteConnection, SqliteTransaction>> Migrations = new List<Action<SqliteConnection, SqliteTransaction>>
         {
-            // Version 1 → 2: (future migration placeholder)
-            // Each entry migrates from version N to version N+1
+            // Version 1 → 2: BankingTransactions decimal columns REAL → TEXT
+            MigrateBankingTransactionsDecimalToText,
         };
 
         private readonly string _connectionString;
@@ -3667,9 +3668,9 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
                 cmd.Parameters.AddWithValue("@uuid", entity.UUID);
                 cmd.Parameters.AddWithValue("@owner", characterUUID);
                 cmd.Parameters.AddWithValue("@txnDate", entity.TransactionDateTime ?? string.Empty);
-                cmd.Parameters.AddWithValue("@credit", (double)entity.CreditChange);
-                cmd.Parameters.AddWithValue("@oldBal", (double)entity.OldBalance);
-                cmd.Parameters.AddWithValue("@newBal", (double)entity.NewBalance);
+                cmd.Parameters.AddWithValue("@credit", entity.CreditChange.ToString("G"));
+                cmd.Parameters.AddWithValue("@oldBal", entity.OldBalance.ToString("G"));
+                cmd.Parameters.AddWithValue("@newBal", entity.NewBalance.ToString("G"));
                 cmd.Parameters.AddWithValue("@txnType", entity.TransactionType);
                 cmd.Parameters.AddWithValue("@detail", entity.Detail ?? string.Empty);
                 cmd.Parameters.AddWithValue("@charId", entity.CharacterId.HasValue ? (object)entity.CharacterId.Value : DBNull.Value);
@@ -5491,6 +5492,44 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
                             migrationEx);
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Migration v1 → v2: Rebuilds the BankingTransactions table to use TEXT
+        /// columns for CreditChange, OldBalance, and NewBalance instead of REAL,
+        /// preserving decimal precision on round-trip.
+        /// </summary>
+        private static void MigrateBankingTransactionsDecimalToText(SqliteConnection conn, SqliteTransaction tx)
+        {
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = @"
+ALTER TABLE BankingTransactions RENAME TO BankingTransactions_old;
+
+CREATE TABLE BankingTransactions (
+    UUID TEXT PRIMARY KEY,
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    TransactionDateTime TEXT NOT NULL DEFAULT '',
+    CreditChange TEXT NOT NULL DEFAULT '0',
+    OldBalance TEXT NOT NULL DEFAULT '0',
+    NewBalance TEXT NOT NULL DEFAULT '0',
+    TransactionType INTEGER NOT NULL DEFAULT 0,
+    Detail TEXT NOT NULL DEFAULT '',
+    CharacterId INTEGER,
+    SystemObjectId INTEGER,
+    SystemId INTEGER,
+    IsManualEntry INTEGER NOT NULL DEFAULT 0
+);
+
+INSERT INTO BankingTransactions (UUID, OwnerUUID, TransactionDateTime, CreditChange, OldBalance, NewBalance, TransactionType, Detail, CharacterId, SystemObjectId, SystemId, IsManualEntry)
+SELECT UUID, OwnerUUID, TransactionDateTime, CAST(CreditChange AS TEXT), CAST(OldBalance AS TEXT), CAST(NewBalance AS TEXT), TransactionType, Detail, CharacterId, SystemObjectId, SystemId, IsManualEntry
+FROM BankingTransactions_old;
+
+DROP TABLE BankingTransactions_old;
+";
+                cmd.ExecuteNonQuery();
             }
         }
 
@@ -8144,9 +8183,9 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
                 UUID = reader["UUID"] as string ?? string.Empty,
                 OwnerUUID = reader["OwnerUUID"] as string ?? string.Empty,
                 TransactionDateTime = reader["TransactionDateTime"] as string ?? string.Empty,
-                CreditChange = Convert.ToDecimal(reader["CreditChange"]),
-                OldBalance = Convert.ToDecimal(reader["OldBalance"]),
-                NewBalance = Convert.ToDecimal(reader["NewBalance"]),
+                CreditChange = decimal.Parse(reader["CreditChange"].ToString(), CultureInfo.InvariantCulture),
+                OldBalance = decimal.Parse(reader["OldBalance"].ToString(), CultureInfo.InvariantCulture),
+                NewBalance = decimal.Parse(reader["NewBalance"].ToString(), CultureInfo.InvariantCulture),
                 TransactionType = Convert.ToInt32(reader["TransactionType"]),
                 Detail = reader["Detail"] as string ?? string.Empty,
                 IsManualEntry = Convert.ToInt32(reader["IsManualEntry"]) != 0,

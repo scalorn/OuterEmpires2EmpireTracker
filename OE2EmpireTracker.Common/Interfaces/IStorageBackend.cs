@@ -37,6 +37,13 @@ namespace OE2EmpireTracker.Common.Interfaces
         /// <returns>A <see cref="StorageInfo"/> describing the backend type and location.</returns>
         StorageInfo GetStorageInfo();
 
+        /// <summary>
+        /// Returns all character UUIDs that have stored player data in this backend.
+        /// Used by the migration service to discover which characters to migrate.
+        /// </summary>
+        /// <returns>A read-only list of distinct character UUIDs.</returns>
+        Task<IReadOnlyList<string>> GetAllCharacterUUIDsAsync();
+
         // ═══════════════════════════════════════════════════════════
         // Server Factions
         // ═══════════════════════════════════════════════════════════
