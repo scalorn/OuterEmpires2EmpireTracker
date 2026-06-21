@@ -2,25 +2,42 @@
 
 ## Introduction
 
-This spec covers Phase 2 and Phase 3 of the unified storage backend migration: integrating consumers (PlayerContext, EmpireContext, Server) with the unified IStorageBackend interface, adding backend selection preferences, implementing a data migration service, and verifying round-trip fidelity across all backend pairs.
+This spec covers Phase 2 and Phase 3 of the unified storage backend migration: integrating consumers (PlayerContext, EmpireContext) with the unified IStorageBackend interface, adding backend selection preferences, implementing a data migration service, and verifying round-trip fidelity across all backend pairs.
 
-**Prerequisite:** The `unified-storage-backend` spec (Phase 1) must be complete before this work begins. That spec delivers the IStorageBackend interface, all 5 backend implementations (JsonSingleFile, JsonMultiFile, SQLite, DynamoDB, Postgres), StorageBackendFactory, StorageBackendType enum, error types (StorageLoadException, StorageWriteException, StorageCorruptionException), and all entity models — all residing in OE2EmpireTracker.Common.
+**Prerequisite:** The `unified-storage-backend` spec (Phase 1) is **COMPLETE**. It delivered the IStorageBackend interface, all 5 backend implementations (JsonSingleFile, JsonMultiFile, SQLite, DynamoDB, Postgres), StorageBackendFactory, StorageBackendType enum, error types (StorageLoadException, StorageWriteException, StorageCorruptionException), all entity models, and the Server project migration to Common backends — all residing in OE2EmpireTracker.Common. The Server project already uses Common's IStorageBackend and StorageBackendFactory.
+
+## What Was Already Delivered (Phase 1)
+
+The following items from the original spec are **COMPLETE** and do not need re-implementation:
+
+- IStorageBackend interface with all CRUD methods for 22 per-character entity types, server-global entities, permissions, intel, audit, and baseline data
+- StorageBackendType enum (JsonSingleFile, JsonMultiFile, Sqlite, DynamoDb, Postgres)
+- StorageBackendFactory.CreateAsync(type, config)
+- StorageBackendConfig class
+- All 5 backend implementations with full CRUD
+- StorageExceptions (StorageLoadException, StorageWriteException, StorageCorruptionException)
+- Server/Storage/ folder removed; Server references Common backends
+- Server Program.cs uses Common's IStorageBackend interface and creates backends from appsettings.json
+- Server models (ServerModels.cs, PermissionModels.cs) moved to Common/Models/
+- All 264 Server tests passing with Common backends
+- Property tests for entity count preservation and atomic write safety
+- PlayerContext.WritesBlocked static property (blocks writes, returns early)
 
 ## Glossary
 
-- **IStorageBackend**: The unified async interface in OE2EmpireTracker.Common defining CRUD operations for all entity types (delivered by the unified-storage-backend spec)
+- **IStorageBackend**: The unified async interface in OE2EmpireTracker.Common defining CRUD operations for all entity types
 - **PlayerContext**: The singleton service in OE2EmpireTracker.Common that manages per-character player data, persistence, and change events
 - **EmpireContext**: The singleton service in OE2EmpireTracker.Common that manages shared baseline game data (blueprint types, ship classes, commodities)
 - **BaselineRoot**: The serialization root object containing all baseline entity arrays
 - **Migration_Service**: A service that reads all entity data from any source IStorageBackend and writes it to any destination IStorageBackend
-- **StorageBackendType**: The enum (JsonSingleFile, JsonMultiFile, Sqlite, DynamoDb, Postgres) delivered by the unified-storage-backend spec
-- **StorageBackendFactory**: The factory class that creates backend instances from configuration, delivered by the unified-storage-backend spec
+- **StorageBackendType**: The enum (JsonSingleFile, JsonMultiFile, Sqlite, DynamoDb, Postgres) in OE2EmpireTracker.Common.Interfaces
+- **StorageBackendFactory**: The factory class that creates backend instances from configuration, in OE2EmpireTracker.Common.Storage
 - **PreferencesStore**: The user preferences persistence service in OE2EmpireTracker.Desktop that stores application settings
-- **StorageWriteException**: Exception thrown by IStorageBackend when a write operation fails (delivered by the unified-storage-backend spec)
-- **StorageLoadException**: Exception thrown by IStorageBackend when a read/load operation fails (delivered by the unified-storage-backend spec)
+- **StorageWriteException**: Exception thrown by IStorageBackend when a write operation fails
+- **StorageLoadException**: Exception thrown by IStorageBackend when a read/load operation fails
 - **MigrationValidationException**: Exception thrown by Migration_Service when post-migration entity count validation fails
-- **WritesBlocked**: A boolean property on PlayerContext indicating that persistence is disabled due to a storage failure or explicit caller action
-- **Dirty_Entity_Tracking**: A mechanism in PlayerContext that marks entities as modified so that only changed entities are persisted on the next write, rather than rewriting all data
+- **WritesBlocked**: A static boolean property on PlayerContext indicating that persistence is disabled (already implemented)
+- **Dirty_Entity_Tracking**: A mechanism in PlayerContext that marks entities as modified so that only changed entities are persisted on the next write
 - **ServerOnly_Mode**: The mode where PlayerContext delegates persistence to a remote server via delegates instead of using local IStorageBackend
 
 ## Requirements
@@ -31,14 +48,14 @@ This spec covers Phase 2 and Phase 3 of the unified storage backend migration: i
 
 #### Acceptance Criteria
 
-1. THE PlayerContext SHALL accept an IStorageBackend instance via a constructor parameter and use the IStorageBackend for all load and save operations instead of directly reading or writing JSON files
-2. IF a caller invokes WriteContext, LoadFromServerAsync, or any entity Add/Remove/Update method on a PlayerContext instance that has no IStorageBackend configured, THEN THE PlayerContext SHALL throw InvalidOperationException
+1. THE PlayerContext SHALL accept an IStorageBackend instance via a public property and use the IStorageBackend for all load and save operations instead of directly reading or writing JSON files
+2. WHEN WriteContext is called and no IStorageBackend is configured AND ServerOnly mode is not active, THEN THE PlayerContext SHALL log a warning and return without writing (preserving backward compatibility with test scenarios that operate without a backend)
 3. WHEN PlayerContext is initialized with a backend and a CurrentPlayerUUID is set, THE PlayerContext SHALL load all per-character entity data for that player by calling the corresponding GetAll methods on the IStorageBackend before firing CurrentPlayerChanged
 4. THE PlayerContext SHALL continue to expose data via IReadOnlyList properties and fire all existing change events (CurrentPlayerChanged, ColonyDataChanged, BlueprintDataChanged, SurveyDataChanged, DeliveryDataChanged, PricingDataChanged, BuildPlanDataChanged, MarketDataChanged, StationDataChanged, AsteroidDataChanged, PlayerProfileDataChanged, ShipTemplateDataChanged, ShipDataChanged, StockDataChanged, SupplyChainDataChanged, ContactDataChanged, BankingDataChanged, MailDataChanged) regardless of which backend is configured
-5. WHEN WriteContext is called, THE PlayerContext SHALL persist the full current entity state by calling Upsert on the IStorageBackend for all entity collections currently held in memory, matching the same set of entity types serialized today (PlayerProfile, Blueprint, Survey, Colony, DeliveryRoute, DeliveryPlan, PricingPlan, BuildPlan, ShipTemplate, Ship, Station, MarketListing, MarketTransaction, StockPlan, StockProfile, SupplyChain, WarehouseOverflowRule, Faction, ExternalCharacter, Asteroid, BankingTransaction, MailMessage)
-6. THE PlayerContext SHALL maintain backward compatibility with existing ServerOnly mode delegates (IsServerOnlyMode, PushToServer, ExportFromServer, IsServerConnected) such that when an IStorageBackend is NOT configured, the delegates continue to control persistence behavior as they do today
-7. THE PlayerContext SHALL provide a parameterless constructor that does not configure a backend and SHALL expose a public method or property to assign an IStorageBackend after construction, enabling existing callers to configure the backend before triggering data load
-8. IF an IStorageBackend method throws during WriteContext, THEN THE PlayerContext SHALL NOT suppress the exception and SHALL leave the in-memory entity state unchanged (no data loss on write failure)
+5. WHEN WriteContext is called with an IStorageBackend configured, THE PlayerContext SHALL persist the current entity state by calling Upsert on the IStorageBackend for all dirty entity collections, matching all 22 per-character entity types
+6. THE PlayerContext SHALL maintain backward compatibility with existing ServerOnly mode delegates (IsServerOnlyMode, PushToServer, ExportFromServer, IsServerConnected) such that when ServerOnly mode is active, the delegates continue to control persistence behavior as they do today
+7. THE PlayerContext SHALL expose a public settable property for the IStorageBackend that can be assigned after construction, enabling existing callers to configure the backend before triggering data load
+8. IF an IStorageBackend method throws StorageWriteException during WriteContext, THEN THE PlayerContext SHALL set WritesBlocked to true and propagate the exception to the caller; in-memory entity state SHALL remain unchanged (no data loss on write failure)
 
 ### Requirement 2: Dirty Entity Tracking
 
@@ -52,7 +69,7 @@ This spec covers Phase 2 and Phase 3 of the unified storage backend migration: i
 4. WHEN persistence completes successfully, THE PlayerContext SHALL clear all dirty flags and all pending-deletion records
 5. IF persistence fails partway through, THEN THE PlayerContext SHALL retain dirty flags for entities that were not successfully persisted, and SHALL retain pending-deletion records for entities whose deletion was not confirmed
 6. WHEN a PlayerRoot is first loaded from a backend, THE PlayerContext SHALL start with zero dirty flags (no entities marked dirty) until a service method modifies, adds, or removes an entity
-7. WHEN WriteContext is called and the active backend is JSON_SingleFile_Backend, THE PlayerContext SHALL write the complete PlayerRoot file regardless of dirty flags, since that backend does not support per-entity persistence
+7. WHEN WriteContext is called and the active backend is JsonSingleFileBackend, THE PlayerContext SHALL write the complete PlayerRoot file regardless of dirty flags, since that backend does not support per-entity persistence
 
 ### Requirement 3: EmpireContext Storage Backend Integration
 
@@ -60,26 +77,26 @@ This spec covers Phase 2 and Phase 3 of the unified storage backend migration: i
 
 #### Acceptance Criteria
 
-1. THE EmpireContext SHALL accept an IStorageBackend instance via constructor parameter and use it for loading and saving BaselineRoot data; WHEN no IStorageBackend is provided (null), THE EmpireContext SHALL fall back to direct file I/O using the configured FilePath (preserving current behavior)
-2. WHEN EmpireContext loads baseline data from an IStorageBackend, THE EmpireContext SHALL call GetGlobalDataAsync with dataType "BaselineRoot" and deserialize the returned JSON string into a BaselineRoot object using the existing JsonSerializerSettings
-3. IF GetGlobalDataAsync returns null for dataType "BaselineRoot", THEN THE EmpireContext SHALL initialize with an empty BaselineRoot containing default BaselineGameConstants and empty entity arrays
-4. WHEN EmpireContext saves baseline data via WriteContext and an IStorageBackend is configured, THE EmpireContext SHALL serialize the BaselineRoot using the existing JsonSerializerSettings (including SerializationSorter ordering) and call UpsertGlobalDataAsync with dataType "BaselineRoot" and the serialized JSON string
-5. IF the IStorageBackend throws a StorageLoadException during load, THEN THE EmpireContext SHALL propagate the exception to the caller without partial initialization
-6. THE EmpireContext SHALL continue to expose data via existing IReadOnlyList properties (BlueprintTypeList, ShipClassList, TechLevelList, CommodityList, GlobalBlueprintList, ResourceList, PropertyTypeRegistry) and support all existing mutation methods regardless of which backend is configured
+1. THE EmpireContext SHALL accept an IStorageBackend instance via a public property and use it for loading and saving baseline data; WHEN no IStorageBackend is provided (null), THE EmpireContext SHALL fall back to direct file I/O using the configured FilePath (preserving current behavior)
+2. WHEN EmpireContext loads baseline data from an IStorageBackend with JsonSingleFile or JsonMultiFile type, THE EmpireContext SHALL call GetGlobalDataAsync with dataType "BaselineRoot" and deserialize the returned JSON string into a BaselineRoot object
+3. WHEN EmpireContext loads baseline data from an IStorageBackend with Sqlite, DynamoDb, or Postgres type, THE EmpireContext SHALL use the typed baseline methods (GetBaselineGameConstantsAsync, GetAllBlueprintTypesAsync, GetAllShipClassesAsync, GetAllTechLevelsAsync, GetAllCommoditiesAsync, GetAllRefiningRecipesAsync, GetAllResearchTimesAsync, GetAllPropertyTypeDefinitionsAsync) to load each baseline collection independently
+4. IF baseline load methods return null or empty results, THEN THE EmpireContext SHALL initialize with an empty BaselineRoot containing default BaselineGameConstants and empty entity arrays
+5. WHEN EmpireContext saves baseline data via WriteContext and an IStorageBackend is configured, THE EmpireContext SHALL persist using the appropriate method for the backend type: GetGlobalDataAsync/UpsertGlobalDataAsync for JSON backends, typed methods for relational backends
+6. IF the IStorageBackend throws a StorageLoadException during load, THEN THE EmpireContext SHALL propagate the exception to the caller without partial initialization
+7. THE EmpireContext SHALL continue to expose data via existing IReadOnlyList properties (BlueprintTypeList, ShipClassList, TechLevelList, CommodityList, GlobalBlueprintList, ResourceList, PropertyTypeRegistry) and support all existing mutation methods regardless of which backend is configured
 
-### Requirement 4: Server Migration to Common Backends
+### ~~Requirement 4: Server Migration to Common Backends~~ — COMPLETE
 
-**User Story:** As a server operator, I want the Server project to use the unified backends from Common, so that backend implementations are shared and maintained in one place.
+**Status: Delivered by unified-storage-backend spec.** All criteria satisfied:
+- Server/Storage/ folder removed; all local backend implementations deleted
+- Server references OE2EmpireTracker.Common; uses Common IStorageBackend and StorageBackendFactory
+- Server Program.cs reads Storage section from appsettings.json and creates backends
+- "JsonFile" mapped to JsonMultiFileBackend for backward compatibility
+- Invalid/missing backend config fails startup
+- All 264 Server tests pass
+- Entity models moved to Common/Models/
 
-#### Acceptance Criteria
-
-1. THE Server project SHALL remove its local IStorageBackend interface and all local backend implementation classes (JsonFileStorageBackend, SqliteStorageBackend, DynamoStorageBackend, PostgresStorageBackend) from the Storage folder
-2. THE Server project SHALL add a project reference to OE2EmpireTracker.Common and use the Common IStorageBackend interface and backend implementations for all storage operations, updating namespace imports from OE2EmpireTracker.Server.Storage to the Common namespace throughout all consuming files
-3. THE Server project SHALL register the IStorageBackend in its dependency injection container by reading the Storage section from appsettings.json, mapping the configured backend string to a StorageBackendType value, and calling StorageBackendFactory to obtain the instance
-4. IF the appsettings.json Storage:Backend value is "JsonFile", THEN THE Server project SHALL map it to StorageBackendType.JsonMultiFile for backward compatibility with existing deployments
-5. IF the appsettings.json Storage section is missing or the Backend value does not map to a known StorageBackendType, THEN THE Server project SHALL fail startup immediately with an error message indicating the invalid or missing backend configuration
-6. THE Server project SHALL continue to pass all existing integration tests in OE2EmpireTracker.Server.Tests after migrating to Common backends, with no changes to test assertions or expected behavior
-7. THE Server project entity model classes (Models.cs, PermissionModels.cs) SHALL move to OE2EmpireTracker.Common/Models, and all Server files referencing those types SHALL update their using directives accordingly
+No further work needed for this requirement.
 
 ### Requirement 5: Backend Selection Preferences
 
@@ -93,7 +110,7 @@ This spec covers Phase 2 and Phase 3 of the unified storage backend migration: i
 4. WHEN StorageBackendType is Sqlite and StoragePath is not explicitly set, THE PreferencesStore SHALL default StoragePath to %LocalAppData%/OE2EmpireTracker
 5. WHEN StorageBackendType is DynamoDb, THE PreferencesStore SHALL accept AWS region (non-empty string) and table prefix (non-empty string) configuration
 6. WHEN StorageBackendType is Postgres, THE PreferencesStore SHALL accept a connection string (non-empty string, maximum 1024 characters)
-7. WHEN the desktop application starts, THE application SHALL use StorageBackendFactory to create the IStorageBackend instance corresponding to the configured StorageBackendType and StoragePath
+7. WHEN the desktop application starts, THE application SHALL use StorageBackendFactory.CreateAsync to create the IStorageBackend instance corresponding to the configured StorageBackendType and pass it to PlayerContext and EmpireContext
 8. IF the StorageBackendType setting contains an unrecognized value or is missing, THEN THE PreferencesStore SHALL fall back to JsonSingleFile and log a warning indicating the invalid value that was encountered
 
 ### Requirement 6: Data Migration Service
@@ -115,6 +132,8 @@ This spec covers Phase 2 and Phase 3 of the unified storage backend migration: i
 
 **User Story:** As a developer, I want property tests verifying that migrating data between any two backends preserves full data fidelity, so that users never lose precision or data during backend switches.
 
+**Note:** The unified-storage-backend spec delivered foundational property tests (entity count preservation, atomic write safety). This requirement extends that coverage to full migration round-trip verification.
+
 #### Acceptance Criteria
 
 1. WHEN data is migrated from any backend A to any backend B and back to backend A (for all 20 ordered pairs of the 5 StorageBackendType values), THE migrated data SHALL be byte-for-byte equivalent when re-serialized, confirming no data transformation occurred
@@ -130,12 +149,14 @@ This spec covers Phase 2 and Phase 3 of the unified storage backend migration: i
 
 **User Story:** As a user, I want PlayerContext to block further writes when a storage failure occurs, so that I am notified of the problem and cannot accidentally overwrite data in a corrupted state.
 
+**Note:** WritesBlocked is already implemented as a static bool on PlayerContext. This requirement formalizes the wiring to StorageWriteException that will be added when Requirement 1 is implemented.
+
 #### Acceptance Criteria
 
 1. WHEN the IStorageBackend throws a StorageWriteException during a PlayerContext write operation, THE PlayerContext SHALL set WritesBlocked to true and then propagate the StorageWriteException to the caller
-2. WHILE WritesBlocked is true, THE PlayerContext SHALL return immediately from all subsequent write operations without throwing exceptions and without persisting any data
-3. THE PlayerContext SHALL expose WritesBlocked as a public settable boolean property with a default value of false, allowing callers to set WritesBlocked to true independently of storage failures
-4. WHEN a caller sets WritesBlocked to false, THE PlayerContext SHALL resume normal write behavior on the next write operation
+2. WHILE WritesBlocked is true, THE PlayerContext SHALL return immediately from all subsequent write operations without throwing exceptions and without persisting any data (already implemented)
+3. THE PlayerContext SHALL expose WritesBlocked as a public settable boolean property with a default value of false, allowing callers to set WritesBlocked to true independently of storage failures (already implemented)
+4. WHEN a caller sets WritesBlocked to false, THE PlayerContext SHALL resume normal write behavior on the next write operation (already implemented)
 
 ## Implementation Phases
 
@@ -143,11 +164,10 @@ This spec covers Phase 2 and Phase 3 of the unified storage backend migration: i
 - Refactor PlayerContext to accept IStorageBackend (Reqs 1, 2, 8)
 - Refactor EmpireContext to use IStorageBackend for BaselineRoot (Req 3)
 - Add StorageBackendType/StoragePath to PreferencesStore (Req 5)
-- Desktop app startup uses StorageBackendFactory
+- Desktop app startup uses StorageBackendFactory.CreateAsync
 - All existing WinForms tests pass
 
-### Phase 3: Server Migration and Data Migration Service
-- Server project removes local implementations, references Common (Req 4)
+### Phase 3: Data Migration Service and Round-Trip Tests
 - Implement Migration_Service with progress and validation (Req 6)
-- Implement round-trip fidelity property tests (Req 7)
-- End-to-end testing of backend switching
+- Implement round-trip fidelity property tests for all backend pairs (Req 7)
+- End-to-end testing of backend switching via Preferences form
