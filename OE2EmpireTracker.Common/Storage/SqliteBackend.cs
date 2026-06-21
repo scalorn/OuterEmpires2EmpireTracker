@@ -33,7 +33,7 @@ namespace OE2EmpireTracker.Common.Storage
         /// Schema DDL concatenated from tasks 5.2-5.11. ExecuteSchema runs this
         /// against a fresh database.
         /// </summary>
-        private static readonly string SchemaDdl = ColonySchema + ItemsBlueprintSchema + SurveyPlayerProfileSchema + DeliveryRouteShipSchema + DeliveryPlanMarketSchema;
+        private static readonly string SchemaDdl = ColonySchema + ItemsBlueprintSchema + SurveyPlayerProfileSchema + DeliveryRouteShipSchema + DeliveryPlanMarketSchema + PricingBuildStockSchema;
 
         private const string ColonySchema = @"
 CREATE TABLE IF NOT EXISTS Colonies (
@@ -438,6 +438,79 @@ CREATE TABLE IF NOT EXISTS MarketTransactions (
     CurrentHP INTEGER NOT NULL DEFAULT 0,
     MaxHP INTEGER NOT NULL DEFAULT 0,
     MaxRepairPercent REAL NOT NULL DEFAULT 0
+);
+";
+
+        private const string PricingBuildStockSchema = @"
+-- PRICING PLAN
+CREATE TABLE IF NOT EXISTS PricingPlans (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT '',
+    FixedCostPerItem REAL NOT NULL DEFAULT 0,
+    HourlyCostRate REAL NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS PricingPlanPrices (
+    PricingPlanUUID TEXT NOT NULL REFERENCES PricingPlans(UUID) ON DELETE CASCADE,
+    ResourceName TEXT NOT NULL,
+    Price REAL NOT NULL DEFAULT 0,
+    PRIMARY KEY (PricingPlanUUID, ResourceName)
+);
+
+-- BUILD PLAN
+CREATE TABLE IF NOT EXISTS BuildPlans (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    ColonyUUID TEXT NOT NULL DEFAULT '',
+    BlueprintUUID TEXT NOT NULL DEFAULT '',
+    Quantity INTEGER NOT NULL DEFAULT 0,
+    Priority INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS BuildItems (
+    BuildPlanUUID TEXT NOT NULL REFERENCES BuildPlans(UUID) ON DELETE CASCADE,
+    Sequence INTEGER NOT NULL,
+    ResourceName TEXT NOT NULL DEFAULT '',
+    Quantity INTEGER NOT NULL DEFAULT 0,
+    Fulfilled INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (BuildPlanUUID, Sequence)
+);
+
+-- STOCK PLAN
+CREATE TABLE IF NOT EXISTS StockPlans (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    ColonyUUID TEXT NOT NULL DEFAULT ''
+);
+
+CREATE TABLE IF NOT EXISTS StockTargets (
+    StockPlanUUID TEXT NOT NULL REFERENCES StockPlans(UUID) ON DELETE CASCADE,
+    Sequence INTEGER NOT NULL,
+    ResourceName TEXT NOT NULL DEFAULT '',
+    TargetQuantity INTEGER NOT NULL DEFAULT 0,
+    Priority INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (StockPlanUUID, Sequence)
+);
+
+-- STOCK PROFILE
+CREATE TABLE IF NOT EXISTS StockProfiles (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT ''
+);
+
+CREATE TABLE IF NOT EXISTS StockProfileEntries (
+    StockProfileUUID TEXT NOT NULL REFERENCES StockProfiles(UUID) ON DELETE CASCADE,
+    Sequence INTEGER NOT NULL,
+    ResourceName TEXT NOT NULL DEFAULT '',
+    MinQuantity INTEGER NOT NULL DEFAULT 0,
+    MaxQuantity INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (StockProfileUUID, Sequence)
 );
 ";
 
