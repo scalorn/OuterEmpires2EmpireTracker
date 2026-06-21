@@ -33,7 +33,7 @@ namespace OE2EmpireTracker.Common.Storage
         /// Schema DDL concatenated from tasks 5.2-5.11. ExecuteSchema runs this
         /// against a fresh database.
         /// </summary>
-        private static readonly string SchemaDdl = ColonySchema + ItemsBlueprintSchema + SurveyPlayerProfileSchema;
+        private static readonly string SchemaDdl = ColonySchema + ItemsBlueprintSchema + SurveyPlayerProfileSchema + DeliveryRouteShipSchema;
 
         private const string ColonySchema = @"
 CREATE TABLE IF NOT EXISTS Colonies (
@@ -269,6 +269,71 @@ CREATE TABLE IF NOT EXISTS PlayerSkills (
     Completion_RepeatIntervalSeconds INTEGER,
     Completion_IsRepeating INTEGER,
     PRIMARY KEY (PlayerUUID, SkillName)
+);
+";
+
+        private const string DeliveryRouteShipSchema = @"
+-- DELIVERY ROUTE
+CREATE TABLE IF NOT EXISTS DeliveryRoutes (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    OwnerUUID TEXT NOT NULL DEFAULT ''
+);
+
+CREATE TABLE IF NOT EXISTS DeliveryRouteStops (
+    DeliveryRouteUUID TEXT NOT NULL REFERENCES DeliveryRoutes(UUID) ON DELETE CASCADE,
+    Sequence INTEGER NOT NULL,
+    ColonyUUID TEXT NOT NULL DEFAULT '',
+    DestinationType TEXT NOT NULL DEFAULT 'Colony',
+    DestinationUUID TEXT NOT NULL DEFAULT '',
+    Purpose TEXT NOT NULL DEFAULT 'Cargo',
+    FuelEstimate REAL NOT NULL DEFAULT 0,
+    PRIMARY KEY (DeliveryRouteUUID, Sequence)
+);
+
+-- SHIP
+CREATE TABLE IF NOT EXISTS Ships (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    TemplateUUID TEXT NOT NULL DEFAULT '',
+    HullBlueprintUUID TEXT NOT NULL DEFAULT '',
+    LocationType TEXT NOT NULL DEFAULT 'Station',
+    LocationUUID TEXT NOT NULL DEFAULT '',
+    GameLocationId INTEGER,
+    HullCurrentHP INTEGER NOT NULL DEFAULT 0,
+    HullMaxHP INTEGER NOT NULL DEFAULT 0,
+    HullMaxRepairPercent REAL NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS ShipComponents (
+    ShipUUID TEXT NOT NULL REFERENCES Ships(UUID) ON DELETE CASCADE,
+    Sequence INTEGER NOT NULL,
+    SlotType TEXT NOT NULL DEFAULT '',
+    BlueprintUUID TEXT NOT NULL DEFAULT '',
+    CurrentHP INTEGER NOT NULL DEFAULT 0,
+    MaxHP INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (ShipUUID, Sequence)
+);
+
+-- SHIP TEMPLATE
+CREATE TABLE IF NOT EXISTS ShipTemplates (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    OwnerUUID TEXT NOT NULL DEFAULT '',
+    HullBlueprintUUID TEXT NOT NULL DEFAULT ''
+);
+
+CREATE TABLE IF NOT EXISTS ShipTemplateComponents (
+    ShipTemplateUUID TEXT NOT NULL REFERENCES ShipTemplates(UUID) ON DELETE CASCADE,
+    Sequence INTEGER NOT NULL,
+    SlotType TEXT NOT NULL DEFAULT '',
+    SlotIndex INTEGER NOT NULL DEFAULT 0,
+    BlueprintUUID TEXT NOT NULL DEFAULT '',
+    CurrentHP INTEGER NOT NULL DEFAULT 0,
+    MaxHP INTEGER NOT NULL DEFAULT 0,
+    MaxRepairPercent REAL NOT NULL DEFAULT 0,
+    PRIMARY KEY (ShipTemplateUUID, Sequence)
 );
 ";
 
