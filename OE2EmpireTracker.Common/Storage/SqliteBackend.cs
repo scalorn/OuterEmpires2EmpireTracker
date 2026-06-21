@@ -973,6 +973,17 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
         /// </summary>
         private static readonly string SchemaDdl = ColonySchema + ItemsBlueprintSchema + SurveyPlayerProfileSchema + DeliveryRouteShipSchema + DeliveryPlanMarketSchema + PricingBuildStockSchema + RemainingPlayerEntitySchema + ServerGlobalSchema + PermissionSchema + IntelAuditBaselineSchema;
 
+        /// <summary>
+        /// Ordered list of migration actions. Each entry migrates from version N to
+        /// version N+1 (i.e. Migrations[0] migrates v1 → v2). Currently empty because
+        /// the schema is at version 1 with no prior versions to migrate from.
+        /// </summary>
+        private static readonly List<Action<SqliteConnection, SqliteTransaction>> Migrations = new List<Action<SqliteConnection, SqliteTransaction>>
+        {
+            // Version 1 → 2: (future migration placeholder)
+            // Each entry migrates from version N to version N+1
+        };
+
         private readonly string _connectionString;
         private readonly string _databasePath;
 
@@ -1012,6 +1023,10 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
                     ExecuteSchema(conn);
                     SetSchemaVersion(conn, CurrentSchemaVersion);
                     Log.Info("SQLite database initialized with schema version {0}", CurrentSchemaVersion);
+                }
+                else if (version < CurrentSchemaVersion)
+                {
+                    RunMigrations(conn, version, _databasePath);
                 }
                 else
                 {
@@ -5386,6 +5401,57 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
         // ═══════════════════════════════════════════════════════════
         // Private Helpers
         // ═══════════════════════════════════════════════════════════
+
+        /// <summary>
+        /// Applies pending schema migrations sequentially from <paramref name="fromVersion"/>
+        /// up to <see cref="CurrentSchemaVersion"/>. Each migration runs inside its own
+        /// transaction; on failure the transaction is rolled back and a
+        /// <see cref="StorageLoadException"/> is thrown. If the rollback itself fails, a
+        /// <see cref="StorageCorruptionException"/> is thrown containing both errors.
+        /// </summary>
+        /// <param name="conn">An open SQLite connection.</param>
+        /// <param name="fromVersion">The current on-disk schema version.</param>
+        /// <param name="databasePath">The database file path for error reporting.</param>
+        private static void RunMigrations(SqliteConnection conn, int fromVersion, string databasePath)
+        {
+            for (int i = fromVersion; i < CurrentSchemaVersion; i++)
+            {
+                int migrationIndex = i - 1; // Migrations[0] goes from v1 → v2
+                if (migrationIndex < 0 || migrationIndex >= Migrations.Count)
+                {
+                    continue;
+                }
+
+                using (var tx = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        Migrations[migrationIndex](conn, tx);
+                        SetSchemaVersion(conn, i + 1);
+                        tx.Commit();
+                        Log.Info("Migrated schema from version {0} to {1}", i, i + 1);
+                    }
+                    catch (Exception migrationEx)
+                    {
+                        Log.Error(migrationEx, "Schema migration from v{0} to v{1} failed", i, i + 1);
+                        try
+                        {
+                            tx.Rollback();
+                        }
+                        catch (Exception rollbackEx)
+                        {
+                            throw new StorageCorruptionException("Sqlite", migrationEx, rollbackEx);
+                        }
+
+                        throw new StorageLoadException(
+                            "Sqlite",
+                            databasePath,
+                            $"Schema migration from v{i} to v{i + 1} failed",
+                            migrationEx);
+                    }
+                }
+            }
+        }
 
         private static Colony ReadColonyParent(SqliteDataReader reader)
         {

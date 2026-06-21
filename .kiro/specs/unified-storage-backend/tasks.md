@@ -249,14 +249,14 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Inputs: Common/Storage/PostgresBackend.cs (from 7.3), SqliteBackend CRUD as reference
     - Output: OE2EmpireTracker.Common/Storage/PostgresBackend.cs (extended — first batch of CRUD)
     - Verification: getDiagnostics — compiles cleanly
-  - [-] 7.5 Postgres CRUD: Ship, ShipTemplate, Market, PricingPlan, BuildPlan, StockPlan, StockProfile, SupplyChain, Asteroid, Station, Faction, ExternalCharacter, WarehouseOverflowRule, Mail, Banking, Permissions, Intel, Audit, Baseline
+  - [x] 7.5 Postgres CRUD: Ship, ShipTemplate, Market, PricingPlan, BuildPlan, StockPlan, StockProfile, SupplyChain, Asteroid, Station, Faction, ExternalCharacter, WarehouseOverflowRule, Mail, Banking, Permissions, Intel, Audit, Baseline
     - Satisfies: Req 6, Criteria 1, 5-7
     - Inputs: Common/Storage/PostgresBackend.cs (from 7.4), SqliteBackend CRUD as reference
     - Output: OE2EmpireTracker.Common/Storage/PostgresBackend.cs (complete)
     - Verification: getDiagnostics — compiles cleanly
 
 - [ ] 8. SQLite Schema Migration and Legacy Migration
-  - [~] 8.1 Implement SQLite schema versioning: _metadata read/write, migration runner, rollback on failure, StorageCorruptionException
+  - [-] 8.1 Implement SQLite schema versioning: _metadata read/write, migration runner, rollback on failure, StorageCorruptionException
     - Satisfies: Req 9, Criteria 1-2, 6-7
     - Inputs: Common/Storage/SqliteBackend.cs (from 6.7)
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (migration infrastructure added)
