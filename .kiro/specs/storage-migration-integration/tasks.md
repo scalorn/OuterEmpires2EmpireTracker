@@ -126,7 +126,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/ColonyService.cs (modified)_
     - _Verification: Build succeeds_
 
-  - [-] 3.2 Refactor BackgroundProcessor to use ColonyService.ProcessColonyTick
+  - [x] 3.2 Refactor BackgroundProcessor to use ColonyService.ProcessColonyTick
     - Replace direct `colony.ProcessColony(elapsed)` calls with `ColonyService.ProcessColonyTick(colony.UUID, elapsed)`
     - BackgroundProcessor is 644 lines. Search for "ProcessColony" to find call sites.
     - _Satisfies: Req 2, Criterion 4_
@@ -154,7 +154,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/DirtyTracker.cs (NEW)_
     - _Verification: Build succeeds_
 
-  - [-] 5.2 Write unit tests for DirtyTracker
+  - [x] 5.2 Write unit tests for DirtyTracker
     - Test MarkDirty/MarkDeleted add entries, GetDirtyUUIDs/GetDeletedUUIDs return them
     - Test ClearDirty/ClearDeleted remove individual entries
     - Test ClearAll empties both sets
