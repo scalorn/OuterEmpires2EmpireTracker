@@ -33,7 +33,7 @@ namespace OE2EmpireTracker.Common.Storage
         /// Schema DDL concatenated from tasks 5.2-5.11. ExecuteSchema runs this
         /// against a fresh database.
         /// </summary>
-        private static readonly string SchemaDdl = ColonySchema + ItemsBlueprintSchema + SurveyPlayerProfileSchema + DeliveryRouteShipSchema + DeliveryPlanMarketSchema + PricingBuildStockSchema + RemainingPlayerEntitySchema;
+        private static readonly string SchemaDdl = ColonySchema + ItemsBlueprintSchema + SurveyPlayerProfileSchema + DeliveryRouteShipSchema + DeliveryPlanMarketSchema + PricingBuildStockSchema + RemainingPlayerEntitySchema + ServerGlobalSchema;
 
         private const string ColonySchema = @"
 CREATE TABLE IF NOT EXISTS Colonies (
@@ -638,6 +638,82 @@ CREATE TABLE IF NOT EXISTS BankingTransactions (
     SystemObjectId INTEGER,
     SystemId INTEGER,
     IsManualEntry INTEGER NOT NULL DEFAULT 0
+);
+";
+
+        private const string ServerGlobalSchema = @"
+-- SERVER FACTIONS
+CREATE TABLE IF NOT EXISTS ServerFactions (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    Description TEXT NOT NULL DEFAULT '',
+    Metadata_LastModifiedUtc TEXT,
+    Metadata_ModifiedByTokenId TEXT
+);
+
+CREATE TABLE IF NOT EXISTS ServerFactionLeaders (
+    FactionUUID TEXT NOT NULL REFERENCES ServerFactions(UUID) ON DELETE CASCADE,
+    CharacterUUID TEXT NOT NULL,
+    PRIMARY KEY (FactionUUID, CharacterUUID)
+);
+
+-- SERVER CHARACTERS
+CREATE TABLE IF NOT EXISTS ServerCharacters (
+    UUID TEXT PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    FactionUUID TEXT,
+    Metadata_LastModifiedUtc TEXT,
+    Metadata_ModifiedByTokenId TEXT
+);
+
+-- API TOKENS
+CREATE TABLE IF NOT EXISTS ApiTokens (
+    Id TEXT PRIMARY KEY,
+    TokenHash TEXT NOT NULL DEFAULT '',
+    CharacterUUID TEXT,
+    Role INTEGER NOT NULL DEFAULT 0,
+    FactionUUID TEXT,
+    CreatedUtc TEXT NOT NULL DEFAULT '',
+    LastUsedUtc TEXT,
+    IsRevoked INTEGER NOT NULL DEFAULT 0,
+    RateLimits_RequestsPerMinute INTEGER NOT NULL DEFAULT 300
+);
+
+-- MEMBERSHIP ACTIONS
+CREATE TABLE IF NOT EXISTS MembershipActions (
+    Id TEXT PRIMARY KEY,
+    FactionUUID TEXT NOT NULL DEFAULT '',
+    CharacterUUID TEXT NOT NULL DEFAULT '',
+    Type INTEGER NOT NULL DEFAULT 0,
+    CreatedUtc TEXT NOT NULL DEFAULT '',
+    ExpiresUtc TEXT NOT NULL DEFAULT ''
+);
+
+-- STAR SYSTEMS
+CREATE TABLE IF NOT EXISTS StarSystems (
+    Id INTEGER PRIMARY KEY,
+    Name TEXT NOT NULL DEFAULT '',
+    X REAL NOT NULL DEFAULT 0,
+    Y REAL NOT NULL DEFAULT 0,
+    Z REAL NOT NULL DEFAULT 0,
+    Faction TEXT NOT NULL DEFAULT '',
+    Security TEXT NOT NULL DEFAULT ''
+);
+
+-- SHARING RULES
+CREATE TABLE IF NOT EXISTS SharingRules (
+    Id TEXT PRIMARY KEY,
+    OwnerCharacterUUID TEXT NOT NULL DEFAULT '',
+    TargetUUID TEXT NOT NULL DEFAULT '',
+    TargetType INTEGER NOT NULL DEFAULT 0,
+    DataType TEXT,
+    EntityUUID TEXT
+);
+
+-- CHARACTER PREFERENCES
+CREATE TABLE IF NOT EXISTS CharacterPreferences (
+    CharacterUUID TEXT PRIMARY KEY,
+    ServerProcessing INTEGER NOT NULL DEFAULT 0
 );
 ";
 
