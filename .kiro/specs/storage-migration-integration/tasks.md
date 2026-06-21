@@ -108,7 +108,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Storage/DynamoDbBackend.cs (modified)_
     - _Verification: Build succeeds; unit test for character discovery_
 
-  - [~] 2.7 Write unit tests for GetAllCharacterUUIDsAsync
+  - [-] 2.7 Write unit tests for GetAllCharacterUUIDsAsync
     - Test each backend: empty returns empty list; after upserting entities for 2 characters, returns both UUIDs
     - Use JsonSingleFile and JsonMultiFile (can test locally without external services)
     - _Satisfies: Req 6, Criterion 3_
@@ -117,7 +117,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Verification: Tests pass in vstest.console_
 
 - [ ] 3. Prerequisite: BackgroundProcessor colony mutation routing
-  - [~] 3.1 Add ColonyService.ProcessColonyTick method
+  - [-] 3.1 Add ColonyService.ProcessColonyTick method
     - Create a new public method `ProcessColonyTick(string colonyUUID, double elapsedSeconds)` in ColonyService
     - Look up colony by UUID, call existing Colony.ProcessColony logic, then call MarkDirty<Colony>(uuid)
     - Note: ColonyService is 470 lines. Check how it accesses PlayerContext (likely via PlayerContext.GetInstance())
@@ -143,7 +143,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
   - Verify decimal precision fix and GetAllCharacterUUIDsAsync implementations are solid
 
 - [ ] 5. DirtyTracker implementation
-  - [~] 5.1 Create DirtyTracker class
+  - [-] 5.1 Create DirtyTracker class
     - Create Common/Services/DirtyTracker.cs with DirtyKey struct
     - Implement MarkDirty<T>, MarkDeleted<T>, GetDirtyUUIDs<T>, GetDeletedUUIDs<T>
     - Implement ClearDirty<T>, ClearDeleted<T>, ClearAll, HasChanges

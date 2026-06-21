@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using NLog;
+using OE2EmpireTracker.Interfaces;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services.Migration;
 
@@ -504,6 +505,38 @@ namespace OE2EmpireTracker.Services
                 colony.ColonyLock.ExitWriteLock();
             }
 
+            _playerContext.WriteContext();
+            _playerContext.OnColonyDataChanged(colonyUUID);
+        }
+
+        /// <summary>
+        /// Processes a single colony tick (background timer processing).
+        /// Acquires the write lock, runs colony processing logic, persists, and fires the change event.
+        /// Called by BackgroundProcessor to route colony mutations through the service layer.
+        /// </summary>
+        /// <param name="colonyUUID">UUID of the colony to process.</param>
+        /// <param name="elapsedSeconds">Elapsed seconds since last tick (reserved for future use).</param>
+        public void ProcessColonyTick(string colonyUUID, double elapsedSeconds)
+        {
+            var colony = GetMutableColonyOrThrow(colonyUUID);
+
+            if (!colony.ColonyLock.TryEnterWriteLock(Colony.WriteLockTimeoutMs))
+            {
+                throw new TimeoutException("Write lock timeout for colony: " + colonyUUID);
+            }
+
+            try
+            {
+                IColonyProcessingContext context = new ColonyProcessingContextAdapter(
+                    _playerContext, EmpireContext.GetInstance());
+                colony.ProcessColony(context);
+            }
+            finally
+            {
+                colony.ColonyLock.ExitWriteLock();
+            }
+
+            // TODO: Call MarkDirty<Colony>(colonyUUID) when DirtyTracker is wired up (task 6.1)
             _playerContext.WriteContext();
             _playerContext.OnColonyDataChanged(colonyUUID);
         }
