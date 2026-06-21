@@ -55,7 +55,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Storage/PostgresBackend.cs (modified)_
     - _Verification: Build succeeds; existing Postgres backend tests pass_
 
-  - [-] 1.4 Fix Postgres MarketTransaction decimal columns (DOUBLE PRECISION→NUMERIC)
+  - [x] 1.4 Fix Postgres MarketTransaction decimal columns (DOUBLE PRECISION→NUMERIC)
     - ALTER COLUMN PricePerUnit, TotalPrice to NUMERIC
     - Remove `(double)` casts in MarketTransaction read/write methods
     - _Satisfies: Req 7, Criterion 2_
