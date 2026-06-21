@@ -222,7 +222,7 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Inputs: Common/Storage/SqliteBackend.cs, remaining entity models
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (extended)
     - Verification: getDiagnostics — compiles cleanly
-  - [-] 6.7 SQLite CRUD: Faction, ExternalCharacter, WarehouseOverflowRule, Mail, Banking, Permission entities, Intel, Audit, Baseline entities
+  - [x] 6.7 SQLite CRUD: Faction, ExternalCharacter, WarehouseOverflowRule, Mail, Banking, Permission entities, Intel, Audit, Baseline entities
     - Satisfies: Req 4, Criteria 1, 9-10; Req 1, Criteria 6-9
     - Inputs: Common/Storage/SqliteBackend.cs, permission models, intel models
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (complete — all IStorageBackend methods implemented)
