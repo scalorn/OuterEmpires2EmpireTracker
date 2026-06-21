@@ -2599,116 +2599,619 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
         }
 
         // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — PricingPlan (stubs — Phase 6)
+        // Per-Character Entity CRUD — PricingPlan
         // ═══════════════════════════════════════════════════════════
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<PricingPlan>> GetAllPricingPlansAsync(string characterUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<PricingPlan>> GetAllPricingPlansAsync(string characterUUID)
+        {
+            var results = new List<PricingPlan>();
+            using (var conn = OpenConnection())
+            {
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT * FROM PricingPlans WHERE OwnerUUID = @ownerUUID";
+                    cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            results.Add(ReadPricingPlanParent(reader));
+                        }
+                    }
+                }
+
+                foreach (var plan in results)
+                {
+                    plan.ResourcePrices = LoadPricingPlanPrices(conn, plan.UUID);
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<PricingPlan>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task<PricingPlan> GetPricingPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task<PricingPlan> GetPricingPlanAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM PricingPlans WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        var plan = ReadPricingPlanParent(reader);
+                        plan.ResourcePrices = LoadPricingPlanPrices(conn, plan.UUID);
+                        return Task.FromResult(plan);
+                    }
+                }
+            }
+
+            return Task.FromResult<PricingPlan>(null);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertPricingPlanAsync(string characterUUID, PricingPlan entity) => throw new NotImplementedException();
+        public Task UpsertPricingPlanAsync(string characterUUID, PricingPlan entity)
+        {
+            using (var conn = OpenConnection())
+            using (var tx = conn.BeginTransaction())
+            {
+                UpsertPricingPlanParent(conn, tx, characterUUID, entity);
+                DeletePricingPlanChildren(conn, tx, entity.UUID);
+                InsertPricingPlanPrices(conn, tx, entity);
+                tx.Commit();
+            }
+
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeletePricingPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task DeletePricingPlanAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                // CASCADE handles PricingPlanPrices
+                cmd.CommandText = "DELETE FROM PricingPlans WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
 
         // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — StockPlan (stubs — Phase 6)
-        // ═══════════════════════════════════════════════════════════
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<StockPlan>> GetAllStockPlansAsync(string characterUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task<StockPlan> GetStockPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task UpsertStockPlanAsync(string characterUUID, StockPlan entity) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task DeleteStockPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
-
-        // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — StockProfile (stubs — Phase 6)
-        // ═══════════════════════════════════════════════════════════
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<StockProfile>> GetAllStockProfilesAsync(string characterUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task<StockProfile> GetStockProfileAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task UpsertStockProfileAsync(string characterUUID, StockProfile entity) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task DeleteStockProfileAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
-
-        // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — BuildPlan (stubs — Phase 6)
-        // ═══════════════════════════════════════════════════════════
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<BuildPlan>> GetAllBuildPlansAsync(string characterUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task<BuildPlan> GetBuildPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task UpsertBuildPlanAsync(string characterUUID, BuildPlan entity) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task DeleteBuildPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
-
-        // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — SupplyChain (stubs — Phase 6)
-        // ═══════════════════════════════════════════════════════════
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<SupplyChain>> GetAllSupplyChainsAsync(string characterUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task<SupplyChain> GetSupplyChainAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task UpsertSupplyChainAsync(string characterUUID, SupplyChain entity) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task DeleteSupplyChainAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
-
-        // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — Asteroid (stubs — Phase 6)
-        // ═══════════════════════════════════════════════════════════
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<Asteroid>> GetAllAsteroidsAsync(string characterUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task<Asteroid> GetAsteroidAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task UpsertAsteroidAsync(string characterUUID, Asteroid entity) => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task DeleteAsteroidAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
-
-        // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — Station (stubs — Phase 6)
+        // Per-Character Entity CRUD — StockPlan
         // ═══════════════════════════════════════════════════════════
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<Station>> GetAllStationsAsync(string characterUUID) => throw new NotImplementedException();
+        public Task<IReadOnlyList<StockPlan>> GetAllStockPlansAsync(string characterUUID)
+        {
+            var results = new List<StockPlan>();
+            using (var conn = OpenConnection())
+            {
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT * FROM StockPlans WHERE OwnerUUID = @ownerUUID";
+                    cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            results.Add(ReadStockPlanParent(reader));
+                        }
+                    }
+                }
+
+                foreach (var plan in results)
+                {
+                    plan.Targets = LoadStockTargets(conn, plan.UUID);
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<StockPlan>>(results);
+        }
 
         /// <inheritdoc/>
-        public Task<Station> GetStationAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task<StockPlan> GetStockPlanAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM StockPlans WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        var plan = ReadStockPlanParent(reader);
+                        plan.Targets = LoadStockTargets(conn, plan.UUID);
+                        return Task.FromResult(plan);
+                    }
+                }
+            }
+
+            return Task.FromResult<StockPlan>(null);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertStationAsync(string characterUUID, Station entity) => throw new NotImplementedException();
+        public Task UpsertStockPlanAsync(string characterUUID, StockPlan entity)
+        {
+            using (var conn = OpenConnection())
+            using (var tx = conn.BeginTransaction())
+            {
+                UpsertStockPlanParent(conn, tx, characterUUID, entity);
+                DeleteStockPlanChildren(conn, tx, entity.UUID);
+                InsertStockTargets(conn, tx, entity);
+                tx.Commit();
+            }
+
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteStationAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+        public Task DeleteStockPlanAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                // CASCADE handles StockTargets
+                cmd.CommandText = "DELETE FROM StockPlans WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // Per-Character Entity CRUD — StockProfile
+        // ═══════════════════════════════════════════════════════════
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<StockProfile>> GetAllStockProfilesAsync(string characterUUID)
+        {
+            var results = new List<StockProfile>();
+            using (var conn = OpenConnection())
+            {
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT * FROM StockProfiles WHERE OwnerUUID = @ownerUUID";
+                    cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            results.Add(ReadStockProfileParent(reader));
+                        }
+                    }
+                }
+
+                foreach (var profile in results)
+                {
+                    profile.Entries = LoadStockProfileEntries(conn, profile.UUID);
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<StockProfile>>(results);
+        }
+
+        /// <inheritdoc/>
+        public Task<StockProfile> GetStockProfileAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM StockProfiles WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        var profile = ReadStockProfileParent(reader);
+                        profile.Entries = LoadStockProfileEntries(conn, profile.UUID);
+                        return Task.FromResult(profile);
+                    }
+                }
+            }
+
+            return Task.FromResult<StockProfile>(null);
+        }
+
+        /// <inheritdoc/>
+        public Task UpsertStockProfileAsync(string characterUUID, StockProfile entity)
+        {
+            using (var conn = OpenConnection())
+            using (var tx = conn.BeginTransaction())
+            {
+                UpsertStockProfileParent(conn, tx, characterUUID, entity);
+                DeleteStockProfileChildren(conn, tx, entity.UUID);
+                InsertStockProfileEntries(conn, tx, entity);
+                tx.Commit();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task DeleteStockProfileAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                // CASCADE handles StockProfileEntries
+                cmd.CommandText = "DELETE FROM StockProfiles WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // Per-Character Entity CRUD — BuildPlan
+        // ═══════════════════════════════════════════════════════════
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<BuildPlan>> GetAllBuildPlansAsync(string characterUUID)
+        {
+            var results = new List<BuildPlan>();
+            using (var conn = OpenConnection())
+            {
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT * FROM BuildPlans WHERE OwnerUUID = @ownerUUID";
+                    cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            results.Add(ReadBuildPlanParent(reader));
+                        }
+                    }
+                }
+
+                foreach (var plan in results)
+                {
+                    plan.Items = LoadBuildItems(conn, plan.UUID);
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<BuildPlan>>(results);
+        }
+
+        /// <inheritdoc/>
+        public Task<BuildPlan> GetBuildPlanAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM BuildPlans WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        var plan = ReadBuildPlanParent(reader);
+                        plan.Items = LoadBuildItems(conn, plan.UUID);
+                        return Task.FromResult(plan);
+                    }
+                }
+            }
+
+            return Task.FromResult<BuildPlan>(null);
+        }
+
+        /// <inheritdoc/>
+        public Task UpsertBuildPlanAsync(string characterUUID, BuildPlan entity)
+        {
+            using (var conn = OpenConnection())
+            using (var tx = conn.BeginTransaction())
+            {
+                UpsertBuildPlanParent(conn, tx, characterUUID, entity);
+                DeleteBuildPlanChildren(conn, tx, entity.UUID);
+                InsertBuildItems(conn, tx, entity);
+                tx.Commit();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task DeleteBuildPlanAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                // CASCADE handles BuildItems
+                cmd.CommandText = "DELETE FROM BuildPlans WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // Per-Character Entity CRUD — SupplyChain
+        // ═══════════════════════════════════════════════════════════
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<SupplyChain>> GetAllSupplyChainsAsync(string characterUUID)
+        {
+            var results = new List<SupplyChain>();
+            using (var conn = OpenConnection())
+            {
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT * FROM SupplyChains WHERE OwnerUUID = @ownerUUID";
+                    cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            results.Add(ReadSupplyChainParent(reader));
+                        }
+                    }
+                }
+
+                foreach (var chain in results)
+                {
+                    chain.Stages = LoadSupplyChainStages(conn, chain.UUID);
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<SupplyChain>>(results);
+        }
+
+        /// <inheritdoc/>
+        public Task<SupplyChain> GetSupplyChainAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM SupplyChains WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        var chain = ReadSupplyChainParent(reader);
+                        chain.Stages = LoadSupplyChainStages(conn, chain.UUID);
+                        return Task.FromResult(chain);
+                    }
+                }
+            }
+
+            return Task.FromResult<SupplyChain>(null);
+        }
+
+        /// <inheritdoc/>
+        public Task UpsertSupplyChainAsync(string characterUUID, SupplyChain entity)
+        {
+            using (var conn = OpenConnection())
+            using (var tx = conn.BeginTransaction())
+            {
+                UpsertSupplyChainParent(conn, tx, characterUUID, entity);
+                DeleteSupplyChainChildren(conn, tx, entity.UUID);
+                InsertSupplyChainStages(conn, tx, entity);
+                tx.Commit();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task DeleteSupplyChainAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                // CASCADE handles SupplyChainStages
+                cmd.CommandText = "DELETE FROM SupplyChains WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // Per-Character Entity CRUD — Asteroid
+        // ═══════════════════════════════════════════════════════════
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<Asteroid>> GetAllAsteroidsAsync(string characterUUID)
+        {
+            var results = new List<Asteroid>();
+            using (var conn = OpenConnection())
+            {
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT * FROM Asteroids WHERE OwnerUUID = @ownerUUID";
+                    cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            results.Add(ReadAsteroidParent(reader));
+                        }
+                    }
+                }
+
+                foreach (var asteroid in results)
+                {
+                    asteroid.Reserves = LoadAsteroidReserves(conn, asteroid.UUID);
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<Asteroid>>(results);
+        }
+
+        /// <inheritdoc/>
+        public Task<Asteroid> GetAsteroidAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM Asteroids WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        var asteroid = ReadAsteroidParent(reader);
+                        asteroid.Reserves = LoadAsteroidReserves(conn, asteroid.UUID);
+                        return Task.FromResult(asteroid);
+                    }
+                }
+            }
+
+            return Task.FromResult<Asteroid>(null);
+        }
+
+        /// <inheritdoc/>
+        public Task UpsertAsteroidAsync(string characterUUID, Asteroid entity)
+        {
+            using (var conn = OpenConnection())
+            using (var tx = conn.BeginTransaction())
+            {
+                UpsertAsteroidParent(conn, tx, characterUUID, entity);
+                DeleteAsteroidChildren(conn, tx, entity.UUID);
+                InsertAsteroidReserves(conn, tx, entity);
+                tx.Commit();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task DeleteAsteroidAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                // CASCADE handles AsteroidReserves
+                cmd.CommandText = "DELETE FROM Asteroids WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // Per-Character Entity CRUD — Station
+        // ═══════════════════════════════════════════════════════════
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<Station>> GetAllStationsAsync(string characterUUID)
+        {
+            var results = new List<Station>();
+            using (var conn = OpenConnection())
+            {
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT * FROM Stations WHERE OwnerUUID = @ownerUUID";
+                    cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            results.Add(ReadStationParent(reader));
+                        }
+                    }
+                }
+
+                foreach (var station in results)
+                {
+                    station.Components = LoadStationComponents(conn, station.UUID);
+                    LoadStationItems(conn, station);
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<Station>>(results);
+        }
+
+        /// <inheritdoc/>
+        public Task<Station> GetStationAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM Stations WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        var station = ReadStationParent(reader);
+                        station.Components = LoadStationComponents(conn, station.UUID);
+                        LoadStationItems(conn, station);
+                        return Task.FromResult(station);
+                    }
+                }
+            }
+
+            return Task.FromResult<Station>(null);
+        }
+
+        /// <inheritdoc/>
+        public Task UpsertStationAsync(string characterUUID, Station entity)
+        {
+            using (var conn = OpenConnection())
+            using (var tx = conn.BeginTransaction())
+            {
+                UpsertStationParent(conn, tx, characterUUID, entity);
+                DeleteStationChildren(conn, tx, entity.UUID);
+                InsertStationComponents(conn, tx, entity);
+                InsertStationItems(conn, tx, entity);
+                tx.Commit();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task DeleteStationAsync(string characterUUID, string entityUUID)
+        {
+            using (var conn = OpenConnection())
+            {
+                // Delete items first (polymorphic FK, no CASCADE)
+                using (var delItems = conn.CreateCommand())
+                {
+                    delItems.CommandText = "DELETE FROM Items WHERE ParentUUID = @uuid AND (ParentType = 'StationMunitions' OR ParentType LIKE 'StationHold:%')";
+                    delItems.Parameters.AddWithValue("@uuid", entityUUID);
+                    delItems.ExecuteNonQuery();
+                }
+
+                // CASCADE handles StationComponents
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "DELETE FROM Stations WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
+                    cmd.Parameters.AddWithValue("@uuid", entityUUID);
+                    cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+
+            return Task.CompletedTask;
+        }
 
         // ═══════════════════════════════════════════════════════════
         // Per-Character Entity CRUD — Faction contacts (stubs — Phase 6)
@@ -3833,6 +4336,719 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
                         cmd.Parameters.AddWithValue("@amount", int.TryParse(kvp.Value.Amount, out var amt) ? amt : 0);
                         cmd.ExecuteNonQuery();
                     }
+                }
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // Station Helpers
+        // ═══════════════════════════════════════════════════════════
+
+        private static Station ReadStationParent(SqliteDataReader reader)
+        {
+            var station = new Station
+            {
+                UUID = reader["UUID"] as string,
+                Name = reader["Name"] as string ?? string.Empty,
+                OwnerUUID = reader["OwnerUUID"] as string ?? string.Empty,
+                SystemName = reader["SystemName"] as string ?? string.Empty,
+                SystemId = Convert.ToInt32(reader["SystemId"]),
+            };
+
+            if (reader["GameLocationId"] != DBNull.Value)
+            {
+                station.GameLocationId = Convert.ToInt32(reader["GameLocationId"]);
+            }
+
+            return station;
+        }
+
+        private static List<ShipComponentSlot> LoadStationComponents(SqliteConnection conn, string stationUUID)
+        {
+            var components = new List<ShipComponentSlot>();
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM StationComponents WHERE StationUUID = @sUUID ORDER BY Sequence";
+                cmd.Parameters.AddWithValue("@sUUID", stationUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        components.Add(new ShipComponentSlot
+                        {
+                            SlotType = reader["SlotType"] as string ?? string.Empty,
+                            BlueprintUUID = reader["BlueprintUUID"] as string ?? string.Empty,
+                            CurrentHP = Convert.ToInt32(reader["CurrentHP"]),
+                            MaxHP = Convert.ToInt32(reader["MaxHP"]),
+                        });
+                    }
+                }
+            }
+
+            return components;
+        }
+
+        private static void LoadStationItems(SqliteConnection conn, Station station)
+        {
+            station.MunitionsHold = LoadItems(conn, station.UUID, "StationMunitions");
+            station.Holds = new Dictionary<string, ItemBag>();
+
+            // Load all station hold items grouped by ParentType pattern 'StationHold:holdName'
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT DISTINCT ParentType FROM Items WHERE ParentUUID = @uuid AND ParentType LIKE 'StationHold:%'";
+                cmd.Parameters.AddWithValue("@uuid", station.UUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    var holdTypes = new List<string>();
+                    while (reader.Read())
+                    {
+                        holdTypes.Add(reader.GetString(0));
+                    }
+
+                    foreach (var holdType in holdTypes)
+                    {
+                        var holdName = holdType.Substring("StationHold:".Length);
+                        station.Holds[holdName] = LoadItems(conn, station.UUID, holdType);
+                    }
+                }
+            }
+        }
+
+        private static void UpsertStationParent(SqliteConnection conn, SqliteTransaction tx, string characterUUID, Station entity)
+        {
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = @"INSERT OR REPLACE INTO Stations (UUID, Name, OwnerUUID, SystemName, SystemId, SystemObjectId, GameLocationId)
+                                   VALUES (@uuid, @name, @owner, @sysName, @sysId, @sysObjId, @gameLocId)";
+                cmd.Parameters.AddWithValue("@uuid", entity.UUID);
+                cmd.Parameters.AddWithValue("@name", entity.Name ?? string.Empty);
+                cmd.Parameters.AddWithValue("@owner", characterUUID);
+                cmd.Parameters.AddWithValue("@sysName", entity.SystemName ?? string.Empty);
+                cmd.Parameters.AddWithValue("@sysId", entity.SystemId ?? 0);
+                cmd.Parameters.AddWithValue("@sysObjId", 0);
+                cmd.Parameters.AddWithValue("@gameLocId", entity.GameLocationId.HasValue ? (object)entity.GameLocationId.Value : DBNull.Value);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        private static void DeleteStationChildren(SqliteConnection conn, SqliteTransaction tx, string stationUUID)
+        {
+            // Delete items (polymorphic FK, no CASCADE)
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = "DELETE FROM Items WHERE ParentUUID = @uuid AND (ParentType = 'StationMunitions' OR ParentType LIKE 'StationHold:%')";
+                cmd.Parameters.AddWithValue("@uuid", stationUUID);
+                cmd.ExecuteNonQuery();
+            }
+
+            // Delete components
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = "DELETE FROM StationComponents WHERE StationUUID = @uuid";
+                cmd.Parameters.AddWithValue("@uuid", stationUUID);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        private static void InsertStationComponents(SqliteConnection conn, SqliteTransaction tx, Station entity)
+        {
+            if (entity.Components == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < entity.Components.Count; i++)
+            {
+                var comp = entity.Components[i];
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.Transaction = tx;
+                    cmd.CommandText = @"INSERT INTO StationComponents (StationUUID, Sequence, SlotType, BlueprintUUID, CurrentHP, MaxHP)
+                                       VALUES (@sUUID, @seq, @slotType, @bpUUID, @curHp, @maxHp)";
+                    cmd.Parameters.AddWithValue("@sUUID", entity.UUID);
+                    cmd.Parameters.AddWithValue("@seq", i);
+                    cmd.Parameters.AddWithValue("@slotType", comp.SlotType ?? string.Empty);
+                    cmd.Parameters.AddWithValue("@bpUUID", comp.BlueprintUUID ?? string.Empty);
+                    cmd.Parameters.AddWithValue("@curHp", comp.CurrentHP);
+                    cmd.Parameters.AddWithValue("@maxHp", comp.MaxHP);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        private static void InsertStationItems(SqliteConnection conn, SqliteTransaction tx, Station entity)
+        {
+            // Insert munitions hold
+            InsertItems(conn, tx, entity.UUID, "StationMunitions", entity.MunitionsHold);
+
+            // Insert named holds
+            if (entity.Holds != null)
+            {
+                foreach (var kvp in entity.Holds)
+                {
+                    InsertItems(conn, tx, entity.UUID, "StationHold:" + kvp.Key, kvp.Value);
+                }
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // Asteroid Helpers
+        // ═══════════════════════════════════════════════════════════
+
+        private static Asteroid ReadAsteroidParent(SqliteDataReader reader)
+        {
+            var asteroid = new Asteroid
+            {
+                UUID = reader["UUID"] as string,
+                Name = reader["Name"] as string ?? string.Empty,
+                OwnerUUID = reader["OwnerUUID"] as string ?? string.Empty,
+                SystemName = reader["SystemName"] as string ?? string.Empty,
+                SystemObjectId = Convert.ToInt32(reader["SystemObjectId"]),
+            };
+
+            return asteroid;
+        }
+
+        private static List<AsteroidReserve> LoadAsteroidReserves(SqliteConnection conn, string asteroidUUID)
+        {
+            var reserves = new List<AsteroidReserve>();
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM AsteroidReserves WHERE AsteroidUUID = @aUUID ORDER BY Sequence";
+                cmd.Parameters.AddWithValue("@aUUID", asteroidUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var reserve = new AsteroidReserve
+                        {
+                            ResourceName = reader["ResourceName"] as string ?? string.Empty,
+                            Purity = reader["Purity"] as string ?? string.Empty,
+                            MaxReserve = Convert.ToInt32(reader["MaxReserve"]),
+                        };
+
+                        if (reader["CurrentReserve"] != DBNull.Value)
+                        {
+                            reserve.CurrentReserve = Convert.ToInt32(reader["CurrentReserve"]);
+                        }
+
+                        if (reader["ResetTimestamp"] != DBNull.Value)
+                        {
+                            reserve.ResetTimestamp = reader["ResetTimestamp"] as string ?? string.Empty;
+                        }
+
+                        reserves.Add(reserve);
+                    }
+                }
+            }
+
+            return reserves;
+        }
+
+        private static void UpsertAsteroidParent(SqliteConnection conn, SqliteTransaction tx, string characterUUID, Asteroid entity)
+        {
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = @"INSERT OR REPLACE INTO Asteroids (UUID, Name, OwnerUUID, SystemName, SystemId, SystemObjectId, GameApiAsteroidId)
+                                   VALUES (@uuid, @name, @owner, @sysName, @sysId, @sysObjId, @gameApiId)";
+                cmd.Parameters.AddWithValue("@uuid", entity.UUID);
+                cmd.Parameters.AddWithValue("@name", entity.Name ?? string.Empty);
+                cmd.Parameters.AddWithValue("@owner", characterUUID);
+                cmd.Parameters.AddWithValue("@sysName", entity.SystemName ?? string.Empty);
+                cmd.Parameters.AddWithValue("@sysId", 0);
+                cmd.Parameters.AddWithValue("@sysObjId", entity.SystemObjectId);
+                cmd.Parameters.AddWithValue("@gameApiId", DBNull.Value);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        private static void DeleteAsteroidChildren(SqliteConnection conn, SqliteTransaction tx, string asteroidUUID)
+        {
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = "DELETE FROM AsteroidReserves WHERE AsteroidUUID = @uuid";
+                cmd.Parameters.AddWithValue("@uuid", asteroidUUID);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        private static void InsertAsteroidReserves(SqliteConnection conn, SqliteTransaction tx, Asteroid entity)
+        {
+            if (entity.Reserves == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < entity.Reserves.Count; i++)
+            {
+                var reserve = entity.Reserves[i];
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.Transaction = tx;
+                    cmd.CommandText = @"INSERT INTO AsteroidReserves (AsteroidUUID, Sequence, ResourceName, Purity, MaxReserve, CurrentReserve, ResetTimestamp)
+                                       VALUES (@aUUID, @seq, @resName, @purity, @maxRes, @curRes, @resetTs)";
+                    cmd.Parameters.AddWithValue("@aUUID", entity.UUID);
+                    cmd.Parameters.AddWithValue("@seq", i);
+                    cmd.Parameters.AddWithValue("@resName", reserve.ResourceName ?? string.Empty);
+                    cmd.Parameters.AddWithValue("@purity", reserve.Purity ?? string.Empty);
+                    cmd.Parameters.AddWithValue("@maxRes", reserve.MaxReserve);
+                    cmd.Parameters.AddWithValue("@curRes", reserve.CurrentReserve != 0 ? (object)reserve.CurrentReserve : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@resetTs", !string.IsNullOrEmpty(reserve.ResetTimestamp) ? (object)reserve.ResetTimestamp : DBNull.Value);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // SupplyChain Helpers
+        // ═══════════════════════════════════════════════════════════
+
+        private static SupplyChain ReadSupplyChainParent(SqliteDataReader reader)
+        {
+            return new SupplyChain
+            {
+                UUID = reader["UUID"] as string,
+                Name = reader["Name"] as string ?? string.Empty,
+                OwnerUUID = reader["OwnerUUID"] as string ?? string.Empty,
+            };
+        }
+
+        private static List<SupplyChainStage> LoadSupplyChainStages(SqliteConnection conn, string chainUUID)
+        {
+            var stages = new List<SupplyChainStage>();
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM SupplyChainStages WHERE SupplyChainUUID = @cUUID ORDER BY Sequence";
+                cmd.Parameters.AddWithValue("@cUUID", chainUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        stages.Add(new SupplyChainStage
+                        {
+                            Sequence = Convert.ToInt32(reader["Sequence"]),
+                            LocationUUID = reader["ColonyUUID"] as string ?? string.Empty,
+                            ResourceName = reader["OutputItemType"] as string ?? string.Empty,
+                            AccumulationThreshold = Convert.ToInt32(reader["OutputQuantity"]),
+                        });
+                    }
+                }
+            }
+
+            return stages;
+        }
+
+        private static void UpsertSupplyChainParent(SqliteConnection conn, SqliteTransaction tx, string characterUUID, SupplyChain entity)
+        {
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = @"INSERT OR REPLACE INTO SupplyChains (UUID, Name, OwnerUUID, Description)
+                                   VALUES (@uuid, @name, @owner, @desc)";
+                cmd.Parameters.AddWithValue("@uuid", entity.UUID);
+                cmd.Parameters.AddWithValue("@name", entity.Name ?? string.Empty);
+                cmd.Parameters.AddWithValue("@owner", characterUUID);
+                cmd.Parameters.AddWithValue("@desc", string.Empty);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        private static void DeleteSupplyChainChildren(SqliteConnection conn, SqliteTransaction tx, string chainUUID)
+        {
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = "DELETE FROM SupplyChainStages WHERE SupplyChainUUID = @uuid";
+                cmd.Parameters.AddWithValue("@uuid", chainUUID);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        private static void InsertSupplyChainStages(SqliteConnection conn, SqliteTransaction tx, SupplyChain entity)
+        {
+            if (entity.Stages == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < entity.Stages.Count; i++)
+            {
+                var stage = entity.Stages[i];
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.Transaction = tx;
+                    cmd.CommandText = @"INSERT INTO SupplyChainStages (SupplyChainUUID, Sequence, ColonyUUID, BlueprintUUID, OutputItemType, OutputQuantity)
+                                       VALUES (@cUUID, @seq, @colUUID, @bpUUID, @outputType, @outputQty)";
+                    cmd.Parameters.AddWithValue("@cUUID", entity.UUID);
+                    cmd.Parameters.AddWithValue("@seq", i);
+                    cmd.Parameters.AddWithValue("@colUUID", stage.LocationUUID ?? string.Empty);
+                    cmd.Parameters.AddWithValue("@bpUUID", string.Empty);
+                    cmd.Parameters.AddWithValue("@outputType", stage.ResourceName ?? string.Empty);
+                    cmd.Parameters.AddWithValue("@outputQty", stage.AccumulationThreshold);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // BuildPlan Helpers
+        // ═══════════════════════════════════════════════════════════
+
+        private static BuildPlan ReadBuildPlanParent(SqliteDataReader reader)
+        {
+            return new BuildPlan
+            {
+                UUID = reader["UUID"] as string,
+                Name = reader["Name"] as string ?? string.Empty,
+                OwnerUUID = reader["OwnerUUID"] as string ?? string.Empty,
+            };
+        }
+
+        private static List<BuildItem> LoadBuildItems(SqliteConnection conn, string planUUID)
+        {
+            var items = new List<BuildItem>();
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM BuildItems WHERE BuildPlanUUID = @pUUID ORDER BY Sequence";
+                cmd.Parameters.AddWithValue("@pUUID", planUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        items.Add(new BuildItem
+                        {
+                            UUID = Guid.NewGuid().ToString(),
+                            ItemName = reader["ResourceName"] as string ?? string.Empty,
+                            Quantity = Convert.ToInt32(reader["Quantity"]),
+                        });
+                    }
+                }
+            }
+
+            return items;
+        }
+
+        private static void UpsertBuildPlanParent(SqliteConnection conn, SqliteTransaction tx, string characterUUID, BuildPlan entity)
+        {
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = @"INSERT OR REPLACE INTO BuildPlans (UUID, Name, OwnerUUID, ColonyUUID, BlueprintUUID, Quantity, Priority)
+                                   VALUES (@uuid, @name, @owner, @colony, @bp, @qty, @priority)";
+                cmd.Parameters.AddWithValue("@uuid", entity.UUID);
+                cmd.Parameters.AddWithValue("@name", entity.Name ?? string.Empty);
+                cmd.Parameters.AddWithValue("@owner", characterUUID);
+                cmd.Parameters.AddWithValue("@colony", string.Empty);
+                cmd.Parameters.AddWithValue("@bp", string.Empty);
+                cmd.Parameters.AddWithValue("@qty", 0);
+                cmd.Parameters.AddWithValue("@priority", 0);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        private static void DeleteBuildPlanChildren(SqliteConnection conn, SqliteTransaction tx, string planUUID)
+        {
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = "DELETE FROM BuildItems WHERE BuildPlanUUID = @uuid";
+                cmd.Parameters.AddWithValue("@uuid", planUUID);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        private static void InsertBuildItems(SqliteConnection conn, SqliteTransaction tx, BuildPlan entity)
+        {
+            if (entity.Items == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < entity.Items.Count; i++)
+            {
+                var item = entity.Items[i];
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.Transaction = tx;
+                    cmd.CommandText = @"INSERT INTO BuildItems (BuildPlanUUID, Sequence, ResourceName, Quantity, Fulfilled)
+                                       VALUES (@pUUID, @seq, @resName, @qty, @fulfilled)";
+                    cmd.Parameters.AddWithValue("@pUUID", entity.UUID);
+                    cmd.Parameters.AddWithValue("@seq", i);
+                    cmd.Parameters.AddWithValue("@resName", item.ItemName ?? string.Empty);
+                    cmd.Parameters.AddWithValue("@qty", item.Quantity);
+                    cmd.Parameters.AddWithValue("@fulfilled", 0);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // StockProfile Helpers
+        // ═══════════════════════════════════════════════════════════
+
+        private static StockProfile ReadStockProfileParent(SqliteDataReader reader)
+        {
+            return new StockProfile
+            {
+                UUID = reader["UUID"] as string,
+                Name = reader["Name"] as string ?? string.Empty,
+                OwnerUUID = reader["OwnerUUID"] as string ?? string.Empty,
+            };
+        }
+
+        private static List<StockProfileEntry> LoadStockProfileEntries(SqliteConnection conn, string profileUUID)
+        {
+            var entries = new List<StockProfileEntry>();
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM StockProfileEntries WHERE StockProfileUUID = @pUUID ORDER BY Sequence";
+                cmd.Parameters.AddWithValue("@pUUID", profileUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        entries.Add(new StockProfileEntry
+                        {
+                            GroupID = reader["ResourceName"] as string ?? string.Empty,
+                            StockPlanUUID = string.Empty,
+                        });
+                    }
+                }
+            }
+
+            return entries;
+        }
+
+        private static void UpsertStockProfileParent(SqliteConnection conn, SqliteTransaction tx, string characterUUID, StockProfile entity)
+        {
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = @"INSERT OR REPLACE INTO StockProfiles (UUID, Name, OwnerUUID, Description)
+                                   VALUES (@uuid, @name, @owner, @desc)";
+                cmd.Parameters.AddWithValue("@uuid", entity.UUID);
+                cmd.Parameters.AddWithValue("@name", entity.Name ?? string.Empty);
+                cmd.Parameters.AddWithValue("@owner", characterUUID);
+                cmd.Parameters.AddWithValue("@desc", string.Empty);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        private static void DeleteStockProfileChildren(SqliteConnection conn, SqliteTransaction tx, string profileUUID)
+        {
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = "DELETE FROM StockProfileEntries WHERE StockProfileUUID = @uuid";
+                cmd.Parameters.AddWithValue("@uuid", profileUUID);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        private static void InsertStockProfileEntries(SqliteConnection conn, SqliteTransaction tx, StockProfile entity)
+        {
+            if (entity.Entries == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < entity.Entries.Count; i++)
+            {
+                var entry = entity.Entries[i];
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.Transaction = tx;
+                    cmd.CommandText = @"INSERT INTO StockProfileEntries (StockProfileUUID, Sequence, ResourceName, MinQuantity, MaxQuantity)
+                                       VALUES (@pUUID, @seq, @resName, @minQty, @maxQty)";
+                    cmd.Parameters.AddWithValue("@pUUID", entity.UUID);
+                    cmd.Parameters.AddWithValue("@seq", i);
+                    cmd.Parameters.AddWithValue("@resName", entry.GroupID ?? string.Empty);
+                    cmd.Parameters.AddWithValue("@minQty", 0);
+                    cmd.Parameters.AddWithValue("@maxQty", 0);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // StockPlan Helpers
+        // ═══════════════════════════════════════════════════════════
+
+        private static StockPlan ReadStockPlanParent(SqliteDataReader reader)
+        {
+            return new StockPlan
+            {
+                UUID = reader["UUID"] as string,
+                Name = reader["Name"] as string ?? string.Empty,
+                OwnerUUID = reader["OwnerUUID"] as string ?? string.Empty,
+            };
+        }
+
+        private static List<StockTarget> LoadStockTargets(SqliteConnection conn, string planUUID)
+        {
+            var targets = new List<StockTarget>();
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM StockTargets WHERE StockPlanUUID = @pUUID ORDER BY Sequence";
+                cmd.Parameters.AddWithValue("@pUUID", planUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        targets.Add(new StockTarget
+                        {
+                            UUID = Guid.NewGuid().ToString(),
+                            ItemName = reader["ResourceName"] as string ?? string.Empty,
+                            TargetQuantity = Convert.ToInt32(reader["TargetQuantity"]),
+                            CriticalThreshold = Convert.ToInt32(reader["Priority"]),
+                        });
+                    }
+                }
+            }
+
+            return targets;
+        }
+
+        private static void UpsertStockPlanParent(SqliteConnection conn, SqliteTransaction tx, string characterUUID, StockPlan entity)
+        {
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = @"INSERT OR REPLACE INTO StockPlans (UUID, Name, OwnerUUID, ColonyUUID)
+                                   VALUES (@uuid, @name, @owner, @colony)";
+                cmd.Parameters.AddWithValue("@uuid", entity.UUID);
+                cmd.Parameters.AddWithValue("@name", entity.Name ?? string.Empty);
+                cmd.Parameters.AddWithValue("@owner", characterUUID);
+                cmd.Parameters.AddWithValue("@colony", string.Empty);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        private static void DeleteStockPlanChildren(SqliteConnection conn, SqliteTransaction tx, string planUUID)
+        {
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = "DELETE FROM StockTargets WHERE StockPlanUUID = @uuid";
+                cmd.Parameters.AddWithValue("@uuid", planUUID);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        private static void InsertStockTargets(SqliteConnection conn, SqliteTransaction tx, StockPlan entity)
+        {
+            if (entity.Targets == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < entity.Targets.Count; i++)
+            {
+                var target = entity.Targets[i];
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.Transaction = tx;
+                    cmd.CommandText = @"INSERT INTO StockTargets (StockPlanUUID, Sequence, ResourceName, TargetQuantity, Priority)
+                                       VALUES (@pUUID, @seq, @resName, @targetQty, @priority)";
+                    cmd.Parameters.AddWithValue("@pUUID", entity.UUID);
+                    cmd.Parameters.AddWithValue("@seq", i);
+                    cmd.Parameters.AddWithValue("@resName", target.ItemName ?? string.Empty);
+                    cmd.Parameters.AddWithValue("@targetQty", target.TargetQuantity);
+                    cmd.Parameters.AddWithValue("@priority", target.CriticalThreshold);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // PricingPlan Helpers
+        // ═══════════════════════════════════════════════════════════
+
+        private static PricingPlan ReadPricingPlanParent(SqliteDataReader reader)
+        {
+            return new PricingPlan
+            {
+                UUID = reader["UUID"] as string,
+                Name = reader["Name"] as string ?? string.Empty,
+                OwnerUUID = reader["OwnerUUID"] as string ?? string.Empty,
+                Description = reader["Description"] as string ?? string.Empty,
+                FixedCostPerItem = Convert.ToDecimal(reader["FixedCostPerItem"]),
+                HourlyCostRate = Convert.ToDecimal(reader["HourlyCostRate"]),
+            };
+        }
+
+        private static Dictionary<string, decimal> LoadPricingPlanPrices(SqliteConnection conn, string planUUID)
+        {
+            var prices = new Dictionary<string, decimal>();
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT ResourceName, Price FROM PricingPlanPrices WHERE PricingPlanUUID = @pUUID";
+                cmd.Parameters.AddWithValue("@pUUID", planUUID);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var name = reader.GetString(0);
+                        var price = Convert.ToDecimal(reader["Price"]);
+                        prices[name] = price;
+                    }
+                }
+            }
+
+            return prices;
+        }
+
+        private static void UpsertPricingPlanParent(SqliteConnection conn, SqliteTransaction tx, string characterUUID, PricingPlan entity)
+        {
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = @"INSERT OR REPLACE INTO PricingPlans (UUID, Name, OwnerUUID, Description, FixedCostPerItem, HourlyCostRate)
+                                   VALUES (@uuid, @name, @owner, @desc, @fixed, @hourly)";
+                cmd.Parameters.AddWithValue("@uuid", entity.UUID);
+                cmd.Parameters.AddWithValue("@name", entity.Name ?? string.Empty);
+                cmd.Parameters.AddWithValue("@owner", characterUUID);
+                cmd.Parameters.AddWithValue("@desc", entity.Description ?? string.Empty);
+                cmd.Parameters.AddWithValue("@fixed", (double)entity.FixedCostPerItem);
+                cmd.Parameters.AddWithValue("@hourly", (double)entity.HourlyCostRate);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        private static void DeletePricingPlanChildren(SqliteConnection conn, SqliteTransaction tx, string planUUID)
+        {
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.Transaction = tx;
+                cmd.CommandText = "DELETE FROM PricingPlanPrices WHERE PricingPlanUUID = @uuid";
+                cmd.Parameters.AddWithValue("@uuid", planUUID);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        private static void InsertPricingPlanPrices(SqliteConnection conn, SqliteTransaction tx, PricingPlan entity)
+        {
+            if (entity.ResourcePrices == null)
+            {
+                return;
+            }
+
+            foreach (var kvp in entity.ResourcePrices)
+            {
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.Transaction = tx;
+                    cmd.CommandText = "INSERT INTO PricingPlanPrices (PricingPlanUUID, ResourceName, Price) VALUES (@pUUID, @resName, @price)";
+                    cmd.Parameters.AddWithValue("@pUUID", entity.UUID);
+                    cmd.Parameters.AddWithValue("@resName", kvp.Key);
+                    cmd.Parameters.AddWithValue("@price", (double)kvp.Value);
+                    cmd.ExecuteNonQuery();
                 }
             }
         }
