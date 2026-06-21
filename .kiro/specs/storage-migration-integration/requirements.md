@@ -23,6 +23,11 @@ The following items from the original spec are **COMPLETE** and do not need re-i
 - Property tests for entity count preservation and atomic write safety
 - PlayerContext.WritesBlocked static property (blocks writes, returns early)
 
+### Known Defects in Phase 1 Deliverables (to fix as prerequisite)
+
+- **Decimal precision loss:** SQLite backend uses REAL columns and `(double)` casts for CreditChange, OldBalance, NewBalance, PricePerUnit, TotalPrice. Postgres backend uses DOUBLE PRECISION with the same pattern. This loses precision on decimal→double→decimal round-trips. Fix: migrate REAL→TEXT (SQLite) and DOUBLE PRECISION→NUMERIC (Postgres) for all decimal-typed fields, remove `(double)` casts.
+- **Missing interface method:** IStorageBackend lacks `GetAllCharacterUUIDsAsync()` needed for migration character discovery. Fix: add to interface, implement in all 5 backends.
+
 ## Glossary
 
 - **IStorageBackend**: The unified async interface in OE2EmpireTracker.Common defining CRUD operations for all entity types
@@ -70,7 +75,8 @@ The following items from the original spec are **COMPLETE** and do not need re-i
 
 1. THE PlayerContext SHALL track which entities have been modified since the last successful persistence operation, where modification means any of: an entity property was changed via a service method, an entity was added to a collection, or an entity was removed from a collection
 2. THE PlayerContext SHALL expose a `MarkDirty<T>(string entityUUID)` method that service classes call after mutating an entity, and a `MarkDeleted<T>(string entityUUID)` method that service classes call after removing an entity from a collection
-3. ALL existing service classes (ColonyService, BlueprintService, SurveyService, PlayerProfileService, DeliveryRouteService, DeliveryPlanService, ShipService, ShipTemplateService, StationService, MarketListingService, PricingPlanService, BuildPlanMutationService, StockTargetMutationService, SupplyChainMutationService, AsteroidService, ContactsService, BankingService, MailService) SHALL call MarkDirty after mutations and MarkDeleted after deletions; BackgroundProcessor SHALL also call MarkDirty<Colony> for each colony it processes during timer cycles
+3. ALL existing service classes (ColonyService, BlueprintService, SurveyService, PlayerProfileService, DeliveryRouteService, DeliveryPlanService, ShipService, ShipTemplateService, StationService, MarketListingService, PricingPlanService, BuildPlanMutationService, StockTargetMutationService, SupplyChainMutationService, AsteroidService, ContactsService, BankingService, MailService) SHALL call MarkDirty after mutations and MarkDeleted after deletions
+4. BackgroundProcessor SHALL NOT directly mutate colony entities; it SHALL route all colony mutations through ColonyService methods which handle dirty marking internally
 4. WHEN WriteContext is called, THE PlayerContext SHALL persist only entities marked as dirty via the IStorageBackend Upsert methods, and delete only entities in the pending-deletion set via IStorageBackend Delete methods
 5. WHEN persistence completes successfully, THE PlayerContext SHALL clear all dirty flags and all pending-deletion records
 6. THE PlayerContext SHALL clear dirty flags one entity at a time as each Upsert succeeds within the write loop; if a write fails partway through, entities already successfully persisted have their dirty flags cleared, and entities not yet persisted retain their dirty flags for the next write attempt
@@ -132,7 +138,7 @@ No further work needed for this requirement.
 
 1. THE Migration_Service SHALL accept any source IStorageBackend and any destination IStorageBackend
 2. THE Migration_Service SHALL migrate all entity types: server-global entities, all per-character entities (22 types), baseline data, sharing rules, permission entities, intel entities, and audit entries
-3. THE Migration_Service SHALL discover character UUIDs to migrate by reading the PlayerProfile collection from the source backend (every character with data has at least one PlayerProfile); for JsonSingleFileBackend, this means loading the full PlayerRoot and extracting unique OwnerUUID values; for relational backends (Sqlite, Postgres), this means querying `SELECT DISTINCT OwnerUUID FROM PlayerProfiles`; for DynamoDB, this means scanning the PlayerProfiles partition; the caller MAY also provide an explicit list of character UUIDs to migrate (for selective migration)
+3. THE IStorageBackend interface SHALL be extended with a `GetAllCharacterUUIDsAsync()` method that returns all character UUIDs that have stored player data; THE Migration_Service SHALL call this method on the source backend to discover which characters to migrate; the caller MAY also provide an explicit list of character UUIDs to migrate (for selective migration)
 4. THE Migration_Service SHALL preserve every entity with no field loss during migration
 5. THE Migration_Service SHALL accept an IProgress<MigrationProgress> callback and invoke it at least once per entity type, reporting the current entity type name and the cumulative count of entities processed so far
 6. IF migration fails partway through, THEN THE Migration_Service SHALL throw a StorageWriteException (or StorageLoadException for read failures) whose message includes the entity type being processed when the failure occurred and the number of entities successfully migrated before failure; partial data already written to the destination SHALL remain in place (no rollback of successfully migrated entities)
@@ -150,7 +156,7 @@ No further work needed for this requirement.
 #### Acceptance Criteria
 
 1. WHEN data is migrated from any backend A to any backend B and back to backend A, THE migrated data SHALL be structurally equivalent via deep-equality comparison; specifically, re-serializing the round-tripped entities with the project's standard JsonSerializerSettings and SerializationSorter SHALL produce identical JSON output to the original serialization
-2. THE migration process SHALL preserve decimal precision for all numeric values (including banking balance fields); NOTE: the delivered SQLite and Postgres backends store decimal values as REAL/DOUBLE PRECISION (IEEE 754 double), which can lose precision for values exceeding 15 significant digits; this is acceptable for the game tracker's use case (monetary values up to ~15M credits with 2 decimal places fit within double precision without loss); if future requirements demand exact decimal storage, the schema must be migrated to TEXT or NUMERIC columns
+2. THE migration process SHALL preserve exact decimal precision for all numeric values (including banking balance, credit change, price per unit, and total price fields); the SQLite and Postgres backends SHALL store decimal values as TEXT (SQLite) or NUMERIC (Postgres) rather than REAL/DOUBLE PRECISION to avoid IEEE 754 floating-point precision loss; this is a prerequisite fix to the delivered backends before migration can guarantee fidelity
 3. THE migration process SHALL preserve DateTime values as stored (ISO 8601 TEXT strings in all backends); both SQLite and Postgres backends store DateTime as TEXT with ISO 8601 format specifier "O", which preserves full tick-level precision including timezone information
 4. THE migration process SHALL preserve null versus empty-collection distinctions for all collection properties
 5. THE migration process SHALL preserve entity UUID stability (no UUID regeneration or modification during migration)
@@ -173,7 +179,13 @@ No further work needed for this requirement.
 
 ## Implementation Phases
 
-### Phase 2: PlayerContext and EmpireContext Integration
+### Phase 2a: Prerequisite Backend Fixes
+- Fix decimal precision in SQLite backend: REAL→TEXT for CreditChange, OldBalance, NewBalance, PricePerUnit, TotalPrice columns; remove `(double)` casts; add schema migration
+- Fix decimal precision in Postgres backend: DOUBLE PRECISION→NUMERIC for same columns; remove `(double)` casts; add schema migration
+- Add `GetAllCharacterUUIDsAsync()` to IStorageBackend and implement in all 5 backends
+- Refactor BackgroundProcessor to route colony mutations through ColonyService instead of calling Colony.ProcessColony() directly
+
+### Phase 2b: PlayerContext and EmpireContext Integration
 - Refactor PlayerContext to accept IStorageBackend with async bridging (Reqs 1, 2, 8)
 - Add MarkDirty/MarkDeleted to PlayerContext; update all 18 service classes (Req 2)
 - Refactor EmpireContext to use IStorageBackend for BaselineRoot (Req 3)
