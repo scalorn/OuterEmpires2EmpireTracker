@@ -113,12 +113,12 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Verification: Full solution build + dotnet test OE2EmpireTracker.Server.Tests — all existing tests pass
 
 - [ ] 4. JsonSingleFileBackend (New Implementation)
-  - [-] 4.1 Implement JsonSingleFileBackend: lifecycle, load/save, empty/malformed handling
+  - [x] 4.1 Implement JsonSingleFileBackend: lifecycle, load/save, empty/malformed handling
     - Satisfies: Req 2, Criteria 1-4, 6-7; Req 11, Criteria 1, 3
     - Inputs: Common/Services/PlayerRoot.cs, Common/Services/SafeFileWriter.cs, Common/Services/JsonSettings.cs, Common/Services/SerializationSorter.cs
     - Output: OE2EmpireTracker.Common/Storage/JsonSingleFileBackend.cs (lifecycle, Initialize, ValidateConnection, GetStorageInfo, load/save plumbing)
     - Verification: getDiagnostics — compiles cleanly
-  - [~] 4.2 Implement JsonSingleFileBackend: per-character entity CRUD (Colony, Blueprint, Survey, PlayerProfile, DeliveryRoute, DeliveryPlan)
+  - [-] 4.2 Implement JsonSingleFileBackend: per-character entity CRUD (Colony, Blueprint, Survey, PlayerProfile, DeliveryRoute, DeliveryPlan)
     - Satisfies: Req 2, Criteria 5, 8; Req 1, Criterion 4
     - Inputs: Common/Storage/JsonSingleFileBackend.cs (from 4.1), PlayerRoot structure
     - Output: OE2EmpireTracker.Common/Storage/JsonSingleFileBackend.cs (extended — 6 entity types CRUD)
