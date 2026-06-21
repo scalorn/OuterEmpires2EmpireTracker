@@ -267,7 +267,7 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Output: OE2EmpireTracker.Common/Storage/SqliteBackend.cs (legacy migration logic added)
     - Verification: getDiagnostics — compiles cleanly
 
-- [ ] 9. Unit Tests — JsonSingleFile and JsonMultiFile Backends
+- [x] 9. Unit Tests — JsonSingleFile and JsonMultiFile Backends
   - [x] 9.1 Write unit tests for JsonSingleFileBackend: lifecycle, empty/missing file, malformed JSON error handling
     - Satisfies: Req 2, Criteria 6-7; Req 10, Criteria 1-2; Req 11, Criterion 1
     - Inputs: Common/Storage/JsonSingleFileBackend.cs
@@ -293,19 +293,19 @@ This plan implements the unified IStorageBackend interface and all five backend 
     - Inputs: Common/Storage/StorageBackendFactory.cs
     - Output: OE2EmpireTracker.Tests/Storage/StorageBackendFactoryTests.cs
     - Verification: vstest.console — new tests pass
-  - [-] 9.6 Write unit tests for StorageExceptions: constructor parameters, properties set correctly
+  - [x] 9.6 Write unit tests for StorageExceptions: constructor parameters, properties set correctly
     - Satisfies: Req 10, Criteria 1-4
     - Inputs: Common/Interfaces/StorageExceptions.cs
     - Output: OE2EmpireTracker.Tests/Storage/StorageExceptionTests.cs
     - Verification: vstest.console — new tests pass
 
 - [ ] 10. Unit Tests — SQLite and Postgres Backends
-  - [~] 10.1 Write unit tests for SqliteBackend: schema creation on new DB, WAL mode, _metadata table
+  - [-] 10.1 Write unit tests for SqliteBackend: schema creation on new DB, WAL mode, _metadata table
     - Satisfies: Req 4, Criteria 5-6; Req 9, Criteria 1-3
     - Inputs: Common/Storage/SqliteBackend.cs
     - Output: OE2EmpireTracker.Tests/Storage/SqliteBackendSchemaTests.cs
     - Verification: vstest.console — new tests pass
-  - [~] 10.2 Write unit tests for SqliteBackend: Colony CRUD with child tables (Structures, Properties, Workers, Items)
+  - [-] 10.2 Write unit tests for SqliteBackend: Colony CRUD with child tables (Structures, Properties, Workers, Items)
     - Satisfies: Req 4, Criteria 1-4, 9-14
     - Inputs: Common/Storage/SqliteBackend.cs
     - Output: OE2EmpireTracker.Tests/Storage/SqliteBackendColonyTests.cs
