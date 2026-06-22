@@ -364,7 +364,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
   - Spot-check: add a temporary test that mutates via ColonyService then checks DirtyTracker.HasChanges == true
 
 
-- [ ] 13. EmpireContext storage backend integration
+- [x] 13. EmpireContext storage backend integration
   - [x] 13.1 Add StorageBackend and StorageBackendType properties to EmpireContext
     - Add `public IStorageBackend StorageBackend { get; set; }` property
     - Add `public StorageBackendType? StorageBackendType { get; set; }` property
@@ -422,7 +422,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/EmpireContext.cs (modified)_
     - _Verification: Build succeeds_
 
-  - [-] 13.6 Wire EmpireContext load path to use LoadBaselineFromBackend
+  - [x] 13.6 Wire EmpireContext load path to use LoadBaselineFromBackend
     - In the constructor/load-data path: when StorageBackend is non-null, call LoadBaselineFromBackend instead of file load
     - On StorageLoadException: propagate without partial initialization
     - Estimated: ~15 lines of branching
@@ -431,7 +431,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/EmpireContext.cs (modified)_
     - _Verification: Build succeeds_
 
-  - [-] 13.7 Write unit tests for EmpireContext backend integration
+  - [x] 13.7 Write unit tests for EmpireContext backend integration
     - Test: Load from JSON backend uses GetGlobalDataAsync (mock backend)
     - Test: Load from relational backend uses typed methods (mock backend)
     - Test: Empty backend triggers seed from BaselineData.json (verify Upsert called after seed)
@@ -484,7 +484,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
 
 
 - [ ] 15. Desktop startup wiring
-  - [~] 15.1 Implement InitializeStorage in Program.cs
+  - [x] 15.1 Implement InitializeStorage in Program.cs
     - Load preferences via PreferencesStore.GetInstance()
     - Call ParseStorageBackendType() and ResolveStorageConfig()
     - Call StorageBackendFactory.CreateAsync via Task.Run bridge
@@ -496,7 +496,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: OE2EmpireTracker/Program.cs (modified)_
     - _Verification: Build succeeds_
 
-  - [~] 15.2 Add error dialog and fallback logic in Program.cs
+  - [-] 15.2 Add error dialog and fallback logic in Program.cs
     - Wrap InitializeStorage in try/catch
     - On exception: show MessageBox with error message describing backend type and failure
     - Offer "Yes" = fall back to JsonSingleFile with default path, "No" = exit
@@ -517,7 +517,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
 
 
 - [ ] 17. Migration service — models and exception
-  - [~] 17.1 Create MigrationProgress model and MigrationValidationException
+  - [-] 17.1 Create MigrationProgress model and MigrationValidationException
     - Create Common/Services/MigrationProgress.cs with CurrentEntityType (string), EntitiesProcessed (int), Phase (string)
     - Add MigrationValidationException to Common/Interfaces/StorageExceptions.cs with Mismatches property (Dictionary<string, (int Expected, int Actual)>)
     - Estimated: ~40 lines total across both files

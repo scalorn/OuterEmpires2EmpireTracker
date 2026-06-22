@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace OE2EmpireTracker.Common.Interfaces
 {
@@ -177,5 +179,68 @@ namespace OE2EmpireTracker.Common.Interfaces
         /// Gets the rollback error that occurred after the migration failure.
         /// </summary>
         public Exception RollbackError { get; }
+    }
+
+    /// <summary>
+    /// Thrown when post-migration entity count validation fails,
+    /// indicating that source and destination counts do not match.
+    /// </summary>
+    public class MigrationValidationException : Exception
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MigrationValidationException"/> class.
+        /// </summary>
+        public MigrationValidationException()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MigrationValidationException"/> class.
+        /// </summary>
+        /// <param name="message">A human-readable error message.</param>
+        public MigrationValidationException(string message)
+            : base(message)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MigrationValidationException"/> class.
+        /// </summary>
+        /// <param name="message">A human-readable error message.</param>
+        /// <param name="innerException">The underlying exception.</param>
+        public MigrationValidationException(string message, Exception innerException)
+            : base(message, innerException)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MigrationValidationException"/> class.
+        /// </summary>
+        /// <param name="mismatches">
+        /// Dictionary mapping entity type names to their expected (source) and actual (destination) counts.
+        /// </param>
+        public MigrationValidationException(Dictionary<string, (int Expected, int Actual)> mismatches)
+            : base(FormatMessage(mismatches))
+        {
+            Mismatches = mismatches;
+        }
+
+        /// <summary>
+        /// Gets the dictionary of entity type count mismatches.
+        /// Each entry maps an entity type name to its expected (source) and actual (destination) counts.
+        /// </summary>
+        public Dictionary<string, (int Expected, int Actual)> Mismatches { get; }
+
+        /// <summary>
+        /// Formats the mismatch data into a human-readable message.
+        /// </summary>
+        /// <param name="mismatches">The mismatch data to format.</param>
+        /// <returns>A formatted message describing all entity count mismatches.</returns>
+        private static string FormatMessage(Dictionary<string, (int Expected, int Actual)> mismatches)
+        {
+            var details = mismatches.Select(
+                kvp => $"{kvp.Key} (expected {kvp.Value.Expected}, got {kvp.Value.Actual})");
+            return "Entity count mismatch: " + string.Join(", ", details);
+        }
     }
 }

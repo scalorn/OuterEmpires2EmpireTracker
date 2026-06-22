@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NLog;
+using OE2EmpireTracker.Common.Interfaces;
+using OE2EmpireTracker.Common.Storage;
 using OE2EmpireTracker.Parsers;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.Services.Migration;
@@ -11,6 +14,8 @@ namespace OE2EmpireTracker
 {
     internal static class Program
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -51,7 +56,55 @@ namespace OE2EmpireTracker
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            InitializeStorage();
             Application.Run(new MainWindow());
+        }
+
+        private static void InitializeStorage()
+        {
+            var prefs = PreferencesStore.GetInstance();
+            var type = prefs.ParseStorageBackendType(prefs.Preferences.StorageBackendType);
+            var config = prefs.ResolveStorageConfig();
+
+            IStorageBackend backend;
+            try
+            {
+                backend = Task.Run(() => StorageBackendFactory.CreateAsync(type, config))
+                    .GetAwaiter().GetResult();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to initialize {0} storage backend", type);
+                var result = MessageBox.Show(
+                    $"Failed to initialize {type} backend:\n{ex.Message}\n\n" +
+                    "Fall back to JSON file storage?",
+                    "Storage Error",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Error);
+
+                if (result == DialogResult.Yes)
+                {
+                    type = StorageBackendType.JsonSingleFile;
+                    config = new StorageBackendConfig
+                    {
+                        ConnectionString = AppDomain.CurrentDomain.BaseDirectory,
+                    };
+                    backend = Task.Run(() => StorageBackendFactory.CreateAsync(type, config))
+                        .GetAwaiter().GetResult();
+                }
+                else
+                {
+                    Environment.Exit(1);
+                    return;
+                }
+            }
+
+            var playerCtx = PlayerContext.GetInstance();
+            playerCtx.StorageBackend = backend;
+
+            var empireCtx = EmpireContext.GetInstance();
+            empireCtx.StorageBackendType = type;
+            empireCtx.StorageBackend = backend;
         }
     }
 }
