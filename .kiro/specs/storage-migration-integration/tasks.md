@@ -355,7 +355,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Both files modified_
     - _Verification: Build succeeds_
 
-- [-] 12. Checkpoint — PlayerContext integration and dirty tracking verified
+- [x] 12. Checkpoint — PlayerContext integration and dirty tracking verified
   - Build full solution with zero warnings
   - Run vstest.console (full suite, 600s timeout) + trxparse.js
   - Run dotnet test OE2EmpireTracker.Server.Tests
@@ -507,7 +507,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: OE2EmpireTracker/Program.cs (modified)_
     - _Verification: Build succeeds_
 
-- [~] 16. Checkpoint — EmpireContext, preferences, and startup wiring verified
+- [x] 16. Checkpoint — EmpireContext, preferences, and startup wiring verified
   - Build full solution with zero warnings
   - Run vstest.console (full suite, 600s timeout) + trxparse.js
   - Run dotnet test OE2EmpireTracker.Server.Tests
