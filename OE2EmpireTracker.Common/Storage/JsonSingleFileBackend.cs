@@ -24,19 +24,22 @@ namespace OE2EmpireTracker.Common.Storage
     /// <summary>
     /// IStorageBackend implementation that persists all player data in a single
     /// monolithic JSON file (PlayerData.json / Alpha3.json) and baseline data
-    /// in a separate BaselineData.json file.
+    /// in a separate BaselineData.json file. Server-global entities, permissions,
+    /// intel, and audit data are stored in a ServerData.json file alongside
+    /// the player data.
     /// </summary>
     internal class JsonSingleFileBackend : IStorageBackend
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-        private static readonly string NotSupportedMessage = "Server-global operations not supported in single-file backend";
 
         private readonly string _playerDataPath;
         private readonly string _baselineDataPath;
+        private readonly string _serverDataPath;
         private readonly object _writeLock = new object();
 
         private PlayerRoot _playerRoot;
         private BaselineRoot _baselineRoot;
+        private ServerDataStore _serverStore;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="JsonSingleFileBackend"/> class.
@@ -64,6 +67,7 @@ namespace OE2EmpireTracker.Common.Storage
             // Baseline data lives alongside player data.
             string directory = Path.GetDirectoryName(_playerDataPath) ?? string.Empty;
             _baselineDataPath = Path.Combine(directory, "BaselineData.json");
+            _serverDataPath = Path.Combine(directory, "ServerData.json");
         }
 
         /// <inheritdoc/>
@@ -71,6 +75,7 @@ namespace OE2EmpireTracker.Common.Storage
         {
             _playerRoot = LoadRoot<PlayerRoot>(_playerDataPath);
             _baselineRoot = LoadRoot<BaselineRoot>(_baselineDataPath);
+            _serverStore = LoadRoot<ServerDataStore>(_serverDataPath);
 
             // DataVersion migration check
             int playerVersion = _playerRoot.DataVersion;
@@ -123,88 +128,227 @@ namespace OE2EmpireTracker.Common.Storage
             };
         }
 
-        // ═══════════════════════════════════════════════════════════
-        // Server-Global Entities — NotSupported (WinForms does not use these)
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        // Server-Global Entities
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
-        public Task<ServerFaction> GetFactionAsync(string uuid) => throw new NotSupportedException(NotSupportedMessage);
+        public Task<ServerFaction> GetFactionAsync(string uuid)
+        {
+            var result = _serverStore.ServerFactions.FirstOrDefault(f => f.UUID == uuid);
+            return Task.FromResult(result);
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<ServerFaction>> GetAllFactionsAsync() => throw new NotSupportedException(NotSupportedMessage);
+        public Task<IReadOnlyList<ServerFaction>> GetAllFactionsAsync()
+        {
+            IReadOnlyList<ServerFaction> result = _serverStore.ServerFactions.ToList();
+            return Task.FromResult(result);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertFactionAsync(ServerFaction faction) => throw new NotSupportedException(NotSupportedMessage);
+        public Task UpsertFactionAsync(ServerFaction faction)
+        {
+            _serverStore.ServerFactions.RemoveAll(f => f.UUID == faction.UUID);
+            _serverStore.ServerFactions.Add(faction);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteFactionAsync(string uuid) => throw new NotSupportedException(NotSupportedMessage);
+        public Task DeleteFactionAsync(string uuid)
+        {
+            _serverStore.ServerFactions.RemoveAll(f => f.UUID == uuid);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task<ServerCharacter> GetCharacterAsync(string uuid) => throw new NotSupportedException(NotSupportedMessage);
+        public Task<ServerCharacter> GetCharacterAsync(string uuid)
+        {
+            var result = _serverStore.ServerCharacters.FirstOrDefault(c => c.UUID == uuid);
+            return Task.FromResult(result);
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<ServerCharacter>> GetAllCharactersAsync() => throw new NotSupportedException(NotSupportedMessage);
+        public Task<IReadOnlyList<ServerCharacter>> GetAllCharactersAsync()
+        {
+            IReadOnlyList<ServerCharacter> result = _serverStore.ServerCharacters.ToList();
+            return Task.FromResult(result);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertCharacterAsync(ServerCharacter character) => throw new NotSupportedException(NotSupportedMessage);
+        public Task UpsertCharacterAsync(ServerCharacter character)
+        {
+            _serverStore.ServerCharacters.RemoveAll(c => c.UUID == character.UUID);
+            _serverStore.ServerCharacters.Add(character);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteCharacterAsync(string uuid) => throw new NotSupportedException(NotSupportedMessage);
+        public Task DeleteCharacterAsync(string uuid)
+        {
+            _serverStore.ServerCharacters.RemoveAll(c => c.UUID == uuid);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task<string> GetGlobalDataAsync(string dataType) => throw new NotSupportedException(NotSupportedMessage);
+        public Task<string> GetGlobalDataAsync(string dataType)
+        {
+            _serverStore.GlobalData.TryGetValue(dataType, out string value);
+            return Task.FromResult(value);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertGlobalDataAsync(string dataType, string json) => throw new NotSupportedException(NotSupportedMessage);
+        public Task UpsertGlobalDataAsync(string dataType, string json)
+        {
+            _serverStore.GlobalData[dataType] = json;
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<StarSystem>> GetAllStarSystemsAsync() => throw new NotSupportedException(NotSupportedMessage);
+        public Task<IReadOnlyList<StarSystem>> GetAllStarSystemsAsync()
+        {
+            IReadOnlyList<StarSystem> result = _serverStore.StarSystems.ToList();
+            return Task.FromResult(result);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertStarSystemsAsync(IReadOnlyList<StarSystem> systems) => throw new NotSupportedException(NotSupportedMessage);
+        public Task UpsertStarSystemsAsync(IReadOnlyList<StarSystem> systems)
+        {
+            foreach (var system in systems)
+            {
+                _serverStore.StarSystems.RemoveAll(s => s.Id == system.Id);
+                _serverStore.StarSystems.Add(system);
+            }
+
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<ColonySummary>> GetColonySummariesForSystemAsync(int systemId) => throw new NotSupportedException(NotSupportedMessage);
+        public Task<IReadOnlyList<ColonySummary>> GetColonySummariesForSystemAsync(int systemId)
+        {
+            var summaries = _playerRoot.Colony
+                .Where(c => c.SystemId == systemId)
+                .Select(c => new ColonySummary
+                {
+                    ColonyName = c.ColonyName ?? string.Empty,
+                    Size = c.ColonySize,
+                    PlanetName = c.PlanetName ?? string.Empty,
+                })
+                .ToList();
+            IReadOnlyList<ColonySummary> result = summaries;
+            return Task.FromResult(result);
+        }
 
         /// <inheritdoc/>
-        public Task<ApiToken> FindTokenByHashAsync(string tokenHash) => throw new NotSupportedException(NotSupportedMessage);
+        public Task<ApiToken> FindTokenByHashAsync(string tokenHash)
+        {
+            var result = _serverStore.Tokens.FirstOrDefault(t => t.TokenHash == tokenHash);
+            return Task.FromResult(result);
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<ApiToken>> GetAllTokensAsync() => throw new NotSupportedException(NotSupportedMessage);
+        public Task<IReadOnlyList<ApiToken>> GetAllTokensAsync()
+        {
+            IReadOnlyList<ApiToken> result = _serverStore.Tokens.ToList();
+            return Task.FromResult(result);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertTokenAsync(ApiToken token) => throw new NotSupportedException(NotSupportedMessage);
+        public Task UpsertTokenAsync(ApiToken token)
+        {
+            _serverStore.Tokens.RemoveAll(t => t.Id == token.Id);
+            _serverStore.Tokens.Add(token);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteTokenAsync(string id) => throw new NotSupportedException(NotSupportedMessage);
+        public Task DeleteTokenAsync(string id)
+        {
+            _serverStore.Tokens.RemoveAll(t => t.Id == id);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<MembershipAction>> GetFactionActionsAsync(string factionUUID) => throw new NotSupportedException(NotSupportedMessage);
+        public Task<IReadOnlyList<MembershipAction>> GetFactionActionsAsync(string factionUUID)
+        {
+            var results = _serverStore.MembershipActions
+                .Where(a => a.FactionUUID == factionUUID)
+                .ToList();
+            IReadOnlyList<MembershipAction> result = results;
+            return Task.FromResult(result);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertMembershipActionAsync(MembershipAction action) => throw new NotSupportedException(NotSupportedMessage);
+        public Task UpsertMembershipActionAsync(MembershipAction action)
+        {
+            _serverStore.MembershipActions.RemoveAll(a => a.Id == action.Id);
+            _serverStore.MembershipActions.Add(action);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteMembershipActionAsync(string id) => throw new NotSupportedException(NotSupportedMessage);
+        public Task DeleteMembershipActionAsync(string id)
+        {
+            _serverStore.MembershipActions.RemoveAll(a => a.Id == id);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteExpiredActionsAsync(DateTime cutoff) => throw new NotSupportedException(NotSupportedMessage);
+        public Task DeleteExpiredActionsAsync(DateTime cutoff)
+        {
+            _serverStore.MembershipActions.RemoveAll(a => a.ExpiresUtc <= cutoff);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<SharingRule>> GetSharingRulesForCharacterAsync(string characterUUID) => throw new NotSupportedException(NotSupportedMessage);
+        public Task<IReadOnlyList<SharingRule>> GetSharingRulesForCharacterAsync(string characterUUID)
+        {
+            if (!_serverStore.SharingRules.TryGetValue(characterUUID, out var rules))
+            {
+                rules = new List<SharingRule>();
+            }
+
+            IReadOnlyList<SharingRule> result = rules.ToList();
+            return Task.FromResult(result);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertSharingRulesAsync(string characterUUID, IReadOnlyList<SharingRule> rules) => throw new NotSupportedException(NotSupportedMessage);
+        public Task UpsertSharingRulesAsync(string characterUUID, IReadOnlyList<SharingRule> rules)
+        {
+            _serverStore.SharingRules[characterUUID] = rules.ToList();
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task<CharacterPreferences> GetCharacterPreferencesAsync(string characterUUID) => throw new NotSupportedException(NotSupportedMessage);
+        public Task<CharacterPreferences> GetCharacterPreferencesAsync(string characterUUID)
+        {
+            _serverStore.CharacterPreferences.TryGetValue(characterUUID, out var prefs);
+            return Task.FromResult(prefs);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertCharacterPreferencesAsync(CharacterPreferences prefs) => throw new NotSupportedException(NotSupportedMessage);
+        public Task UpsertCharacterPreferencesAsync(CharacterPreferences prefs)
+        {
+            _serverStore.CharacterPreferences[prefs.CharacterUUID] = prefs;
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // Character Discovery
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<IReadOnlyList<string>> GetAllCharacterUUIDsAsync()
@@ -391,9 +535,9 @@ namespace OE2EmpireTracker.Common.Storage
             return Task.FromResult(result);
         }
 
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // Per-Character Entity CRUD
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<IReadOnlyList<Colony>> GetAllColoniesAsync(string characterUUID)
@@ -1428,190 +1572,573 @@ namespace OE2EmpireTracker.Common.Storage
             return Task.CompletedTask;
         }
 
-        // ═══════════════════════════════════════════════════════════
-        // Faction Permission Entities — NotSupported
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        // Faction Permission Entities
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<FactionCapability>> GetFactionCapabilitiesAsync(string factionUUID) => throw new NotSupportedException(NotSupportedMessage);
+        public Task<IReadOnlyList<FactionCapability>> GetFactionCapabilitiesAsync(string factionUUID)
+        {
+            var results = _serverStore.FactionCapabilities
+                .Where(c => c.FactionUUID == factionUUID)
+                .ToList();
+            IReadOnlyList<FactionCapability> result = results;
+            return Task.FromResult(result);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertFactionCapabilityAsync(FactionCapability capability) => throw new NotSupportedException(NotSupportedMessage);
+        public Task UpsertFactionCapabilityAsync(FactionCapability capability)
+        {
+            _serverStore.FactionCapabilities.RemoveAll(c => c.UUID == capability.UUID);
+            _serverStore.FactionCapabilities.Add(capability);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteFactionCapabilityAsync(string factionUUID, string capabilityUUID) => throw new NotSupportedException(NotSupportedMessage);
+        public Task DeleteFactionCapabilityAsync(string factionUUID, string capabilityUUID)
+        {
+            _serverStore.FactionCapabilities.RemoveAll(
+                c => c.FactionUUID == factionUUID && c.UUID == capabilityUUID);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<FactionClearanceLevel>> GetFactionClearanceLevelsAsync(string factionUUID) => throw new NotSupportedException(NotSupportedMessage);
+        public Task<IReadOnlyList<FactionClearanceLevel>> GetFactionClearanceLevelsAsync(string factionUUID)
+        {
+            var results = _serverStore.FactionClearanceLevels
+                .Where(l => l.FactionUUID == factionUUID)
+                .ToList();
+            IReadOnlyList<FactionClearanceLevel> result = results;
+            return Task.FromResult(result);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertFactionClearanceLevelAsync(FactionClearanceLevel level) => throw new NotSupportedException(NotSupportedMessage);
+        public Task UpsertFactionClearanceLevelAsync(FactionClearanceLevel level)
+        {
+            _serverStore.FactionClearanceLevels.RemoveAll(l => l.UUID == level.UUID);
+            _serverStore.FactionClearanceLevels.Add(level);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteFactionClearanceLevelAsync(string factionUUID, string levelUUID) => throw new NotSupportedException(NotSupportedMessage);
+        public Task DeleteFactionClearanceLevelAsync(string factionUUID, string levelUUID)
+        {
+            _serverStore.FactionClearanceLevels.RemoveAll(
+                l => l.FactionUUID == factionUUID && l.UUID == levelUUID);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<FactionPermissionGroup>> GetFactionGroupsAsync(string factionUUID) => throw new NotSupportedException(NotSupportedMessage);
+        public Task<IReadOnlyList<FactionPermissionGroup>> GetFactionGroupsAsync(string factionUUID)
+        {
+            var results = _serverStore.FactionGroups
+                .Where(g => g.FactionUUID == factionUUID)
+                .ToList();
+            IReadOnlyList<FactionPermissionGroup> result = results;
+            return Task.FromResult(result);
+        }
 
         /// <inheritdoc/>
-        public Task<FactionPermissionGroup> GetFactionGroupAsync(string factionUUID, string groupUUID) => throw new NotSupportedException(NotSupportedMessage);
+        public Task<FactionPermissionGroup> GetFactionGroupAsync(string factionUUID, string groupUUID)
+        {
+            var result = _serverStore.FactionGroups
+                .FirstOrDefault(g => g.FactionUUID == factionUUID && g.UUID == groupUUID);
+            return Task.FromResult(result);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertFactionGroupAsync(FactionPermissionGroup group) => throw new NotSupportedException(NotSupportedMessage);
+        public Task UpsertFactionGroupAsync(FactionPermissionGroup group)
+        {
+            _serverStore.FactionGroups.RemoveAll(g => g.UUID == group.UUID);
+            _serverStore.FactionGroups.Add(group);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteFactionGroupAsync(string factionUUID, string groupUUID) => throw new NotSupportedException(NotSupportedMessage);
+        public Task DeleteFactionGroupAsync(string factionUUID, string groupUUID)
+        {
+            _serverStore.FactionGroups.RemoveAll(
+                g => g.FactionUUID == factionUUID && g.UUID == groupUUID);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<FactionGroupCapability>> GetFactionGroupCapabilitiesAsync(string groupUUID) => throw new NotSupportedException(NotSupportedMessage);
+        public Task<IReadOnlyList<FactionGroupCapability>> GetFactionGroupCapabilitiesAsync(string groupUUID)
+        {
+            var results = _serverStore.FactionGroupCapabilities
+                .Where(c => c.GroupUUID == groupUUID)
+                .ToList();
+            IReadOnlyList<FactionGroupCapability> result = results;
+            return Task.FromResult(result);
+        }
 
         /// <inheritdoc/>
-        public Task AddFactionGroupCapabilityAsync(FactionGroupCapability item) => throw new NotSupportedException(NotSupportedMessage);
+        public Task AddFactionGroupCapabilityAsync(FactionGroupCapability item)
+        {
+            _serverStore.FactionGroupCapabilities.RemoveAll(
+                c => c.GroupUUID == item.GroupUUID && c.CapabilityUUID == item.CapabilityUUID);
+            _serverStore.FactionGroupCapabilities.Add(item);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task RemoveFactionGroupCapabilityAsync(string groupUUID, string capabilityUUID) => throw new NotSupportedException(NotSupportedMessage);
+        public Task RemoveFactionGroupCapabilityAsync(string groupUUID, string capabilityUUID)
+        {
+            _serverStore.FactionGroupCapabilities.RemoveAll(
+                c => c.GroupUUID == groupUUID && c.CapabilityUUID == capabilityUUID);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<FactionGroupSharingRule>> GetFactionGroupSharingRulesAsync(string groupUUID) => throw new NotSupportedException(NotSupportedMessage);
+        public Task<IReadOnlyList<FactionGroupSharingRule>> GetFactionGroupSharingRulesAsync(string groupUUID)
+        {
+            var results = _serverStore.FactionGroupSharingRules
+                .Where(r => r.GroupUUID == groupUUID)
+                .ToList();
+            IReadOnlyList<FactionGroupSharingRule> result = results;
+            return Task.FromResult(result);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertFactionGroupSharingRuleAsync(FactionGroupSharingRule rule) => throw new NotSupportedException(NotSupportedMessage);
+        public Task UpsertFactionGroupSharingRuleAsync(FactionGroupSharingRule rule)
+        {
+            _serverStore.FactionGroupSharingRules.RemoveAll(r => r.UUID == rule.UUID);
+            _serverStore.FactionGroupSharingRules.Add(rule);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteFactionGroupSharingRuleAsync(string groupUUID, string ruleUUID) => throw new NotSupportedException(NotSupportedMessage);
+        public Task DeleteFactionGroupSharingRuleAsync(string groupUUID, string ruleUUID)
+        {
+            _serverStore.FactionGroupSharingRules.RemoveAll(
+                r => r.GroupUUID == groupUUID && r.UUID == ruleUUID);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task<FactionMemberPermissions> GetFactionMemberPermissionsAsync(string factionUUID, string characterUUID) => throw new NotSupportedException(NotSupportedMessage);
+        public Task<FactionMemberPermissions> GetFactionMemberPermissionsAsync(string factionUUID, string characterUUID)
+        {
+            var result = _serverStore.FactionMemberPermissions
+                .FirstOrDefault(p => p.FactionUUID == factionUUID && p.CharacterUUID == characterUUID);
+            return Task.FromResult(result);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertFactionMemberPermissionsAsync(FactionMemberPermissions perms) => throw new NotSupportedException(NotSupportedMessage);
+        public Task UpsertFactionMemberPermissionsAsync(FactionMemberPermissions perms)
+        {
+            _serverStore.FactionMemberPermissions.RemoveAll(
+                p => p.FactionUUID == perms.FactionUUID && p.CharacterUUID == perms.CharacterUUID);
+            _serverStore.FactionMemberPermissions.Add(perms);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<FactionMemberPermissions>> GetAllFactionMembersPermissionsAsync(string factionUUID) => throw new NotSupportedException(NotSupportedMessage);
+        public Task<IReadOnlyList<FactionMemberPermissions>> GetAllFactionMembersPermissionsAsync(string factionUUID)
+        {
+            var results = _serverStore.FactionMemberPermissions
+                .Where(p => p.FactionUUID == factionUUID)
+                .ToList();
+            IReadOnlyList<FactionMemberPermissions> result = results;
+            return Task.FromResult(result);
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<FactionMemberCapability>> GetFactionMemberCapabilitiesAsync(string factionUUID, string characterUUID) => throw new NotSupportedException(NotSupportedMessage);
+        public Task<IReadOnlyList<FactionMemberCapability>> GetFactionMemberCapabilitiesAsync(string factionUUID, string characterUUID)
+        {
+            var results = _serverStore.FactionMemberCapabilities
+                .Where(c => c.FactionUUID == factionUUID && c.CharacterUUID == characterUUID)
+                .ToList();
+            IReadOnlyList<FactionMemberCapability> result = results;
+            return Task.FromResult(result);
+        }
 
         /// <inheritdoc/>
-        public Task AddFactionMemberCapabilityAsync(FactionMemberCapability item) => throw new NotSupportedException(NotSupportedMessage);
+        public Task AddFactionMemberCapabilityAsync(FactionMemberCapability item)
+        {
+            _serverStore.FactionMemberCapabilities.RemoveAll(
+                c => c.FactionUUID == item.FactionUUID
+                     && c.CharacterUUID == item.CharacterUUID
+                     && c.CapabilityUUID == item.CapabilityUUID);
+            _serverStore.FactionMemberCapabilities.Add(item);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task RemoveFactionMemberCapabilityAsync(string factionUUID, string characterUUID, string capabilityUUID) => throw new NotSupportedException(NotSupportedMessage);
+        public Task RemoveFactionMemberCapabilityAsync(string factionUUID, string characterUUID, string capabilityUUID)
+        {
+            _serverStore.FactionMemberCapabilities.RemoveAll(
+                c => c.FactionUUID == factionUUID
+                     && c.CharacterUUID == characterUUID
+                     && c.CapabilityUUID == capabilityUUID);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
-        // ═══════════════════════════════════════════════════════════
-        // Character Permission Entities — NotSupported
-        // ═══════════════════════════════════════════════════════════
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<CharacterCapability>> GetCharacterCapabilitiesAsync(string characterUUID) => throw new NotSupportedException(NotSupportedMessage);
-
-        /// <inheritdoc/>
-        public Task UpsertCharacterCapabilityAsync(CharacterCapability capability) => throw new NotSupportedException(NotSupportedMessage);
-
-        /// <inheritdoc/>
-        public Task DeleteCharacterCapabilityAsync(string characterUUID, string capabilityUUID) => throw new NotSupportedException(NotSupportedMessage);
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<CharacterClearanceLevel>> GetCharacterClearanceLevelsAsync(string characterUUID) => throw new NotSupportedException(NotSupportedMessage);
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        // Character Permission Entities
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
-        public Task UpsertCharacterClearanceLevelAsync(CharacterClearanceLevel level) => throw new NotSupportedException(NotSupportedMessage);
+        public Task<IReadOnlyList<CharacterCapability>> GetCharacterCapabilitiesAsync(string characterUUID)
+        {
+            var results = _serverStore.CharacterCapabilities
+                .Where(c => c.OwnerCharacterUUID == characterUUID)
+                .ToList();
+            IReadOnlyList<CharacterCapability> result = results;
+            return Task.FromResult(result);
+        }
 
         /// <inheritdoc/>
-        public Task DeleteCharacterClearanceLevelAsync(string characterUUID, string levelUUID) => throw new NotSupportedException(NotSupportedMessage);
+        public Task UpsertCharacterCapabilityAsync(CharacterCapability capability)
+        {
+            _serverStore.CharacterCapabilities.RemoveAll(c => c.UUID == capability.UUID);
+            _serverStore.CharacterCapabilities.Add(capability);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<CharacterPermissionGroup>> GetCharacterGroupsAsync(string characterUUID) => throw new NotSupportedException(NotSupportedMessage);
+        public Task DeleteCharacterCapabilityAsync(string characterUUID, string capabilityUUID)
+        {
+            _serverStore.CharacterCapabilities.RemoveAll(
+                c => c.OwnerCharacterUUID == characterUUID && c.UUID == capabilityUUID);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task<CharacterPermissionGroup> GetCharacterGroupAsync(string characterUUID, string groupUUID) => throw new NotSupportedException(NotSupportedMessage);
+        public Task<IReadOnlyList<CharacterClearanceLevel>> GetCharacterClearanceLevelsAsync(string characterUUID)
+        {
+            var results = _serverStore.CharacterClearanceLevels
+                .Where(l => l.OwnerCharacterUUID == characterUUID)
+                .ToList();
+            IReadOnlyList<CharacterClearanceLevel> result = results;
+            return Task.FromResult(result);
+        }
 
         /// <inheritdoc/>
-        public Task UpsertCharacterGroupAsync(CharacterPermissionGroup group) => throw new NotSupportedException(NotSupportedMessage);
+        public Task UpsertCharacterClearanceLevelAsync(CharacterClearanceLevel level)
+        {
+            _serverStore.CharacterClearanceLevels.RemoveAll(l => l.UUID == level.UUID);
+            _serverStore.CharacterClearanceLevels.Add(level);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteCharacterGroupAsync(string characterUUID, string groupUUID) => throw new NotSupportedException(NotSupportedMessage);
+        public Task DeleteCharacterClearanceLevelAsync(string characterUUID, string levelUUID)
+        {
+            _serverStore.CharacterClearanceLevels.RemoveAll(
+                l => l.OwnerCharacterUUID == characterUUID && l.UUID == levelUUID);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<CharacterGroupCapability>> GetCharacterGroupCapabilitiesAsync(string groupUUID) => throw new NotSupportedException(NotSupportedMessage);
+        public Task<IReadOnlyList<CharacterPermissionGroup>> GetCharacterGroupsAsync(string characterUUID)
+        {
+            var results = _serverStore.CharacterGroups
+                .Where(g => g.OwnerCharacterUUID == characterUUID)
+                .ToList();
+            IReadOnlyList<CharacterPermissionGroup> result = results;
+            return Task.FromResult(result);
+        }
 
         /// <inheritdoc/>
-        public Task AddCharacterGroupCapabilityAsync(CharacterGroupCapability item) => throw new NotSupportedException(NotSupportedMessage);
+        public Task<CharacterPermissionGroup> GetCharacterGroupAsync(string characterUUID, string groupUUID)
+        {
+            var result = _serverStore.CharacterGroups
+                .FirstOrDefault(g => g.OwnerCharacterUUID == characterUUID && g.UUID == groupUUID);
+            return Task.FromResult(result);
+        }
 
         /// <inheritdoc/>
-        public Task RemoveCharacterGroupCapabilityAsync(string groupUUID, string capabilityUUID) => throw new NotSupportedException(NotSupportedMessage);
+        public Task UpsertCharacterGroupAsync(CharacterPermissionGroup group)
+        {
+            _serverStore.CharacterGroups.RemoveAll(g => g.UUID == group.UUID);
+            _serverStore.CharacterGroups.Add(group);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<CharacterGroupSharingRule>> GetCharacterGroupSharingRulesAsync(string groupUUID) => throw new NotSupportedException(NotSupportedMessage);
+        public Task DeleteCharacterGroupAsync(string characterUUID, string groupUUID)
+        {
+            _serverStore.CharacterGroups.RemoveAll(
+                g => g.OwnerCharacterUUID == characterUUID && g.UUID == groupUUID);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertCharacterGroupSharingRuleAsync(CharacterGroupSharingRule rule) => throw new NotSupportedException(NotSupportedMessage);
+        public Task<IReadOnlyList<CharacterGroupCapability>> GetCharacterGroupCapabilitiesAsync(string groupUUID)
+        {
+            var results = _serverStore.CharacterGroupCapabilities
+                .Where(c => c.GroupUUID == groupUUID)
+                .ToList();
+            IReadOnlyList<CharacterGroupCapability> result = results;
+            return Task.FromResult(result);
+        }
 
         /// <inheritdoc/>
-        public Task DeleteCharacterGroupSharingRuleAsync(string groupUUID, string ruleUUID) => throw new NotSupportedException(NotSupportedMessage);
+        public Task AddCharacterGroupCapabilityAsync(CharacterGroupCapability item)
+        {
+            _serverStore.CharacterGroupCapabilities.RemoveAll(
+                c => c.GroupUUID == item.GroupUUID && c.CapabilityUUID == item.CapabilityUUID);
+            _serverStore.CharacterGroupCapabilities.Add(item);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<CharacterGranteePermissions>> GetCharacterGranteesAsync(string ownerCharacterUUID) => throw new NotSupportedException(NotSupportedMessage);
+        public Task RemoveCharacterGroupCapabilityAsync(string groupUUID, string capabilityUUID)
+        {
+            _serverStore.CharacterGroupCapabilities.RemoveAll(
+                c => c.GroupUUID == groupUUID && c.CapabilityUUID == capabilityUUID);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertCharacterGranteePermissionsAsync(CharacterGranteePermissions perms) => throw new NotSupportedException(NotSupportedMessage);
+        public Task<IReadOnlyList<CharacterGroupSharingRule>> GetCharacterGroupSharingRulesAsync(string groupUUID)
+        {
+            var results = _serverStore.CharacterGroupSharingRules
+                .Where(r => r.GroupUUID == groupUUID)
+                .ToList();
+            IReadOnlyList<CharacterGroupSharingRule> result = results;
+            return Task.FromResult(result);
+        }
 
         /// <inheritdoc/>
-        public Task DeleteCharacterGranteePermissionsAsync(string ownerCharacterUUID, string granteeUUID) => throw new NotSupportedException(NotSupportedMessage);
+        public Task UpsertCharacterGroupSharingRuleAsync(CharacterGroupSharingRule rule)
+        {
+            _serverStore.CharacterGroupSharingRules.RemoveAll(r => r.UUID == rule.UUID);
+            _serverStore.CharacterGroupSharingRules.Add(rule);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<CharacterGranteeCapability>> GetCharacterGranteeCapabilitiesAsync(string ownerCharacterUUID, string granteeUUID) => throw new NotSupportedException(NotSupportedMessage);
+        public Task DeleteCharacterGroupSharingRuleAsync(string groupUUID, string ruleUUID)
+        {
+            _serverStore.CharacterGroupSharingRules.RemoveAll(
+                r => r.GroupUUID == groupUUID && r.UUID == ruleUUID);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task AddCharacterGranteeCapabilityAsync(CharacterGranteeCapability item) => throw new NotSupportedException(NotSupportedMessage);
+        public Task<IReadOnlyList<CharacterGranteePermissions>> GetCharacterGranteesAsync(string ownerCharacterUUID)
+        {
+            var results = _serverStore.CharacterGranteePermissions
+                .Where(p => p.OwnerCharacterUUID == ownerCharacterUUID)
+                .ToList();
+            IReadOnlyList<CharacterGranteePermissions> result = results;
+            return Task.FromResult(result);
+        }
 
         /// <inheritdoc/>
-        public Task RemoveCharacterGranteeCapabilityAsync(string ownerCharacterUUID, string granteeUUID, string capabilityUUID) => throw new NotSupportedException(NotSupportedMessage);
-
-        // ═══════════════════════════════════════════════════════════
-        // Intel — NotSupported
-        // ═══════════════════════════════════════════════════════════
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<IntelComment>> GetIntelCommentsForTargetAsync(string targetCharacterUUID) => throw new NotSupportedException(NotSupportedMessage);
-
-        /// <inheritdoc/>
-        public Task<IntelComment> GetIntelCommentAsync(string commentUUID) => throw new NotSupportedException(NotSupportedMessage);
+        public Task UpsertCharacterGranteePermissionsAsync(CharacterGranteePermissions perms)
+        {
+            _serverStore.CharacterGranteePermissions.RemoveAll(
+                p => p.OwnerCharacterUUID == perms.OwnerCharacterUUID
+                     && p.GranteeUUID == perms.GranteeUUID);
+            _serverStore.CharacterGranteePermissions.Add(perms);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task UpsertIntelCommentAsync(IntelComment comment) => throw new NotSupportedException(NotSupportedMessage);
+        public Task DeleteCharacterGranteePermissionsAsync(string ownerCharacterUUID, string granteeUUID)
+        {
+            _serverStore.CharacterGranteePermissions.RemoveAll(
+                p => p.OwnerCharacterUUID == ownerCharacterUUID && p.GranteeUUID == granteeUUID);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteIntelCommentAsync(string commentUUID) => throw new NotSupportedException(NotSupportedMessage);
+        public Task<IReadOnlyList<CharacterGranteeCapability>> GetCharacterGranteeCapabilitiesAsync(string ownerCharacterUUID, string granteeUUID)
+        {
+            var results = _serverStore.CharacterGranteeCapabilities
+                .Where(c => c.OwnerCharacterUUID == ownerCharacterUUID && c.GranteeUUID == granteeUUID)
+                .ToList();
+            IReadOnlyList<CharacterGranteeCapability> result = results;
+            return Task.FromResult(result);
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<IntelCommentFactionShare>> GetIntelSharesForCommentAsync(string commentUUID) => throw new NotSupportedException(NotSupportedMessage);
+        public Task AddCharacterGranteeCapabilityAsync(CharacterGranteeCapability item)
+        {
+            _serverStore.CharacterGranteeCapabilities.RemoveAll(
+                c => c.OwnerCharacterUUID == item.OwnerCharacterUUID
+                     && c.GranteeUUID == item.GranteeUUID
+                     && c.CapabilityUUID == item.CapabilityUUID);
+            _serverStore.CharacterGranteeCapabilities.Add(item);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<IntelCommentFactionShare>> GetIntelSharesForFactionAsync(string factionUUID) => throw new NotSupportedException(NotSupportedMessage);
+        public Task RemoveCharacterGranteeCapabilityAsync(string ownerCharacterUUID, string granteeUUID, string capabilityUUID)
+        {
+            _serverStore.CharacterGranteeCapabilities.RemoveAll(
+                c => c.OwnerCharacterUUID == ownerCharacterUUID
+                     && c.GranteeUUID == granteeUUID
+                     && c.CapabilityUUID == capabilityUUID);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
+
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        // Intel
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
-        public Task UpsertIntelShareAsync(IntelCommentFactionShare share) => throw new NotSupportedException(NotSupportedMessage);
+        public Task<IReadOnlyList<IntelComment>> GetIntelCommentsForTargetAsync(string targetCharacterUUID)
+        {
+            var results = _serverStore.IntelComments
+                .Where(c => c.TargetCharacterUUID == targetCharacterUUID)
+                .ToList();
+            IReadOnlyList<IntelComment> result = results;
+            return Task.FromResult(result);
+        }
 
         /// <inheritdoc/>
-        public Task DeleteIntelShareAsync(string shareUUID) => throw new NotSupportedException(NotSupportedMessage);
-
-        // ═══════════════════════════════════════════════════════════
-        // Audit — NotSupported
-        // ═══════════════════════════════════════════════════════════
-
-        /// <inheritdoc/>
-        public Task<IReadOnlyList<PermissionAuditEntry>> GetPermissionAuditEntriesAsync(DateTime? startDate = null, DateTime? endDate = null, PermissionActionType? actionType = null, string actorUUID = null, string targetUUID = null) => throw new NotSupportedException(NotSupportedMessage);
+        public Task<IntelComment> GetIntelCommentAsync(string commentUUID)
+        {
+            var result = _serverStore.IntelComments.FirstOrDefault(c => c.UUID == commentUUID);
+            return Task.FromResult(result);
+        }
 
         /// <inheritdoc/>
-        public Task AppendPermissionAuditEntryAsync(PermissionAuditEntry entry) => throw new NotSupportedException(NotSupportedMessage);
+        public Task UpsertIntelCommentAsync(IntelComment comment)
+        {
+            _serverStore.IntelComments.RemoveAll(c => c.UUID == comment.UUID);
+            _serverStore.IntelComments.Add(comment);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
         /// <inheritdoc/>
-        public Task DeleteExpiredAuditEntriesAsync(DateTime cutoff) => throw new NotSupportedException(NotSupportedMessage);
+        public Task DeleteIntelCommentAsync(string commentUUID)
+        {
+            _serverStore.IntelComments.RemoveAll(c => c.UUID == commentUUID);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
 
-        // ═══════════════════════════════════════════════════════════
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<IntelCommentFactionShare>> GetIntelSharesForCommentAsync(string commentUUID)
+        {
+            var results = _serverStore.IntelShares
+                .Where(s => s.IntelCommentUUID == commentUUID)
+                .ToList();
+            IReadOnlyList<IntelCommentFactionShare> result = results;
+            return Task.FromResult(result);
+        }
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<IntelCommentFactionShare>> GetIntelSharesForFactionAsync(string factionUUID)
+        {
+            var results = _serverStore.IntelShares
+                .Where(s => s.FactionUUID == factionUUID)
+                .ToList();
+            IReadOnlyList<IntelCommentFactionShare> result = results;
+            return Task.FromResult(result);
+        }
+
+        /// <inheritdoc/>
+        public Task UpsertIntelShareAsync(IntelCommentFactionShare share)
+        {
+            _serverStore.IntelShares.RemoveAll(s => s.UUID == share.UUID);
+            _serverStore.IntelShares.Add(share);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task DeleteIntelShareAsync(string shareUUID)
+        {
+            _serverStore.IntelShares.RemoveAll(s => s.UUID == shareUUID);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
+
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        // Audit
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<PermissionAuditEntry>> GetPermissionAuditEntriesAsync(
+            DateTime? startDate = null,
+            DateTime? endDate = null,
+            PermissionActionType? actionType = null,
+            string actorUUID = null,
+            string targetUUID = null)
+        {
+            IEnumerable<PermissionAuditEntry> query = _serverStore.AuditEntries;
+
+            if (startDate.HasValue)
+            {
+                query = query.Where(e => e.Timestamp >= startDate.Value);
+            }
+
+            if (endDate.HasValue)
+            {
+                query = query.Where(e => e.Timestamp <= endDate.Value);
+            }
+
+            if (actionType.HasValue)
+            {
+                query = query.Where(e => e.ActionType == actionType.Value);
+            }
+
+            if (!string.IsNullOrEmpty(actorUUID))
+            {
+                query = query.Where(e => e.ActorCharacterUUID == actorUUID);
+            }
+
+            if (!string.IsNullOrEmpty(targetUUID))
+            {
+                query = query.Where(e => e.TargetCharacterUUID == targetUUID);
+            }
+
+            IReadOnlyList<PermissionAuditEntry> result = query.ToList();
+            return Task.FromResult(result);
+        }
+
+        /// <inheritdoc/>
+        public Task AppendPermissionAuditEntryAsync(PermissionAuditEntry entry)
+        {
+            _serverStore.AuditEntries.Add(entry);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public Task DeleteExpiredAuditEntriesAsync(DateTime cutoff)
+        {
+            _serverStore.AuditEntries.RemoveAll(e => e.Timestamp < cutoff);
+            SaveServerData();
+            return Task.CompletedTask;
+        }
+
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // Baseline / Global Lookup Data
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<BaselineGameConstants> GetBaselineGameConstantsAsync()
@@ -1732,9 +2259,9 @@ namespace OE2EmpireTracker.Common.Storage
             return Task.CompletedTask;
         }
 
-        // ═══════════════════════════════════════════════════════════
-        // Private Helpers — Load / Save
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        // Private Helpers â€” Load / Save
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         private T LoadRoot<T>(string filePath)
             where T : new()
@@ -1787,6 +2314,16 @@ namespace OE2EmpireTracker.Common.Storage
                 string json = JsonConvert.SerializeObject(sorted, JsonSettings.SerializerSettings);
                 SafeFileWriter.WriteAllText(_baselineDataPath, json);
                 Log.Debug("Baseline data saved to {0}", _baselineDataPath);
+            }
+        }
+
+        private void SaveServerData()
+        {
+            lock (_writeLock)
+            {
+                string json = JsonConvert.SerializeObject(_serverStore, JsonSettings.SerializerSettings);
+                SafeFileWriter.WriteAllText(_serverDataPath, json);
+                Log.Debug("Server data saved to {0}", _serverDataPath);
             }
         }
     }
