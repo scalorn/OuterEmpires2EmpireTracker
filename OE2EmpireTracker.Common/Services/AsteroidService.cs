@@ -45,6 +45,7 @@ namespace OE2EmpireTracker.Services
             asteroid.SystemName = request.SystemName ?? string.Empty;
             asteroid.Reserves = DeepCopyReserves(request.Reserves);
 
+            _playerContext.MarkDirty<Asteroid>(uuid);
             _playerContext.WriteContext();
             _playerContext.OnAsteroidDataChanged(uuid);
             return new ReadOnlyAsteroid(asteroid);
@@ -67,6 +68,7 @@ namespace OE2EmpireTracker.Services
             Log.Info("AsteroidService.Create: name='{0}' UUID={1}", asteroid.Name, asteroid.UUID);
 
             _playerContext.AddAsteroid(asteroid);
+            _playerContext.MarkDirty<Asteroid>(asteroid.UUID);
             _playerContext.WriteContext();
             _playerContext.OnAsteroidDataChanged(asteroid.UUID);
             return new ReadOnlyAsteroid(asteroid);
@@ -89,6 +91,7 @@ namespace OE2EmpireTracker.Services
             Log.Info("AsteroidService.Delete: UUID={0} name='{1}'", uuid, asteroid.Name);
 
             _playerContext.RemoveAsteroid(asteroid);
+            _playerContext.MarkDeleted<Asteroid>(uuid);
             _playerContext.WriteContext();
             _playerContext.OnAsteroidDataChanged(uuid);
         }

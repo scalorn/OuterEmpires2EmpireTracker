@@ -52,6 +52,7 @@ namespace OE2EmpireTracker.Services
             route.Stops = DeepCopyStops(request.Stops);
             RenumberStops(route.Stops);
 
+            _playerContext.MarkDirty<DeliveryRoute>(route.UUID);
             _playerContext.WriteContext();
             _playerContext.OnDeliveryDataChanged();
             return new ReadOnlyDeliveryRoute(route);
@@ -80,6 +81,7 @@ namespace OE2EmpireTracker.Services
                 route.UUID);
 
             _playerContext.AddDeliveryRoute(route);
+            _playerContext.MarkDirty<DeliveryRoute>(route.UUID);
             _playerContext.WriteContext();
             _playerContext.OnDeliveryDataChanged();
             return new ReadOnlyDeliveryRoute(route);
@@ -104,6 +106,7 @@ namespace OE2EmpireTracker.Services
             Log.Info("DeliveryRouteService.Delete: UUID={0} name='{1}'", uuid, route.Name);
 
             _playerContext.RemoveDeliveryRoute(route);
+            _playerContext.MarkDeleted<DeliveryRoute>(uuid);
             _playerContext.WriteContext();
             _playerContext.OnDeliveryDataChanged();
         }

@@ -53,6 +53,7 @@ namespace OE2EmpireTracker.Services
             plan.IsActive = request.IsActive;
             plan.Items = DeepCopyItems(request.Items);
 
+            _playerContext.MarkDirty<BuildPlan>(plan.UUID);
             _playerContext.WriteContext();
             _playerContext.OnBuildPlanDataChanged(uuid);
             return new ReadOnlyBuildPlan(plan);
@@ -82,6 +83,7 @@ namespace OE2EmpireTracker.Services
                 plan.UUID);
 
             _playerContext.AddBuildPlan(plan);
+            _playerContext.MarkDirty<BuildPlan>(plan.UUID);
             _playerContext.WriteContext();
             _playerContext.OnBuildPlanDataChanged(plan.UUID);
             return new ReadOnlyBuildPlan(plan);
@@ -106,6 +108,7 @@ namespace OE2EmpireTracker.Services
             Log.Info("BuildPlanMutationService.Delete: UUID={0} name='{1}'", uuid, plan.Name);
 
             _playerContext.RemoveBuildPlan(plan);
+            _playerContext.MarkDeleted<BuildPlan>(uuid);
             _playerContext.WriteContext();
             _playerContext.OnBuildPlanDataChanged(uuid);
         }

@@ -64,6 +64,7 @@ namespace OE2EmpireTracker.Services
 
             station.MunitionsHold = DeepCopyItemBag(request.MunitionsHold);
 
+            _playerContext.MarkDirty<Station>(station.UUID);
             _playerContext.WriteContext();
             _playerContext.OnStationDataChanged();
             return new ReadOnlyStation(station);
@@ -85,6 +86,7 @@ namespace OE2EmpireTracker.Services
             Log.Info("StationService.Create: name='{0}' UUID={1}", station.Name, station.UUID);
 
             _playerContext.AddStation(station);
+            _playerContext.MarkDirty<Station>(station.UUID);
             _playerContext.WriteContext();
             _playerContext.OnStationDataChanged();
             return new ReadOnlyStation(station);
@@ -107,6 +109,7 @@ namespace OE2EmpireTracker.Services
             Log.Info("StationService.Delete: UUID={0} name='{1}'", uuid, station.Name);
 
             _playerContext.RemoveStation(station);
+            _playerContext.MarkDeleted<Station>(uuid);
             _playerContext.WriteContext();
             _playerContext.OnStationDataChanged();
         }

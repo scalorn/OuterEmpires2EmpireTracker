@@ -52,6 +52,7 @@ namespace OE2EmpireTracker.Services
             template.HullBlueprintUUID = request.HullBlueprintUUID;
             template.Components = DeepCopyComponents(request.Components);
 
+            _playerContext.MarkDirty<ShipTemplate>(template.UUID);
             _playerContext.WriteContext();
             _playerContext.OnShipTemplateDataChanged(uuid);
             return new ReadOnlyShipTemplate(template);
@@ -80,6 +81,7 @@ namespace OE2EmpireTracker.Services
                 template.UUID);
 
             _playerContext.AddShipTemplate(template);
+            _playerContext.MarkDirty<ShipTemplate>(template.UUID);
             _playerContext.WriteContext();
             _playerContext.OnShipTemplateDataChanged(template.UUID);
             return new ReadOnlyShipTemplate(template);
@@ -104,6 +106,7 @@ namespace OE2EmpireTracker.Services
             Log.Info("ShipTemplateService.Delete: UUID={0} name='{1}'", uuid, template.Name);
 
             _playerContext.RemoveShipTemplate(template);
+            _playerContext.MarkDeleted<ShipTemplate>(uuid);
             _playerContext.WriteContext();
             _playerContext.OnShipTemplateDataChanged(uuid);
         }

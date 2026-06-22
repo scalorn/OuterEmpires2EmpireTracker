@@ -59,6 +59,7 @@ namespace OE2EmpireTracker.Services
             ship.Cargo = DeepCopyItemBag(request.Cargo);
             ship.Hopper = DeepCopyItemBag(request.Hopper);
 
+            _playerContext.MarkDirty<Ship>(ship.UUID);
             _playerContext.WriteContext();
             _playerContext.OnShipDataChanged(uuid);
             return new ReadOnlyShip(ship);
@@ -80,6 +81,7 @@ namespace OE2EmpireTracker.Services
             Log.Info("ShipService.Create: name='{0}' UUID={1}", ship.Name, ship.UUID);
 
             _playerContext.AddShip(ship);
+            _playerContext.MarkDirty<Ship>(ship.UUID);
             _playerContext.WriteContext();
             _playerContext.OnShipDataChanged(ship.UUID);
             return new ReadOnlyShip(ship);
@@ -102,6 +104,7 @@ namespace OE2EmpireTracker.Services
             Log.Info("ShipService.Delete: UUID={0} name='{1}'", uuid, ship.Name);
 
             _playerContext.RemoveShip(ship);
+            _playerContext.MarkDeleted<Ship>(uuid);
             _playerContext.WriteContext();
             _playerContext.OnShipDataChanged(uuid);
         }
@@ -131,6 +134,7 @@ namespace OE2EmpireTracker.Services
             Log.Info("ShipService.CreateFromTemplate: name='{0}' UUID={1} template={2}", ship.Name, ship.UUID, templateUUID);
 
             _playerContext.AddShip(ship);
+            _playerContext.MarkDirty<Ship>(ship.UUID);
             _playerContext.WriteContext();
             _playerContext.OnShipDataChanged(ship.UUID);
             return new ReadOnlyShip(ship);

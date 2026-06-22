@@ -53,6 +53,7 @@ namespace OE2EmpireTracker.Services
             chain.Stages = DeepCopyStages(request.Stages);
             RenumberStages(chain.Stages);
 
+            _playerContext.MarkDirty<SupplyChain>(chain.UUID);
             _playerContext.WriteContext();
             _playerContext.OnSupplyChainDataChanged(uuid);
             return new ReadOnlySupplyChain(chain);
@@ -82,6 +83,7 @@ namespace OE2EmpireTracker.Services
                 chain.UUID);
 
             _playerContext.AddSupplyChain(chain);
+            _playerContext.MarkDirty<SupplyChain>(chain.UUID);
             _playerContext.WriteContext();
             _playerContext.OnSupplyChainDataChanged(chain.UUID);
             return new ReadOnlySupplyChain(chain);
@@ -106,6 +108,7 @@ namespace OE2EmpireTracker.Services
             Log.Info("SupplyChainMutationService.Delete: UUID={0} name='{1}'", uuid, chain.Name);
 
             _playerContext.RemoveSupplyChain(chain);
+            _playerContext.MarkDeleted<SupplyChain>(uuid);
             _playerContext.WriteContext();
             _playerContext.OnSupplyChainDataChanged(uuid);
         }

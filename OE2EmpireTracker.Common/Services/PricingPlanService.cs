@@ -41,6 +41,7 @@ namespace OE2EmpireTracker.Services
             plan.HourlyCostRate = request.HourlyCostRate;
             plan.ResourcePrices = new Dictionary<string, decimal>(request.ResourcePrices);
 
+            _playerContext.MarkDirty<PricingPlan>(plan.UUID);
             _playerContext.WriteContext();
             _playerContext.OnPricingDataChanged();
             return new ReadOnlyPricingPlan(plan);
@@ -67,6 +68,7 @@ namespace OE2EmpireTracker.Services
                 plan.Name, plan.UUID);
 
             _playerContext.AddPricingPlan(plan);
+            _playerContext.MarkDirty<PricingPlan>(plan.UUID);
             _playerContext.WriteContext();
             _playerContext.OnPricingDataChanged();
             return new ReadOnlyPricingPlan(plan);
@@ -85,6 +87,7 @@ namespace OE2EmpireTracker.Services
             Log.Info("PricingPlanService.Delete: UUID={0} name='{1}'", uuid, plan.Name);
 
             _playerContext.RemovePricingPlan(plan);
+            _playerContext.MarkDeleted<PricingPlan>(uuid);
             _playerContext.WriteContext();
             _playerContext.OnPricingDataChanged();
         }

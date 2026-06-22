@@ -54,6 +54,7 @@ namespace OE2EmpireTracker.Services
 
             _playerContext.AddMarketListing(listing);
             _playerContext.InvalidateMarketListingCache();
+            _playerContext.MarkDirty<MarketListing>(listing.UUID);
             _playerContext.WriteContext();
             _playerContext.OnMarketDataChanged();
             return new ReadOnlyMarketListing(listing);
@@ -98,6 +99,7 @@ namespace OE2EmpireTracker.Services
             listing.MaxRepairPercent = request.MaxRepairPercent;
 
             _playerContext.InvalidateMarketListingCache();
+            _playerContext.MarkDirty<MarketListing>(listing.UUID);
             _playerContext.WriteContext();
             _playerContext.OnMarketDataChanged();
             return new ReadOnlyMarketListing(listing);
@@ -126,6 +128,7 @@ namespace OE2EmpireTracker.Services
 
             _playerContext.RemoveMarketListing(listing);
             _playerContext.InvalidateMarketListingCache();
+            _playerContext.MarkDeleted<MarketListing>(uuid);
             _playerContext.WriteContext();
             _playerContext.OnMarketDataChanged();
         }
@@ -176,6 +179,7 @@ namespace OE2EmpireTracker.Services
 
             _playerContext.AddMarketTransaction(transaction);
             _playerContext.InvalidateMarketListingCache();
+            _playerContext.MarkDirty<MarketListing>(listing.UUID);
             _playerContext.WriteContext();
             _playerContext.OnMarketDataChanged();
             return transaction;

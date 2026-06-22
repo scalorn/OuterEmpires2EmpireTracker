@@ -121,6 +121,7 @@ namespace OE2EmpireTracker.Services
                     };
 
                     playerContext.AddBankingTransaction(bankingTx);
+                    playerContext.MarkDirty<Models.BankingTransaction>(bankingTx.UUID);
                     existingKeys.Add(compositeKey);
                     result.TransactionsImported++;
                 }
@@ -242,6 +243,7 @@ namespace OE2EmpireTracker.Services
             }
 
             playerContext.AddBankingTransaction(transaction);
+            playerContext.MarkDirty<Models.BankingTransaction>(transaction.UUID);
             playerContext.WriteContext();
             playerContext.OnBankingDataChanged();
         }

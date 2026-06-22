@@ -56,6 +56,7 @@ namespace OE2EmpireTracker.Services
             plan.ReplenishmentBuildPlanUUID = request.ReplenishmentBuildPlanUUID;
             plan.Targets = DeepCopyTargets(request.Targets);
 
+            _playerContext.MarkDirty<StockPlan>(plan.UUID);
             _playerContext.WriteContext();
             _playerContext.OnStockDataChanged(uuid);
             return new ReadOnlyStockPlan(plan);
@@ -85,6 +86,7 @@ namespace OE2EmpireTracker.Services
                 plan.UUID);
 
             _playerContext.AddStockPlan(plan);
+            _playerContext.MarkDirty<StockPlan>(plan.UUID);
             _playerContext.WriteContext();
             _playerContext.OnStockDataChanged(plan.UUID);
             return new ReadOnlyStockPlan(plan);
@@ -109,6 +111,7 @@ namespace OE2EmpireTracker.Services
             Log.Info("StockTargetMutationService.DeletePlan: UUID={0} name='{1}'", uuid, plan.Name);
 
             _playerContext.RemoveStockPlan(plan);
+            _playerContext.MarkDeleted<StockPlan>(uuid);
             _playerContext.WriteContext();
             _playerContext.OnStockDataChanged(uuid);
         }
@@ -147,6 +150,7 @@ namespace OE2EmpireTracker.Services
             profile.IsActive = request.IsActive;
             profile.Entries = DeepCopyEntries(request.Entries);
 
+            _playerContext.MarkDirty<StockProfile>(profile.UUID);
             _playerContext.WriteContext();
             _playerContext.OnStockDataChanged(uuid);
             return new ReadOnlyStockProfile(profile);
@@ -175,6 +179,7 @@ namespace OE2EmpireTracker.Services
                 profile.UUID);
 
             _playerContext.AddStockProfile(profile);
+            _playerContext.MarkDirty<StockProfile>(profile.UUID);
             _playerContext.WriteContext();
             _playerContext.OnStockDataChanged(profile.UUID);
             return new ReadOnlyStockProfile(profile);
@@ -199,6 +204,7 @@ namespace OE2EmpireTracker.Services
             Log.Info("StockTargetMutationService.DeleteProfile: UUID={0} name='{1}'", uuid, profile.Name);
 
             _playerContext.RemoveStockProfile(profile);
+            _playerContext.MarkDeleted<StockProfile>(uuid);
             _playerContext.WriteContext();
             _playerContext.OnStockDataChanged(uuid);
         }

@@ -43,6 +43,7 @@ namespace OE2EmpireTracker.Services
                 plan.UUID);
 
             _playerContext.AddDeliveryPlan(plan);
+            _playerContext.MarkDirty<DeliveryPlan>(plan.UUID);
             _playerContext.WriteContext();
             _playerContext.OnDeliveryDataChanged();
             return new ReadOnlyDeliveryPlan(plan);
@@ -67,6 +68,7 @@ namespace OE2EmpireTracker.Services
             Log.Info("DeliveryPlanService.Delete: UUID={0} name='{1}'", uuid, plan.Name);
 
             _playerContext.RemoveDeliveryPlan(plan);
+            _playerContext.MarkDeleted<DeliveryPlan>(uuid);
             _playerContext.WriteContext();
             _playerContext.OnDeliveryDataChanged();
         }
@@ -97,6 +99,7 @@ namespace OE2EmpireTracker.Services
             plan.Name = request.Name ?? string.Empty;
             plan.Stops = DeepCopyStops(request.Stops);
 
+            _playerContext.MarkDirty<DeliveryPlan>(plan.UUID);
             _playerContext.WriteContext();
             _playerContext.OnDeliveryDataChanged();
             return new ReadOnlyDeliveryPlan(plan);
@@ -135,6 +138,7 @@ namespace OE2EmpireTracker.Services
                 itemInfo.Name,
                 itemInfo.Quantity);
 
+            _playerContext.MarkDirty<DeliveryPlan>(plan.UUID);
             _playerContext.WriteContext();
             _playerContext.OnDeliveryDataChanged();
             return new ReadOnlyDeliveryPlan(plan);
@@ -169,6 +173,7 @@ namespace OE2EmpireTracker.Services
                 itemInfo.Name,
                 itemInfo.Quantity);
 
+            _playerContext.MarkDirty<DeliveryPlan>(plan.UUID);
             _playerContext.WriteContext();
             _playerContext.OnDeliveryDataChanged();
             return new ReadOnlyDeliveryPlan(plan);
@@ -203,6 +208,7 @@ namespace OE2EmpireTracker.Services
                 plan.Name,
                 destInfo?.DestinationUUID);
 
+            _playerContext.MarkDirty<DeliveryPlan>(plan.UUID);
             _playerContext.WriteContext();
             _playerContext.OnDeliveryDataChanged();
             return new ReadOnlyDeliveryPlan(plan);
@@ -237,6 +243,7 @@ namespace OE2EmpireTracker.Services
                 plan.Name,
                 destInfo?.DestinationUUID);
 
+            _playerContext.MarkDirty<DeliveryPlan>(plan.UUID);
             _playerContext.WriteContext();
             _playerContext.OnDeliveryDataChanged();
             return new ReadOnlyDeliveryPlan(plan);
@@ -308,6 +315,7 @@ namespace OE2EmpireTracker.Services
                 Log.Info("DeliveryPlanService: plan '{0}' auto-completed (all items delivered)", plan.Name);
             }
 
+            _playerContext.MarkDirty<DeliveryPlan>(plan.UUID);
             _playerContext.WriteContext();
             _playerContext.CascadeResourceCheckDirty = true;
             return new ReadOnlyDeliveryPlan(plan);
@@ -338,6 +346,7 @@ namespace OE2EmpireTracker.Services
                 plan.Name,
                 stopSequence);
 
+            _playerContext.MarkDirty<DeliveryPlan>(plan.UUID);
             _playerContext.WriteContext();
             return new ReadOnlyDeliveryPlan(plan);
         }
@@ -357,6 +366,7 @@ namespace OE2EmpireTracker.Services
 
             Log.Info("DeliveryPlanService.MarkPlanComplete: plan='{0}'", plan.Name);
 
+            _playerContext.MarkDirty<DeliveryPlan>(plan.UUID);
             _playerContext.WriteContext();
             _playerContext.OnDeliveryDataChanged();
             return new ReadOnlyDeliveryPlan(plan);
@@ -380,6 +390,7 @@ namespace OE2EmpireTracker.Services
                 plan.Name,
                 shipUUID);
 
+            _playerContext.MarkDirty<DeliveryPlan>(plan.UUID);
             _playerContext.WriteContext();
             return new ReadOnlyDeliveryPlan(plan);
         }
@@ -473,6 +484,7 @@ namespace OE2EmpireTracker.Services
                 }
 
                 _playerContext.AddDeliveryPlan(newPlan);
+                _playerContext.MarkDirty<DeliveryPlan>(newPlan.UUID);
                 newPlans.Add(new ReadOnlyDeliveryPlan(newPlan));
 
                 Log.Info(
@@ -487,6 +499,7 @@ namespace OE2EmpireTracker.Services
                 plan.Name = string.Format("{0} (Trip 1)", plan.Name);
             }
 
+            _playerContext.MarkDirty<DeliveryPlan>(plan.UUID);
             _playerContext.WriteContext();
             _playerContext.OnDeliveryDataChanged();
             return newPlans;
@@ -558,6 +571,7 @@ namespace OE2EmpireTracker.Services
                     plan.Name);
             }
 
+            _playerContext.MarkDirty<DeliveryPlan>(plan.UUID);
             _playerContext.WriteContext();
             return true;
         }

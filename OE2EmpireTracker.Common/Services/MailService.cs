@@ -99,7 +99,13 @@ namespace OE2EmpireTracker.Services
                         if (message != null)
                         {
                             message.LocalRead = false;
+                            if (string.IsNullOrEmpty(message.UUID))
+                            {
+                                message.UUID = Guid.NewGuid().ToString();
+                            }
+
                             playerContext.AddMailMessage(message);
+                            playerContext.MarkDirty<MailMessage>(message.UUID);
                             newCount++;
                         }
                     }
@@ -172,6 +178,7 @@ namespace OE2EmpireTracker.Services
             }
 
             msg.LocalRead = true;
+            playerContext.MarkDirty<MailMessage>(msg.UUID);
             playerContext.WriteContext();
             OnMailDataChanged();
         }

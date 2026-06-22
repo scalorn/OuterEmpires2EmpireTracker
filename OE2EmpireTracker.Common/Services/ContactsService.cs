@@ -43,6 +43,7 @@ namespace OE2EmpireTracker.Services
             faction.Name = request.Name;
             faction.Description = request.Description;
 
+            _playerContext.MarkDirty<Faction>(uuid);
             _playerContext.WriteContext();
             _playerContext.OnContactDataChanged(uuid);
             return new ReadOnlyFaction(faction);
@@ -64,6 +65,7 @@ namespace OE2EmpireTracker.Services
             Log.Info("ContactsService.CreateFaction: name='{0}' UUID={1}", faction.Name, faction.UUID);
 
             _playerContext.AddFaction(faction);
+            _playerContext.MarkDirty<Faction>(faction.UUID);
             _playerContext.WriteContext();
             _playerContext.OnContactDataChanged(faction.UUID);
             return new ReadOnlyFaction(faction);
@@ -86,6 +88,7 @@ namespace OE2EmpireTracker.Services
             Log.Info("ContactsService.DeleteFaction: UUID={0} name='{1}'", uuid, faction.Name);
 
             _playerContext.RemoveFaction(faction);
+            _playerContext.MarkDeleted<Faction>(uuid);
             _playerContext.WriteContext();
             _playerContext.OnContactDataChanged(uuid);
         }
@@ -115,6 +118,7 @@ namespace OE2EmpireTracker.Services
             character.Name = request.Name;
             character.FactionUUID = request.FactionUUID;
 
+            _playerContext.MarkDirty<ExternalCharacter>(uuid);
             _playerContext.WriteContext();
             _playerContext.OnContactDataChanged(uuid);
 
@@ -140,6 +144,7 @@ namespace OE2EmpireTracker.Services
             Log.Info("ContactsService.CreateCharacter: name='{0}' UUID={1}", character.Name, character.UUID);
 
             _playerContext.AddExternalCharacter(character);
+            _playerContext.MarkDirty<ExternalCharacter>(character.UUID);
             _playerContext.WriteContext();
             _playerContext.OnContactDataChanged(character.UUID);
             return new ReadOnlyExternalCharacter(character);
@@ -162,6 +167,7 @@ namespace OE2EmpireTracker.Services
             Log.Info("ContactsService.DeleteCharacter: UUID={0} name='{1}'", uuid, character.Name);
 
             _playerContext.RemoveExternalCharacter(character);
+            _playerContext.MarkDeleted<ExternalCharacter>(uuid);
             _playerContext.WriteContext();
             _playerContext.OnContactDataChanged(uuid);
         }

@@ -261,8 +261,8 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: OE2EmpireTracker.Tests/Services/PlayerContextBackendTests.cs (NEW)_
     - _Verification: PlayerContextBackendTests pass in vstest.console_
 
-- [ ] 8. Dirty entity tracking in service classes (batch 1: Colony, Blueprint, Survey, PlayerProfile)
-  - [-] 8.1 Add MarkDirty/MarkDeleted calls to ColonyService
+- [x] 8. Dirty entity tracking in service classes (batch 1: Colony, Blueprint, Survey, PlayerProfile)
+  - [x] 8.1 Add MarkDirty/MarkDeleted calls to ColonyService
     - ColonyService has 13 public methods (470 lines). Add MarkDirty<Colony> after each mutation.
     - Identify mutations by looking for list Add/Remove and property assignments on colony entities
     - Also wire the new ProcessColonyTick (from task 3.1) if not already calling MarkDirty
@@ -271,7 +271,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/ColonyService.cs (modified)_
     - _Verification: Build succeeds; existing ColonyService tests pass_
 
-  - [-] 8.2 Add MarkDirty/MarkDeleted calls to BlueprintService
+  - [x] 8.2 Add MarkDirty/MarkDeleted calls to BlueprintService
     - BlueprintService has 7 public methods (654 lines). Add MarkDirty<Blueprint> after mutations.
     - Note: some methods operate on batches (e.g., import) — MarkDirty each entity individually
     - _Satisfies: Req 2, Criterion 3_
@@ -279,7 +279,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/BlueprintService.cs (modified)_
     - _Verification: Build succeeds; existing BlueprintService tests pass_
 
-  - [-] 8.3 Add MarkDirty/MarkDeleted calls to SurveyService
+  - [x] 8.3 Add MarkDirty/MarkDeleted calls to SurveyService
     - SurveyService has 4 public methods (160 lines). Simple — add MarkDirty<Survey> after mutations.
     - _Satisfies: Req 2, Criterion 3_
     - _Inputs: Common/Services/SurveyService.cs (160 lines)_
@@ -294,8 +294,8 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Verification: Build succeeds_
 
 
-- [ ] 9. Dirty entity tracking in service classes (batch 2: Delivery, Ship, Station, Market)
-  - [~] 9.1 Add MarkDirty/MarkDeleted calls to DeliveryRouteService and DeliveryPlanService
+- [x] 9. Dirty entity tracking in service classes (batch 2: Delivery, Ship, Station, Market)
+  - [x] 9.1 Add MarkDirty/MarkDeleted calls to DeliveryRouteService and DeliveryPlanService
     - DeliveryRouteService: 3 public methods (121 lines)
     - DeliveryPlanService: 13 public methods (718 lines) — this is a larger service, read carefully
     - _Satisfies: Req 2, Criterion 3_
@@ -303,7 +303,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Both files modified_
     - _Verification: Build succeeds_
 
-  - [~] 9.2 Add MarkDirty/MarkDeleted calls to ShipService and ShipTemplateService
+  - [x] 9.2 Add MarkDirty/MarkDeleted calls to ShipService and ShipTemplateService
     - ShipService: 4 public methods (172 lines)
     - ShipTemplateService: 3 public methods (114 lines)
     - _Satisfies: Req 2, Criterion 3_
@@ -311,7 +311,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Both files modified_
     - _Verification: Build succeeds_
 
-  - [~] 9.3 Add MarkDirty/MarkDeleted calls to StationService and MarketListingService
+  - [x] 9.3 Add MarkDirty/MarkDeleted calls to StationService and MarketListingService
     - StationService: 3 public methods (150 lines)
     - MarketListingService: 4 public methods (161 lines)
     - _Satisfies: Req 2, Criterion 3_
@@ -320,8 +320,8 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Verification: Build succeeds_
 
 
-- [ ] 10. Dirty entity tracking in service classes (batch 3: Pricing, BuildPlan, StockTarget, SupplyChain)
-  - [~] 10.1 Add MarkDirty/MarkDeleted calls to PricingPlanService and BuildPlanMutationService
+- [x] 10. Dirty entity tracking in service classes (batch 3: Pricing, BuildPlan, StockTarget, SupplyChain)
+  - [x] 10.1 Add MarkDirty/MarkDeleted calls to PricingPlanService and BuildPlanMutationService
     - PricingPlanService: 3 public methods (76 lines)
     - BuildPlanMutationService: 3 public methods (132 lines)
     - _Satisfies: Req 2, Criterion 3_
@@ -329,7 +329,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Both files modified_
     - _Verification: Build succeeds_
 
-  - [~] 10.2 Add MarkDirty/MarkDeleted calls to StockTargetMutationService and SupplyChainMutationService
+  - [x] 10.2 Add MarkDirty/MarkDeleted calls to StockTargetMutationService and SupplyChainMutationService
     - StockTargetMutationService: 6 public methods (213 lines)
     - SupplyChainMutationService: 3 public methods (126 lines)
     - _Satisfies: Req 2, Criterion 3_
@@ -337,8 +337,8 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Both files modified_
     - _Verification: Build succeeds_
 
-- [ ] 11. Dirty entity tracking in service classes (batch 4: Asteroid, Contacts, Banking, Mail)
-  - [~] 11.1 Add MarkDirty/MarkDeleted calls to AsteroidService and ContactsService
+- [x] 11. Dirty entity tracking in service classes (batch 4: Asteroid, Contacts, Banking, Mail)
+  - [x] 11.1 Add MarkDirty/MarkDeleted calls to AsteroidService and ContactsService
     - AsteroidService: 3 public methods (99 lines)
     - ContactsService: 6 public methods (152 lines)
     - _Satisfies: Req 2, Criterion 3_
@@ -346,7 +346,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Both files modified_
     - _Verification: Build succeeds_
 
-  - [~] 11.2 Add MarkDirty/MarkDeleted calls to BankingService and MailService
+  - [x] 11.2 Add MarkDirty/MarkDeleted calls to BankingService and MailService
     - BankingService: static class (316 lines) — AddManualTransaction and ImportTransactionsAsync mutate data
     - MailService: static class (341 lines) — check which methods add/remove MailMessage entities
     - Note: static services access PlayerContext.GetInstance() — ensure MarkDirty is called on the instance
@@ -365,7 +365,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
 
 
 - [ ] 13. EmpireContext storage backend integration
-  - [~] 13.1 Add StorageBackend and StorageBackendType properties to EmpireContext
+  - [-] 13.1 Add StorageBackend and StorageBackendType properties to EmpireContext
     - Add `public IStorageBackend StorageBackend { get; set; }` property
     - Add `public StorageBackendType? StorageBackendType { get; set; }` property
     - When no backend (null), preserve existing file I/O behavior unchanged

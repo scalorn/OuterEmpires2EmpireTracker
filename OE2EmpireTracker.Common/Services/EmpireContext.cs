@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using NLog;
+using OE2EmpireTracker.Common.Interfaces;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Interfaces;
 using OE2EmpireTracker.Models;
@@ -171,6 +172,17 @@ namespace OE2EmpireTracker.Services
         public IReadOnlyList<PropertyTypeDefinition> PropertyTypeRegistry => _propertyTypeRegistry;
 
         public SystemRepository SystemRepository => _systemRepository;
+
+        /// <summary>
+        /// The storage backend used for baseline data persistence.
+        /// When null, falls back to direct file I/O using FilePath.
+        /// </summary>
+        public IStorageBackend StorageBackend { get; set; }
+
+        /// <summary>
+        /// The backend type, used to select load/save strategy without runtime type checks.
+        /// </summary>
+        public StorageBackendType? StorageBackendType { get; set; }
 
         public static EmpireContext GetInstance()
         {
