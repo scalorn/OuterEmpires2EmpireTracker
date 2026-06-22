@@ -416,6 +416,12 @@
     <Compile Include="Forms\FormAbout.Designer.cs">
       <DependentUpon>FormAbout.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FormMigrationProgress.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormMigrationProgress.Designer.cs">
+      <DependentUpon>FormMigrationProgress.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormHelp.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -448,6 +454,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Forms\FormMigrationProgress.resx">
+      <DependentUpon>FormMigrationProgress.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\DeliveryRoute\FormDeliveryRoute.resx">
       <DependentUpon>FormDeliveryRoute.cs</DependentUpon>
     </EmbeddedResource>
