@@ -370,7 +370,6 @@ namespace OE2EmpireTracker.Tests.Services
             });
         }
     }
-}
 
     /// <summary>
     /// Round-trip property tests for the remaining 11 per-character entity types
