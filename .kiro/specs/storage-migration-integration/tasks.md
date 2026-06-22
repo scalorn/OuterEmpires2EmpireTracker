@@ -548,7 +548,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/MigrationService.cs (modified)_
     - _Verification: Build succeeds_
 
-  - [-] 18.3 Implement baseline data migration in MigrationService
+  - [x] 18.3 Implement baseline data migration in MigrationService
     - Migrate GameConstants, BlueprintTypes, ShipClasses, TechLevels, Commodities, RefiningRecipes, ResearchTimes, PropertyTypeDefinitions
     - Each: get from source → upsert to destination → report progress
     - Estimated: ~50 lines (8 baseline types, simpler pattern since they're single-entity or small collections)
@@ -557,7 +557,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/MigrationService.cs (modified)_
     - _Verification: Build succeeds_
 
-  - [~] 18.4 Implement per-character entity migration — first 11 entity types
+  - [-] 18.4 Implement per-character entity migration — first 11 entity types
     - For each character UUID: migrate Colonies, Blueprints, Surveys, PlayerProfiles, DeliveryRoutes, DeliveryPlans, PricingPlans, BuildPlans, ShipTemplates, Ships, Stations
     - Pattern per type: source.GetAllXxxAsync(charUUID) → loop → destination.UpsertXxxAsync(charUUID, entity)
     - Report progress per type per character
@@ -567,7 +567,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/MigrationService.cs (modified)_
     - _Verification: Build succeeds_
 
-  - [~] 18.5 Implement per-character entity migration — remaining 11 entity types
+  - [-] 18.5 Implement per-character entity migration — remaining 11 entity types
     - Continue: MarketListings, MarketTransactions, StockPlans, StockProfiles, SupplyChains, WarehouseOverflowRules, Asteroids, BankingTransactions, MailMessages, SharingRules, CharacterPreferences
     - Same pattern as 18.4
     - Estimated: ~80 lines (11 types × ~7 lines each)
