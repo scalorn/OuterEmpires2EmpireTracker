@@ -643,7 +643,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
   - Manual verification: change backend type in UIPreferences.json → app offers migration on startup
 
 
-- [ ] 21. Round-trip fidelity property tests — generator infrastructure
+- [x] 21. Round-trip fidelity property tests — generator infrastructure
   - [x] 21.1 Create GenHelpers utility class for FsCheck entity generators
     - Create OE2EmpireTracker.Tests/Services/GenHelpers.cs (NEW)
     - Provide reusable generator combinators: GenUUID, GenOptionalString, GenDecimal, GenDateTime, GenOptionalList<T>, GenNullable<T>
@@ -685,7 +685,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: OE2EmpireTracker.Tests/Services/EntityGenerators.cs (appended)_
     - _Verification: Build succeeds_
 
-  - [-] 21.5 Create FsCheck generators for PricingPlan, BuildPlan, StockPlan, StockProfile, SupplyChain, WarehouseOverflowRule
+  - [x] 21.5 Create FsCheck generators for PricingPlan, BuildPlan, StockPlan, StockProfile, SupplyChain, WarehouseOverflowRule
     - Six relatively simple entities (fewer nested objects than Colony/Blueprint)
     - Estimated: ~90 lines
     - _Satisfies: Req 7, Criteria 1, 4-6_
@@ -693,7 +693,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: OE2EmpireTracker.Tests/Services/EntityGenerators.cs (appended)_
     - _Verification: Build succeeds_
 
-  - [-] 21.6 Create FsCheck generators for Faction, ExternalCharacter, Asteroid, BankingTransaction, MailMessage, and baseline types
+  - [x] 21.6 Create FsCheck generators for Faction, ExternalCharacter, Asteroid, BankingTransaction, MailMessage, and baseline types
     - BankingTransaction has decimal fields — critical for precision testing
     - Baseline types: BlueprintType, ShipClass, TechLevel, Commodity, RefiningRecipe, ResearchTime, PropertyTypeDefinition
     - Estimated: ~120 lines (12 entities, all relatively simple)
@@ -704,7 +704,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
 
 
 - [ ] 22. Round-trip fidelity property tests — test infrastructure
-  - [~] 22.1 Create MigrationRoundTripPropertyTests fixture with round-trip helper
+  - [-] 22.1 Create MigrationRoundTripPropertyTests fixture with round-trip helper
     - Create OE2EmpireTracker.Tests/Services/MigrationRoundTripPropertyTests.cs
     - Implement RoundTripPreservesEquality<T> helper method:
       1. Create temp source backend, write entity
