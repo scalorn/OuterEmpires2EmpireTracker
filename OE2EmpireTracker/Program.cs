@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -105,6 +106,99 @@ namespace OE2EmpireTracker
             var empireCtx = EmpireContext.GetInstance();
             empireCtx.StorageBackendType = type;
             empireCtx.StorageBackend = backend;
+
+            OfferMigration(backend, type);
+        }
+
+        /// <summary>
+        /// Detects whether previous backend data exists on disk by checking for known file/folder patterns.
+        /// Returns the detected source backend type, or null if no data found.
+        /// </summary>
+        /// <returns>The detected <see cref="StorageBackendType"/>, or null if nothing found.</returns>
+        private static StorageBackendType? DetectPreviousBackendData()
+        {
+            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+
+            if (File.Exists(Path.Combine(baseDir, "PlayerData.json")))
+            {
+                return StorageBackendType.JsonSingleFile;
+            }
+
+            if (Directory.Exists(Path.Combine(baseDir, "data", "characters")))
+            {
+                return StorageBackendType.JsonMultiFile;
+            }
+
+            if (File.Exists(Path.Combine(baseDir, "OE2EmpireTracker.db")))
+            {
+                return StorageBackendType.Sqlite;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Offers migration if a previous backend's data is detected and the current backend is empty.
+        /// </summary>
+        /// <param name="currentBackend">The currently configured storage backend.</param>
+        /// <param name="currentType">The currently configured backend type.</param>
+        private static void OfferMigration(IStorageBackend currentBackend, StorageBackendType currentType)
+        {
+            var detectedType = DetectPreviousBackendData();
+            if (detectedType == null || detectedType.Value == currentType)
+            {
+                return;
+            }
+
+            // Check if the current backend is empty
+            var characterUUIDs = Task.Run(() => currentBackend.GetAllCharacterUUIDsAsync())
+                .GetAwaiter().GetResult();
+            if (characterUUIDs.Count > 0)
+            {
+                return;
+            }
+
+            var dialogResult = MessageBox.Show(
+                $"Existing {detectedType.Value} data was detected.\n" +
+                $"Would you like to migrate it to the new {currentType} backend?",
+                "Migrate Data?",
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Question);
+
+            if (dialogResult == DialogResult.Cancel)
+            {
+                Environment.Exit(0);
+                return;
+            }
+
+            if (dialogResult == DialogResult.No)
+            {
+                // Start fresh — continue with empty backend
+                return;
+            }
+
+            // Migrate: create source backend and run migration
+            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            var sourceConfig = new StorageBackendConfig { ConnectionString = baseDir };
+            var sourceBackend = Task.Run(() => StorageBackendFactory.CreateAsync(detectedType.Value, sourceConfig))
+                .GetAwaiter().GetResult();
+
+            try
+            {
+                var migrationService = new MigrationService();
+                Task.Run(() => migrationService.MigrateAsync(sourceBackend, currentBackend))
+                    .GetAwaiter().GetResult();
+                Log.Info("Migration from {0} to {1} completed successfully", detectedType.Value, currentType);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Migration from {0} to {1} failed", detectedType.Value, currentType);
+                MessageBox.Show(
+                    $"Migration failed:\n{ex.Message}\n\nThe application will continue with an empty backend.",
+                    "Migration Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
         }
     }
 }

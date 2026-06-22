@@ -596,7 +596,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/MigrationService.cs (modified)_
     - _Verification: Build succeeds_
 
-  - [~] 18.8 Write unit tests for MigrationService
+  - [-] 18.8 Write unit tests for MigrationService
     - Test: empty source → empty destination, no errors, validation passes
     - Test: single character migration transfers all entity types (use InMemory or JsonSingleFile backend)
     - Test: count validation passes on correct migration
@@ -611,7 +611,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
 
 
 - [ ] 19. Desktop migration workflow wiring
-  - [~] 19.1 Implement migration detection and offer in Program.cs
+  - [-] 19.1 Implement migration detection and offer in Program.cs
     - Add DetectPreviousBackendData(): check for PlayerData.json in exe dir, data/ subfolder, .db file
     - If configured backend type differs from what's detected AND new backend is empty:
       - Show MessageBox: "Migrate existing data to new backend?" [Migrate] [Start Fresh] [Cancel]

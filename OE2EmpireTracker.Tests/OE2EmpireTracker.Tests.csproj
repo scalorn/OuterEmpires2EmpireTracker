@@ -459,6 +459,7 @@
     <Compile Include="Services\Migration\MigrationVersionGatingPropertyTests.cs" />
     <Compile Include="Services\Migration\LegacyUUIDPropertyTests.cs" />
     <Compile Include="Services\Migration\DecimalRoundTripPropertyTests.cs" />
+    <Compile Include="Services\MigrationServiceTests.cs" />
     <Compile Include="Services\IndividualImportDedupPropertyTests.cs" />
     <Compile Include="Services\ResourcesOnlyImportPropertyTests.cs" />
     <Compile Include="Services\BlueprintImportHandlerClassifyTests.cs" />
@@ -644,6 +645,7 @@
     <Compile Include="Services\PlayerContextBackendTests.cs" />
     <Compile Include="Services\EmpireContextBackendTests.cs" />
     <Compile Include="Helpers\RecordingStorageBackend.cs" />
+    <Compile Include="Helpers\InMemoryMigrationBackend.cs" />
     <Compile Include="TestHelper.cs" />
     <Compile Include="GlobalSetup.cs" />
     <None Include="app.config" />
