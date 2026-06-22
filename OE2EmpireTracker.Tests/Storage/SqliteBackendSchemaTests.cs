@@ -145,7 +145,7 @@ namespace OE2EmpireTracker.Tests.Storage
         }
 
         /// <summary>
-        /// After init, schema_version in _metadata equals CurrentSchemaVersion (1).
+        /// After init, schema_version in _metadata equals CurrentSchemaVersion (3).
         /// </summary>
         [Test]
         public async Task InitializeAsync_FreshDb_SetsSchemaVersion()
@@ -162,7 +162,7 @@ namespace OE2EmpireTracker.Tests.Storage
                     cmd.CommandText = "SELECT Value FROM _metadata WHERE Key = 'schema_version'";
                     var result = cmd.ExecuteScalar();
                     Assert.That(result, Is.Not.Null);
-                    Assert.That(result.ToString(), Is.EqualTo("1"));
+                    Assert.That(result.ToString(), Is.EqualTo("3"));
                 }
             }
         }

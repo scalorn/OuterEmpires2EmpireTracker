@@ -11,6 +11,7 @@ using OE2EmpireTracker.Forms;
 using OE2EmpireTracker.Parsers;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.Services.Migration;
+using SQLitePCL;
 
 namespace OE2EmpireTracker
 {
@@ -55,6 +56,8 @@ namespace OE2EmpireTracker
                     return null;
                 return await sc.Client.ExportCharacterDataAsync(characterUUID).ConfigureAwait(false);
             };
+
+            SQLitePCL.Batteries_V2.Init();
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

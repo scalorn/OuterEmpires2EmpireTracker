@@ -79,7 +79,7 @@ namespace OE2EmpireTracker.Tests.Storage
                     cmd.CommandText = "SELECT Value FROM _metadata WHERE Key = 'schema_version'";
                     var result = cmd.ExecuteScalar();
                     Assert.That(result, Is.Not.Null);
-                    Assert.That(result.ToString(), Is.EqualTo("1"));
+                    Assert.That(result.ToString(), Is.EqualTo("3"));
                 }
             }
         }
@@ -107,7 +107,7 @@ namespace OE2EmpireTracker.Tests.Storage
                 {
                     cmd.CommandText = "SELECT Value FROM _metadata WHERE Key = 'schema_version'";
                     var result = cmd.ExecuteScalar();
-                    Assert.That(result.ToString(), Is.EqualTo("1"));
+                    Assert.That(result.ToString(), Is.EqualTo("3"));
                 }
             }
         }
