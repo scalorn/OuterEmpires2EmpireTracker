@@ -804,11 +804,11 @@ namespace OE2EmpireTracker.Services
             {
                 if (backend is JsonSingleFileBackend)
                 {
-                    string jsonContent = SerializePlayerRoot();
-                    Task.Run(() => backend.UpsertGlobalDataAsync("PlayerRoot:" + charUUID, jsonContent))
-                        .GetAwaiter().GetResult();
+                    // JsonSingleFileBackend doesn't support UpsertGlobalDataAsync.
+                    // Use legacy file path for full-file persistence.
+                    WriteContextLegacyFile();
                     DirtyTracker.ClearAll();
-                    Log.Info("Player data persisted to JsonSingleFileBackend for {0}", charUUID);
+                    return;
                 }
                 else
                 {

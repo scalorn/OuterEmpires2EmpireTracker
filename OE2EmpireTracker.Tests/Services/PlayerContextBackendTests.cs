@@ -77,9 +77,8 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void WriteContext_JsonSingleFileBackend_RoutesToFullFileWrite()
         {
-            // JsonSingleFileBackend.UpsertGlobalDataAsync is not supported yet,
-            // so WriteContext throws NotSupportedException for this path.
-            // This test documents the current routing behavior.
+            // JsonSingleFileBackend doesn't support UpsertGlobalDataAsync.
+            // WriteContext routes to WriteContextLegacyFile which writes via SafeFileWriter.
             string tempDir = Path.Combine(
                 Path.GetTempPath(), Guid.NewGuid().ToString());
             Directory.CreateDirectory(tempDir);
@@ -90,13 +89,15 @@ namespace OE2EmpireTracker.Tests.Services
                 Task.Run(() => backend.InitializeAsync())
                     .GetAwaiter().GetResult();
 
+                string filePath = Path.Combine(tempDir, "PlayerData.json");
                 var ctx = new PlayerContext(new PlayerRoot());
                 ctx.StorageBackend = backend;
                 ctx.CurrentPlayerUUID = "test-char-uuid";
+                PlayerContext.FilePath = filePath;
 
-                // WriteContext routes to UpsertGlobalDataAsync for JsonSingleFileBackend
-                // which currently throws NotSupportedException
-                Assert.Throws<NotSupportedException>(() => ctx.WriteContext());
+                // WriteContext should succeed by using the legacy file write path
+                Assert.DoesNotThrow(() => ctx.WriteContext());
+                Assert.That(File.Exists(filePath), Is.True, "Legacy file should be written");
             }
             finally
             {

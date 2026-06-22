@@ -13,6 +13,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using NLog;
 using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Interfaces;
+using OE2EmpireTracker.Common.Storage;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Parsers;
 using OE2EmpireTracker.Services;
@@ -59,6 +61,8 @@ namespace OE2EmpireTracker.Forms
             btnTestGameApiConnection.Click += BtnTestGameApiConnection_Click;
             cmbGameApiCharacter.SelectedIndexChanged += CmbGameApiCharacter_SelectedIndexChanged;
             txtTpsLimit.Leave += TxtTpsLimit_Leave;
+            btnBrowseStoragePath.Click += BtnBrowseStoragePath_Click;
+            btnMigrateStorage.Click += BtnMigrateStorage_Click;
 
             // Populate operating mode dropdown
             cmbOperatingMode.Items.Add("Local Only");
@@ -83,6 +87,7 @@ namespace OE2EmpireTracker.Forms
             PopulateThresholdFields(prefs.Thresholds);
             PopulateServerFields(prefs.ServerConnection);
             PopulateGameApiFields(prefs.GameApiConnection);
+            PopulateStorageFields(prefs);
         }
 
         private void PopulateThresholdFields(ThresholdPreferences thresholds)
@@ -796,6 +801,147 @@ namespace OE2EmpireTracker.Forms
 
             result = prefs;
             return true;
+        }
+
+        /// <summary>
+        /// Populates the Storage tab controls from current preferences.
+        /// </summary>
+        /// <param name="prefs">The current UI preferences.</param>
+        private void PopulateStorageFields(UIPreferences prefs)
+        {
+            cmbStorageBackendType.Items.Clear();
+            cmbStorageBackendType.Items.Add("JSON Single File");
+            cmbStorageBackendType.Items.Add("SQLite");
+
+            var store = PreferencesStore.GetInstance();
+            var currentType = store.ParseStorageBackendType(prefs.StorageBackendType);
+
+            switch (currentType)
+            {
+                case StorageBackendType.Sqlite:
+                    cmbStorageBackendType.SelectedIndex = 1;
+                    break;
+                default:
+                    cmbStorageBackendType.SelectedIndex = 0;
+                    break;
+            }
+
+            txtStoragePath.Text = prefs.StoragePath ?? string.Empty;
+            lblCurrentBackend.Text = "Current: " + currentType.ToString();
+        }
+
+        /// <summary>
+        /// Opens a folder browser for the storage path.
+        /// </summary>
+        private void BtnBrowseStoragePath_Click(object sender, EventArgs e)
+        {
+            using (var dialog = new FolderBrowserDialog())
+            {
+                dialog.Description = "Select storage folder";
+                if (!string.IsNullOrEmpty(txtStoragePath.Text))
+                {
+                    dialog.SelectedPath = txtStoragePath.Text;
+                }
+
+                if (dialog.ShowDialog(this) == DialogResult.OK)
+                {
+                    txtStoragePath.Text = dialog.SelectedPath;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Applies the selected backend type and migrates data from the current backend.
+        /// </summary>
+        private void BtnMigrateStorage_Click(object sender, EventArgs e)
+        {
+            var store = PreferencesStore.GetInstance();
+            var currentType = store.ParseStorageBackendType(store.Preferences.StorageBackendType);
+            StorageBackendType selectedType = cmbStorageBackendType.SelectedIndex == 1
+                ? StorageBackendType.Sqlite
+                : StorageBackendType.JsonSingleFile;
+
+            string selectedPath = txtStoragePath.Text.Trim();
+
+            if (selectedType == currentType)
+            {
+                MessageBox.Show(
+                    "Already using this backend.",
+                    "No Change",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+
+            // Save new preferences
+            string originalBackendType = store.Preferences.StorageBackendType;
+            string originalPath = store.Preferences.StoragePath;
+            store.Preferences.StorageBackendType = selectedType.ToString();
+            store.Preferences.StoragePath = selectedPath;
+            store.Save();
+
+            // Create new backend
+            IStorageBackend newBackend;
+            try
+            {
+                var config = store.ResolveStorageConfig();
+                newBackend = Task.Run(() => StorageBackendFactory.CreateAsync(selectedType, config))
+                    .GetAwaiter().GetResult();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to create {0} backend", selectedType);
+                store.Preferences.StorageBackendType = originalBackendType;
+                store.Preferences.StoragePath = originalPath;
+                store.Save();
+                MessageBox.Show(
+                    "Failed to create backend:\n" + ex.Message,
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
+
+            // Show progress and migrate
+            var currentBackend = PlayerContext.GetInstance().StorageBackend;
+            var progressForm = new FormMigrationProgress();
+            progressForm.Show(this);
+            var progress = new Progress<MigrationProgress>(p => progressForm.UpdateProgress(p));
+
+            try
+            {
+                var migrationService = new MigrationService();
+                Task.Run(() => migrationService.MigrateAsync(currentBackend, newBackend, progress))
+                    .GetAwaiter().GetResult();
+                progressForm.Close();
+
+                // Swap backends in contexts
+                PlayerContext.GetInstance().StorageBackend = newBackend;
+                var empireCtx = EmpireContext.GetInstance();
+                empireCtx.StorageBackendType = selectedType;
+                empireCtx.StorageBackend = newBackend;
+
+                lblCurrentBackend.Text = "Current: " + selectedType.ToString();
+                Log.Info("Storage migrated from {0} to {1}", currentType, selectedType);
+                MessageBox.Show(
+                    "Migration complete!",
+                    "Success",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                progressForm.Close();
+                Log.Error(ex, "Storage migration from {0} to {1} failed", currentType, selectedType);
+                store.Preferences.StorageBackendType = originalBackendType;
+                store.Preferences.StoragePath = originalPath;
+                store.Save();
+                MessageBox.Show(
+                    "Migration failed:\n" + ex.Message,
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
         }
     }
 }

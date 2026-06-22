@@ -65,10 +65,11 @@ Server tab:
 Controls:
 - Form: `FormBorderStyle=FixedDialog`, `MaximizeBox=false`, `MinimizeBox=false`, `StartPosition=CenterParent`
 - `AcceptButton=btnOK`, `CancelButton=btnCancel`
-- `tabControl` (TabControl) — three tabs: Thresholds, Server, Game API
+- `tabControl` (TabControl) — four tabs: Thresholds, Server, Game API, Storage
 - `tabThresholds` (TabPage) — threshold settings
 - `tabServer` (TabPage) — server connection settings
 - `tabGameApi` (TabPage) — game API OAuth2 connection settings
+- `tabStorage` (TabPage) — storage backend settings
 - `grpStructureCount` (GroupBox) — structure warning thresholds:
   - `txtStructureYellow` (TextBox) — integer count
   - `txtStructureRed` (TextBox) — integer count
@@ -105,6 +106,34 @@ Controls:
   - `btnTestGameApiConnection` (Button) — tests connection via token exchange
   - `lblTestResult` (Label) — shows test connection result
 - `btnOK` (Button), `btnCancel` (Button, DialogResult=Cancel), `btnResetDefaults` (Button)
+- `grpStorage` (GroupBox) — storage backend configuration:
+  - `cmbStorageBackendType` (ComboBox, DropDownList) — backend type: "JSON Single File" / "SQLite"
+  - `txtStoragePath` (TextBox) — storage folder path
+  - `btnBrowseStoragePath` (Button) — opens FolderBrowserDialog for path selection
+  - `lblCurrentBackend` (Label) — read-only status showing current backend type
+  - `btnMigrateStorage` (Button) — "Apply & Migrate" triggers migration to selected backend
 - All time values use countdown format: `Xd Xh Xm Xs`
+
+Storage tab:
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│ Preferences                                              [X] │
+├──────────────────────────────────────────────────────────────┤
+│ [Thresholds] [Server] [Game API] [Storage]                   │
+├──────────────────────────────────────────────────────────────┤
+│                                                              │
+│ ┌─ Storage Backend ────────────────────────────────────────┐ │
+│ │ Backend Type:  [JSON Single File___▼]                    │ │
+│ │ Storage Path:  [C:\path\to\storage___] [Browse...]       │ │
+│ │                                                          │ │
+│ │ Current: JsonSingleFile                                  │ │
+│ │                                                          │ │
+│ │ [Apply & Migrate]                                        │ │
+│ └──────────────────────────────────────────────────────────┘ │
+│                                                              │
+│                          [OK] [Cancel] [Reset]               │
+└──────────────────────────────────────────────────────────────┘
+```
 
 Satisfies: REQ-PRF-010 (user preferences), REQ-PRF-020 (threshold configuration), Req 11 (server URL/thumbprint config), Req 16 (operating mode)

@@ -1,4 +1,4 @@
-﻿MSBuild version 18.6.3+84d3e95b4 for .NET Framework
+MSBuild version 18.6.3+84d3e95b4 for .NET Framework
 
   OE2EmpireTracker.Common -> D:\projects\OuterEmpires2\OE2EmpireTracker\OE2EmpireTracker.Common\bin\Debug\netstandard2.0\OE2EmpireTracker.Common.dll
   OE2EmpireTracker -> D:\projects\OuterEmpires2\OE2EmpireTracker\OE2EmpireTracker\bin\Debug\OE2EmpireTracker.exe

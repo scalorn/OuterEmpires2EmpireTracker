@@ -19,12 +19,21 @@ namespace OE2EmpireTracker.Forms
             this.tabThresholds = new System.Windows.Forms.TabPage();
             this.tabServer = new System.Windows.Forms.TabPage();
             this.tabGameApi = new System.Windows.Forms.TabPage();
+            this.tabStorage = new System.Windows.Forms.TabPage();
+            this.grpStorage = new System.Windows.Forms.GroupBox();
             this.grpWarehouseThresholds = new System.Windows.Forms.GroupBox();
             this.lblOverflowHorizon = new System.Windows.Forms.Label();
             this.nudOverflowHorizon = new System.Windows.Forms.NumericUpDown();
             this.lblUnderutilizedStockpile = new System.Windows.Forms.Label();
             this.nudUnderutilizedStockpile = new System.Windows.Forms.NumericUpDown();
             this.grpGameApi = new System.Windows.Forms.GroupBox();
+            this.lblStorageBackendType = new System.Windows.Forms.Label();
+            this.cmbStorageBackendType = new System.Windows.Forms.ComboBox();
+            this.lblStoragePath = new System.Windows.Forms.Label();
+            this.txtStoragePath = new System.Windows.Forms.TextBox();
+            this.btnBrowseStoragePath = new System.Windows.Forms.Button();
+            this.lblCurrentBackend = new System.Windows.Forms.Label();
+            this.btnMigrateStorage = new System.Windows.Forms.Button();
             this.lblGameApiUrl = new System.Windows.Forms.Label();
             this.txtGameApiUrl = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.lblGameApiAppId = new System.Windows.Forms.Label();
@@ -90,6 +99,8 @@ namespace OE2EmpireTracker.Forms
             this.tabThresholds.SuspendLayout();
             this.tabServer.SuspendLayout();
             this.tabGameApi.SuspendLayout();
+            this.tabStorage.SuspendLayout();
+            this.grpStorage.SuspendLayout();
             this.grpGameApi.SuspendLayout();
             this.grpWarehouseThresholds.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudPollingInterval)).BeginInit();
@@ -111,6 +122,7 @@ namespace OE2EmpireTracker.Forms
             this.tabControl.Controls.Add(this.tabThresholds);
             this.tabControl.Controls.Add(this.tabServer);
             this.tabControl.Controls.Add(this.tabGameApi);
+            this.tabControl.Controls.Add(this.tabStorage);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Top;
             this.tabControl.Location = new System.Drawing.Point(0, 0);
             this.tabControl.Name = "tabControl";
@@ -156,6 +168,91 @@ namespace OE2EmpireTracker.Forms
             this.tabGameApi.TabIndex = 2;
             this.tabGameApi.Text = "Game API";
             this.tabGameApi.UseVisualStyleBackColor = true;
+            // 
+            // tabStorage
+            // 
+            this.tabStorage.Controls.Add(this.grpStorage);
+            this.tabStorage.Location = new System.Drawing.Point(4, 22);
+            this.tabStorage.Name = "tabStorage";
+            this.tabStorage.Padding = new System.Windows.Forms.Padding(3);
+            this.tabStorage.Size = new System.Drawing.Size(490, 524);
+            this.tabStorage.TabIndex = 3;
+            this.tabStorage.Text = "Storage";
+            this.tabStorage.UseVisualStyleBackColor = true;
+            // 
+            // grpStorage
+            // 
+            this.grpStorage.Controls.Add(this.lblStorageBackendType);
+            this.grpStorage.Controls.Add(this.cmbStorageBackendType);
+            this.grpStorage.Controls.Add(this.lblStoragePath);
+            this.grpStorage.Controls.Add(this.txtStoragePath);
+            this.grpStorage.Controls.Add(this.btnBrowseStoragePath);
+            this.grpStorage.Controls.Add(this.lblCurrentBackend);
+            this.grpStorage.Controls.Add(this.btnMigrateStorage);
+            this.grpStorage.Location = new System.Drawing.Point(12, 12);
+            this.grpStorage.Name = "grpStorage";
+            this.grpStorage.Size = new System.Drawing.Size(460, 200);
+            this.grpStorage.TabIndex = 0;
+            this.grpStorage.TabStop = false;
+            this.grpStorage.Text = "Storage Backend";
+            // 
+            // lblStorageBackendType
+            // 
+            this.lblStorageBackendType.AutoSize = true;
+            this.lblStorageBackendType.Location = new System.Drawing.Point(15, 28);
+            this.lblStorageBackendType.Name = "lblStorageBackendType";
+            this.lblStorageBackendType.Size = new System.Drawing.Size(77, 13);
+            this.lblStorageBackendType.Text = "Backend Type:";
+            // 
+            // cmbStorageBackendType
+            // 
+            this.cmbStorageBackendType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbStorageBackendType.FormattingEnabled = true;
+            this.cmbStorageBackendType.Location = new System.Drawing.Point(130, 25);
+            this.cmbStorageBackendType.Name = "cmbStorageBackendType";
+            this.cmbStorageBackendType.Size = new System.Drawing.Size(180, 21);
+            this.cmbStorageBackendType.TabIndex = 1;
+            // 
+            // lblStoragePath
+            // 
+            this.lblStoragePath.AutoSize = true;
+            this.lblStoragePath.Location = new System.Drawing.Point(15, 63);
+            this.lblStoragePath.Name = "lblStoragePath";
+            this.lblStoragePath.Size = new System.Drawing.Size(73, 13);
+            this.lblStoragePath.Text = "Storage Path:";
+            // 
+            // txtStoragePath
+            // 
+            this.txtStoragePath.Location = new System.Drawing.Point(130, 60);
+            this.txtStoragePath.Name = "txtStoragePath";
+            this.txtStoragePath.Size = new System.Drawing.Size(240, 20);
+            this.txtStoragePath.TabIndex = 2;
+            // 
+            // btnBrowseStoragePath
+            // 
+            this.btnBrowseStoragePath.Location = new System.Drawing.Point(376, 58);
+            this.btnBrowseStoragePath.Name = "btnBrowseStoragePath";
+            this.btnBrowseStoragePath.Size = new System.Drawing.Size(75, 23);
+            this.btnBrowseStoragePath.TabIndex = 3;
+            this.btnBrowseStoragePath.Text = "Browse...";
+            this.btnBrowseStoragePath.UseVisualStyleBackColor = true;
+            // 
+            // lblCurrentBackend
+            // 
+            this.lblCurrentBackend.AutoSize = true;
+            this.lblCurrentBackend.Location = new System.Drawing.Point(15, 100);
+            this.lblCurrentBackend.Name = "lblCurrentBackend";
+            this.lblCurrentBackend.Size = new System.Drawing.Size(120, 13);
+            this.lblCurrentBackend.Text = "Current: JsonSingleFile";
+            // 
+            // btnMigrateStorage
+            // 
+            this.btnMigrateStorage.Location = new System.Drawing.Point(15, 135);
+            this.btnMigrateStorage.Name = "btnMigrateStorage";
+            this.btnMigrateStorage.Size = new System.Drawing.Size(120, 23);
+            this.btnMigrateStorage.TabIndex = 4;
+            this.btnMigrateStorage.Text = "Apply && Migrate";
+            this.btnMigrateStorage.UseVisualStyleBackColor = true;
             // 
             // grpGameApi
             // 
@@ -786,6 +883,9 @@ namespace OE2EmpireTracker.Forms
             this.tabThresholds.ResumeLayout(false);
             this.tabServer.ResumeLayout(false);
             this.tabGameApi.ResumeLayout(false);
+            this.tabStorage.ResumeLayout(false);
+            this.grpStorage.ResumeLayout(false);
+            this.grpStorage.PerformLayout();
             this.grpGameApi.ResumeLayout(false);
             this.grpGameApi.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudPollingInterval)).EndInit();
@@ -885,5 +985,14 @@ namespace OE2EmpireTracker.Forms
         internal System.Windows.Forms.NumericUpDown nudOverflowHorizon;
         private System.Windows.Forms.Label lblUnderutilizedStockpile;
         internal System.Windows.Forms.NumericUpDown nudUnderutilizedStockpile;
+        private System.Windows.Forms.TabPage tabStorage;
+        private System.Windows.Forms.GroupBox grpStorage;
+        private System.Windows.Forms.Label lblStorageBackendType;
+        internal System.Windows.Forms.ComboBox cmbStorageBackendType;
+        private System.Windows.Forms.Label lblStoragePath;
+        internal System.Windows.Forms.TextBox txtStoragePath;
+        internal System.Windows.Forms.Button btnBrowseStoragePath;
+        internal System.Windows.Forms.Label lblCurrentBackend;
+        internal System.Windows.Forms.Button btnMigrateStorage;
     }
 }

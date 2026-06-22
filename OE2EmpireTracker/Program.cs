@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using NLog;
 using OE2EmpireTracker.Common.Interfaces;
 using OE2EmpireTracker.Common.Storage;
+using OE2EmpireTracker.Forms;
 using OE2EmpireTracker.Parsers;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.Services.Migration;
@@ -183,15 +184,26 @@ namespace OE2EmpireTracker
             var sourceBackend = Task.Run(() => StorageBackendFactory.CreateAsync(detectedType.Value, sourceConfig))
                 .GetAwaiter().GetResult();
 
+            var progressForm = new FormMigrationProgress();
+            progressForm.Show();
+            var progress = new Progress<MigrationProgress>(p => progressForm.UpdateProgress(p));
+
             try
             {
                 var migrationService = new MigrationService();
-                Task.Run(() => migrationService.MigrateAsync(sourceBackend, currentBackend))
+                Task.Run(() => migrationService.MigrateAsync(sourceBackend, currentBackend, progress))
                     .GetAwaiter().GetResult();
+                progressForm.Close();
                 Log.Info("Migration from {0} to {1} completed successfully", detectedType.Value, currentType);
+                MessageBox.Show(
+                    "Migration complete!",
+                    "Success",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
+                progressForm.Close();
                 Log.Error(ex, "Migration from {0} to {1} failed", detectedType.Value, currentType);
                 MessageBox.Show(
                     $"Migration failed:\n{ex.Message}\n\nThe application will continue with an empty backend.",

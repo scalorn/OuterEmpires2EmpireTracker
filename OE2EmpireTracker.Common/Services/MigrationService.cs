@@ -65,57 +65,63 @@ namespace OE2EmpireTracker.Services
             }
 
             // ── Server-global data migration ──
-
-            // Factions
-            var factions = await source.GetAllFactionsAsync().ConfigureAwait(false);
-            foreach (var faction in factions)
+            try
             {
-                ct.ThrowIfCancellationRequested();
-                await destination.UpsertFactionAsync(faction).ConfigureAwait(false);
-                Report("Global", "ServerFaction");
-            }
-
-            // Characters (server-level)
-            var characters = await source.GetAllCharactersAsync().ConfigureAwait(false);
-            foreach (var character in characters)
-            {
-                ct.ThrowIfCancellationRequested();
-                await destination.UpsertCharacterAsync(character).ConfigureAwait(false);
-                Report("Global", "ServerCharacter");
-            }
-
-            // Star Systems (bulk upsert)
-            var starSystems = await source.GetAllStarSystemsAsync().ConfigureAwait(false);
-            if (starSystems.Count > 0)
-            {
-                ct.ThrowIfCancellationRequested();
-                await destination.UpsertStarSystemsAsync(starSystems).ConfigureAwait(false);
-                foreach (var system in starSystems)
-                {
-                    Report("Global", "StarSystem");
-                }
-            }
-
-            // API Tokens
-            var tokens = await source.GetAllTokensAsync().ConfigureAwait(false);
-            foreach (var token in tokens)
-            {
-                ct.ThrowIfCancellationRequested();
-                await destination.UpsertTokenAsync(token).ConfigureAwait(false);
-                Report("Global", "ApiToken");
-            }
-
-            // Membership Actions (per faction)
-            foreach (var faction in factions)
-            {
-                ct.ThrowIfCancellationRequested();
-                var actions = await source.GetFactionActionsAsync(faction.UUID).ConfigureAwait(false);
-                foreach (var action in actions)
+                // Factions
+                var factions = await source.GetAllFactionsAsync().ConfigureAwait(false);
+                foreach (var faction in factions)
                 {
                     ct.ThrowIfCancellationRequested();
-                    await destination.UpsertMembershipActionAsync(action).ConfigureAwait(false);
-                    Report("Global", "MembershipAction");
+                    await destination.UpsertFactionAsync(faction).ConfigureAwait(false);
+                    Report("Global", "ServerFaction");
                 }
+
+                // Characters (server-level)
+                var characters = await source.GetAllCharactersAsync().ConfigureAwait(false);
+                foreach (var character in characters)
+                {
+                    ct.ThrowIfCancellationRequested();
+                    await destination.UpsertCharacterAsync(character).ConfigureAwait(false);
+                    Report("Global", "ServerCharacter");
+                }
+
+                // Star Systems (bulk upsert)
+                var starSystems = await source.GetAllStarSystemsAsync().ConfigureAwait(false);
+                if (starSystems.Count > 0)
+                {
+                    ct.ThrowIfCancellationRequested();
+                    await destination.UpsertStarSystemsAsync(starSystems).ConfigureAwait(false);
+                    foreach (var system in starSystems)
+                    {
+                        Report("Global", "StarSystem");
+                    }
+                }
+
+                // API Tokens
+                var tokens = await source.GetAllTokensAsync().ConfigureAwait(false);
+                foreach (var token in tokens)
+                {
+                    ct.ThrowIfCancellationRequested();
+                    await destination.UpsertTokenAsync(token).ConfigureAwait(false);
+                    Report("Global", "ApiToken");
+                }
+
+                // Membership Actions (per faction)
+                foreach (var faction in factions)
+                {
+                    ct.ThrowIfCancellationRequested();
+                    var actions = await source.GetFactionActionsAsync(faction.UUID).ConfigureAwait(false);
+                    foreach (var action in actions)
+                    {
+                        ct.ThrowIfCancellationRequested();
+                        await destination.UpsertMembershipActionAsync(action).ConfigureAwait(false);
+                        Report("Global", "MembershipAction");
+                    }
+                }
+            }
+            catch (NotSupportedException)
+            {
+                Log.Info("Source backend does not support server-global entities — skipping");
             }
 
             // Baseline data
@@ -339,184 +345,205 @@ namespace OE2EmpireTracker.Services
                     Report(phase, "MailMessage");
                 }
 
-                // SharingRules (bulk: read all, upsert all)
-                var sharingRules = await source.GetSharingRulesForCharacterAsync(charUUID).ConfigureAwait(false);
-                if (sharingRules.Count > 0)
+                // SharingRules and CharacterPreferences
+                try
                 {
-                    ct.ThrowIfCancellationRequested();
-                    await destination.UpsertSharingRulesAsync(charUUID, sharingRules).ConfigureAwait(false);
-                    Report(phase, "SharingRules");
-                }
+                    var sharingRules = await source.GetSharingRulesForCharacterAsync(charUUID).ConfigureAwait(false);
+                    if (sharingRules.Count > 0)
+                    {
+                        ct.ThrowIfCancellationRequested();
+                        await destination.UpsertSharingRulesAsync(charUUID, sharingRules).ConfigureAwait(false);
+                        Report(phase, "SharingRules");
+                    }
 
-                // CharacterPreferences (single object)
-                var prefs = await source.GetCharacterPreferencesAsync(charUUID).ConfigureAwait(false);
-                if (prefs != null)
+                    var prefs = await source.GetCharacterPreferencesAsync(charUUID).ConfigureAwait(false);
+                    if (prefs != null)
+                    {
+                        ct.ThrowIfCancellationRequested();
+                        await destination.UpsertCharacterPreferencesAsync(prefs).ConfigureAwait(false);
+                        Report(phase, "CharacterPreferences");
+                    }
+                }
+                catch (NotSupportedException)
                 {
-                    ct.ThrowIfCancellationRequested();
-                    await destination.UpsertCharacterPreferencesAsync(prefs).ConfigureAwait(false);
-                    Report(phase, "CharacterPreferences");
+                    Log.Info("Source backend does not support sharing rules/character preferences for {0} — skipping", charUUID);
                 }
             }
 
             // ── Faction permission entities ──
-            foreach (var faction in factions)
+            try
             {
-                ct.ThrowIfCancellationRequested();
-                string factionPhase = $"FactionPerms {faction.UUID}";
-
-                var factionCaps = await source.GetFactionCapabilitiesAsync(faction.UUID).ConfigureAwait(false);
-                foreach (var cap in factionCaps)
+                var permFactions = await source.GetAllFactionsAsync().ConfigureAwait(false);
+                foreach (var faction in permFactions)
                 {
                     ct.ThrowIfCancellationRequested();
-                    await destination.UpsertFactionCapabilityAsync(cap).ConfigureAwait(false);
-                    Report(factionPhase, "FactionCapability");
-                }
+                    string factionPhase = $"FactionPerms {faction.UUID}";
 
-                var clearanceLevels = await source.GetFactionClearanceLevelsAsync(faction.UUID).ConfigureAwait(false);
-                foreach (var level in clearanceLevels)
-                {
-                    ct.ThrowIfCancellationRequested();
-                    await destination.UpsertFactionClearanceLevelAsync(level).ConfigureAwait(false);
-                    Report(factionPhase, "FactionClearanceLevel");
-                }
-
-                var groups = await source.GetFactionGroupsAsync(faction.UUID).ConfigureAwait(false);
-                foreach (var group in groups)
-                {
-                    ct.ThrowIfCancellationRequested();
-                    await destination.UpsertFactionGroupAsync(group).ConfigureAwait(false);
-                    Report(factionPhase, "FactionPermissionGroup");
-
-                    var groupCaps = await source.GetFactionGroupCapabilitiesAsync(group.UUID).ConfigureAwait(false);
-                    foreach (var gc in groupCaps)
+                    var factionCaps = await source.GetFactionCapabilitiesAsync(faction.UUID).ConfigureAwait(false);
+                    foreach (var cap in factionCaps)
                     {
                         ct.ThrowIfCancellationRequested();
-                        await destination.AddFactionGroupCapabilityAsync(gc).ConfigureAwait(false);
-                        Report(factionPhase, "FactionGroupCapability");
+                        await destination.UpsertFactionCapabilityAsync(cap).ConfigureAwait(false);
+                        Report(factionPhase, "FactionCapability");
                     }
 
-                    var groupRules = await source.GetFactionGroupSharingRulesAsync(group.UUID).ConfigureAwait(false);
-                    foreach (var rule in groupRules)
+                    var clearanceLevels = await source.GetFactionClearanceLevelsAsync(faction.UUID).ConfigureAwait(false);
+                    foreach (var level in clearanceLevels)
                     {
                         ct.ThrowIfCancellationRequested();
-                        await destination.UpsertFactionGroupSharingRuleAsync(rule).ConfigureAwait(false);
-                        Report(factionPhase, "FactionGroupSharingRule");
+                        await destination.UpsertFactionClearanceLevelAsync(level).ConfigureAwait(false);
+                        Report(factionPhase, "FactionClearanceLevel");
+                    }
+
+                    var groups = await source.GetFactionGroupsAsync(faction.UUID).ConfigureAwait(false);
+                    foreach (var group in groups)
+                    {
+                        ct.ThrowIfCancellationRequested();
+                        await destination.UpsertFactionGroupAsync(group).ConfigureAwait(false);
+                        Report(factionPhase, "FactionPermissionGroup");
+
+                        var groupCaps = await source.GetFactionGroupCapabilitiesAsync(group.UUID).ConfigureAwait(false);
+                        foreach (var gc in groupCaps)
+                        {
+                            ct.ThrowIfCancellationRequested();
+                            await destination.AddFactionGroupCapabilityAsync(gc).ConfigureAwait(false);
+                            Report(factionPhase, "FactionGroupCapability");
+                        }
+
+                        var groupRules = await source.GetFactionGroupSharingRulesAsync(group.UUID).ConfigureAwait(false);
+                        foreach (var rule in groupRules)
+                        {
+                            ct.ThrowIfCancellationRequested();
+                            await destination.UpsertFactionGroupSharingRuleAsync(rule).ConfigureAwait(false);
+                            Report(factionPhase, "FactionGroupSharingRule");
+                        }
+                    }
+
+                    var memberPermsList = await source.GetAllFactionMembersPermissionsAsync(faction.UUID).ConfigureAwait(false);
+                    foreach (var memberPerms in memberPermsList)
+                    {
+                        ct.ThrowIfCancellationRequested();
+                        await destination.UpsertFactionMemberPermissionsAsync(memberPerms).ConfigureAwait(false);
+                        Report(factionPhase, "FactionMemberPermissions");
+
+                        var memberCaps = await source.GetFactionMemberCapabilitiesAsync(faction.UUID, memberPerms.CharacterUUID).ConfigureAwait(false);
+                        foreach (var mc in memberCaps)
+                        {
+                            ct.ThrowIfCancellationRequested();
+                            await destination.AddFactionMemberCapabilityAsync(mc).ConfigureAwait(false);
+                            Report(factionPhase, "FactionMemberCapability");
+                        }
                     }
                 }
 
-                var memberPermsList = await source.GetAllFactionMembersPermissionsAsync(faction.UUID).ConfigureAwait(false);
-                foreach (var memberPerms in memberPermsList)
+                // ── Character permission entities ──
+                foreach (var charUUID in uuids)
                 {
                     ct.ThrowIfCancellationRequested();
-                    await destination.UpsertFactionMemberPermissionsAsync(memberPerms).ConfigureAwait(false);
-                    Report(factionPhase, "FactionMemberPermissions");
+                    string charPermPhase = $"CharPerms {charUUID}";
 
-                    var memberCaps = await source.GetFactionMemberCapabilitiesAsync(faction.UUID, memberPerms.CharacterUUID).ConfigureAwait(false);
-                    foreach (var mc in memberCaps)
+                    var charCaps = await source.GetCharacterCapabilitiesAsync(charUUID).ConfigureAwait(false);
+                    foreach (var cap in charCaps)
                     {
                         ct.ThrowIfCancellationRequested();
-                        await destination.AddFactionMemberCapabilityAsync(mc).ConfigureAwait(false);
-                        Report(factionPhase, "FactionMemberCapability");
+                        await destination.UpsertCharacterCapabilityAsync(cap).ConfigureAwait(false);
+                        Report(charPermPhase, "CharacterCapability");
                     }
+
+                    var charLevels = await source.GetCharacterClearanceLevelsAsync(charUUID).ConfigureAwait(false);
+                    foreach (var level in charLevels)
+                    {
+                        ct.ThrowIfCancellationRequested();
+                        await destination.UpsertCharacterClearanceLevelAsync(level).ConfigureAwait(false);
+                        Report(charPermPhase, "CharacterClearanceLevel");
+                    }
+
+                    var charGroups = await source.GetCharacterGroupsAsync(charUUID).ConfigureAwait(false);
+                    foreach (var cg in charGroups)
+                    {
+                        ct.ThrowIfCancellationRequested();
+                        await destination.UpsertCharacterGroupAsync(cg).ConfigureAwait(false);
+                        Report(charPermPhase, "CharacterPermissionGroup");
+
+                        var cgCaps = await source.GetCharacterGroupCapabilitiesAsync(cg.UUID).ConfigureAwait(false);
+                        foreach (var cgc in cgCaps)
+                        {
+                            ct.ThrowIfCancellationRequested();
+                            await destination.AddCharacterGroupCapabilityAsync(cgc).ConfigureAwait(false);
+                            Report(charPermPhase, "CharacterGroupCapability");
+                        }
+
+                        var cgRules = await source.GetCharacterGroupSharingRulesAsync(cg.UUID).ConfigureAwait(false);
+                        foreach (var cgr in cgRules)
+                        {
+                            ct.ThrowIfCancellationRequested();
+                            await destination.UpsertCharacterGroupSharingRuleAsync(cgr).ConfigureAwait(false);
+                            Report(charPermPhase, "CharacterGroupSharingRule");
+                        }
+                    }
+
+                    var grantees = await source.GetCharacterGranteesAsync(charUUID).ConfigureAwait(false);
+                    foreach (var grantee in grantees)
+                    {
+                        ct.ThrowIfCancellationRequested();
+                        await destination.UpsertCharacterGranteePermissionsAsync(grantee).ConfigureAwait(false);
+                        Report(charPermPhase, "CharacterGranteePermissions");
+
+                        var granteeCaps = await source.GetCharacterGranteeCapabilitiesAsync(charUUID, grantee.GranteeUUID).ConfigureAwait(false);
+                        foreach (var gtc in granteeCaps)
+                        {
+                            ct.ThrowIfCancellationRequested();
+                            await destination.AddCharacterGranteeCapabilityAsync(gtc).ConfigureAwait(false);
+                            Report(charPermPhase, "CharacterGranteeCapability");
+                        }
+                    }
+                }
+
+                // ── Intel migration ──
+                foreach (var charUUID in uuids)
+                {
+                    ct.ThrowIfCancellationRequested();
+                    string intelPhase = $"Intel {charUUID}";
+
+                    var comments = await source.GetIntelCommentsForTargetAsync(charUUID).ConfigureAwait(false);
+                    foreach (var comment in comments)
+                    {
+                        ct.ThrowIfCancellationRequested();
+                        await destination.UpsertIntelCommentAsync(comment).ConfigureAwait(false);
+                        Report(intelPhase, "IntelComment");
+
+                        var shares = await source.GetIntelSharesForCommentAsync(comment.UUID).ConfigureAwait(false);
+                        foreach (var share in shares)
+                        {
+                            ct.ThrowIfCancellationRequested();
+                            await destination.UpsertIntelShareAsync(share).ConfigureAwait(false);
+                            Report(intelPhase, "IntelCommentFactionShare");
+                        }
+                    }
+                }
+
+                // ── Audit entries ──
+                var auditEntries = await source.GetPermissionAuditEntriesAsync().ConfigureAwait(false);
+                foreach (var entry in auditEntries)
+                {
+                    ct.ThrowIfCancellationRequested();
+                    await destination.AppendPermissionAuditEntryAsync(entry).ConfigureAwait(false);
+                    Report("Audit", "PermissionAuditEntry");
                 }
             }
-
-            // ── Character permission entities ──
-            foreach (var charUUID in uuids)
+            catch (NotSupportedException)
             {
-                ct.ThrowIfCancellationRequested();
-                string charPermPhase = $"CharPerms {charUUID}";
-
-                var charCaps = await source.GetCharacterCapabilitiesAsync(charUUID).ConfigureAwait(false);
-                foreach (var cap in charCaps)
-                {
-                    ct.ThrowIfCancellationRequested();
-                    await destination.UpsertCharacterCapabilityAsync(cap).ConfigureAwait(false);
-                    Report(charPermPhase, "CharacterCapability");
-                }
-
-                var charLevels = await source.GetCharacterClearanceLevelsAsync(charUUID).ConfigureAwait(false);
-                foreach (var level in charLevels)
-                {
-                    ct.ThrowIfCancellationRequested();
-                    await destination.UpsertCharacterClearanceLevelAsync(level).ConfigureAwait(false);
-                    Report(charPermPhase, "CharacterClearanceLevel");
-                }
-
-                var charGroups = await source.GetCharacterGroupsAsync(charUUID).ConfigureAwait(false);
-                foreach (var cg in charGroups)
-                {
-                    ct.ThrowIfCancellationRequested();
-                    await destination.UpsertCharacterGroupAsync(cg).ConfigureAwait(false);
-                    Report(charPermPhase, "CharacterPermissionGroup");
-
-                    var cgCaps = await source.GetCharacterGroupCapabilitiesAsync(cg.UUID).ConfigureAwait(false);
-                    foreach (var cgc in cgCaps)
-                    {
-                        ct.ThrowIfCancellationRequested();
-                        await destination.AddCharacterGroupCapabilityAsync(cgc).ConfigureAwait(false);
-                        Report(charPermPhase, "CharacterGroupCapability");
-                    }
-
-                    var cgRules = await source.GetCharacterGroupSharingRulesAsync(cg.UUID).ConfigureAwait(false);
-                    foreach (var cgr in cgRules)
-                    {
-                        ct.ThrowIfCancellationRequested();
-                        await destination.UpsertCharacterGroupSharingRuleAsync(cgr).ConfigureAwait(false);
-                        Report(charPermPhase, "CharacterGroupSharingRule");
-                    }
-                }
-
-                var grantees = await source.GetCharacterGranteesAsync(charUUID).ConfigureAwait(false);
-                foreach (var grantee in grantees)
-                {
-                    ct.ThrowIfCancellationRequested();
-                    await destination.UpsertCharacterGranteePermissionsAsync(grantee).ConfigureAwait(false);
-                    Report(charPermPhase, "CharacterGranteePermissions");
-
-                    var granteeCaps = await source.GetCharacterGranteeCapabilitiesAsync(charUUID, grantee.GranteeUUID).ConfigureAwait(false);
-                    foreach (var gtc in granteeCaps)
-                    {
-                        ct.ThrowIfCancellationRequested();
-                        await destination.AddCharacterGranteeCapabilityAsync(gtc).ConfigureAwait(false);
-                        Report(charPermPhase, "CharacterGranteeCapability");
-                    }
-                }
+                Log.Info("Source backend does not support permissions/intel/audit entities — skipping");
             }
 
-            // ── Intel migration ──
-            foreach (var charUUID in uuids)
+            try
             {
-                ct.ThrowIfCancellationRequested();
-                string intelPhase = $"Intel {charUUID}";
-
-                var comments = await source.GetIntelCommentsForTargetAsync(charUUID).ConfigureAwait(false);
-                foreach (var comment in comments)
-                {
-                    ct.ThrowIfCancellationRequested();
-                    await destination.UpsertIntelCommentAsync(comment).ConfigureAwait(false);
-                    Report(intelPhase, "IntelComment");
-
-                    var shares = await source.GetIntelSharesForCommentAsync(comment.UUID).ConfigureAwait(false);
-                    foreach (var share in shares)
-                    {
-                        ct.ThrowIfCancellationRequested();
-                        await destination.UpsertIntelShareAsync(share).ConfigureAwait(false);
-                        Report(intelPhase, "IntelCommentFactionShare");
-                    }
-                }
+                await ValidateCountsAsync(source, destination, uuids, ct).ConfigureAwait(false);
             }
-
-            // ── Audit entries ──
-            var auditEntries = await source.GetPermissionAuditEntriesAsync().ConfigureAwait(false);
-            foreach (var entry in auditEntries)
+            catch (NotSupportedException)
             {
-                ct.ThrowIfCancellationRequested();
-                await destination.AppendPermissionAuditEntryAsync(entry).ConfigureAwait(false);
-                Report("Audit", "PermissionAuditEntry");
+                Log.Info("Count validation skipped — source backend does not support all entity queries");
             }
-
-            await ValidateCountsAsync(source, destination, uuids, ct).ConfigureAwait(false);
 
             Log.Info("Migration complete — {0} entities processed", totalProcessed);
         }
