@@ -720,7 +720,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: OE2EmpireTracker.Tests/Services/MigrationRoundTripPropertyTests.cs (NEW)_
     - _Verification: Build succeeds_
 
-  - [-] 22.2 Write property tests for JsonSingleFile↔Sqlite round-trip (first 11 entity types)
+  - [x] 22.2 Write property tests for JsonSingleFile↔Sqlite round-trip (first 11 entity types)
     - [FsCheck.NUnit.Property(MaxTest = 100)] for: Colony, Blueprint, Survey, PlayerProfile, DeliveryRoute, DeliveryPlan, PricingPlan, BuildPlan, ShipTemplate, Ship, Station
     - Each test: generate entity, run round-trip helper, assert equality
     - Estimated: ~60 lines (11 short test methods, each ~5 lines)
@@ -729,7 +729,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: MigrationRoundTripPropertyTests.cs (appended)_
     - _Verification: Round-trip tests pass for JsonSingleFile↔Sqlite pair (first 11 types)_
 
-  - [-] 22.3 Write property tests for JsonSingleFile↔Sqlite round-trip (remaining 11 entity types)
+  - [x] 22.3 Write property tests for JsonSingleFile↔Sqlite round-trip (remaining 11 entity types)
     - [FsCheck.NUnit.Property(MaxTest = 100)] for: MarketListing, MarketTransaction, StockPlan, StockProfile, SupplyChain, WarehouseOverflowRule, Asteroid, BankingTransaction, MailMessage, Faction, ExternalCharacter
     - Special focus on MarketTransaction and BankingTransaction decimal precision
     - Estimated: ~60 lines
@@ -738,7 +738,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: MigrationRoundTripPropertyTests.cs (appended)_
     - _Verification: Round-trip tests pass for JsonSingleFile↔Sqlite pair (all 22 types)_
 
-  - [~] 22.4 Write property tests for JsonSingleFile↔JsonMultiFile round-trip (all entity types)
+  - [-] 22.4 Write property tests for JsonSingleFile↔JsonMultiFile round-trip (all entity types)
     - [FsCheck.NUnit.Property(MaxTest = 100)] for all 22 entity types
     - Can use a parameterized helper since both are JSON — differences are in file layout, not serialization
     - Estimated: ~60 lines (reuse same test pattern with different backend pair factory)
@@ -747,7 +747,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: MigrationRoundTripPropertyTests.cs (appended) OR separate fixture class_
     - _Verification: Round-trip tests pass for JsonSingleFile↔JsonMultiFile pair_
 
-  - [~] 22.5 Write property tests for Sqlite↔Postgres round-trip (all entity types)
+  - [-] 22.5 Write property tests for Sqlite↔Postgres round-trip (all entity types)
     - [FsCheck.NUnit.Property(MaxTest = 100)] for all 22 entity types
     - This pair specifically validates the REAL→TEXT and DOUBLE PRECISION→NUMERIC fixes
     - Special focus: decimal values with many decimal places, negative decimals, zero
