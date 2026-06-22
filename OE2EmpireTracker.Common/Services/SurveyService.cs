@@ -61,6 +61,7 @@ namespace OE2EmpireTracker.Services
             survey.Resources = DeepCopyResources(request.Resources);
             survey.Properties = new Dictionary<string, string>(request.Properties);
 
+            _playerContext.MarkDirty<Survey>(uuid);
             _playerContext.WriteContext();
             _playerContext.OnSurveyDataChanged(uuid);
             return new ReadOnlySurvey(survey);
@@ -97,6 +98,7 @@ namespace OE2EmpireTracker.Services
                 survey.UUID);
 
             _playerContext.AddSurvey(survey);
+            _playerContext.MarkDirty<Survey>(survey.UUID);
             _playerContext.WriteContext();
             _playerContext.OnSurveyDataChanged(survey.UUID);
             return new ReadOnlySurvey(survey);
@@ -121,6 +123,7 @@ namespace OE2EmpireTracker.Services
             Log.Info("SurveyService.Delete: UUID={0} planet='{1}'", uuid, survey.PlanetName);
 
             _playerContext.RemoveSurvey(survey);
+            _playerContext.MarkDeleted<Survey>(uuid);
             _playerContext.WriteContext();
             _playerContext.OnSurveyDataChanged(uuid);
         }
@@ -163,6 +166,7 @@ namespace OE2EmpireTracker.Services
 
             SurveyImportHelper.LinkOrCreateAsteroid(survey, _playerContext);
 
+            _playerContext.MarkDirty<Survey>(survey.UUID);
             _playerContext.WriteContext();
             _playerContext.OnSurveyDataChanged(survey.UUID);
             return new ReadOnlySurvey(survey);

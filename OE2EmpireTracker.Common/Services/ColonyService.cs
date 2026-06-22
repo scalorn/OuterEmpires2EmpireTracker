@@ -68,6 +68,7 @@ namespace OE2EmpireTracker.Services
                 colony.ColonyLock.ExitWriteLock();
             }
 
+            _playerContext.MarkDirty<Colony>(uuid);
             _playerContext.WriteContext();
             _playerContext.OnColonyDataChanged(uuid);
             return new ReadOnlyColony(colony);
@@ -96,6 +97,7 @@ namespace OE2EmpireTracker.Services
                 colony.UUID);
 
             _playerContext.AddColony(colony);
+            _playerContext.MarkDirty<Colony>(colony.UUID);
             _playerContext.WriteContext();
             _playerContext.OnColonyDataChanged(colony.UUID);
             return new ReadOnlyColony(colony);
@@ -120,6 +122,7 @@ namespace OE2EmpireTracker.Services
             Log.Info("ColonyService.Delete: UUID={0} planet='{1}'", uuid, colony.PlanetName);
 
             _playerContext.RemoveColony(colony);
+            _playerContext.MarkDeleted<Colony>(uuid);
             _playerContext.WriteContext();
             _playerContext.OnColonyDataChanged(uuid);
         }
@@ -190,6 +193,7 @@ namespace OE2EmpireTracker.Services
                 }
             }
 
+            _playerContext.MarkDirty<Colony>(colony.UUID);
             _playerContext.WriteContext();
             _playerContext.OnColonyDataChanged(colony.UUID);
             return new ReadOnlyColony(colony);
@@ -239,6 +243,7 @@ namespace OE2EmpireTracker.Services
                 colony.ColonyLock.ExitWriteLock();
             }
 
+            _playerContext.MarkDirty<Colony>(colonyUUID);
             _playerContext.WriteContext();
             _playerContext.OnColonyDataChanged(colonyUUID);
         }
@@ -281,6 +286,7 @@ namespace OE2EmpireTracker.Services
                 colony.ColonyLock.ExitWriteLock();
             }
 
+            _playerContext.MarkDirty<Colony>(colonyUUID);
             _playerContext.WriteContext();
             _playerContext.OnColonyDataChanged(colonyUUID);
         }
@@ -310,6 +316,7 @@ namespace OE2EmpireTracker.Services
                 colony.ColonyLock.ExitWriteLock();
             }
 
+            _playerContext.MarkDirty<Colony>(colonyUUID);
             _playerContext.WriteContext();
             _playerContext.OnColonyDataChanged(colonyUUID);
         }
@@ -339,6 +346,7 @@ namespace OE2EmpireTracker.Services
                 colony.ColonyLock.ExitWriteLock();
             }
 
+            _playerContext.MarkDirty<Colony>(colonyUUID);
             _playerContext.WriteContext();
             _playerContext.OnColonyDataChanged(colonyUUID);
         }
@@ -379,6 +387,7 @@ namespace OE2EmpireTracker.Services
                 colony.ColonyLock.ExitWriteLock();
             }
 
+            _playerContext.MarkDirty<Colony>(colonyUUID);
             _playerContext.WriteContext();
             _playerContext.OnColonyDataChanged(colonyUUID);
         }
@@ -415,6 +424,7 @@ namespace OE2EmpireTracker.Services
                 colony.ColonyLock.ExitWriteLock();
             }
 
+            _playerContext.MarkDirty<Colony>(colonyUUID);
             _playerContext.WriteContext();
             _playerContext.OnColonyDataChanged(colonyUUID);
         }
@@ -457,6 +467,7 @@ namespace OE2EmpireTracker.Services
                 colony.ColonyLock.ExitWriteLock();
             }
 
+            _playerContext.MarkDirty<Colony>(colonyUUID);
             _playerContext.WriteContext();
             _playerContext.OnColonyDataChanged(colonyUUID);
         }
@@ -505,6 +516,7 @@ namespace OE2EmpireTracker.Services
                 colony.ColonyLock.ExitWriteLock();
             }
 
+            _playerContext.MarkDirty<Colony>(colonyUUID);
             _playerContext.WriteContext();
             _playerContext.OnColonyDataChanged(colonyUUID);
         }
@@ -536,7 +548,7 @@ namespace OE2EmpireTracker.Services
                 colony.ColonyLock.ExitWriteLock();
             }
 
-            // TODO: Call MarkDirty<Colony>(colonyUUID) when DirtyTracker is wired up (task 6.1)
+            _playerContext.MarkDirty<Colony>(colonyUUID);
             _playerContext.WriteContext();
             _playerContext.OnColonyDataChanged(colonyUUID);
         }

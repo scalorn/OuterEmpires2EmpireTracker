@@ -75,6 +75,7 @@ namespace OE2EmpireTracker.Services
                 }
             }
 
+            _playerContext.MarkDirty<PlayerProfile>(uuid);
             _playerContext.WriteContext();
             _playerContext.OnPlayerProfileDataChanged(uuid);
             return new ReadOnlyPlayerProfile(profile);
@@ -132,6 +133,7 @@ namespace OE2EmpireTracker.Services
             }
 
             _playerContext.AddPlayerProfile(profile);
+            _playerContext.MarkDirty<PlayerProfile>(profile.UUID);
             _playerContext.WriteContext();
             _playerContext.OnPlayerProfilesChanged();
             _playerContext.OnPlayerProfileDataChanged(profile.UUID);
@@ -152,6 +154,7 @@ namespace OE2EmpireTracker.Services
 
             _playerContext.RemovePlayerProfile(profile);
             _playerContext.CascadeDeletePlayer(uuid);
+            _playerContext.MarkDeleted<PlayerProfile>(uuid);
             _playerContext.WriteContext();
             _playerContext.OnPlayerProfilesChanged();
             _playerContext.OnPlayerProfileDataChanged(uuid);
@@ -189,6 +192,7 @@ namespace OE2EmpireTracker.Services
                 target = tempProfile;
             }
 
+            _playerContext.MarkDirty<PlayerProfile>(target.UUID);
             _playerContext.WriteContext();
             _playerContext.OnPlayerProfilesChanged();
             _playerContext.OnPlayerProfileDataChanged(target.UUID);

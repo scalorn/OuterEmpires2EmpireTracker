@@ -212,7 +212,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Verification: Build succeeds_
 
 
-- [ ] 7. PlayerContext WriteContext backend integration
+- [x] 7. PlayerContext WriteContext backend integration
   - [x] 7.1 Modify WriteContext for backend routing and full-file path
     - Add branching at top of WriteContext: WritesBlocked check → ServerOnly check → no-backend check → backend dispatch
     - When backend is JsonSingleFileBackend: serialize full PlayerRoot (reuse existing serialization), call UpsertGlobalDataAsync via Task.Run
@@ -247,7 +247,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/PlayerContext.cs (modified)_
     - _Verification: Build succeeds_
 
-  - [-] 7.4 Write unit tests for PlayerContext backend integration
+  - [x] 7.4 Write unit tests for PlayerContext backend integration
     - Test: WriteContext with null backend and no FilePath logs warning, no crash
     - Test: WriteContext with null backend but FilePath writes file (legacy path preserved)
     - Test: WriteContext with JsonSingleFileBackend mock calls UpsertGlobalDataAsync
@@ -262,7 +262,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Verification: PlayerContextBackendTests pass in vstest.console_
 
 - [ ] 8. Dirty entity tracking in service classes (batch 1: Colony, Blueprint, Survey, PlayerProfile)
-  - [~] 8.1 Add MarkDirty/MarkDeleted calls to ColonyService
+  - [-] 8.1 Add MarkDirty/MarkDeleted calls to ColonyService
     - ColonyService has 13 public methods (470 lines). Add MarkDirty<Colony> after each mutation.
     - Identify mutations by looking for list Add/Remove and property assignments on colony entities
     - Also wire the new ProcessColonyTick (from task 3.1) if not already calling MarkDirty
@@ -271,7 +271,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/ColonyService.cs (modified)_
     - _Verification: Build succeeds; existing ColonyService tests pass_
 
-  - [~] 8.2 Add MarkDirty/MarkDeleted calls to BlueprintService
+  - [-] 8.2 Add MarkDirty/MarkDeleted calls to BlueprintService
     - BlueprintService has 7 public methods (654 lines). Add MarkDirty<Blueprint> after mutations.
     - Note: some methods operate on batches (e.g., import) — MarkDirty each entity individually
     - _Satisfies: Req 2, Criterion 3_
@@ -279,14 +279,14 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/BlueprintService.cs (modified)_
     - _Verification: Build succeeds; existing BlueprintService tests pass_
 
-  - [~] 8.3 Add MarkDirty/MarkDeleted calls to SurveyService
+  - [-] 8.3 Add MarkDirty/MarkDeleted calls to SurveyService
     - SurveyService has 4 public methods (160 lines). Simple — add MarkDirty<Survey> after mutations.
     - _Satisfies: Req 2, Criterion 3_
     - _Inputs: Common/Services/SurveyService.cs (160 lines)_
     - _Output: Common/Services/SurveyService.cs (modified)_
     - _Verification: Build succeeds_
 
-  - [~] 8.4 Add MarkDirty/MarkDeleted calls to PlayerProfileService
+  - [x] 8.4 Add MarkDirty/MarkDeleted calls to PlayerProfileService
     - PlayerProfileService has 4 public methods (210 lines). Add MarkDirty<PlayerProfile> after mutations.
     - _Satisfies: Req 2, Criterion 3_
     - _Inputs: Common/Services/PlayerProfileService.cs (210 lines)_
@@ -445,7 +445,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Verification: EmpireContextBackendTests pass in vstest.console_
 
 
-- [ ] 14. Backend selection preferences
+- [x] 14. Backend selection preferences
   - [x] 14.1 Add storage backend properties to UIPreferences
     - Add StorageBackendType (string, default "JsonSingleFile")
     - Add StoragePath, StorageAwsRegion, StorageTablePrefix, StorageConnectionString
@@ -470,7 +470,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/PreferencesStore.cs (modified)_
     - _Verification: Build succeeds_
 
-  - [-] 14.3 Write unit tests for PreferencesStore storage config resolution
+  - [x] 14.3 Write unit tests for PreferencesStore storage config resolution
     - Test: valid backend types parsed correctly (each enum value)
     - Test: unrecognized type falls back to JsonSingleFile with warning
     - Test: null/empty falls back to JsonSingleFile

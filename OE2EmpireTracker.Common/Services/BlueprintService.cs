@@ -76,9 +76,14 @@ namespace OE2EmpireTracker.Services
             // Persist to the correct context
             bool isGlobal = _empireContext.GlobalBlueprintList.Contains(bp);
             if (isGlobal)
+            {
                 _empireContext.WriteContext();
+            }
             else
+            {
+                _playerContext.MarkDirty<Blueprint>(uuid);
                 _playerContext.WriteContext();
+            }
 
             _playerContext.OnBlueprintDataChanged(uuid);
             return new ReadOnlyBlueprint(bp);
@@ -134,6 +139,7 @@ namespace OE2EmpireTracker.Services
             {
                 bp.OwnerUUID = _playerContext.CurrentPlayerUUID;
                 _playerContext.AddBlueprint(bp);
+                _playerContext.MarkDirty<Blueprint>(bp.UUID);
                 _playerContext.WriteContext();
             }
 
@@ -154,6 +160,7 @@ namespace OE2EmpireTracker.Services
             if (bp != null)
             {
                 _playerContext.RemoveBlueprint(bp);
+                _playerContext.MarkDeleted<Blueprint>(uuid);
                 _playerContext.WriteContext();
             }
             else
@@ -201,6 +208,11 @@ namespace OE2EmpireTracker.Services
             var importedBP = BlueprintImportHandler.MergeAndPersist(
                 findResult, temp, _playerContext, _empireContext);
 
+            if (!findResult.IsGlobal)
+            {
+                _playerContext.MarkDirty<Blueprint>(importedBP.UUID);
+            }
+
             return new ReadOnlyBlueprint(importedBP);
         }
 
@@ -221,6 +233,7 @@ namespace OE2EmpireTracker.Services
             Log.Info("BlueprintService.MoveToGlobal: UUID={0} name='{1}'", uuid, bp.Name);
 
             _playerContext.RemoveBlueprint(bp);
+            _playerContext.MarkDeleted<Blueprint>(uuid);
             bp.OwnerUUID = string.Empty;
             _empireContext.AddGlobalBlueprint(bp);
 
@@ -248,6 +261,7 @@ namespace OE2EmpireTracker.Services
             _empireContext.RemoveGlobalBlueprint(bp);
             bp.OwnerUUID = _playerContext.CurrentPlayerUUID;
             _playerContext.AddBlueprint(bp);
+            _playerContext.MarkDirty<Blueprint>(uuid);
 
             _empireContext.WriteContext();
             _playerContext.WriteContext();
@@ -273,9 +287,14 @@ namespace OE2EmpireTracker.Services
 
             bool isGlobal = _empireContext.GlobalBlueprintList.Contains(bp);
             if (isGlobal)
+            {
                 _empireContext.WriteContext();
+            }
             else
+            {
+                _playerContext.MarkDirty<Blueprint>(uuid);
                 _playerContext.WriteContext();
+            }
 
             _playerContext.OnBlueprintDataChanged(uuid);
             return new ReadOnlyBlueprint(bp);
