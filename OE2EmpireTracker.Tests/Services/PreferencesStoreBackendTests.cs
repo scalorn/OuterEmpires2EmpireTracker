@@ -106,7 +106,8 @@ namespace OE2EmpireTracker.Tests.Services
 
             string expected = System.IO.Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "OE2EmpireTracker");
+                "OE2EmpireTracker",
+                "OE2EmpireTracker.db");
             Assert.That(config.ConnectionString, Is.EqualTo(expected));
         }
 
@@ -129,7 +130,7 @@ namespace OE2EmpireTracker.Tests.Services
 
             var config = store.ResolveStorageConfig();
 
-            Assert.That(config.ConnectionString, Is.EqualTo(@"D:\Data\MyDb"));
+            Assert.That(config.ConnectionString, Is.EqualTo(@"D:\Data\MyDb\OE2EmpireTracker.db"));
         }
 
         [Test]

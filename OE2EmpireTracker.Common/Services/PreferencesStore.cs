@@ -93,11 +93,17 @@ namespace OE2EmpireTracker.Services
                     break;
 
                 case Common.Interfaces.StorageBackendType.Sqlite:
-                    config.ConnectionString = !string.IsNullOrEmpty(Preferences.StoragePath)
+                    string sqliteDir = !string.IsNullOrEmpty(Preferences.StoragePath)
                         ? Preferences.StoragePath
                         : Path.Combine(
                             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                             "OE2EmpireTracker");
+                    if (!Directory.Exists(sqliteDir))
+                    {
+                        Directory.CreateDirectory(sqliteDir);
+                    }
+
+                    config.ConnectionString = Path.Combine(sqliteDir, "OE2EmpireTracker.db");
                     break;
 
                 case Common.Interfaces.StorageBackendType.DynamoDb:
