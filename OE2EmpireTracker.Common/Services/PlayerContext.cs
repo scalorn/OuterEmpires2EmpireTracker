@@ -797,18 +797,26 @@ namespace OE2EmpireTracker.Services
             var backend = _storageBackend;
             string charUUID = _currentPlayerUUID;
 
-            if (backend is JsonSingleFileBackend)
+            try
             {
-                string jsonContent = SerializePlayerRoot();
-                Task.Run(() => backend.UpsertGlobalDataAsync("PlayerRoot:" + charUUID, jsonContent))
-                    .GetAwaiter().GetResult();
-                DirtyTracker.ClearAll();
-                Log.Info("Player data persisted to JsonSingleFileBackend for {0}", charUUID);
+                if (backend is JsonSingleFileBackend)
+                {
+                    string jsonContent = SerializePlayerRoot();
+                    Task.Run(() => backend.UpsertGlobalDataAsync("PlayerRoot:" + charUUID, jsonContent))
+                        .GetAwaiter().GetResult();
+                    DirtyTracker.ClearAll();
+                    Log.Info("Player data persisted to JsonSingleFileBackend for {0}", charUUID);
+                }
+                else
+                {
+                    // Incremental write: only dirty entities (task 7.2)
+                    PersistDirtyEntities(backend, charUUID);
+                }
             }
-            else
+            catch (StorageWriteException)
             {
-                // Incremental write: only dirty entities (task 7.2)
-                PersistDirtyEntities(backend, charUUID);
+                WritesBlocked = true;
+                throw;
             }
         }
 

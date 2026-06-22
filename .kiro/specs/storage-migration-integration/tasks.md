@@ -213,7 +213,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
 
 
 - [ ] 7. PlayerContext WriteContext backend integration
-  - [-] 7.1 Modify WriteContext for backend routing and full-file path
+  - [x] 7.1 Modify WriteContext for backend routing and full-file path
     - Add branching at top of WriteContext: WritesBlocked check → ServerOnly check → no-backend check → backend dispatch
     - When backend is JsonSingleFileBackend: serialize full PlayerRoot (reuse existing serialization), call UpsertGlobalDataAsync via Task.Run
     - Clear all dirty flags after successful full-file write
@@ -237,7 +237,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/PlayerContext.cs (modified)_
     - _Verification: Build succeeds_
 
-  - [~] 7.3 Add StorageWriteException handling in WriteContext
+  - [x] 7.3 Add StorageWriteException handling in WriteContext
     - Wrap backend calls in try/catch(StorageWriteException)
     - On catch: set WritesBlocked = true, propagate exception
     - Already-persisted entities keep cleared dirty flags; unpersisted retain flags (natural consequence of per-entity clearing)
@@ -247,7 +247,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/PlayerContext.cs (modified)_
     - _Verification: Build succeeds_
 
-  - [~] 7.4 Write unit tests for PlayerContext backend integration
+  - [-] 7.4 Write unit tests for PlayerContext backend integration
     - Test: WriteContext with null backend and no FilePath logs warning, no crash
     - Test: WriteContext with null backend but FilePath writes file (legacy path preserved)
     - Test: WriteContext with JsonSingleFileBackend mock calls UpsertGlobalDataAsync
@@ -470,7 +470,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/PreferencesStore.cs (modified)_
     - _Verification: Build succeeds_
 
-  - [~] 14.3 Write unit tests for PreferencesStore storage config resolution
+  - [-] 14.3 Write unit tests for PreferencesStore storage config resolution
     - Test: valid backend types parsed correctly (each enum value)
     - Test: unrecognized type falls back to JsonSingleFile with warning
     - Test: null/empty falls back to JsonSingleFile
