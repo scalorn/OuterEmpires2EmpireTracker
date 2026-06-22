@@ -538,7 +538,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/MigrationService.cs (NEW)_
     - _Verification: Build succeeds_
 
-  - [-] 18.2 Implement server-global data migration in MigrationService
+  - [x] 18.2 Implement server-global data migration in MigrationService
     - Migrate Factions: source.GetAllFactionsAsync() → destination.UpsertFactionAsync() per entity
     - Migrate ExternalCharacters, StarSystems, Tokens, MembershipActions (same pattern)
     - Report progress per entity type
