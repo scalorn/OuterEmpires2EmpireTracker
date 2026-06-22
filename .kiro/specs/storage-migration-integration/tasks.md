@@ -596,7 +596,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/MigrationService.cs (modified)_
     - _Verification: Build succeeds_
 
-  - [-] 18.8 Write unit tests for MigrationService
+  - [x] 18.8 Write unit tests for MigrationService
     - Test: empty source → empty destination, no errors, validation passes
     - Test: single character migration transfers all entity types (use InMemory or JsonSingleFile backend)
     - Test: count validation passes on correct migration
