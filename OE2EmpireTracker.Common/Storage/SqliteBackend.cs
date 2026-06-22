@@ -7609,6 +7609,13 @@ DROP TABLE MarketTransactions_old;
                 return;
             }
 
+            // Repair duplicate sequences before inserting — renumber all stops
+            // sequentially to ensure uniqueness without losing any data.
+            for (int i = 0; i < entity.Stops.Count; i++)
+            {
+                entity.Stops[i].Sequence = i + 1;
+            }
+
             foreach (var stop in entity.Stops)
             {
                 using (var cmd = conn.CreateCommand())
