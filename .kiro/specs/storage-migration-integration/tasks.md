@@ -704,7 +704,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
 
 
 - [ ] 22. Round-trip fidelity property tests — test infrastructure
-  - [-] 22.1 Create MigrationRoundTripPropertyTests fixture with round-trip helper
+  - [x] 22.1 Create MigrationRoundTripPropertyTests fixture with round-trip helper
     - Create OE2EmpireTracker.Tests/Services/MigrationRoundTripPropertyTests.cs
     - Implement RoundTripPreservesEquality<T> helper method:
       1. Create temp source backend, write entity
@@ -720,7 +720,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: OE2EmpireTracker.Tests/Services/MigrationRoundTripPropertyTests.cs (NEW)_
     - _Verification: Build succeeds_
 
-  - [~] 22.2 Write property tests for JsonSingleFile↔Sqlite round-trip (first 11 entity types)
+  - [-] 22.2 Write property tests for JsonSingleFile↔Sqlite round-trip (first 11 entity types)
     - [FsCheck.NUnit.Property(MaxTest = 100)] for: Colony, Blueprint, Survey, PlayerProfile, DeliveryRoute, DeliveryPlan, PricingPlan, BuildPlan, ShipTemplate, Ship, Station
     - Each test: generate entity, run round-trip helper, assert equality
     - Estimated: ~60 lines (11 short test methods, each ~5 lines)
@@ -729,7 +729,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: MigrationRoundTripPropertyTests.cs (appended)_
     - _Verification: Round-trip tests pass for JsonSingleFile↔Sqlite pair (first 11 types)_
 
-  - [~] 22.3 Write property tests for JsonSingleFile↔Sqlite round-trip (remaining 11 entity types)
+  - [-] 22.3 Write property tests for JsonSingleFile↔Sqlite round-trip (remaining 11 entity types)
     - [FsCheck.NUnit.Property(MaxTest = 100)] for: MarketListing, MarketTransaction, StockPlan, StockProfile, SupplyChain, WarehouseOverflowRule, Asteroid, BankingTransaction, MailMessage, Faction, ExternalCharacter
     - Special focus on MarketTransaction and BankingTransaction decimal precision
     - Estimated: ~60 lines
