@@ -51,6 +51,10 @@ namespace OE2EmpireTracker.Services
 
         private SystemRepository _systemRepository;
 
+#pragma warning disable CS0414 // Field is assigned but its value is never used (consumed in task 13.4/13.6)
+        private bool _needsSeedWrite;
+#pragma warning restore CS0414
+
         /// <summary>
         /// Internal constructor for test infrastructure. Accepts pre-parsed
         /// BaselineRoot and PlayerRoot so tests can skip disk I/O.
@@ -856,6 +860,56 @@ namespace OE2EmpireTracker.Services
 
                 return null;
             };
+        }
+
+        /// <summary>
+        /// Loads baseline data from the configured storage backend.
+        /// For JSON backends, retrieves the full BaselineRoot as a single document.
+        /// For relational backends, loads each baseline collection individually.
+        /// If the backend is empty, sets _needsSeedWrite so that seeding from disk can occur.
+        /// </summary>
+        private void LoadBaselineFromBackend()
+        {
+            var backend = StorageBackend;
+            var type = StorageBackendType.Value;
+            BaselineRoot baselineRoot = null;
+
+            if (type == Common.Interfaces.StorageBackendType.JsonSingleFile
+                || type == Common.Interfaces.StorageBackendType.JsonMultiFile)
+            {
+                string json = Task.Run(() => backend.GetGlobalDataAsync("BaselineRoot"))
+                    .GetAwaiter().GetResult();
+                if (!string.IsNullOrEmpty(json))
+                {
+                    baselineRoot = JsonConvert.DeserializeObject<BaselineRoot>(json);
+                }
+            }
+            else
+            {
+                // TODO: Task 13.3 — relational backend path (Sqlite/DynamoDb/Postgres)
+            }
+
+            if (baselineRoot == null)
+            {
+                _needsSeedWrite = true;
+                // TODO: Task 13.4 — seed from BaselineData.json on disk
+                return;
+            }
+
+            DataVersion = baselineRoot.DataVersion;
+            GameConstants = baselineRoot.GameConstants ?? new BaselineGameConstants();
+            InitBlueprintTypes(baselineRoot);
+            InitShipClasses(baselineRoot);
+            InitTechLevels(baselineRoot);
+            InitEvolutions(baselineRoot);
+            InitResources(baselineRoot);
+            InitResourceGroups(baselineRoot);
+            InitResourcePurities(baselineRoot);
+            InitCommodities(baselineRoot);
+            InitRefiningRecipes(baselineRoot);
+            InitResearchTimes(baselineRoot);
+            InitGlobalBlueprints(baselineRoot);
+            InitPropertyTypes(baselineRoot);
         }
 
         /// <summary>

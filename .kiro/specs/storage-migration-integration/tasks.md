@@ -365,7 +365,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
 
 
 - [ ] 13. EmpireContext storage backend integration
-  - [-] 13.1 Add StorageBackend and StorageBackendType properties to EmpireContext
+  - [x] 13.1 Add StorageBackend and StorageBackendType properties to EmpireContext
     - Add `public IStorageBackend StorageBackend { get; set; }` property
     - Add `public StorageBackendType? StorageBackendType { get; set; }` property
     - When no backend (null), preserve existing file I/O behavior unchanged
@@ -376,7 +376,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/EmpireContext.cs (modified)_
     - _Verification: Build succeeds; existing tests pass (backend is null → legacy behavior)_
 
-  - [~] 13.2 Implement LoadBaselineFromBackend — JSON backend path
+  - [-] 13.2 Implement LoadBaselineFromBackend — JSON backend path
     - Add private `LoadBaselineFromBackend()` method
     - For JSON backends (JsonSingleFile/JsonMultiFile): call GetGlobalDataAsync("BaselineRoot"), deserialize into BaselineRoot
     - If result is null/empty: set _needsSeedWrite flag (handled in 13.4)
@@ -387,7 +387,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/EmpireContext.cs (modified)_
     - _Verification: Build succeeds_
 
-  - [~] 13.3 Implement LoadBaselineFromBackend — relational backend path
+  - [-] 13.3 Implement LoadBaselineFromBackend — relational backend path
     - For relational backends (Sqlite/DynamoDb/Postgres): call typed Get methods for each baseline collection
     - GetBaselineGameConstantsAsync, GetAllBlueprintTypesAsync, GetAllShipClassesAsync, GetAllTechLevelsAsync, GetAllCommoditiesAsync, GetAllRefiningRecipesAsync, GetAllResearchTimesAsync, GetAllPropertyTypeDefinitionsAsync
     - If constants is null: set _needsSeedWrite flag
