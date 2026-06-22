@@ -692,5 +692,333 @@ namespace OE2EmpireTracker.Tests.Services
         {
             return Arb.From(GenMarketTransaction());
         }
+
+        /// <summary>
+        /// Generates a PricingPlan with key fields for round-trip testing.
+        /// </summary>
+        public static Gen<PricingPlan> GenPricingPlan()
+        {
+            return from uuid in GenHelpers.GenUUID
+                   from ownerUuid in GenHelpers.GenUUID
+                   from name in GenHelpers.GenNonEmptyString
+                   from description in GenHelpers.GenNonEmptyString
+                   from fixedCost in GenHelpers.GenPositiveDecimal
+                   from hourlyCost in GenHelpers.GenPositiveDecimal
+                   from priceCount in Gen.Choose(0, 3)
+                   from priceKeys in Gen.ListOf(priceCount, GenHelpers.GenNonEmptyString)
+                   from priceValues in Gen.ListOf(priceCount, GenHelpers.GenPositiveDecimal)
+                   select BuildPricingPlan(
+                       uuid, ownerUuid, name, description,
+                       fixedCost, hourlyCost,
+                       priceKeys.ToList(), priceValues.ToList());
+        }
+
+        private static PricingPlan BuildPricingPlan(
+            string uuid,
+            string ownerUuid,
+            string name,
+            string description,
+            decimal fixedCost,
+            decimal hourlyCost,
+            List<string> priceKeys,
+            List<decimal> priceValues)
+        {
+            var plan = new PricingPlan
+            {
+                UUID = uuid,
+                OwnerUUID = ownerUuid,
+                Name = name,
+                Description = description,
+                FixedCostPerItem = fixedCost,
+                HourlyCostRate = hourlyCost,
+            };
+
+            for (int i = 0; i < priceKeys.Count; i++)
+            {
+                plan.ResourcePrices[priceKeys[i]] = priceValues[i];
+            }
+
+            return plan;
+        }
+
+        /// <summary>
+        /// Generates a BuildItem with key fields populated.
+        /// </summary>
+        public static Gen<BuildItem> GenBuildItem()
+        {
+            return from uuid in GenHelpers.GenUUID
+                   from itemType in Gen.Elements(
+                       BuildItemType.Manufactory,
+                       BuildItemType.Commodity,
+                       BuildItemType.ShipTemplate,
+                       BuildItemType.Mining,
+                       BuildItemType.Refining,
+                       BuildItemType.Research)
+                   from status in Gen.Elements(
+                       BuildItemStatus.Staged,
+                       BuildItemStatus.Delivering,
+                       BuildItemStatus.Ready,
+                       BuildItemStatus.InProgress,
+                       BuildItemStatus.Completed)
+                   from itemName in GenHelpers.GenNonEmptyString
+                   from quantity in Gen.Choose(1, 100)
+                   select new BuildItem
+                   {
+                       UUID = uuid,
+                       ItemType = itemType,
+                       Status = status,
+                       ItemName = itemName,
+                       Quantity = quantity,
+                   };
+        }
+
+        /// <summary>
+        /// Generates a BuildPlan with key fields for round-trip testing.
+        /// </summary>
+        public static Gen<BuildPlan> GenBuildPlan()
+        {
+            return from uuid in GenHelpers.GenUUID
+                   from ownerUuid in GenHelpers.GenUUID
+                   from name in GenHelpers.GenNonEmptyString
+                   from description in GenHelpers.GenNonEmptyString
+                   from isActive in Arb.Generate<bool>()
+                   from itemCount in Gen.Choose(0, 3)
+                   from items in Gen.ListOf(itemCount, GenBuildItem())
+                   select new BuildPlan
+                   {
+                       UUID = uuid,
+                       OwnerUUID = ownerUuid,
+                       Name = name,
+                       Description = description,
+                       IsActive = isActive,
+                       Items = items.ToList(),
+                   };
+        }
+
+        /// <summary>
+        /// Generates a StockTarget with key fields populated.
+        /// </summary>
+        public static Gen<StockTarget> GenStockTarget()
+        {
+            return from uuid in GenHelpers.GenUUID
+                   from itemType in Gen.Elements(
+                       ItemType.ItemTypeEnum.Commodity,
+                       ItemType.ItemTypeEnum.Resource,
+                       ItemType.ItemTypeEnum.ShipPart,
+                       ItemType.ItemTypeEnum.Munition)
+                   from itemName in GenHelpers.GenNonEmptyString
+                   from targetQty in Gen.Choose(1, 10000)
+                   from critThreshold in Gen.Choose(0, 500)
+                   from scope in Gen.Elements(
+                       StockTargetScope.EmpireWide,
+                       StockTargetScope.Colony,
+                       StockTargetScope.Station,
+                       StockTargetScope.Market,
+                       StockTargetScope.StationPlusMarket)
+                   select new StockTarget
+                   {
+                       UUID = uuid,
+                       ItemType = itemType,
+                       ItemName = itemName,
+                       TargetQuantity = targetQty,
+                       CriticalThreshold = critThreshold,
+                       Scope = scope,
+                   };
+        }
+
+        /// <summary>
+        /// Generates a StockPlan with key fields for round-trip testing.
+        /// </summary>
+        public static Gen<StockPlan> GenStockPlan()
+        {
+            return from uuid in GenHelpers.GenUUID
+                   from ownerUuid in GenHelpers.GenUUID
+                   from name in GenHelpers.GenNonEmptyString
+                   from isActive in Arb.Generate<bool>()
+                   from targetCount in Gen.Choose(0, 3)
+                   from targets in Gen.ListOf(targetCount, GenStockTarget())
+                   select new StockPlan
+                   {
+                       UUID = uuid,
+                       OwnerUUID = ownerUuid,
+                       Name = name,
+                       IsActive = isActive,
+                       Targets = targets.ToList(),
+                   };
+        }
+
+        /// <summary>
+        /// Generates a StockProfileEntry with key fields populated.
+        /// </summary>
+        public static Gen<StockProfileEntry> GenStockProfileEntry()
+        {
+            return from groupId in GenHelpers.GenNonEmptyString
+                   from stockPlanUuid in GenHelpers.GenUUID
+                   select new StockProfileEntry
+                   {
+                       GroupID = groupId,
+                       StockPlanUUID = stockPlanUuid,
+                   };
+        }
+
+        /// <summary>
+        /// Generates a StockProfile with key fields for round-trip testing.
+        /// </summary>
+        public static Gen<StockProfile> GenStockProfile()
+        {
+            return from uuid in GenHelpers.GenUUID
+                   from ownerUuid in GenHelpers.GenUUID
+                   from name in GenHelpers.GenNonEmptyString
+                   from isActive in Arb.Generate<bool>()
+                   from entryCount in Gen.Choose(0, 3)
+                   from entries in Gen.ListOf(entryCount, GenStockProfileEntry())
+                   select new StockProfile
+                   {
+                       UUID = uuid,
+                       OwnerUUID = ownerUuid,
+                       Name = name,
+                       IsActive = isActive,
+                       Entries = entries.ToList(),
+                   };
+        }
+
+        /// <summary>
+        /// Generates a SupplyChainStage with key fields populated.
+        /// </summary>
+        public static Gen<SupplyChainStage> GenSupplyChainStage()
+        {
+            return from sequence in Gen.Choose(0, 10)
+                   from stageType in Gen.Elements(
+                       SupplyChainStageType.Mine,
+                       SupplyChainStageType.AsteroidMine,
+                       SupplyChainStageType.PickUp,
+                       SupplyChainStageType.Refine,
+                       SupplyChainStageType.Deliver,
+                       SupplyChainStageType.Research)
+                   from locationType in Gen.Elements(
+                       DestinationType.Colony,
+                       DestinationType.Station,
+                       DestinationType.Asteroid,
+                       DestinationType.Ship)
+                   from locationUuid in GenHelpers.GenUUID
+                   from resourceName in GenHelpers.GenNonEmptyString
+                   from threshold in Gen.Choose(0, 5000)
+                   from rate in GenHelpers.GenPositiveDecimal
+                   select new SupplyChainStage
+                   {
+                       Sequence = sequence,
+                       StageType = stageType,
+                       LocationType = locationType,
+                       LocationUUID = locationUuid,
+                       ResourceName = resourceName,
+                       AccumulationThreshold = threshold,
+                       ProductionRatePerHour = rate,
+                   };
+        }
+
+        /// <summary>
+        /// Generates a SupplyChain with key fields for round-trip testing.
+        /// </summary>
+        public static Gen<SupplyChain> GenSupplyChain()
+        {
+            return from uuid in GenHelpers.GenUUID
+                   from ownerUuid in GenHelpers.GenUUID
+                   from name in GenHelpers.GenNonEmptyString
+                   from isActive in Arb.Generate<bool>()
+                   from stageCount in Gen.Choose(0, 3)
+                   from stages in Gen.ListOf(stageCount, GenSupplyChainStage())
+                   select new SupplyChain
+                   {
+                       UUID = uuid,
+                       OwnerUUID = ownerUuid,
+                       Name = name,
+                       IsActive = isActive,
+                       Stages = stages.ToList(),
+                   };
+        }
+
+        /// <summary>
+        /// Generates a WarehouseOverflowRule with key fields for round-trip testing.
+        /// </summary>
+        public static Gen<WarehouseOverflowRule> GenWarehouseOverflowRule()
+        {
+            return from uuid in GenHelpers.GenUUID
+                   from ownerUuid in GenHelpers.GenUUID
+                   from isActive in Arb.Generate<bool>()
+                   from colonyUuid in GenHelpers.GenUUID
+                   from resourceName in GenHelpers.GenNonEmptyString
+                   from resourcePurity in Gen.Elements("High", "Medium", "Low", "Refined")
+                   from ruleType in Gen.Elements(
+                       OverflowRuleType.SpecificResource,
+                       OverflowRuleType.TotalWarehouse)
+                   from threshold in GenHelpers.GenPositiveDecimal
+                   from destType in Gen.Elements(
+                       DestinationType.Colony,
+                       DestinationType.Station,
+                       DestinationType.Asteroid,
+                       DestinationType.Ship)
+                   from destUuid in GenHelpers.GenUUID
+                   select new WarehouseOverflowRule
+                   {
+                       UUID = uuid,
+                       OwnerUUID = ownerUuid,
+                       IsActive = isActive,
+                       ColonyUUID = colonyUuid,
+                       ResourceName = resourceName,
+                       ResourcePurity = resourcePurity,
+                       RuleType = ruleType,
+                       TriggerThreshold = threshold,
+                       DestinationType = destType,
+                       DestinationUUID = destUuid,
+                   };
+        }
+
+        /// <summary>
+        /// Creates an Arbitrary for PricingPlan.
+        /// </summary>
+        public static Arbitrary<PricingPlan> ArbPricingPlan()
+        {
+            return Arb.From(GenPricingPlan());
+        }
+
+        /// <summary>
+        /// Creates an Arbitrary for BuildPlan.
+        /// </summary>
+        public static Arbitrary<BuildPlan> ArbBuildPlan()
+        {
+            return Arb.From(GenBuildPlan());
+        }
+
+        /// <summary>
+        /// Creates an Arbitrary for StockPlan.
+        /// </summary>
+        public static Arbitrary<StockPlan> ArbStockPlan()
+        {
+            return Arb.From(GenStockPlan());
+        }
+
+        /// <summary>
+        /// Creates an Arbitrary for StockProfile.
+        /// </summary>
+        public static Arbitrary<StockProfile> ArbStockProfile()
+        {
+            return Arb.From(GenStockProfile());
+        }
+
+        /// <summary>
+        /// Creates an Arbitrary for SupplyChain.
+        /// </summary>
+        public static Arbitrary<SupplyChain> ArbSupplyChain()
+        {
+            return Arb.From(GenSupplyChain());
+        }
+
+        /// <summary>
+        /// Creates an Arbitrary for WarehouseOverflowRule.
+        /// </summary>
+        public static Arbitrary<WarehouseOverflowRule> ArbWarehouseOverflowRule()
+        {
+            return Arb.From(GenWarehouseOverflowRule());
+        }
     }
 }

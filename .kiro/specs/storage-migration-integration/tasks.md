@@ -665,7 +665,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: OE2EmpireTracker.Tests/Services/EntityGenerators.cs (NEW)_
     - _Verification: Build succeeds; can generate 10 instances without exception_
 
-  - [-] 21.3 Create FsCheck generators for Survey, PlayerProfile, DeliveryRoute, DeliveryPlan
+  - [x] 21.3 Create FsCheck generators for Survey, PlayerProfile, DeliveryRoute, DeliveryPlan
     - Survey: UUID, OwnerUUID, ResourceReserves (nested list), SurveyType enum
     - PlayerProfile: UUID, Name, Skills dictionary, Rank
     - DeliveryRoute: UUID, Stops list (nested objects with StationUUID, items)
@@ -676,7 +676,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: OE2EmpireTracker.Tests/Services/EntityGenerators.cs (appended)_
     - _Verification: Build succeeds_
 
-  - [-] 21.4 Create FsCheck generators for Ship, ShipTemplate, Station, MarketListing, MarketTransaction
+  - [x] 21.4 Create FsCheck generators for Ship, ShipTemplate, Station, MarketListing, MarketTransaction
     - MarketTransaction has decimal fields (PricePerUnit, TotalPrice) — use GenDecimal for full precision range
     - Station has nested SystemUUID references
     - Estimated: ~100 lines (five entities)
@@ -685,7 +685,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: OE2EmpireTracker.Tests/Services/EntityGenerators.cs (appended)_
     - _Verification: Build succeeds_
 
-  - [~] 21.5 Create FsCheck generators for PricingPlan, BuildPlan, StockPlan, StockProfile, SupplyChain, WarehouseOverflowRule
+  - [-] 21.5 Create FsCheck generators for PricingPlan, BuildPlan, StockPlan, StockProfile, SupplyChain, WarehouseOverflowRule
     - Six relatively simple entities (fewer nested objects than Colony/Blueprint)
     - Estimated: ~90 lines
     - _Satisfies: Req 7, Criteria 1, 4-6_
@@ -693,7 +693,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: OE2EmpireTracker.Tests/Services/EntityGenerators.cs (appended)_
     - _Verification: Build succeeds_
 
-  - [~] 21.6 Create FsCheck generators for Faction, ExternalCharacter, Asteroid, BankingTransaction, MailMessage, and baseline types
+  - [-] 21.6 Create FsCheck generators for Faction, ExternalCharacter, Asteroid, BankingTransaction, MailMessage, and baseline types
     - BankingTransaction has decimal fields — critical for precision testing
     - Baseline types: BlueprintType, ShipClass, TechLevel, Commodity, RefiningRecipe, ResearchTime, PropertyTypeDefinition
     - Estimated: ~120 lines (12 entities, all relatively simple)
