@@ -53,6 +53,10 @@ namespace OE2EmpireTracker.Services
 
         private bool _needsSeedWrite;
 
+        private IStorageBackend _storageBackend;
+
+        private StorageBackendType? _storageBackendType;
+
         /// <summary>
         /// Internal constructor for test infrastructure. Accepts pre-parsed
         /// BaselineRoot and PlayerRoot so tests can skip disk I/O.
@@ -178,13 +182,40 @@ namespace OE2EmpireTracker.Services
         /// <summary>
         /// The storage backend used for baseline data persistence.
         /// When null, falls back to direct file I/O using FilePath.
+        /// When set to non-null, triggers a reload of baseline data from the backend.
+        /// On StorageLoadException, propagates without partial initialization.
         /// </summary>
-        public IStorageBackend StorageBackend { get; set; }
+        public IStorageBackend StorageBackend
+        {
+            get => _storageBackend;
+            set
+            {
+                _storageBackend = value;
+                if (value != null && StorageBackendType.HasValue)
+                {
+                    Log.Info("StorageBackend set — reloading baseline data from backend");
+                    LoadBaselineFromBackend();
+                }
+            }
+        }
 
         /// <summary>
         /// The backend type, used to select load/save strategy without runtime type checks.
+        /// When set while StorageBackend is already configured, triggers a reload from backend.
         /// </summary>
-        public StorageBackendType? StorageBackendType { get; set; }
+        public StorageBackendType? StorageBackendType
+        {
+            get => _storageBackendType;
+            set
+            {
+                _storageBackendType = value;
+                if (value.HasValue && _storageBackend != null)
+                {
+                    Log.Info("StorageBackendType set — reloading baseline data from backend");
+                    LoadBaselineFromBackend();
+                }
+            }
+        }
 
         public static EmpireContext GetInstance()
         {
@@ -842,6 +873,95 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Loads baseline data from the configured storage backend.
+        /// For JSON backends, retrieves the full BaselineRoot as a single document.
+        /// For relational backends, loads each baseline collection individually.
+        /// If the backend is empty, sets _needsSeedWrite so that seeding from disk can occur.
+        /// </summary>
+        internal void LoadBaselineFromBackend()
+        {
+            var backend = StorageBackend;
+            var type = StorageBackendType.Value;
+            BaselineRoot baselineRoot = null;
+
+            if (type == Common.Interfaces.StorageBackendType.JsonSingleFile
+                || type == Common.Interfaces.StorageBackendType.JsonMultiFile)
+            {
+                string json = Task.Run(() => backend.GetGlobalDataAsync("BaselineRoot"))
+                    .GetAwaiter().GetResult();
+                if (!string.IsNullOrEmpty(json))
+                {
+                    baselineRoot = JsonConvert.DeserializeObject<BaselineRoot>(json);
+                }
+            }
+            else
+            {
+                // Relational backend: check if baseline data exists
+                var constants = Task.Run(() => backend.GetBaselineGameConstantsAsync())
+                    .GetAwaiter().GetResult();
+
+                if (constants != null)
+                {
+                    baselineRoot = new BaselineRoot();
+                    baselineRoot.GameConstants = constants;
+                    baselineRoot.BlueprintType = Task.Run(() => backend.GetAllBlueprintTypesAsync())
+                        .GetAwaiter().GetResult().ToArray();
+                    baselineRoot.ShipClass = Task.Run(() => backend.GetAllShipClassesAsync())
+                        .GetAwaiter().GetResult().ToArray();
+                    baselineRoot.TechLevel = Task.Run(() => backend.GetAllTechLevelsAsync())
+                        .GetAwaiter().GetResult().ToArray();
+                    baselineRoot.Commodity = Task.Run(() => backend.GetAllCommoditiesAsync())
+                        .GetAwaiter().GetResult().ToArray();
+                    baselineRoot.RefiningRecipe = Task.Run(() => backend.GetAllRefiningRecipesAsync())
+                        .GetAwaiter().GetResult().ToArray();
+                    baselineRoot.ResearchTime = Task.Run(() => backend.GetAllResearchTimesAsync())
+                        .GetAwaiter().GetResult().ToArray();
+                    baselineRoot.PropertyType = Task.Run(() => backend.GetAllPropertyTypeDefinitionsAsync())
+                        .GetAwaiter().GetResult().ToArray();
+                }
+            }
+
+            if (baselineRoot == null)
+            {
+                Log.Info("Backend has no baseline data \u2014 seeding from {0}", FilePath);
+                if (File.Exists(FilePath))
+                {
+                    string fileJson = File.ReadAllText(FilePath);
+                    baselineRoot = JsonConvert.DeserializeObject<BaselineRoot>(fileJson);
+                }
+                else
+                {
+                    Log.Warn("BaselineData.json not found at {0} \u2014 starting with empty baseline", FilePath);
+                    baselineRoot = new BaselineRoot { GameConstants = new BaselineGameConstants() };
+                }
+
+                _needsSeedWrite = true;
+            }
+
+            DataVersion = baselineRoot.DataVersion;
+            GameConstants = baselineRoot.GameConstants ?? new BaselineGameConstants();
+            InitBlueprintTypes(baselineRoot);
+            InitShipClasses(baselineRoot);
+            InitTechLevels(baselineRoot);
+            InitEvolutions(baselineRoot);
+            InitResources(baselineRoot);
+            InitResourceGroups(baselineRoot);
+            InitResourcePurities(baselineRoot);
+            InitCommodities(baselineRoot);
+            InitRefiningRecipes(baselineRoot);
+            InitResearchTimes(baselineRoot);
+            InitGlobalBlueprints(baselineRoot);
+            InitPropertyTypes(baselineRoot);
+
+            if (_needsSeedWrite)
+            {
+                WriteContext();
+                Log.Info("Seeded baseline data into {0} backend from BaselineData.json", type);
+                _needsSeedWrite = false;
+            }
+        }
+
+        /// <summary>
         /// Wires up Item.DisplayNameResolver so Item.ExtendedName can resolve
         /// Survey and Blueprint display names without a direct singleton reference.
         /// </summary>
@@ -897,73 +1017,6 @@ namespace OE2EmpireTracker.Services
 
                 return null;
             };
-        }
-
-        /// <summary>
-        /// Loads baseline data from the configured storage backend.
-        /// For JSON backends, retrieves the full BaselineRoot as a single document.
-        /// For relational backends, loads each baseline collection individually.
-        /// If the backend is empty, sets _needsSeedWrite so that seeding from disk can occur.
-        /// </summary>
-        private void LoadBaselineFromBackend()
-        {
-            var backend = StorageBackend;
-            var type = StorageBackendType.Value;
-            BaselineRoot baselineRoot = null;
-
-            if (type == Common.Interfaces.StorageBackendType.JsonSingleFile
-                || type == Common.Interfaces.StorageBackendType.JsonMultiFile)
-            {
-                string json = Task.Run(() => backend.GetGlobalDataAsync("BaselineRoot"))
-                    .GetAwaiter().GetResult();
-                if (!string.IsNullOrEmpty(json))
-                {
-                    baselineRoot = JsonConvert.DeserializeObject<BaselineRoot>(json);
-                }
-            }
-            else
-            {
-                // TODO: Task 13.3 — relational backend path (Sqlite/DynamoDb/Postgres)
-            }
-
-            if (baselineRoot == null)
-            {
-                Log.Info("Backend has no baseline data — seeding from {0}", FilePath);
-                if (File.Exists(FilePath))
-                {
-                    string fileJson = File.ReadAllText(FilePath);
-                    baselineRoot = JsonConvert.DeserializeObject<BaselineRoot>(fileJson);
-                }
-                else
-                {
-                    Log.Warn("BaselineData.json not found at {0} — starting with empty baseline", FilePath);
-                    baselineRoot = new BaselineRoot { GameConstants = new BaselineGameConstants() };
-                }
-
-                _needsSeedWrite = true;
-            }
-
-            DataVersion = baselineRoot.DataVersion;
-            GameConstants = baselineRoot.GameConstants ?? new BaselineGameConstants();
-            InitBlueprintTypes(baselineRoot);
-            InitShipClasses(baselineRoot);
-            InitTechLevels(baselineRoot);
-            InitEvolutions(baselineRoot);
-            InitResources(baselineRoot);
-            InitResourceGroups(baselineRoot);
-            InitResourcePurities(baselineRoot);
-            InitCommodities(baselineRoot);
-            InitRefiningRecipes(baselineRoot);
-            InitResearchTimes(baselineRoot);
-            InitGlobalBlueprints(baselineRoot);
-            InitPropertyTypes(baselineRoot);
-
-            if (_needsSeedWrite)
-            {
-                WriteContext();
-                Log.Info("Seeded baseline data into {0} backend from BaselineData.json", type);
-                _needsSeedWrite = false;
-            }
         }
 
         /// <summary>

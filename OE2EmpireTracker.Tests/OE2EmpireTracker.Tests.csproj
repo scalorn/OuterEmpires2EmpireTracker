@@ -642,6 +642,7 @@
     <Compile Include="Services\DirtyTrackerTests.cs" />
     <Compile Include="Services\PreferencesStoreBackendTests.cs" />
     <Compile Include="Services\PlayerContextBackendTests.cs" />
+    <Compile Include="Services\EmpireContextBackendTests.cs" />
     <Compile Include="Helpers\RecordingStorageBackend.cs" />
     <Compile Include="TestHelper.cs" />
     <Compile Include="GlobalSetup.cs" />

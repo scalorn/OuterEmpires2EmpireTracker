@@ -398,7 +398,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/EmpireContext.cs (modified)_
     - _Verification: Build succeeds_
 
-  - [-] 13.4 Implement baseline seeding from BaselineData.json
+  - [x] 13.4 Implement baseline seeding from BaselineData.json
     - When _needsSeedWrite is true after LoadBaselineFromBackend:
       - Load BaselineData.json from disk (same path as legacy file I/O)
       - Deserialize into BaselineRoot, initialize in-memory collections
@@ -411,7 +411,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/EmpireContext.cs (modified)_
     - _Verification: Build succeeds_
 
-  - [-] 13.5 Modify EmpireContext WriteContext for backend persistence
+  - [x] 13.5 Modify EmpireContext WriteContext for backend persistence
     - For JSON backends: serialize BaselineRoot to JSON (existing pattern), call UpsertGlobalDataAsync via Task.Run
     - For relational backends: call typed Upsert methods per baseline collection (8 calls via Task.Run)
     - Preserve legacy file write when no backend configured
@@ -422,7 +422,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/EmpireContext.cs (modified)_
     - _Verification: Build succeeds_
 
-  - [~] 13.6 Wire EmpireContext load path to use LoadBaselineFromBackend
+  - [-] 13.6 Wire EmpireContext load path to use LoadBaselineFromBackend
     - In the constructor/load-data path: when StorageBackend is non-null, call LoadBaselineFromBackend instead of file load
     - On StorageLoadException: propagate without partial initialization
     - Estimated: ~15 lines of branching
@@ -431,7 +431,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/EmpireContext.cs (modified)_
     - _Verification: Build succeeds_
 
-  - [~] 13.7 Write unit tests for EmpireContext backend integration
+  - [-] 13.7 Write unit tests for EmpireContext backend integration
     - Test: Load from JSON backend uses GetGlobalDataAsync (mock backend)
     - Test: Load from relational backend uses typed methods (mock backend)
     - Test: Empty backend triggers seed from BaselineData.json (verify Upsert called after seed)
