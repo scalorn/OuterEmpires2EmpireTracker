@@ -904,6 +904,16 @@ namespace OE2EmpireTracker.Forms
 
             // Show progress and migrate
             var currentBackend = PlayerContext.GetInstance().StorageBackend;
+
+            // If current backend is null (legacy file mode), create a source backend for migration
+            if (currentBackend == null)
+            {
+                string sourceDir = AppDomain.CurrentDomain.BaseDirectory;
+                var sourceConfig = new StorageBackendConfig { ConnectionString = sourceDir };
+                currentBackend = new JsonSingleFileBackend(sourceConfig);
+                Task.Run(() => currentBackend.InitializeAsync()).GetAwaiter().GetResult();
+            }
+
             var progressForm = new FormMigrationProgress();
             progressForm.Show(this);
             var progress = new Progress<MigrationProgress>(p => progressForm.UpdateProgress(p));
