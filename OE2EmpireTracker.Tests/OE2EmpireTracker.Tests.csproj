@@ -644,6 +644,7 @@
     <Compile Include="Storage\AtomicWritePropertyTests.cs" />
     <Compile Include="Storage\GetAllCharacterUUIDsTests.cs" />
     <Compile Include="Services\DirtyTrackerTests.cs" />
+    <Compile Include="Services\DirtyTrackingPropertyTests.cs" />
     <Compile Include="Services\PreferencesStoreBackendTests.cs" />
     <Compile Include="Services\PlayerContextBackendTests.cs" />
     <Compile Include="Services\EmpireContextBackendTests.cs" />

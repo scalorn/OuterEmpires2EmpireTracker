@@ -703,7 +703,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Verification: Build succeeds_
 
 
-- [ ] 22. Round-trip fidelity property tests — test infrastructure
+- [x] 22. Round-trip fidelity property tests — test infrastructure
   - [x] 22.1 Create MigrationRoundTripPropertyTests fixture with round-trip helper
     - Create OE2EmpireTracker.Tests/Services/MigrationRoundTripPropertyTests.cs
     - Implement RoundTripPreservesEquality<T> helper method:
@@ -738,7 +738,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: MigrationRoundTripPropertyTests.cs (appended)_
     - _Verification: Round-trip tests pass for JsonSingleFile↔Sqlite pair (all 22 types)_
 
-  - [-] 22.4 Write property tests for JsonSingleFile↔JsonMultiFile round-trip (all entity types)
+  - [x] 22.4 Write property tests for JsonSingleFile↔JsonMultiFile round-trip (all entity types)
     - [FsCheck.NUnit.Property(MaxTest = 100)] for all 22 entity types
     - Can use a parameterized helper since both are JSON — differences are in file layout, not serialization
     - Estimated: ~60 lines (reuse same test pattern with different backend pair factory)
@@ -747,7 +747,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: MigrationRoundTripPropertyTests.cs (appended) OR separate fixture class_
     - _Verification: Round-trip tests pass for JsonSingleFile↔JsonMultiFile pair_
 
-  - [-] 22.5 Write property tests for Sqlite↔Postgres round-trip (all entity types)
+  - [x] 22.5 Write property tests for Sqlite↔Postgres round-trip (all entity types)
     - [FsCheck.NUnit.Property(MaxTest = 100)] for all 22 entity types
     - This pair specifically validates the REAL→TEXT and DOUBLE PRECISION→NUMERIC fixes
     - Special focus: decimal values with many decimal places, negative decimals, zero
@@ -760,7 +760,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
 
 
 - [ ] 23. Dirty tracking property tests
-  - [~] 23.1 Write property tests for DirtyTracker correctness
+  - [-] 23.1 Write property tests for DirtyTracker correctness
     - **Property 1: Write Idempotency** — after WriteContext with no mutations, DirtyTracker.HasChanges == false AND no backend calls made
     - **Property 2: Dirty Flag Completeness** — for a random sequence of service mutations, every mutated entity appears in DirtyTracker. Use reflection to call random service methods, then check tracker.
     - **Property 3: Load-Write Round Trip** — LoadFromBackend then immediate WriteContext → zero dirty entities → zero backend Upsert calls
@@ -770,7 +770,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: OE2EmpireTracker.Tests/Services/DirtyTrackingPropertyTests.cs (NEW)_
     - _Verification: DirtyTrackingPropertyTests pass in vstest.console_
 
-  - [~] 23.2 Write property test for WritesBlocked monotonicity
+  - [-] 23.2 Write property test for WritesBlocked monotonicity
     - **Property 4: WritesBlocked Monotonicity** — configure mock backend to throw StorageWriteException after N successful writes. After exception: WritesBlocked == true, subsequent WriteContext calls produce zero backend calls, no exceptions thrown.
     - **Property 5: WritesBlocked Reset** — after setting WritesBlocked = false, next WriteContext resumes normal behavior
     - Estimated: ~60 lines
