@@ -576,7 +576,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/MigrationService.cs (modified)_
     - _Verification: Build succeeds_
 
-  - [-] 18.6 Implement permissions/intel/audit migration
+  - [x] 18.6 Implement permissions/intel/audit migration
     - Migrate FactionCapabilities, ClearanceLevels, Groups, GroupMembers, IntelComments, IntelShares, AuditEntries
     - Same get-all → loop → upsert pattern
     - Estimated: ~50 lines (7 types × ~7 lines each)
@@ -585,7 +585,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/MigrationService.cs (modified)_
     - _Verification: Build succeeds_
 
-  - [-] 18.7 Implement count validation in MigrationService
+  - [x] 18.7 Implement count validation in MigrationService
     - Add private ValidateCountsAsync method
     - For each entity type: get count from source (GetAll + .Count), get count from destination, compare
     - On mismatch: collect into Mismatches dictionary, throw MigrationValidationException
