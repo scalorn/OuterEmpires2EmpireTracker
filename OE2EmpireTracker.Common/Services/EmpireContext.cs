@@ -191,7 +191,9 @@ namespace OE2EmpireTracker.Services
             set
             {
                 _storageBackend = value;
-                if (value != null && StorageBackendType.HasValue)
+                if (value != null && StorageBackendType.HasValue
+                    && StorageBackendType.Value != Common.Interfaces.StorageBackendType.JsonSingleFile
+                    && StorageBackendType.Value != Common.Interfaces.StorageBackendType.JsonMultiFile)
                 {
                     Log.Info("StorageBackend set — reloading baseline data from backend");
                     LoadBaselineFromBackend();
@@ -209,7 +211,9 @@ namespace OE2EmpireTracker.Services
             set
             {
                 _storageBackendType = value;
-                if (value.HasValue && _storageBackend != null)
+                if (value.HasValue && _storageBackend != null
+                    && value.Value != Common.Interfaces.StorageBackendType.JsonSingleFile
+                    && value.Value != Common.Interfaces.StorageBackendType.JsonMultiFile)
                 {
                     Log.Info("StorageBackendType set — reloading baseline data from backend");
                     LoadBaselineFromBackend();
@@ -290,10 +294,11 @@ namespace OE2EmpireTracker.Services
             if (type == Common.Interfaces.StorageBackendType.JsonSingleFile
                 || type == Common.Interfaces.StorageBackendType.JsonMultiFile)
             {
+                // JSON backends store baseline data on disk (BaselineData.json), not via
+                // UpsertGlobalDataAsync which is unsupported for these backend types.
                 string json = JsonConvert.SerializeObject(baselineRoot, JsonSettings.SerializerSettings);
-                Task.Run(() => backend.UpsertGlobalDataAsync("BaselineRoot", json))
-                    .GetAwaiter().GetResult();
-                Log.Info("Baseline data saved to {0} backend (JSON)", type);
+                SafeFileWriter.WriteAllText(FilePath, json);
+                Log.Info("Baseline data saved to {0} (JSON backend)", FilePath);
             }
             else
             {
@@ -887,11 +892,13 @@ namespace OE2EmpireTracker.Services
             if (type == Common.Interfaces.StorageBackendType.JsonSingleFile
                 || type == Common.Interfaces.StorageBackendType.JsonMultiFile)
             {
-                string json = Task.Run(() => backend.GetGlobalDataAsync("BaselineRoot"))
-                    .GetAwaiter().GetResult();
-                if (!string.IsNullOrEmpty(json))
+                // JSON backends store baseline data on disk (BaselineData.json), not via
+                // GetGlobalDataAsync which is unsupported for these backend types.
+                // Load from the file directly — same as the legacy constructor path.
+                if (File.Exists(FilePath))
                 {
-                    baselineRoot = JsonConvert.DeserializeObject<BaselineRoot>(json);
+                    string fileJson = File.ReadAllText(FilePath);
+                    baselineRoot = JsonConvert.DeserializeObject<BaselineRoot>(fileJson);
                 }
             }
             else

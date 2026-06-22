@@ -41,28 +41,41 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         [Test]
-        public void LoadFromBackend_JsonBackend_UsesGetGlobalDataAsync()
+        public void LoadFromBackend_JsonBackend_LoadsFromFile()
         {
-            var baselineRoot = new BaselineRoot
+            // For JSON backends, LoadBaselineFromBackend reads from FilePath (disk),
+            // NOT from GetGlobalDataAsync (which is unsupported for JSON backends).
+            string tempFile = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".json");
+            try
             {
-                GameConstants = new BaselineGameConstants(),
-                BlueprintType = new[] { new BlueprintType { Id = "bt-1", Name = "Laser" } },
-                ShipClass = new ShipClass[0],
-                TechLevel = new TechLevel[0],
-            };
-            string json = JsonConvert.SerializeObject(baselineRoot);
+                var baselineRoot = new BaselineRoot
+                {
+                    GameConstants = new BaselineGameConstants(),
+                    BlueprintType = new[] { new BlueprintType { Id = "bt-1", Name = "Laser" } },
+                    ShipClass = new ShipClass[0],
+                    TechLevel = new TechLevel[0],
+                };
+                File.WriteAllText(tempFile, JsonConvert.SerializeObject(baselineRoot));
+                EmpireContext.FilePath = tempFile;
 
-            var backend = new EmpireTestBackend { GlobalDataJson = json };
-            var ctx = CreateContext();
-            ctx.StorageBackend = backend;
-            ctx.StorageBackendType = StorageBackendType.JsonSingleFile;
+                var backend = new EmpireTestBackend();
+                var ctx = CreateContext();
+                ctx.StorageBackendType = StorageBackendType.JsonSingleFile;
+                ctx.StorageBackend = backend;
 
-            ctx.LoadBaselineFromBackend();
+                // For JSON backends, setter does NOT trigger LoadBaselineFromBackend.
+                // Call it explicitly to test the file-read path.
+                ctx.LoadBaselineFromBackend();
 
-            Assert.That(backend.GetGlobalDataCalled, Is.True,
-                "Should call GetGlobalDataAsync for JSON backend");
-            Assert.That(ctx.BlueprintTypeList, Has.Count.EqualTo(1));
-            Assert.That(ctx.BlueprintTypeList[0].Name, Is.EqualTo("Laser"));
+                Assert.That(backend.GetGlobalDataCalled, Is.False,
+                    "JSON backend should NOT call GetGlobalDataAsync");
+                Assert.That(ctx.BlueprintTypeList, Has.Count.EqualTo(1));
+                Assert.That(ctx.BlueprintTypeList[0].Name, Is.EqualTo("Laser"));
+            }
+            finally
+            {
+                if (File.Exists(tempFile)) File.Delete(tempFile);
+            }
         }
 
         [Test]
@@ -99,48 +112,71 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void LoadFromBackend_EmptyBackend_SeedsFromBaselineDataJson()
         {
-            string baselinePath = TestHelper.TestDataPath("BaselineData.json");
-            EmpireContext.FilePath = baselinePath;
-            var backend = new EmpireTestBackend();
-            var ctx = CreateContext();
+            // For relational backends, if GetBaselineGameConstantsAsync returns null,
+            // LoadBaselineFromBackend seeds from BaselineData.json and calls WriteContext
+            // which upserts all collections to the relational backend.
+            string tempFile = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".json");
+            try
+            {
+                var seedRoot = new BaselineRoot
+                {
+                    GameConstants = new BaselineGameConstants(),
+                    BlueprintType = new[] { new BlueprintType { Id = "bt-seed", Name = "SeedType" } },
+                    ShipClass = new ShipClass[0],
+                    TechLevel = new TechLevel[0],
+                };
+                File.WriteAllText(tempFile, JsonConvert.SerializeObject(seedRoot));
+                EmpireContext.FilePath = tempFile;
 
-            // Set type first (no trigger since backend is null), then set backend
-            ctx.StorageBackendType = StorageBackendType.JsonSingleFile;
-            ctx.StorageBackend = backend;
+                var backend = new EmpireTestBackend
+                {
+                    BaselineConstantsToReturn = null, // Empty — triggers seed
+                };
+                var ctx = CreateContext();
 
-            // After seed, WriteContext should have called UpsertGlobalDataAsync
-            Assert.That(backend.UpsertGlobalDataCalled, Is.True,
-                "Empty backend should trigger seed and call UpsertGlobalDataAsync");
-            Assert.That(ctx.BlueprintTypeList.Count, Is.GreaterThan(0),
-                "Seed from file should populate blueprint types");
+                // Use relational type so the setter triggers LoadBaselineFromBackend
+                ctx.StorageBackendType = StorageBackendType.Sqlite;
+                ctx.StorageBackend = backend;
+
+                // After seed, the relational backend should have received upserts
+                Assert.That(backend.UpsertBaselineConstantsCalled, Is.True,
+                    "Empty relational backend should trigger seed and call Upsert methods");
+                Assert.That(ctx.BlueprintTypeList.Count, Is.GreaterThan(0),
+                    "Seed from file should populate blueprint types");
+            }
+            finally
+            {
+                if (File.Exists(tempFile)) File.Delete(tempFile);
+            }
         }
 
         [Test]
-        public void WriteContext_JsonBackend_CallsUpsertGlobalDataAsync()
+        public void WriteContext_JsonBackend_WritesToFile()
         {
-            var baselineRoot = new BaselineRoot
+            // For JSON backends, WriteContext writes to FilePath (disk),
+            // NOT to UpsertGlobalDataAsync (which is unsupported).
+            string tempFile = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".json");
+            try
             {
-                GameConstants = new BaselineGameConstants(),
-                BlueprintType = new[] { new BlueprintType { Id = "bt-1", Name = "Laser" } },
-                ShipClass = new ShipClass[0],
-                TechLevel = new TechLevel[0],
-            };
-            string json = JsonConvert.SerializeObject(baselineRoot);
+                var backend = new EmpireTestBackend();
+                var ctx = CreateContext();
+                ctx.StorageBackendType = StorageBackendType.JsonSingleFile;
+                ctx.StorageBackend = backend;
+                EmpireContext.FilePath = tempFile;
 
-            var backend = new EmpireTestBackend { GlobalDataJson = json };
-            var ctx = CreateContext();
-            ctx.StorageBackendType = StorageBackendType.JsonSingleFile;
-            ctx.StorageBackend = backend;
+                ctx.WriteContext();
 
-            // Reset tracking flags that were set during auto-reload
-            backend.UpsertGlobalDataCalled = false;
-            backend.UpsertGlobalDataKey = null;
-
-            ctx.WriteContext();
-
-            Assert.That(backend.UpsertGlobalDataCalled, Is.True,
-                "WriteContext should call UpsertGlobalDataAsync for JSON backend");
-            Assert.That(backend.UpsertGlobalDataKey, Is.EqualTo("BaselineRoot"));
+                Assert.That(File.Exists(tempFile), Is.True,
+                    "JSON backend WriteContext should write to FilePath");
+                Assert.That(backend.UpsertGlobalDataCalled, Is.False,
+                    "JSON backend should NOT call UpsertGlobalDataAsync");
+                string content = File.ReadAllText(tempFile);
+                Assert.That(content, Does.Contain("GameConstants"));
+            }
+            finally
+            {
+                if (File.Exists(tempFile)) File.Delete(tempFile);
+            }
         }
 
         [Test]
@@ -225,9 +261,9 @@ namespace OE2EmpireTracker.Tests.Services
         {
             var backend = new EmpireTestBackend { ThrowOnGlobalDataRead = true };
             var ctx = CreateContext();
-            ctx.StorageBackendType = StorageBackendType.JsonSingleFile;
+            ctx.StorageBackendType = StorageBackendType.Sqlite;
 
-            // Setting StorageBackend triggers LoadBaselineFromBackend when type is set
+            // Setting StorageBackend triggers LoadBaselineFromBackend for relational backends
             Assert.Throws<StorageLoadException>(() => { ctx.StorageBackend = backend; },
                 "StorageLoadException should propagate without being caught");
         }
