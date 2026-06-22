@@ -527,7 +527,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Verification: Build succeeds_
 
 - [ ] 18. Migration service — core implementation
-  - [-] 18.1 Create MigrationService class with MigrateAsync skeleton and character discovery
+  - [x] 18.1 Create MigrationService class with MigrateAsync skeleton and character discovery
     - Create Common/Services/MigrationService.cs
     - Implement MigrateAsync signature (source, destination, progress, characterUUIDs, ct)
     - Character discovery: if characterUUIDs is null, call source.GetAllCharacterUUIDsAsync()
@@ -538,7 +538,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/MigrationService.cs (NEW)_
     - _Verification: Build succeeds_
 
-  - [~] 18.2 Implement server-global data migration in MigrationService
+  - [-] 18.2 Implement server-global data migration in MigrationService
     - Migrate Factions: source.GetAllFactionsAsync() → destination.UpsertFactionAsync() per entity
     - Migrate ExternalCharacters, StarSystems, Tokens, MembershipActions (same pattern)
     - Report progress per entity type
@@ -548,7 +548,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/MigrationService.cs (modified)_
     - _Verification: Build succeeds_
 
-  - [~] 18.3 Implement baseline data migration in MigrationService
+  - [-] 18.3 Implement baseline data migration in MigrationService
     - Migrate GameConstants, BlueprintTypes, ShipClasses, TechLevels, Commodities, RefiningRecipes, ResearchTimes, PropertyTypeDefinitions
     - Each: get from source → upsert to destination → report progress
     - Estimated: ~50 lines (8 baseline types, simpler pattern since they're single-entity or small collections)

@@ -53,7 +53,6 @@ namespace OE2EmpireTracker.Services
 
             int totalProcessed = 0;
 
-#pragma warning disable CS8321 // Local function declared but never used — called by subsequent tasks (18.2-18.7)
             void Report(string phase, string entityType)
             {
                 totalProcessed++;
@@ -64,10 +63,96 @@ namespace OE2EmpireTracker.Services
                     EntitiesProcessed = totalProcessed,
                 });
             }
-#pragma warning restore CS8321
 
-            // TODO: Task 18.2 — server-global data migration
-            // TODO: Task 18.3 — baseline data migration
+            // ── Server-global data migration ──
+
+            // Factions
+            var factions = await source.GetAllFactionsAsync().ConfigureAwait(false);
+            foreach (var faction in factions)
+            {
+                ct.ThrowIfCancellationRequested();
+                await destination.UpsertFactionAsync(faction).ConfigureAwait(false);
+                Report("Global", "ServerFaction");
+            }
+
+            // Characters (server-level)
+            var characters = await source.GetAllCharactersAsync().ConfigureAwait(false);
+            foreach (var character in characters)
+            {
+                ct.ThrowIfCancellationRequested();
+                await destination.UpsertCharacterAsync(character).ConfigureAwait(false);
+                Report("Global", "ServerCharacter");
+            }
+
+            // Star Systems (bulk upsert)
+            var starSystems = await source.GetAllStarSystemsAsync().ConfigureAwait(false);
+            if (starSystems.Count > 0)
+            {
+                ct.ThrowIfCancellationRequested();
+                await destination.UpsertStarSystemsAsync(starSystems).ConfigureAwait(false);
+                foreach (var _ in starSystems)
+                {
+                    Report("Global", "StarSystem");
+                }
+            }
+
+            // API Tokens
+            var tokens = await source.GetAllTokensAsync().ConfigureAwait(false);
+            foreach (var token in tokens)
+            {
+                ct.ThrowIfCancellationRequested();
+                await destination.UpsertTokenAsync(token).ConfigureAwait(false);
+                Report("Global", "ApiToken");
+            }
+
+            // Membership Actions (per faction)
+            foreach (var faction in factions)
+            {
+                ct.ThrowIfCancellationRequested();
+                var actions = await source.GetFactionActionsAsync(faction.UUID).ConfigureAwait(false);
+                foreach (var action in actions)
+                {
+                    ct.ThrowIfCancellationRequested();
+                    await destination.UpsertMembershipActionAsync(action).ConfigureAwait(false);
+                    Report("Global", "MembershipAction");
+                }
+            }
+
+            // Baseline data
+            var constants = await source.GetBaselineGameConstantsAsync().ConfigureAwait(false);
+            if (constants != null)
+            {
+                await destination.UpsertBaselineGameConstantsAsync(constants).ConfigureAwait(false);
+                Report("Baseline", "GameConstants");
+            }
+
+            var blueprintTypes = await source.GetAllBlueprintTypesAsync().ConfigureAwait(false);
+            await destination.UpsertBlueprintTypesAsync(blueprintTypes).ConfigureAwait(false);
+            Report("Baseline", "BlueprintTypes");
+
+            var shipClasses = await source.GetAllShipClassesAsync().ConfigureAwait(false);
+            await destination.UpsertShipClassesAsync(shipClasses).ConfigureAwait(false);
+            Report("Baseline", "ShipClasses");
+
+            var techLevels = await source.GetAllTechLevelsAsync().ConfigureAwait(false);
+            await destination.UpsertTechLevelsAsync(techLevels).ConfigureAwait(false);
+            Report("Baseline", "TechLevels");
+
+            var commodities = await source.GetAllCommoditiesAsync().ConfigureAwait(false);
+            await destination.UpsertCommoditiesAsync(commodities).ConfigureAwait(false);
+            Report("Baseline", "Commodities");
+
+            var recipes = await source.GetAllRefiningRecipesAsync().ConfigureAwait(false);
+            await destination.UpsertRefiningRecipesAsync(recipes).ConfigureAwait(false);
+            Report("Baseline", "RefiningRecipes");
+
+            var researchTimes = await source.GetAllResearchTimesAsync().ConfigureAwait(false);
+            await destination.UpsertResearchTimesAsync(researchTimes).ConfigureAwait(false);
+            Report("Baseline", "ResearchTimes");
+
+            var propertyTypes = await source.GetAllPropertyTypeDefinitionsAsync().ConfigureAwait(false);
+            await destination.UpsertPropertyTypeDefinitionsAsync(propertyTypes).ConfigureAwait(false);
+            Report("Baseline", "PropertyTypeDefinitions");
             // TODO: Task 18.4/18.5 — per-character entity migration
             // TODO: Task 18.6 — permissions/intel/audit migration
             // TODO: Task 18.7 — count validation
