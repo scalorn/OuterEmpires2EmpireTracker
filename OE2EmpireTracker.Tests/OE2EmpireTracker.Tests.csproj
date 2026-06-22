@@ -641,6 +641,8 @@
     <Compile Include="Storage\GetAllCharacterUUIDsTests.cs" />
     <Compile Include="Services\DirtyTrackerTests.cs" />
     <Compile Include="Services\PreferencesStoreBackendTests.cs" />
+    <Compile Include="Services\PlayerContextBackendTests.cs" />
+    <Compile Include="Helpers\RecordingStorageBackend.cs" />
     <Compile Include="TestHelper.cs" />
     <Compile Include="GlobalSetup.cs" />
     <None Include="app.config" />
