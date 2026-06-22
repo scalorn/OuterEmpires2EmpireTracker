@@ -1020,5 +1020,386 @@ namespace OE2EmpireTracker.Tests.Services
         {
             return Arb.From(GenWarehouseOverflowRule());
         }
+
+        /// <summary>
+        /// Generates a Faction (per-character contact faction) with key fields.
+        /// </summary>
+        public static Gen<Faction> GenFaction()
+        {
+            return from uuid in GenHelpers.GenUUID
+                   from ownerUuid in GenHelpers.GenUUID
+                   from name in GenHelpers.GenNonEmptyString
+                   from description in GenHelpers.GenNonEmptyString
+                   select new Faction
+                   {
+                       UUID = uuid,
+                       OwnerUUID = ownerUuid,
+                       Name = name,
+                       Description = description,
+                   };
+        }
+
+        /// <summary>
+        /// Generates an ExternalCharacter with key fields.
+        /// </summary>
+        public static Gen<ExternalCharacter> GenExternalCharacter()
+        {
+            return from uuid in GenHelpers.GenUUID
+                   from ownerUuid in GenHelpers.GenUUID
+                   from name in GenHelpers.GenNonEmptyString
+                   from factionUuid in GenHelpers.GenUUID
+                   select new ExternalCharacter
+                   {
+                       UUID = uuid,
+                       OwnerUUID = ownerUuid,
+                       Name = name,
+                       FactionUUID = factionUuid,
+                   };
+        }
+
+        /// <summary>
+        /// Generates an AsteroidReserve with key fields.
+        /// </summary>
+        public static Gen<AsteroidReserve> GenAsteroidReserve()
+        {
+            return from resourceName in GenHelpers.GenNonEmptyString
+                   from purity in Gen.Elements("High", "Medium", "Low", "Refined")
+                   from maxReserve in Gen.Choose(100, 5000000)
+                   from currentReserve in Gen.Choose(0, 5000000)
+                   from resetTimestamp in GenHelpers.GenNonEmptyString
+                   select new AsteroidReserve
+                   {
+                       ResourceName = resourceName,
+                       Purity = purity,
+                       MaxReserve = maxReserve,
+                       CurrentReserve = currentReserve,
+                       ResetTimestamp = resetTimestamp,
+                   };
+        }
+
+        /// <summary>
+        /// Generates an Asteroid with nested Reserves list.
+        /// </summary>
+        public static Gen<Asteroid> GenAsteroid()
+        {
+            return from uuid in GenHelpers.GenUUID
+                   from ownerUuid in GenHelpers.GenUUID
+                   from name in GenHelpers.GenNonEmptyString
+                   from systemName in GenHelpers.GenNonEmptyString
+                   from systemObjectId in Gen.Choose(0, 9999)
+                   from reserveCount in Gen.Choose(0, 4)
+                   from reserves in Gen.ListOf(reserveCount, GenAsteroidReserve())
+                   select new Asteroid
+                   {
+                       UUID = uuid,
+                       OwnerUUID = ownerUuid,
+                       Name = name,
+                       SystemName = systemName,
+                       SystemObjectId = systemObjectId,
+                       Reserves = reserves.ToList(),
+                   };
+        }
+
+        /// <summary>
+        /// Generates a BankingTransaction with decimal fields using GenDecimal
+        /// for precision round-trip testing.
+        /// </summary>
+        public static Gen<BankingTransaction> GenBankingTransaction()
+        {
+            return from uuid in GenHelpers.GenUUID
+                   from ownerUuid in GenHelpers.GenUUID
+                   from transDateTime in GenHelpers.GenNonEmptyString
+                   from creditChange in GenHelpers.GenDecimal
+                   from oldBalance in GenHelpers.GenDecimal
+                   from newBalance in GenHelpers.GenDecimal
+                   from transType in Gen.Choose(0, 10)
+                   from detail in GenHelpers.GenNonEmptyString
+                   from isManual in Arb.Generate<bool>()
+                   select new BankingTransaction
+                   {
+                       UUID = uuid,
+                       OwnerUUID = ownerUuid,
+                       TransactionDateTime = transDateTime,
+                       CreditChange = creditChange,
+                       OldBalance = oldBalance,
+                       NewBalance = newBalance,
+                       TransactionType = transType,
+                       Detail = detail,
+                       IsManualEntry = isManual,
+                   };
+        }
+
+        /// <summary>
+        /// Generates a MailMessage with key fields for round-trip testing.
+        /// </summary>
+        public static Gen<MailMessage> GenMailMessage()
+        {
+            return from uuid in GenHelpers.GenUUID
+                   from ownerUuid in GenHelpers.GenUUID
+                   from mailId in Gen.Choose(1, 99999)
+                   from charIdFrom in Gen.Choose(1, 9999)
+                   from fromName in GenHelpers.GenNonEmptyString
+                   from charIdTo in Gen.Choose(1, 9999)
+                   from toName in GenHelpers.GenNonEmptyString
+                   from sentTime in GenHelpers.GenNonEmptyString
+                   from subject in GenHelpers.GenNonEmptyString
+                   from mailRead in Arb.Generate<bool>()
+                   from mailContent in GenHelpers.GenNonEmptyString
+                   from localRead in Arb.Generate<bool>()
+                   select new MailMessage
+                   {
+                       UUID = uuid,
+                       OwnerUUID = ownerUuid,
+                       MailId = mailId,
+                       CharacterIdFrom = charIdFrom,
+                       FromName = fromName,
+                       CharacterIdTo = charIdTo,
+                       ToName = toName,
+                       SentTime = sentTime,
+                       Subject = subject,
+                       MailRead = mailRead,
+                       MailContent = mailContent,
+                       LocalRead = localRead,
+                   };
+        }
+
+        /// <summary>
+        /// Generates a BlueprintType (baseline) with key fields.
+        /// </summary>
+        public static Gen<BlueprintType> GenBlueprintType()
+        {
+            return from id in GenHelpers.GenNonEmptyString
+                   from name in GenHelpers.GenNonEmptyString
+                   from universal in Arb.Generate<bool>()
+                   from iconPosition in GenHelpers.GenOptionalString
+                   from outputItemType in GenHelpers.GenNonEmptyString
+                   from propCount in Gen.Choose(0, 3)
+                   from props in Gen.ListOf(propCount, GenHelpers.GenNonEmptyString)
+                   from resPropCount in Gen.Choose(0, 3)
+                   from resProps in Gen.ListOf(resPropCount, GenHelpers.GenNonEmptyString)
+                   select new BlueprintType
+                   {
+                       Id = id,
+                       Name = name,
+                       Universal = universal,
+                       IconPosition = iconPosition,
+                       OutputItemType = outputItemType,
+                       Properties = props.ToArray(),
+                       ResearchableProperties = resProps.ToArray(),
+                   };
+        }
+
+        /// <summary>
+        /// Generates a ShipClass (baseline) with key fields.
+        /// </summary>
+        public static Gen<ShipClass> GenShipClass()
+        {
+            return from id in Gen.Choose(1, 50)
+                   from name in GenHelpers.GenNonEmptyString
+                   select new ShipClass
+                   {
+                       Id = id,
+                       Name = name,
+                   };
+        }
+
+        /// <summary>
+        /// Generates a TechLevel (baseline) with key fields.
+        /// </summary>
+        public static Gen<TechLevel> GenTechLevel()
+        {
+            return from name in GenHelpers.GenNonEmptyString
+                   select new TechLevel
+                   {
+                       Name = name,
+                   };
+        }
+
+        /// <summary>
+        /// Generates a Commodity (baseline) with key fields for round-trip testing.
+        /// </summary>
+        public static Gen<Commodity> GenCommodity()
+        {
+            return from id in GenHelpers.GenNonEmptyString
+                   from name in GenHelpers.GenNonEmptyString
+                   from resCount in Gen.Choose(0, 3)
+                   from resKeys in Gen.ListOf(resCount, GenHelpers.GenNonEmptyString)
+                   from resValues in Gen.ListOf(resCount, GenHelpers.GenNonEmptyString)
+                   select BuildCommodity(id, name, resKeys.ToList(), resValues.ToList());
+        }
+
+        private static Commodity BuildCommodity(
+            string id,
+            string name,
+            List<string> resKeys,
+            List<string> resValues)
+        {
+            var commodity = new Commodity
+            {
+                ID = id,
+                Name = name,
+            };
+
+            for (int i = 0; i < resKeys.Count; i++)
+            {
+                commodity.ConstructionResources[resKeys[i]] = resValues[i];
+            }
+
+            return commodity;
+        }
+
+        /// <summary>
+        /// Generates a RefiningRecipe (baseline) with key fields.
+        /// </summary>
+        public static Gen<RefiningRecipe> GenRefiningRecipe()
+        {
+            return from inputResource in GenHelpers.GenNonEmptyString
+                   from inputPurity in Gen.Elements("High", "Medium", "Low", "Refined")
+                   from outputResource in GenHelpers.GenNonEmptyString
+                   from consumeRate in Gen.Choose(1, 100)
+                   from produceRate in Gen.Choose(1, 100)
+                   from tier in Gen.Choose(0, 2)
+                   select new RefiningRecipe
+                   {
+                       InputResource = inputResource,
+                       InputPurity = inputPurity,
+                       OutputResource = outputResource,
+                       ConsumeRate = consumeRate,
+                       ProduceRate = produceRate,
+                       Tier = tier,
+                   };
+        }
+
+        /// <summary>
+        /// Generates a ResearchTimeEntry (baseline) with key fields.
+        /// </summary>
+        public static Gen<ResearchTimeEntry> GenResearchTimeEntry()
+        {
+            return from evolution in Gen.Choose(0, 20)
+                   from researchTimeSeconds in Gen.Choose(60, 86400).Select(v => (long)v)
+                   select new ResearchTimeEntry
+                   {
+                       Evolution = evolution,
+                       ResearchTimeSeconds = researchTimeSeconds,
+                   };
+        }
+
+        /// <summary>
+        /// Generates a PropertyTypeDefinition (baseline) with key fields.
+        /// </summary>
+        public static Gen<PropertyTypeDefinition> GenPropertyTypeDefinition()
+        {
+            return from modTypeId in Gen.Choose(1, 999)
+                   from propertyName in GenHelpers.GenNonEmptyString
+                   from friendlyName in GenHelpers.GenNonEmptyString
+                   from unit in GenHelpers.GenNonEmptyString
+                   from researchPositive in Arb.Generate<bool>()
+                   from canResearch in Arb.Generate<bool>()
+                   select new PropertyTypeDefinition
+                   {
+                       ModTypeId = modTypeId,
+                       PropertyName = propertyName,
+                       FriendlyPropertyName = friendlyName,
+                       Unit = unit,
+                       ResearchPositive = researchPositive,
+                       CanResearch = canResearch,
+                   };
+        }
+
+        /// <summary>
+        /// Creates an Arbitrary for Faction.
+        /// </summary>
+        public static Arbitrary<Faction> ArbFaction()
+        {
+            return Arb.From(GenFaction());
+        }
+
+        /// <summary>
+        /// Creates an Arbitrary for ExternalCharacter.
+        /// </summary>
+        public static Arbitrary<ExternalCharacter> ArbExternalCharacter()
+        {
+            return Arb.From(GenExternalCharacter());
+        }
+
+        /// <summary>
+        /// Creates an Arbitrary for Asteroid.
+        /// </summary>
+        public static Arbitrary<Asteroid> ArbAsteroid()
+        {
+            return Arb.From(GenAsteroid());
+        }
+
+        /// <summary>
+        /// Creates an Arbitrary for BankingTransaction.
+        /// </summary>
+        public static Arbitrary<BankingTransaction> ArbBankingTransaction()
+        {
+            return Arb.From(GenBankingTransaction());
+        }
+
+        /// <summary>
+        /// Creates an Arbitrary for MailMessage.
+        /// </summary>
+        public static Arbitrary<MailMessage> ArbMailMessage()
+        {
+            return Arb.From(GenMailMessage());
+        }
+
+        /// <summary>
+        /// Creates an Arbitrary for BlueprintType (baseline).
+        /// </summary>
+        public static Arbitrary<BlueprintType> ArbBlueprintType()
+        {
+            return Arb.From(GenBlueprintType());
+        }
+
+        /// <summary>
+        /// Creates an Arbitrary for ShipClass (baseline).
+        /// </summary>
+        public static Arbitrary<ShipClass> ArbShipClass()
+        {
+            return Arb.From(GenShipClass());
+        }
+
+        /// <summary>
+        /// Creates an Arbitrary for TechLevel (baseline).
+        /// </summary>
+        public static Arbitrary<TechLevel> ArbTechLevel()
+        {
+            return Arb.From(GenTechLevel());
+        }
+
+        /// <summary>
+        /// Creates an Arbitrary for Commodity (baseline).
+        /// </summary>
+        public static Arbitrary<Commodity> ArbCommodity()
+        {
+            return Arb.From(GenCommodity());
+        }
+
+        /// <summary>
+        /// Creates an Arbitrary for RefiningRecipe (baseline).
+        /// </summary>
+        public static Arbitrary<RefiningRecipe> ArbRefiningRecipe()
+        {
+            return Arb.From(GenRefiningRecipe());
+        }
+
+        /// <summary>
+        /// Creates an Arbitrary for ResearchTimeEntry (baseline).
+        /// </summary>
+        public static Arbitrary<ResearchTimeEntry> ArbResearchTimeEntry()
+        {
+            return Arb.From(GenResearchTimeEntry());
+        }
+
+        /// <summary>
+        /// Creates an Arbitrary for PropertyTypeDefinition (baseline).
+        /// </summary>
+        public static Arbitrary<PropertyTypeDefinition> ArbPropertyTypeDefinition()
+        {
+            return Arb.From(GenPropertyTypeDefinition());
+        }
     }
 }
