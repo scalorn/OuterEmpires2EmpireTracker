@@ -116,7 +116,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: OE2EmpireTracker.Tests/Storage/GetAllCharacterUUIDsTests.cs (NEW)_
     - _Verification: Tests pass in vstest.console_
 
-- [ ] 3. Prerequisite: BackgroundProcessor colony mutation routing
+- [x] 3. Prerequisite: BackgroundProcessor colony mutation routing
   - [x] 3.1 Add ColonyService.ProcessColonyTick method
     - Create a new public method `ProcessColonyTick(string colonyUUID, double elapsedSeconds)` in ColonyService
     - Look up colony by UUID, call existing Colony.ProcessColony logic, then call MarkDirty<Colony>(uuid)
@@ -142,7 +142,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
   - Run `node .kiro/tools/audit.js`
   - Verify decimal precision fix and GetAllCharacterUUIDsAsync implementations are solid
 
-- [ ] 5. DirtyTracker implementation
+- [x] 5. DirtyTracker implementation
   - [x] 5.1 Create DirtyTracker class
     - Create Common/Services/DirtyTracker.cs with DirtyKey struct
     - Implement MarkDirty<T>, MarkDeleted<T>, GetDirtyUUIDs<T>, GetDeletedUUIDs<T>
@@ -526,7 +526,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/MigrationProgress.cs (NEW), Common/Interfaces/StorageExceptions.cs (modified)_
     - _Verification: Build succeeds_
 
-- [ ] 18. Migration service — core implementation
+- [x] 18. Migration service — core implementation
   - [x] 18.1 Create MigrationService class with MigrateAsync skeleton and character discovery
     - Create Common/Services/MigrationService.cs
     - Implement MigrateAsync signature (source, destination, progress, characterUUIDs, ct)
@@ -779,7 +779,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: OE2EmpireTracker.Tests/Services/DirtyTrackingPropertyTests.cs (appended)_
     - _Verification: DirtyTrackingPropertyTests pass in vstest.console_
 
-- [~] 24. Final checkpoint — Full integration verified
+- [x] 24. Final checkpoint — Full integration verified
   - Build full solution with zero warnings
   - Run vstest.console (full suite, 600s timeout) + trxparse.js — ALL tests pass
   - Run dotnet test OE2EmpireTracker.Server.Tests — ALL tests pass
