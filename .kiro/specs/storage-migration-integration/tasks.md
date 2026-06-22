@@ -644,7 +644,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
 
 
 - [ ] 21. Round-trip fidelity property tests — generator infrastructure
-  - [-] 21.1 Create GenHelpers utility class for FsCheck entity generators
+  - [x] 21.1 Create GenHelpers utility class for FsCheck entity generators
     - Create OE2EmpireTracker.Tests/Services/GenHelpers.cs (NEW)
     - Provide reusable generator combinators: GenUUID, GenOptionalString, GenDecimal, GenDateTime, GenOptionalList<T>, GenNullable<T>
     - Use FsCheck 2.16.6 LINQ query syntax (from x in Gen.Choose(...) select ...)
@@ -655,7 +655,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: OE2EmpireTracker.Tests/Services/GenHelpers.cs (NEW)_
     - _Verification: Build succeeds_
 
-  - [-] 21.2 Create FsCheck generators for Colony and Blueprint entities
+  - [x] 21.2 Create FsCheck generators for Colony and Blueprint entities
     - Colony: UUID, Name, OwnerUUID, ColonyStructures (list of nested objects), resources, timers
     - Blueprint: UUID, Name, OwnerUUID, Type, all property fields, BuildItems list
     - Both have complex nested structures — use GenHelpers for common fields
@@ -665,7 +665,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: OE2EmpireTracker.Tests/Services/EntityGenerators.cs (NEW)_
     - _Verification: Build succeeds; can generate 10 instances without exception_
 
-  - [~] 21.3 Create FsCheck generators for Survey, PlayerProfile, DeliveryRoute, DeliveryPlan
+  - [-] 21.3 Create FsCheck generators for Survey, PlayerProfile, DeliveryRoute, DeliveryPlan
     - Survey: UUID, OwnerUUID, ResourceReserves (nested list), SurveyType enum
     - PlayerProfile: UUID, Name, Skills dictionary, Rank
     - DeliveryRoute: UUID, Stops list (nested objects with StationUUID, items)
@@ -676,7 +676,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: OE2EmpireTracker.Tests/Services/EntityGenerators.cs (appended)_
     - _Verification: Build succeeds_
 
-  - [~] 21.4 Create FsCheck generators for Ship, ShipTemplate, Station, MarketListing, MarketTransaction
+  - [-] 21.4 Create FsCheck generators for Ship, ShipTemplate, Station, MarketListing, MarketTransaction
     - MarketTransaction has decimal fields (PricePerUnit, TotalPrice) — use GenDecimal for full precision range
     - Station has nested SystemUUID references
     - Estimated: ~100 lines (five entities)

@@ -462,6 +462,7 @@
     <Compile Include="Services\MigrationServiceTests.cs" />
     <Compile Include="Services\EntityGenerators.cs" />
     <Compile Include="Services\EntityGeneratorsSmokeTests.cs" />
+    <Compile Include="Services\GenHelpers.cs" />
     <Compile Include="Services\IndividualImportDedupPropertyTests.cs" />
     <Compile Include="Services\ResourcesOnlyImportPropertyTests.cs" />
     <Compile Include="Services\BlueprintImportHandlerClassifyTests.cs" />
