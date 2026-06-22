@@ -483,7 +483,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Verification: PreferencesStoreBackendTests pass in vstest.console_
 
 
-- [ ] 15. Desktop startup wiring
+- [x] 15. Desktop startup wiring
   - [x] 15.1 Implement InitializeStorage in Program.cs
     - Load preferences via PreferencesStore.GetInstance()
     - Call ParseStorageBackendType() and ResolveStorageConfig()
@@ -496,7 +496,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: OE2EmpireTracker/Program.cs (modified)_
     - _Verification: Build succeeds_
 
-  - [-] 15.2 Add error dialog and fallback logic in Program.cs
+  - [x] 15.2 Add error dialog and fallback logic in Program.cs
     - Wrap InitializeStorage in try/catch
     - On exception: show MessageBox with error message describing backend type and failure
     - Offer "Yes" = fall back to JsonSingleFile with default path, "No" = exit
@@ -516,8 +516,8 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
   - Manual verification: set StorageBackendType to "Sqlite" in UIPreferences.json, confirm app initializes SQLite
 
 
-- [ ] 17. Migration service — models and exception
-  - [-] 17.1 Create MigrationProgress model and MigrationValidationException
+- [x] 17. Migration service — models and exception
+  - [x] 17.1 Create MigrationProgress model and MigrationValidationException
     - Create Common/Services/MigrationProgress.cs with CurrentEntityType (string), EntitiesProcessed (int), Phase (string)
     - Add MigrationValidationException to Common/Interfaces/StorageExceptions.cs with Mismatches property (Dictionary<string, (int Expected, int Actual)>)
     - Estimated: ~40 lines total across both files
@@ -527,7 +527,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Verification: Build succeeds_
 
 - [ ] 18. Migration service — core implementation
-  - [~] 18.1 Create MigrationService class with MigrateAsync skeleton and character discovery
+  - [-] 18.1 Create MigrationService class with MigrateAsync skeleton and character discovery
     - Create Common/Services/MigrationService.cs
     - Implement MigrateAsync signature (source, destination, progress, characterUUIDs, ct)
     - Character discovery: if characterUUIDs is null, call source.GetAllCharacterUUIDsAsync()
