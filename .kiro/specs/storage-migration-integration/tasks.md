@@ -135,7 +135,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Verification: Build succeeds; existing BackgroundProcessor tests pass_
 
 
-- [-] 4. Checkpoint — Prerequisites verified
+- [x] 4. Checkpoint — Prerequisites verified
   - Build full solution with zero warnings
   - Run vstest.console (full suite, 600s timeout) + trxparse.js
   - Run dotnet test OE2EmpireTracker.Server.Tests
