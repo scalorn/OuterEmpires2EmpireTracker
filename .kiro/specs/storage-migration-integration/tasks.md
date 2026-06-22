@@ -610,7 +610,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Verification: MigrationServiceTests pass in vstest.console_
 
 
-- [ ] 19. Desktop migration workflow wiring
+- [x] 19. Desktop migration workflow wiring
   - [x] 19.1 Implement migration detection and offer in Program.cs
     - Add DetectPreviousBackendData(): check for PlayerData.json in exe dir, data/ subfolder, .db file
     - If configured backend type differs from what's detected AND new backend is empty:
@@ -624,7 +624,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: OE2EmpireTracker/Program.cs (modified)_
     - _Verification: Build succeeds_
 
-  - [-] 19.2 Create FormMigrationProgress dialog
+  - [x] 19.2 Create FormMigrationProgress dialog
     - Simple WinForms dialog (Designer + code-behind)
     - Controls: lblPhase (Label), lblEntityType (Label), lblCount (Label), progressBar (ProgressBar — marquee mode)
     - Public UpdateProgress(MigrationProgress progress) method to update labels from UI thread
@@ -644,7 +644,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
 
 
 - [ ] 21. Round-trip fidelity property tests — generator infrastructure
-  - [~] 21.1 Create GenHelpers utility class for FsCheck entity generators
+  - [-] 21.1 Create GenHelpers utility class for FsCheck entity generators
     - Create OE2EmpireTracker.Tests/Services/GenHelpers.cs (NEW)
     - Provide reusable generator combinators: GenUUID, GenOptionalString, GenDecimal, GenDateTime, GenOptionalList<T>, GenNullable<T>
     - Use FsCheck 2.16.6 LINQ query syntax (from x in Gen.Choose(...) select ...)
@@ -655,7 +655,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: OE2EmpireTracker.Tests/Services/GenHelpers.cs (NEW)_
     - _Verification: Build succeeds_
 
-  - [~] 21.2 Create FsCheck generators for Colony and Blueprint entities
+  - [-] 21.2 Create FsCheck generators for Colony and Blueprint entities
     - Colony: UUID, Name, OwnerUUID, ColonyStructures (list of nested objects), resources, timers
     - Blueprint: UUID, Name, OwnerUUID, Type, all property fields, BuildItems list
     - Both have complex nested structures — use GenHelpers for common fields
