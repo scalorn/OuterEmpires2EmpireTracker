@@ -635,7 +635,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: OE2EmpireTracker/Forms/FormMigrationProgress.cs (NEW), FormMigrationProgress.Designer.cs (NEW), FormMigrationProgress.resx (NEW)_
     - _Verification: Build succeeds_
 
-- [~] 20. Checkpoint — Migration service and wiring verified
+- [x] 20. Checkpoint — Migration service and wiring verified
   - Build full solution with zero warnings
   - Run vstest.console (full suite, 600s timeout) + trxparse.js
   - Run dotnet test OE2EmpireTracker.Server.Tests
