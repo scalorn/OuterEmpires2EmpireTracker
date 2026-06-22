@@ -376,7 +376,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/EmpireContext.cs (modified)_
     - _Verification: Build succeeds; existing tests pass (backend is null → legacy behavior)_
 
-  - [-] 13.2 Implement LoadBaselineFromBackend — JSON backend path
+  - [x] 13.2 Implement LoadBaselineFromBackend — JSON backend path
     - Add private `LoadBaselineFromBackend()` method
     - For JSON backends (JsonSingleFile/JsonMultiFile): call GetGlobalDataAsync("BaselineRoot"), deserialize into BaselineRoot
     - If result is null/empty: set _needsSeedWrite flag (handled in 13.4)
@@ -387,7 +387,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/EmpireContext.cs (modified)_
     - _Verification: Build succeeds_
 
-  - [-] 13.3 Implement LoadBaselineFromBackend — relational backend path
+  - [x] 13.3 Implement LoadBaselineFromBackend — relational backend path
     - For relational backends (Sqlite/DynamoDb/Postgres): call typed Get methods for each baseline collection
     - GetBaselineGameConstantsAsync, GetAllBlueprintTypesAsync, GetAllShipClassesAsync, GetAllTechLevelsAsync, GetAllCommoditiesAsync, GetAllRefiningRecipesAsync, GetAllResearchTimesAsync, GetAllPropertyTypeDefinitionsAsync
     - If constants is null: set _needsSeedWrite flag
@@ -398,7 +398,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/EmpireContext.cs (modified)_
     - _Verification: Build succeeds_
 
-  - [~] 13.4 Implement baseline seeding from BaselineData.json
+  - [-] 13.4 Implement baseline seeding from BaselineData.json
     - When _needsSeedWrite is true after LoadBaselineFromBackend:
       - Load BaselineData.json from disk (same path as legacy file I/O)
       - Deserialize into BaselineRoot, initialize in-memory collections
@@ -411,7 +411,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: Common/Services/EmpireContext.cs (modified)_
     - _Verification: Build succeeds_
 
-  - [~] 13.5 Modify EmpireContext WriteContext for backend persistence
+  - [-] 13.5 Modify EmpireContext WriteContext for backend persistence
     - For JSON backends: serialize BaselineRoot to JSON (existing pattern), call UpsertGlobalDataAsync via Task.Run
     - For relational backends: call typed Upsert methods per baseline collection (8 calls via Task.Run)
     - Preserve legacy file write when no backend configured

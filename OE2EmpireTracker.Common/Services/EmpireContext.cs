@@ -51,9 +51,7 @@ namespace OE2EmpireTracker.Services
 
         private SystemRepository _systemRepository;
 
-#pragma warning disable CS0414 // Field is assigned but its value is never used (consumed in task 13.4/13.6)
         private bool _needsSeedWrite;
-#pragma warning restore CS0414
 
         /// <summary>
         /// Internal constructor for test infrastructure. Accepts pre-parsed
@@ -246,9 +244,48 @@ namespace OE2EmpireTracker.Services
                 }
             }
 
-            string jsonContent = JsonConvert.SerializeObject(baselineRoot, JsonSettings.SerializerSettings);
-            SafeFileWriter.WriteAllText(FilePath, jsonContent);
-            Log.Info("Baseline data saved to {0}", FilePath);
+            if (StorageBackend == null)
+            {
+                // Legacy file-based write (existing behavior)
+                string jsonContent = JsonConvert.SerializeObject(baselineRoot, JsonSettings.SerializerSettings);
+                SafeFileWriter.WriteAllText(FilePath, jsonContent);
+                Log.Info("Baseline data saved to {0}", FilePath);
+                return;
+            }
+
+            var backend = StorageBackend;
+            var type = StorageBackendType.Value;
+
+            if (type == Common.Interfaces.StorageBackendType.JsonSingleFile
+                || type == Common.Interfaces.StorageBackendType.JsonMultiFile)
+            {
+                string json = JsonConvert.SerializeObject(baselineRoot, JsonSettings.SerializerSettings);
+                Task.Run(() => backend.UpsertGlobalDataAsync("BaselineRoot", json))
+                    .GetAwaiter().GetResult();
+                Log.Info("Baseline data saved to {0} backend (JSON)", type);
+            }
+            else
+            {
+                // Relational: upsert each baseline collection individually
+                Task.Run(() => backend.UpsertBaselineGameConstantsAsync(GameConstants))
+                    .GetAwaiter().GetResult();
+                Task.Run(() => backend.UpsertBlueprintTypesAsync(_blueprintTypeList))
+                    .GetAwaiter().GetResult();
+                Task.Run(() => backend.UpsertShipClassesAsync(_shipClassList))
+                    .GetAwaiter().GetResult();
+                Task.Run(() => backend.UpsertTechLevelsAsync(_techLevelList))
+                    .GetAwaiter().GetResult();
+                Task.Run(() => backend.UpsertCommoditiesAsync(
+                    (IReadOnlyList<Commodity>)_commodityList ?? Array.Empty<Commodity>()))
+                    .GetAwaiter().GetResult();
+                Task.Run(() => backend.UpsertRefiningRecipesAsync(RefiningRecipes.Recipes))
+                    .GetAwaiter().GetResult();
+                Task.Run(() => backend.UpsertResearchTimesAsync(ResearchTimeLookup.ResearchTimes))
+                    .GetAwaiter().GetResult();
+                Task.Run(() => backend.UpsertPropertyTypeDefinitionsAsync(_propertyTypeRegistry))
+                    .GetAwaiter().GetResult();
+                Log.Info("Baseline data saved to {0} backend (relational)", type);
+            }
         }
 
         public void InitBlueprintTypes(BaselineRoot baselineRoot)
@@ -891,9 +928,19 @@ namespace OE2EmpireTracker.Services
 
             if (baselineRoot == null)
             {
+                Log.Info("Backend has no baseline data — seeding from {0}", FilePath);
+                if (File.Exists(FilePath))
+                {
+                    string fileJson = File.ReadAllText(FilePath);
+                    baselineRoot = JsonConvert.DeserializeObject<BaselineRoot>(fileJson);
+                }
+                else
+                {
+                    Log.Warn("BaselineData.json not found at {0} — starting with empty baseline", FilePath);
+                    baselineRoot = new BaselineRoot { GameConstants = new BaselineGameConstants() };
+                }
+
                 _needsSeedWrite = true;
-                // TODO: Task 13.4 — seed from BaselineData.json on disk
-                return;
             }
 
             DataVersion = baselineRoot.DataVersion;
@@ -910,6 +957,13 @@ namespace OE2EmpireTracker.Services
             InitResearchTimes(baselineRoot);
             InitGlobalBlueprints(baselineRoot);
             InitPropertyTypes(baselineRoot);
+
+            if (_needsSeedWrite)
+            {
+                WriteContext();
+                Log.Info("Seeded baseline data into {0} backend from BaselineData.json", type);
+                _needsSeedWrite = false;
+            }
         }
 
         /// <summary>
