@@ -135,7 +135,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Verification: Build succeeds; existing BackgroundProcessor tests pass_
 
 
-- [~] 4. Checkpoint — Prerequisites verified
+- [-] 4. Checkpoint — Prerequisites verified
   - Build full solution with zero warnings
   - Run vstest.console (full suite, 600s timeout) + trxparse.js
   - Run dotnet test OE2EmpireTracker.Server.Tests
@@ -759,8 +759,8 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Verification: Round-trip tests pass for Sqlite↔Postgres pair_
 
 
-- [ ] 23. Dirty tracking property tests
-  - [-] 23.1 Write property tests for DirtyTracker correctness
+- [x] 23. Dirty tracking property tests
+  - [x] 23.1 Write property tests for DirtyTracker correctness
     - **Property 1: Write Idempotency** — after WriteContext with no mutations, DirtyTracker.HasChanges == false AND no backend calls made
     - **Property 2: Dirty Flag Completeness** — for a random sequence of service mutations, every mutated entity appears in DirtyTracker. Use reflection to call random service methods, then check tracker.
     - **Property 3: Load-Write Round Trip** — LoadFromBackend then immediate WriteContext → zero dirty entities → zero backend Upsert calls
@@ -770,7 +770,7 @@ This pattern is created in Task 6.2 and consumed by Tasks 7.2 and 6.2. Each entr
     - _Output: OE2EmpireTracker.Tests/Services/DirtyTrackingPropertyTests.cs (NEW)_
     - _Verification: DirtyTrackingPropertyTests pass in vstest.console_
 
-  - [-] 23.2 Write property test for WritesBlocked monotonicity
+  - [x] 23.2 Write property test for WritesBlocked monotonicity
     - **Property 4: WritesBlocked Monotonicity** — configure mock backend to throw StorageWriteException after N successful writes. After exception: WritesBlocked == true, subsequent WriteContext calls produce zero backend calls, no exceptions thrown.
     - **Property 5: WritesBlocked Reset** — after setting WritesBlocked = false, next WriteContext resumes normal behavior
     - Estimated: ~60 lines

@@ -721,7 +721,9 @@ namespace OE2EmpireTracker.Services
         /// <typeparam name="T">The entity type.</typeparam>
         /// <param name="loadedData">The loaded data dictionary.</param>
         /// <returns>An array of entities, or an empty array if the type is not found.</returns>
+#pragma warning disable SA1204 // Static members should appear before non-static members
         private static T[] GetArray<T>(Dictionary<Type, IReadOnlyList<object>> loadedData)
+#pragma warning restore SA1204
         {
             if (loadedData.TryGetValue(typeof(T), out var list))
             {
@@ -731,6 +733,7 @@ namespace OE2EmpireTracker.Services
             return new T[0];
         }
 
+#pragma warning disable SA1202 // Public members should come before private members
         public void WriteContext()
         {
             if (WritesBlocked)

@@ -90,7 +90,7 @@ namespace OE2EmpireTracker.Services
             {
                 ct.ThrowIfCancellationRequested();
                 await destination.UpsertStarSystemsAsync(starSystems).ConfigureAwait(false);
-                foreach (var _ in starSystems)
+                foreach (var system in starSystems)
                 {
                     Report("Global", "StarSystem");
                 }
