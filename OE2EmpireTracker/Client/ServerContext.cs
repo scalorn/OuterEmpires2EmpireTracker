@@ -26,14 +26,12 @@ namespace OE2EmpireTracker.Client
         private ServerContext(
             IFactionServerTypedClient typedClient,
             FactionPushClient pushClient,
-            RemoteFactionClient client,
             SyncManager syncManager,
             OfflineQueue offlineQueue,
             OperatingMode mode)
         {
             TypedClient = typedClient;
             PushClient = pushClient;
-            Client = client;
             SyncManager = syncManager;
             OfflineQueue = offlineQueue;
             Mode = mode;
@@ -53,12 +51,6 @@ namespace OE2EmpireTracker.Client
         /// Gets the push client for WebSocket events (null if LocalOnly).
         /// </summary>
         public FactionPushClient PushClient { get; }
-
-        /// <summary>
-        /// Gets the legacy remote faction client (null if LocalOnly).
-        /// Retained for backward compatibility until all consumers are migrated.
-        /// </summary>
-        public RemoteFactionClient Client { get; }
 
         /// <summary>
         /// Gets the sync manager.
@@ -106,7 +98,6 @@ namespace OE2EmpireTracker.Client
 
             FactionServerTypedClient typedClient = null;
             FactionPushClient pushClient = null;
-            RemoteFactionClient legacyClient = null;
             try
             {
                 typedClient = new FactionServerTypedClient(
@@ -121,11 +112,6 @@ namespace OE2EmpireTracker.Client
                     settings.TrustedThumbprint,
                     typedClient);
 
-                legacyClient = new RemoteFactionClient(
-                    settings.ServerUrl,
-                    token,
-                    settings.TrustedThumbprint);
-
                 Log.Info("ServerContext: Created FactionServerTypedClient + FactionPushClient for {0}", settings.ServerUrl);
             }
             catch (Exception ex)
@@ -133,7 +119,6 @@ namespace OE2EmpireTracker.Client
                 Log.Warn(ex, "ServerContext: Failed to create clients, continuing offline");
                 typedClient?.Dispose();
                 pushClient?.Dispose();
-                legacyClient?.Dispose();
                 token?.Dispose();
                 return;
             }
@@ -144,7 +129,7 @@ namespace OE2EmpireTracker.Client
             var syncManager = new SyncManager(typedClient, pushClient, offlineQueue);
             syncManager.Mode = settings.Mode;
 
-            _instance = new ServerContext(typedClient, pushClient, legacyClient, syncManager, offlineQueue, settings.Mode);
+            _instance = new ServerContext(typedClient, pushClient, syncManager, offlineQueue, settings.Mode);
             _instance.PushClient.RateLimitChanged += _instance.OnRateLimitChanged;
 
             Log.Info(
@@ -193,7 +178,6 @@ namespace OE2EmpireTracker.Client
                     }
 
                     TypedClient?.Dispose();
-                    Client?.Dispose();
                 }
             }
         }

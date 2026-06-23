@@ -202,7 +202,7 @@ Migrate all consumers of `RemoteFactionClient` to `IFactionServerTypedClient` + 
     - _Output: DesktopSyncMigrationTests.cs (modified)_
     - _Verification: Tests compile and pass_
 
-- [ ] 14. Delete RemoteFactionClient.cs
+- [x] 14. Delete RemoteFactionClient.cs
   - Delete `OE2EmpireTracker/Client/RemoteFactionClient.cs`
   - Verify no remaining compile-time references (grep for "RemoteFactionClient" in all .cs files)
   - _Requirements: 7.1, 7.2, 7.4_

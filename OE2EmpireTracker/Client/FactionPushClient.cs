@@ -22,7 +22,7 @@ namespace OE2EmpireTracker.Client
     /// <summary>
     /// Handles WebSocket connection, push event receiving, heartbeat timer,
     /// reconnection with exponential backoff, and polling fallback.
-    /// Extracted from <see cref="RemoteFactionClient"/> to separate real-time
+    /// Extracted from the legacy RemoteFactionClient to separate real-time
     /// push concerns from HTTP API communication.
     /// Implements <see cref="IDisposable"/> to securely dispose the bearer token,
     /// WebSocket, and timers.
@@ -575,30 +575,6 @@ namespace OE2EmpireTracker.Client
             oldLimiter?.Dispose();
 
             Log.Info("Rate limiter configured: {0} requests/minute", requestsPerMinute);
-        }
-
-        /// <summary>
-        /// Acquires a rate limit token before making an outgoing REST request.
-        /// Blocks if the rate limit has been reached until a token becomes available.
-        /// Releases the token after 60 seconds (sliding window approximation).
-        /// </summary>
-        /// <returns>A task that completes when a rate limit token is acquired.</returns>
-        private async Task AcquireRateLimitTokenAsync()
-        {
-            await _rateLimiter.WaitAsync().ConfigureAwait(false);
-
-            _ = Task.Run(async () =>
-            {
-                await Task.Delay(60000).ConfigureAwait(false);
-                try
-                {
-                    _rateLimiter.Release();
-                }
-                catch (SemaphoreFullException)
-                {
-                    // Ignore — can happen if rate limit was reconfigured
-                }
-            });
         }
 
         /// <summary>

@@ -42,7 +42,7 @@ namespace OE2EmpireTracker
             PlayerContext.IsServerConnected = () =>
             {
                 var sc = Client.ServerContext.Instance;
-                return sc?.Client?.IsConnected == true;
+                return sc?.PushClient?.IsConnected == true;
             };
             PlayerContext.PushToServer = async (characterUUID, jsonContent) =>
             {
@@ -55,9 +55,10 @@ namespace OE2EmpireTracker
             PlayerContext.ExportFromServer = async (characterUUID) =>
             {
                 var sc = Client.ServerContext.Instance;
-                if (sc?.Client == null || !sc.Client.IsConnected)
+                if (sc?.PushClient == null || !sc.PushClient.IsConnected)
                     return null;
-                return await sc.Client.ExportCharacterDataAsync(characterUUID).ConfigureAwait(false);
+                var playerRoot = await sc.TypedClient.ExportCharacterDataAsync(characterUUID).ConfigureAwait(false);
+                return playerRoot != null ? JsonConvert.SerializeObject(playerRoot) : null;
             };
 
             SQLitePCL.Batteries_V2.Init();

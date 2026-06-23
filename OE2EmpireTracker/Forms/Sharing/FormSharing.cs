@@ -128,7 +128,7 @@ namespace OE2EmpireTracker.Forms.Sharing
         private async Task LoadRulesAsync()
         {
             var ctx = ServerContext.Instance;
-            if (ctx?.Client == null || !ctx.Client.IsConnected)
+            if (ctx?.PushClient == null || !ctx.PushClient.IsConnected)
             {
                 Log.Info("Server not connected, cannot load sharing rules");
                 using var guard = new ProgrammaticUpdateGuard(this);
@@ -151,7 +151,8 @@ namespace OE2EmpireTracker.Forms.Sharing
 
             try
             {
-                string json = await ctx.Client.GetSharingRulesAsync(characterUUID).ConfigureAwait(false);
+                var rules = await ctx.TypedClient.GetSharingRulesAsync(characterUUID).ConfigureAwait(false);
+                string json = rules != null ? JsonConvert.SerializeObject(rules) : null;
 
                 Log.Info("GetSharingRulesAsync returned: {0}", json ?? "(null)");
 
@@ -273,7 +274,7 @@ namespace OE2EmpireTracker.Forms.Sharing
         private async void BtnSave_Click(object sender, EventArgs e)
         {
             var ctx = ServerContext.Instance;
-            if (ctx?.Client == null || !ctx.Client.IsConnected)
+            if (ctx?.PushClient == null || !ctx.PushClient.IsConnected)
             {
                 MessageBox.Show(
                     this,
@@ -316,78 +317,19 @@ namespace OE2EmpireTracker.Forms.Sharing
                 rules.Add(rule);
             }
 
-            string json = JsonConvert.SerializeObject(rules);
-
             try
             {
-                var response = await ctx.Client.PutSharingRulesAsync(characterUUID, json).ConfigureAwait(false);
+                await ctx.TypedClient.PutSharingRulesAsync(characterUUID, rules.ToArray()).ConfigureAwait(false);
 
                 if (IsDisposed)
                 {
                     return;
                 }
 
-                if (response.IsSuccessStatusCode)
-                {
-                    string responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    if (IsDisposed)
-                    {
-                        return;
-                    }
+                Log.Info("Sharing rules saved successfully");
 
-                    if (InvokeRequired)
-                    {
-                        try
-                        {
-                            Invoke(new Action(() => PopulateGrid(responseBody)));
-                        }
-                        catch (ObjectDisposedException)
-                        {
-                        }
-                    }
-                    else
-                    {
-                        PopulateGrid(responseBody);
-                    }
-
-                    Log.Info("Sharing rules saved successfully");
-                }
-                else
-                {
-                    string errorBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    string errorMessage = string.Format(
-                        "Failed to save sharing rules. Server returned {0}: {1}",
-                        (int)response.StatusCode,
-                        errorBody);
-
-                    Log.Warn(errorMessage);
-
-                    if (!IsDisposed && InvokeRequired)
-                    {
-                        try
-                        {
-                            Invoke(new Action(() =>
-                                MessageBox.Show(
-                                    this,
-                                    errorMessage,
-                                    "Save Failed",
-                                    MessageBoxButtons.OK,
-                                    MessageBoxIcon.Error)));
-                        }
-                        catch (ObjectDisposedException)
-                        {
-                        }
-                    }
-                    else if (!IsDisposed)
-                    {
-                        MessageBox.Show(
-                            this,
-                            errorMessage,
-                            "Save Failed",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Error);
-                    }
-                }
+                // Reload rules from server to get server-assigned IDs
+                await LoadRulesAsync().ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -397,6 +339,8 @@ namespace OE2EmpireTracker.Forms.Sharing
                     return;
                 }
 
+                string errorMessage = "Failed to save sharing rules: " + ex.Message;
+
                 if (InvokeRequired)
                 {
                     try
@@ -404,7 +348,7 @@ namespace OE2EmpireTracker.Forms.Sharing
                         Invoke(new Action(() =>
                             MessageBox.Show(
                                 this,
-                                "Failed to save sharing rules: " + ex.Message,
+                                errorMessage,
                                 "Save Failed",
                                 MessageBoxButtons.OK,
                                 MessageBoxIcon.Error)));
@@ -417,7 +361,7 @@ namespace OE2EmpireTracker.Forms.Sharing
                 {
                     MessageBox.Show(
                         this,
-                        "Failed to save sharing rules: " + ex.Message,
+                        errorMessage,
                         "Save Failed",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error);

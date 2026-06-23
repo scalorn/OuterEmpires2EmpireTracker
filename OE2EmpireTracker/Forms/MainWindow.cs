@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Newtonsoft.Json;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Forms;
 using OE2EmpireTracker.Forms.Asteroid;
@@ -380,28 +381,28 @@ namespace OE2EmpireTracker
         }
 
         /// <summary>
-        /// Subscribes to the ServerContext client's ConnectionStatusChanged event.
+        /// Subscribes to the ServerContext push client's ConnectionStatusChanged event.
         /// </summary>
         private void SubscribeToConnectionStatus()
         {
             var ctx = Client.ServerContext.Instance;
-            if (ctx?.Client != null)
+            if (ctx?.PushClient != null)
             {
-                ctx.Client.ConnectionStatusChanged += OnConnectionStatusChanged;
-                ctx.Client.RealtimeModeChanged += OnRealtimeModeChanged;
+                ctx.PushClient.ConnectionStatusChanged += OnConnectionStatusChanged;
+                ctx.PushClient.RealtimeModeChanged += OnRealtimeModeChanged;
             }
         }
 
         /// <summary>
-        /// Unsubscribes from the ServerContext client's ConnectionStatusChanged event.
+        /// Unsubscribes from the ServerContext push client's ConnectionStatusChanged event.
         /// </summary>
         private void UnsubscribeFromConnectionStatus()
         {
             var ctx = Client.ServerContext.Instance;
-            if (ctx?.Client != null)
+            if (ctx?.PushClient != null)
             {
-                ctx.Client.ConnectionStatusChanged -= OnConnectionStatusChanged;
-                ctx.Client.RealtimeModeChanged -= OnRealtimeModeChanged;
+                ctx.PushClient.ConnectionStatusChanged -= OnConnectionStatusChanged;
+                ctx.PushClient.RealtimeModeChanged -= OnRealtimeModeChanged;
             }
         }
 
@@ -721,14 +722,14 @@ namespace OE2EmpireTracker
             }
 
             var ctx = Client.ServerContext.Instance;
-            if (ctx?.Client == null)
+            if (ctx?.PushClient == null)
             {
                 tslConnectionStatus.Text = "Disconnected";
                 tslConnectionStatus.ForeColor = System.Drawing.Color.Red;
                 return;
             }
 
-            if (ctx.Client.IsConnected)
+            if (ctx.PushClient.IsConnected)
             {
                 tslConnectionStatus.Text = "Connected";
                 tslConnectionStatus.ForeColor = System.Drawing.Color.Green;
@@ -983,7 +984,7 @@ namespace OE2EmpireTracker
         private async void ExportFromServerToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var ctx = Client.ServerContext.Instance;
-            if (ctx?.Client == null || !ctx.Client.IsConnected)
+            if (ctx?.PushClient == null || !ctx.PushClient.IsConnected)
             {
                 MessageBox.Show(
                     "Not connected to a server. Please configure and connect to a server first.",
@@ -1018,7 +1019,8 @@ namespace OE2EmpireTracker
 
                 try
                 {
-                    string exportJson = await ctx.Client.ExportCharacterDataAsync(characterUUID).ConfigureAwait(false);
+                    var exportData = await ctx.TypedClient.ExportCharacterDataAsync(characterUUID).ConfigureAwait(false);
+                    string exportJson = exportData != null ? JsonConvert.SerializeObject(exportData, Formatting.Indented) : null;
                     if (string.IsNullOrEmpty(exportJson))
                     {
                         Invoke((Action)(() => MessageBox.Show(
@@ -1080,7 +1082,7 @@ namespace OE2EmpireTracker
             await ctx.SyncManager.SyncOnStartupAsync().ConfigureAwait(false);
 
             // In ServerOnly mode, use server as primary storage — load data from server
-            if (ctx.Mode == Client.OperatingMode.ServerOnly && ctx.Client.IsConnected)
+            if (ctx.Mode == Client.OperatingMode.ServerOnly && ctx.PushClient.IsConnected)
             {
                 bool loaded = await playerContext.LoadFromServerAsync().ConfigureAwait(false);
                 if (loaded)
