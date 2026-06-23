@@ -49,6 +49,16 @@ const KNOWN_DUPES = new Set([
     'DeepCopyReadOnlyItemBag',
     'DeepCopyReadOnlyItem',
     'SetComponentCondition',
+    // FactionPushClient methods extracted from RemoteFactionClient — RemoteFactionClient will be deleted in Task 14
+    'BuildWebSocketUrl',
+    'AcquireRateLimitTokenAsync',
+    'HandleEventMessage',
+    'ConnectWebSocketAsync',
+    'ProcessIncomingMessage',
+    'ReceiveLoopAsync',
+    'StopPolling',
+    'MaskTokenInUrl',
+    'ApplyRateLimit',
 ]);
 
 function findCsFiles(dir, results) {
