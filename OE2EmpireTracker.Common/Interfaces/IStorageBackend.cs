@@ -1187,6 +1187,15 @@ namespace OE2EmpireTracker.Common.Interfaces
         /// <param name="definitions">The property type definitions to upsert.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
         Task UpsertPropertyTypeDefinitionsAsync(IReadOnlyList<PropertyTypeDefinition> definitions);
+
+        /// <summary>Gets all global (baseline) blueprints.</summary>
+        /// <returns>A read-only list of global blueprints.</returns>
+        Task<IReadOnlyList<Blueprint>> GetAllGlobalBlueprintsAsync();
+
+        /// <summary>Creates or updates global (baseline) blueprints in bulk.</summary>
+        /// <param name="blueprints">The global blueprints to upsert.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        Task UpsertGlobalBlueprintsAsync(IReadOnlyList<Blueprint> blueprints);
     }
 
     /// <summary>

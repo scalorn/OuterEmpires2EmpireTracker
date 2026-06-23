@@ -5478,6 +5478,51 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             return Task.CompletedTask;
         }
 
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<Blueprint>> GetAllGlobalBlueprintsAsync()
+        {
+            var results = new List<Blueprint>();
+            using (var conn = OpenConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT * FROM Blueprints WHERE OwnerUUID = ''";
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(ReadBlueprintParent(reader));
+                    }
+                }
+
+                foreach (var bp in results)
+                {
+                    bp.Properties = LoadPropertyBag(conn, "BlueprintProperties", "BlueprintUUID", bp.UUID);
+                    bp.Resources = LoadBlueprintResources(conn, bp.UUID);
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<Blueprint>>(results);
+        }
+
+        /// <inheritdoc/>
+        public Task UpsertGlobalBlueprintsAsync(IReadOnlyList<Blueprint> blueprints)
+        {
+            using (var conn = OpenConnection())
+            using (var tx = conn.BeginTransaction())
+            {
+                foreach (var bp in blueprints)
+                {
+                    UpsertBlueprintParent(conn, tx, string.Empty, bp);
+                    DeleteBlueprintChildren(conn, tx, bp.UUID);
+                    InsertBlueprintChildren(conn, tx, bp);
+                }
+
+                tx.Commit();
+            }
+
+            return Task.CompletedTask;
+        }
+
         // ═══════════════════════════════════════════════════════════
         // Private Helpers
         // ═══════════════════════════════════════════════════════════

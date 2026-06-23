@@ -1,8 +1,0 @@
-MSBuild version 18.6.3+84d3e95b4 for .NET Framework
-
-  OE2EmpireTracker.Common -> D:\projects\OuterEmpires2\OE2EmpireTracker\OE2EmpireTracker.Common\bin\Debug\netstandard2.0\OE2EmpireTracker.Common.dll
-  OE2EmpireTracker -> D:\projects\OuterEmpires2\OE2EmpireTracker\OE2EmpireTracker\bin\Debug\OE2EmpireTracker.exe
-  OE2EmpireTracker.Tests -> D:\projects\OuterEmpires2\OE2EmpireTracker\OE2EmpireTracker.Tests\bin\Debug\OE2EmpireTracker.Tests.dll
-  OE2EmpireTracker.Server -> D:\projects\OuterEmpires2\OE2EmpireTracker\OE2EmpireTracker.Server\bin\Debug\net8.0\OE2EmpireTracker.Server.dll
-  OE2EmpireTracker.Server.Tests -> D:\projects\OuterEmpires2\OE2EmpireTracker\OE2EmpireTracker.Server.Tests\bin\Debug\net8.0\OE2EmpireTracker.Server.Tests.dll
-  OE2EmpireTracker.Desktop -> D:\projects\OuterEmpires2\OE2EmpireTracker\OE2EmpireTracker.Desktop\bin\Debug\net8.0\OE2EmpireTracker.Desktop.dll

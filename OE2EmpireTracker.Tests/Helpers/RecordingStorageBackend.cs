@@ -347,6 +347,8 @@ namespace OE2EmpireTracker.Tests.Services
         public Task UpsertResearchTimesAsync(IReadOnlyList<ResearchTimeEntry> entries) => Task.CompletedTask;
         public Task<IReadOnlyList<PropertyTypeDefinition>> GetAllPropertyTypeDefinitionsAsync() => EmptyList<PropertyTypeDefinition>();
         public Task UpsertPropertyTypeDefinitionsAsync(IReadOnlyList<PropertyTypeDefinition> definitions) => Task.CompletedTask;
+        public Task<IReadOnlyList<Bp>> GetAllGlobalBlueprintsAsync() => EmptyList<Bp>();
+        public Task UpsertGlobalBlueprintsAsync(IReadOnlyList<Bp> blueprints) => Task.CompletedTask;
 
         // Helper methods
         private Task DoUpsert(Type entityType, string uuid)

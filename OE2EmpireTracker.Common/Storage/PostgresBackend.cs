@@ -6068,6 +6068,14 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             return Task.CompletedTask;
         }
 
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<Blueprint>> GetAllGlobalBlueprintsAsync()
+            => Task.FromResult<IReadOnlyList<Blueprint>>(Array.Empty<Blueprint>());
+
+        /// <inheritdoc/>
+        public Task UpsertGlobalBlueprintsAsync(IReadOnlyList<Blueprint> blueprints)
+            => Task.CompletedTask;
+
         // ═══════════════════════════════════════════════════════════
         // Private Helpers
         // ═══════════════════════════════════════════════════════════

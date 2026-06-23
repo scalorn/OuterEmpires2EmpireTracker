@@ -2259,6 +2259,14 @@ namespace OE2EmpireTracker.Common.Storage
             return Task.CompletedTask;
         }
 
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<Blueprint>> GetAllGlobalBlueprintsAsync()
+            => Task.FromResult<IReadOnlyList<Blueprint>>(Array.Empty<Blueprint>());
+
+        /// <inheritdoc/>
+        public Task UpsertGlobalBlueprintsAsync(IReadOnlyList<Blueprint> blueprints)
+            => Task.CompletedTask;
+
         // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // Private Helpers â€” Load / Save
         // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•

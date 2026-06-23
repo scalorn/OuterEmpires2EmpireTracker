@@ -446,4 +446,8 @@ internal class StubStorageBackend : IStorageBackend
     public Task<IReadOnlyList<PropertyTypeDefinition>> GetAllPropertyTypeDefinitionsAsync() => throw new NotImplementedException();
 
     public Task UpsertPropertyTypeDefinitionsAsync(IReadOnlyList<PropertyTypeDefinition> definitions) => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<Blueprint>> GetAllGlobalBlueprintsAsync() => throw new NotImplementedException();
+
+    public Task UpsertGlobalBlueprintsAsync(IReadOnlyList<Blueprint> blueprints) => throw new NotImplementedException();
 }

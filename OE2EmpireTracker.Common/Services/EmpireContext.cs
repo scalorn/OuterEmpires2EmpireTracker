@@ -320,6 +320,9 @@ namespace OE2EmpireTracker.Services
                     .GetAwaiter().GetResult();
                 Task.Run(() => backend.UpsertPropertyTypeDefinitionsAsync(_propertyTypeRegistry))
                     .GetAwaiter().GetResult();
+                Task.Run(() => backend.UpsertGlobalBlueprintsAsync(
+                    (IReadOnlyList<Blueprint>)_globalBlueprintList ?? Array.Empty<Blueprint>()))
+                    .GetAwaiter().GetResult();
                 Log.Info("Baseline data saved to {0} backend (relational)", type);
             }
         }
@@ -924,6 +927,8 @@ namespace OE2EmpireTracker.Services
                     baselineRoot.ResearchTime = Task.Run(() => backend.GetAllResearchTimesAsync())
                         .GetAwaiter().GetResult().ToArray();
                     baselineRoot.PropertyType = Task.Run(() => backend.GetAllPropertyTypeDefinitionsAsync())
+                        .GetAwaiter().GetResult().ToArray();
+                    baselineRoot.Blueprint = Task.Run(() => backend.GetAllGlobalBlueprintsAsync())
                         .GetAwaiter().GetResult().ToArray();
                 }
             }

@@ -159,6 +159,10 @@ namespace OE2EmpireTracker.Services
             var propertyTypes = await source.GetAllPropertyTypeDefinitionsAsync().ConfigureAwait(false);
             await destination.UpsertPropertyTypeDefinitionsAsync(propertyTypes).ConfigureAwait(false);
             Report("Baseline", "PropertyTypeDefinitions");
+
+            var globalBlueprints = await source.GetAllGlobalBlueprintsAsync().ConfigureAwait(false);
+            await destination.UpsertGlobalBlueprintsAsync(globalBlueprints).ConfigureAwait(false);
+            Report("Baseline", "GlobalBlueprints");
             // ── Per-character entity migration ──
             foreach (var charUUID in uuids)
             {

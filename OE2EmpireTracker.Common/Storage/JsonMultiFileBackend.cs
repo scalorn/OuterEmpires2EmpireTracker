@@ -2182,6 +2182,14 @@ namespace OE2EmpireTracker.Common.Storage
             await WriteAtomicAsync(path, json);
         }
 
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<Blueprint>> GetAllGlobalBlueprintsAsync()
+            => Task.FromResult<IReadOnlyList<Blueprint>>(Array.Empty<Blueprint>());
+
+        /// <inheritdoc/>
+        public Task UpsertGlobalBlueprintsAsync(IReadOnlyList<Blueprint> blueprints)
+            => Task.CompletedTask;
+
         // ═══════════════════════════════════════════════════════════
         // Private Helpers
         // ═══════════════════════════════════════════════════════════

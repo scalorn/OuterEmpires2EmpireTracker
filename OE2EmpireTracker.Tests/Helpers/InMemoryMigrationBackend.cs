@@ -470,6 +470,8 @@ namespace OE2EmpireTracker.Tests.Services
         public Task UpsertResearchTimesAsync(IReadOnlyList<ResearchTimeEntry> entries) => Track("ResearchTimes");
         public Task<IReadOnlyList<PropertyTypeDefinition>> GetAllPropertyTypeDefinitionsAsync() => Empty<PropertyTypeDefinition>();
         public Task UpsertPropertyTypeDefinitionsAsync(IReadOnlyList<PropertyTypeDefinition> definitions) => Track("PropertyTypeDefinitions");
+        public Task<IReadOnlyList<Bp>> GetAllGlobalBlueprintsAsync() => Empty<Bp>();
+        public Task UpsertGlobalBlueprintsAsync(IReadOnlyList<Bp> blueprints) => Track("GlobalBlueprints");
 
         // ── Contacts (per-character) — not used by migration validation ──
         public Task<IReadOnlyList<Faction>> GetAllFactionsForCharacterAsync(string characterUUID) => Empty<Faction>();

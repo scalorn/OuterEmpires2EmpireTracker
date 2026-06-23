@@ -1762,6 +1762,14 @@ namespace OE2EmpireTracker.Common.Storage
             await PutItemDataAsync("Baseline#Data", "PropertyTypeDefinitions", JsonConvert.SerializeObject(definitions, SerializerSettings));
         }
 
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<Blueprint>> GetAllGlobalBlueprintsAsync()
+            => Task.FromResult<IReadOnlyList<Blueprint>>(Array.Empty<Blueprint>());
+
+        /// <inheritdoc/>
+        public Task UpsertGlobalBlueprintsAsync(IReadOnlyList<Blueprint> blueprints)
+            => Task.CompletedTask;
+
         // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // Private Helpers
         // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•

@@ -207,6 +207,7 @@ namespace OE2EmpireTracker.Tests.Services
             backend.UpsertRefiningRecipesCalled = false;
             backend.UpsertResearchTimesCalled = false;
             backend.UpsertPropertyTypesCalled = false;
+            backend.UpsertGlobalBlueprintsCalled = false;
 
             ctx.WriteContext();
 
@@ -226,6 +227,8 @@ namespace OE2EmpireTracker.Tests.Services
                 "Should call UpsertResearchTimesAsync");
             Assert.That(backend.UpsertPropertyTypesCalled, Is.True,
                 "Should call UpsertPropertyTypeDefinitionsAsync");
+            Assert.That(backend.UpsertGlobalBlueprintsCalled, Is.True,
+                "Should call UpsertGlobalBlueprintsAsync");
         }
 
         [Test]
@@ -313,6 +316,8 @@ namespace OE2EmpireTracker.Tests.Services
 
         public List<PropertyTypeDefinition> PropertyTypesToReturn { get; set; }
 
+        public List<Bp> GlobalBlueprintsToReturn { get; set; }
+
         // Call tracking flags
         public bool GetGlobalDataCalled { get; set; }
 
@@ -339,6 +344,8 @@ namespace OE2EmpireTracker.Tests.Services
         public bool UpsertResearchTimesCalled { get; set; }
 
         public bool UpsertPropertyTypesCalled { get; set; }
+
+        public bool UpsertGlobalBlueprintsCalled { get; set; }
 
         // Lifecycle
         public Task InitializeAsync(CancellationToken ct = default) => Task.CompletedTask;
@@ -396,6 +403,9 @@ namespace OE2EmpireTracker.Tests.Services
         public Task<IReadOnlyList<PropertyTypeDefinition>> GetAllPropertyTypeDefinitionsAsync()
             => Task.FromResult<IReadOnlyList<PropertyTypeDefinition>>(PropertyTypesToReturn ?? new List<PropertyTypeDefinition>());
 
+        public Task<IReadOnlyList<Bp>> GetAllGlobalBlueprintsAsync()
+            => Task.FromResult<IReadOnlyList<Bp>>(GlobalBlueprintsToReturn ?? new List<Bp>());
+
         // Baseline writes — tracked
         public Task UpsertBaselineGameConstantsAsync(BaselineGameConstants constants)
         {
@@ -442,6 +452,12 @@ namespace OE2EmpireTracker.Tests.Services
         public Task UpsertPropertyTypeDefinitionsAsync(IReadOnlyList<PropertyTypeDefinition> definitions)
         {
             UpsertPropertyTypesCalled = true;
+            return Task.CompletedTask;
+        }
+
+        public Task UpsertGlobalBlueprintsAsync(IReadOnlyList<Bp> blueprints)
+        {
+            UpsertGlobalBlueprintsCalled = true;
             return Task.CompletedTask;
         }
 
