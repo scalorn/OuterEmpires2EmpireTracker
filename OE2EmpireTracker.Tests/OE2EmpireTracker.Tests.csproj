@@ -277,6 +277,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Client\DesktopSyncMigrationTests.cs" />
+    <Compile Include="Client\OfflineQueuePropertyTests.cs" />
     <Compile Include="Client\FactionServer\ErrorClassificationPropertyTests.cs" />
     <Compile Include="Client\FactionServer\HttpRequestPropertyTests.cs" />
     <Compile Include="Client\FactionServer\RateLimiterPropertyTests.cs" />
