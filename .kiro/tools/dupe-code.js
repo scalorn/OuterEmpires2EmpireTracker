@@ -59,6 +59,12 @@ const KNOWN_DUPES = new Set([
     'StopPolling',
     'MaskTokenInUrl',
     'ApplyRateLimit',
+    'StartHeartbeat',
+    'StopHeartbeat',
+    'SendHeartbeat',
+    'StartPolling',
+    'StopWebSocket',
+    'ReconnectLoopAsync',
 ]);
 
 function findCsFiles(dir, results) {

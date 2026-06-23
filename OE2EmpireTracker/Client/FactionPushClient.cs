@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using NLog;
 using OE2EmpireTracker.Common.Client.FactionServer;
+using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Client
 {
@@ -481,38 +482,158 @@ namespace OE2EmpireTracker.Client
 
         /// <summary>
         /// Starts the heartbeat timer to send pings at regular intervals.
-        /// Stub — full implementation in Task 2.3.
+        /// Disposes any existing timer first, then creates a new one firing every
+        /// <see cref="HeartbeatIntervalMs"/> milliseconds.
         /// </summary>
         private void StartHeartbeat()
         {
-            // Will be implemented in Task 2.3 (heartbeat, reconnection, polling)
+            StopHeartbeat();
+            _heartbeatTimer = new System.Threading.Timer(
+                SendHeartbeat,
+                null,
+                HeartbeatIntervalMs,
+                HeartbeatIntervalMs);
         }
 
         /// <summary>
-        /// Handles a WebSocket disconnection by resetting state and initiating reconnection.
-        /// Stub — full implementation in Task 2.3.
+        /// Stops and disposes the heartbeat timer if it is currently running.
+        /// </summary>
+        private void StopHeartbeat()
+        {
+            if (_heartbeatTimer != null)
+            {
+                _heartbeatTimer.Dispose();
+                _heartbeatTimer = null;
+            }
+        }
+
+        /// <summary>
+        /// Sends a ping message over the WebSocket to keep the connection alive.
+        /// Silently returns if the WebSocket is not in the Open state.
+        /// </summary>
+        /// <param name="state">Timer callback state (unused).</param>
+        private async void SendHeartbeat(object state)
+        {
+            if (_webSocket?.State != WebSocketState.Open)
+            {
+                return;
+            }
+
+            try
+            {
+                string pingJson = "{\"type\":\"ping\"}";
+                byte[] pingBytes = Encoding.UTF8.GetBytes(pingJson);
+                await _webSocket.SendAsync(
+                    new ArraySegment<byte>(pingBytes),
+                    WebSocketMessageType.Text,
+                    true,
+                    _wsCancellation?.Token ?? CancellationToken.None).ConfigureAwait(false);
+                Log.Debug("WebSocket ping sent");
+            }
+            catch (Exception ex)
+            {
+                Log.Debug(ex, "Failed to send WebSocket ping");
+            }
+        }
+
+        /// <summary>
+        /// Handles a WebSocket disconnection by stopping the heartbeat, resetting
+        /// the WebSocket mode flag, raising the RealtimeModeChanged event, and
+        /// initiating the reconnection loop with exponential backoff.
         /// </summary>
         private void HandleWebSocketDisconnect()
         {
             _isWebSocketMode = false;
+            StopHeartbeat();
             OnRealtimeModeChanged(false);
             _ = Task.Run(() => ReconnectLoopAsync());
         }
 
         /// <summary>
-        /// Attempts to reconnect the WebSocket with exponential backoff.
-        /// Stub — full implementation in Task 2.3.
+        /// Attempts to reconnect the WebSocket using exponential backoff.
+        /// Delays double each attempt (1s, 2s, 4s... capped at 60s).
+        /// After <see cref="MaxReconnectAttempts"/> failures, switches to polling mode.
         /// </summary>
         /// <returns>A task representing the asynchronous reconnection loop.</returns>
-        private Task ReconnectLoopAsync()
+        private async Task ReconnectLoopAsync()
         {
-            // Will be implemented in Task 2.3 (heartbeat, reconnection, polling)
-            return Task.CompletedTask;
+            while (!_disposed)
+            {
+                _reconnectAttempts++;
+
+                if (_reconnectAttempts > MaxReconnectAttempts)
+                {
+                    Log.Warn(
+                        "WebSocket reconnection failed after {0} attempts, switching to polling",
+                        MaxReconnectAttempts);
+                    StartPolling();
+                    return;
+                }
+
+                int delayMs = CalculateBackoffDelay(_reconnectAttempts);
+                Log.Info(
+                    "WebSocket reconnecting in {0}ms (attempt {1}/{2})",
+                    delayMs,
+                    _reconnectAttempts,
+                    MaxReconnectAttempts);
+
+                await Task.Delay(delayMs).ConfigureAwait(false);
+
+                if (_disposed)
+                {
+                    return;
+                }
+
+                try
+                {
+                    StopWebSocket();
+                    _wsCancellation = new CancellationTokenSource();
+                    _webSocket = new ClientWebSocket();
+
+                    string wsUrl = BuildWebSocketUrl();
+                    await _webSocket.ConnectAsync(
+                        new Uri(wsUrl),
+                        _wsCancellation.Token).ConfigureAwait(false);
+
+                    _isWebSocketMode = true;
+                    _reconnectAttempts = 0;
+                    StopPolling();
+                    OnRealtimeModeChanged(true);
+                    Log.Info("WebSocket reconnected successfully");
+
+                    StartHeartbeat();
+                    _ = Task.Run(() => ReceiveLoopAsync(_wsCancellation.Token));
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    Log.Debug(ex, "WebSocket reconnection attempt {0} failed", _reconnectAttempts);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Starts the polling fallback timer at <see cref="PollingIntervalSeconds"/> intervals.
+        /// Stops any existing polling timer first, then creates a new one.
+        /// Sets the mode to non-WebSocket and raises the RealtimeModeChanged event.
+        /// </summary>
+        private void StartPolling()
+        {
+            StopPolling();
+            int intervalMs = PollingIntervalSeconds * 1000;
+            _pollingTimer = new System.Threading.Timer(
+                PollServer,
+                null,
+                intervalMs,
+                intervalMs);
+            _isWebSocketMode = false;
+            OnRealtimeModeChanged(false);
+            Log.Info("Switched to polling mode (interval: {0}s)", PollingIntervalSeconds);
         }
 
         /// <summary>
         /// Stops the polling fallback timer if active.
-        /// Stub — full implementation in Task 2.3.
+        /// Disposes the timer and sets the reference to null.
         /// </summary>
         private void StopPolling()
         {
@@ -524,11 +645,55 @@ namespace OE2EmpireTracker.Client
         }
 
         /// <summary>
+        /// Polls the server for sync data via the typed client. If data is available,
+        /// raises the EventReceived event with a SyncPoll event type. Periodically
+        /// attempts to re-establish the WebSocket connection when reconnect attempts
+        /// have been exhausted.
+        /// </summary>
+        /// <param name="state">Timer callback state (unused).</param>
+        private async void PollServer(object state)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            try
+            {
+                var syncResult = await _typedClient.GetSyncSnapshotAsync().ConfigureAwait(false);
+                if (syncResult != null)
+                {
+                    EventReceived?.Invoke(this, new PushEventArgs
+                    {
+                        EventType = "SyncPoll",
+                        EntityType = "All",
+                        EntityUUID = string.Empty,
+                        CharacterUUID = string.Empty,
+                        Timestamp = SystemClock.UtcNow.ToString("o"),
+                    });
+                }
+
+                // Try to reconnect WebSocket on each poll cycle
+                if (!_isWebSocketMode && _reconnectAttempts > MaxReconnectAttempts)
+                {
+                    _reconnectAttempts = 0;
+                    _ = Task.Run(() => ConnectWebSocketAsync());
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Debug(ex, "Polling cycle failed");
+            }
+        }
+
+        /// <summary>
         /// Stops the WebSocket connection, cancelling the receive loop and closing the socket.
-        /// Stub — full implementation in Task 2.4.
+        /// Also stops the heartbeat timer to prevent pings on a closed connection.
         /// </summary>
         private void StopWebSocket()
         {
+            StopHeartbeat();
+
             if (_wsCancellation != null)
             {
                 _wsCancellation.Cancel();
