@@ -3,6 +3,8 @@
 // </copyright>
 
 using System;
+using Newtonsoft.Json;
+using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Client
 {
@@ -30,5 +32,12 @@ namespace OE2EmpireTracker.Client
         /// Gets or sets the UTC timestamp when this change was queued.
         /// </summary>
         public DateTime QueuedUtc { get; set; }
+
+        /// <summary>
+        /// Gets or sets the typed payload populated at runtime.
+        /// Not serialized to disk — the <see cref="Json"/> field is the persistence format.
+        /// </summary>
+        [JsonIgnore]
+        public PlayerRoot TypedPayload { get; set; }
     }
 }

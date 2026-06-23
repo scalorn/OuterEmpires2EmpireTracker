@@ -56,7 +56,7 @@ Migrate all consumers of `RemoteFactionClient` to `IFactionServerTypedClient` + 
     - _Output: FactionPushClient.cs (modified, +100 lines)_
     - _Verification: Solution builds_
 
-- [ ] 3. Modify QueuedChange to add TypedPayload property
+- [x] 3. Modify QueuedChange to add TypedPayload property
   - Add `[JsonIgnore] public PlayerRoot TypedPayload { get; set; }` to QueuedChange
   - Add using for `OE2EmpireTracker.Models` and `Newtonsoft.Json`
   - _Requirements: 5.1_
