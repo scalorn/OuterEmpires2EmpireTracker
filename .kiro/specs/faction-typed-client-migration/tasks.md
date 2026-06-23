@@ -155,7 +155,7 @@ Migrate all consumers of `RemoteFactionClient` to `IFactionServerTypedClient` + 
   - _Verification: Solution builds_
 
 - [ ] 11. Migrate FormPreferences to use typed client
-  - [ ] 11.1 Migrate FormPreferences Test Connection to use FactionServerTypedClient
+  - [x] 11.1 Migrate FormPreferences Test Connection to use FactionServerTypedClient
     - Replace `new RemoteFactionClient(...)` with `new FactionServerTypedClient(url, token, thumbprint)`
     - Replace health check call with `await typedClient.CheckHealthAsync()`
     - Wrap in using block, catch FactionConnectionException for failure message
@@ -164,7 +164,7 @@ Migrate all consumers of `RemoteFactionClient` to `IFactionServerTypedClient` + 
     - _Output: FormPreferences.cs (modified)_
     - _Verification: Solution builds_
 
-  - [ ] 11.2 Migrate FormPreferences Push-to-Server to use typed client
+  - [x] 11.2 Migrate FormPreferences Push-to-Server to use typed client
     - Replace `new RemoteFactionClient(...)` with `new FactionServerTypedClient(url, token, thumbprint)`
     - Replace `CreateCharacterAsync(name, uuid)` call (already same signature)
     - Replace `BulkImportAsync(characterUUID, json)` with `BulkImportAsync(characterUUID, playerRoot)` (pass typed PlayerRoot)

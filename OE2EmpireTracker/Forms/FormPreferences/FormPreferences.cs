@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using NLog;
 using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Client.FactionServer;
 using OE2EmpireTracker.Common.Interfaces;
 using OE2EmpireTracker.Common.Storage;
 using OE2EmpireTracker.Models;
@@ -294,7 +295,7 @@ namespace OE2EmpireTracker.Forms
 
                 string thumbprint = txtThumbprint.Text.Trim();
 
-                using (var client = new RemoteFactionClient(url, token, thumbprint))
+                using (var client = new FactionServerTypedClient(url, token, thumbprint))
                 {
                     bool healthy = await client.CheckHealthAsync().ConfigureAwait(true);
                     if (healthy)
@@ -370,7 +371,7 @@ namespace OE2EmpireTracker.Forms
                 string url = txtServerUrl.Text.Trim();
                 string thumbprint = txtThumbprint.Text.Trim();
 
-                using (var client = new RemoteFactionClient(url, token, thumbprint))
+                using (var client = new FactionServerTypedClient(url, token, thumbprint))
                 {
                     int pushed = 0;
 
@@ -409,23 +410,10 @@ namespace OE2EmpireTracker.Forms
                             string characterUUID = playerRoot?.CurrentPlayerUUID;
                             if (!string.IsNullOrEmpty(characterUUID))
                             {
-                                var importResponse = await client.BulkImportAsync(characterUUID, playerJson)
+                                await client.BulkImportAsync(characterUUID, playerRoot)
                                     .ConfigureAwait(true);
-                                if (importResponse.IsSuccessStatusCode)
-                                {
-                                    pushed++;
-                                    Log.Info("Pushed PlayerData.json to server for character {0}", characterUUID);
-                                }
-                                else
-                                {
-                                    string errorBody = await importResponse.Content.ReadAsStringAsync()
-                                        .ConfigureAwait(true);
-                                    Log.Warn(
-                                        "Bulk import failed (HTTP {0}) for character {1}: {2}",
-                                        (int)importResponse.StatusCode,
-                                        characterUUID,
-                                        errorBody);
-                                }
+                                pushed++;
+                                Log.Info("Pushed PlayerData.json to server for character {0}", characterUUID);
                             }
                             else
                             {
@@ -445,10 +433,11 @@ namespace OE2EmpireTracker.Forms
                         string baselineJson = System.IO.File.ReadAllText(baselinePath);
                         if (!string.IsNullOrEmpty(baselineJson))
                         {
-                            await client.UploadGlobalDataAsync("baseline", baselineJson)
+                            var baselineRoot = Newtonsoft.Json.JsonConvert.DeserializeObject<BaselineRoot>(baselineJson);
+                            await client.UploadBaselineAsync(baselineRoot)
                                 .ConfigureAwait(true);
                             pushed++;
-                            Log.Info("Pushed BaselineData.json to server as global/baseline");
+                            Log.Info("Pushed BaselineData.json to server as baseline");
                         }
                     }
                     else
@@ -459,6 +448,21 @@ namespace OE2EmpireTracker.Forms
                     lblConnectionStatus.ForeColor = Color.Green;
                     lblConnectionStatus.Text = string.Format("Push complete ({0} file(s) uploaded).", pushed);
                 }
+            }
+            catch (FactionValidationException ex)
+            {
+                Log.Warn(ex, "Push local data to server failed with validation errors");
+                string errorDetails = string.Join(
+                    Environment.NewLine,
+                    ex.Errors.ConvertAll(err =>
+                        string.Format("{0} ({1}): {2}", err.EntityType, err.Field ?? "general", err.Error)));
+                lblConnectionStatus.ForeColor = Color.Red;
+                lblConnectionStatus.Text = "Push failed: validation errors";
+                MessageBox.Show(
+                    "The server rejected the data with validation errors:\n\n" + errorDetails,
+                    "Push Validation Failed",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
             }
             catch (Exception ex)
             {
