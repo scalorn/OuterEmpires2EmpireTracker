@@ -264,7 +264,7 @@ Replace raw JSON communication in `RemoteFactionClient` with a fully-typed clien
     - _Output: Updated spec/requirements/Sharing.md_
     - _Verification: Sequence diagram uses IFactionServerTypedClient participant_
 
-- [ ] 13. Final checkpoint - Ensure all tests pass and audit clean
+- [x] 13. Final checkpoint - Ensure all tests pass and audit clean
   - Ensure full solution builds with zero errors and zero warnings.
   - Ensure all tests pass (vstest.console + dotnet test server tests).
   - Ensure `node .kiro/tools/audit.js` reports zero findings.
