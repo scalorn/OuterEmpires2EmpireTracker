@@ -277,6 +277,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Client\DesktopSyncMigrationTests.cs" />
+    <Compile Include="Client\FactionServer\ErrorClassificationPropertyTests.cs" />
+    <Compile Include="Client\FactionServer\HttpRequestPropertyTests.cs" />
+    <Compile Include="Client\FactionServer\RateLimiterPropertyTests.cs" />
+    <Compile Include="Client\FactionServer\FactionServerTypedClientTests.cs" />
+    <Compile Include="Client\FactionServer\SerializationFormatPropertyTests.cs" />
     <Compile Include="Client\GameApiColonyDiscoveryTests.cs" />
     <Compile Include="Helpers\LegacyGameApiClientShim.cs" />
     <Compile Include="Helpers\LegacyResponseModels.cs" />

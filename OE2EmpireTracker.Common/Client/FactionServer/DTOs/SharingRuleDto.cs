@@ -4,7 +4,7 @@
 
 using Newtonsoft.Json;
 
-namespace OE2EmpireTracker.Client
+namespace OE2EmpireTracker.Common.Client.FactionServer
 {
     /// <summary>
     /// Data transfer object representing a sharing rule returned from the server API.

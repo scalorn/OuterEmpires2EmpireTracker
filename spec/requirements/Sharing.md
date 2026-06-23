@@ -57,19 +57,22 @@ The user wants to control who can see their tracked data (blueprints, surveys, c
 sequenceDiagram
     actor User
     participant Form as FormSharing
-    participant Client as RemoteFactionClient
+    participant Client as IFactionServerTypedClient
     participant Server as API Server
 
     User->>Form: Open Manage > Sharing
-    Form->>Client: GET /api/v1/characters/{uuid}/sharing
-    Client->>Server: HTTP GET
-    Server-->>Client: Current sharing rules
-    Client-->>Form: Rules list
+    Form->>Client: GetSharingRulesAsync(uuid)
+    Client->>Server: GET /api/v1/characters/{uuid}/sharing
+    Server-->>Client: SharingRuleDto[] (JSON)
+    Client-->>Form: SharingRuleDto[]
     Form->>Form: Display rules in grid
     User->>Form: Add/modify/delete rules
     User->>Form: Click Save
-    Form->>Client: PUT /api/v1/characters/{uuid}/sharing
-    Client->>Server: HTTP PUT (full rule list)
+    Form->>Client: PutSharingRulesAsync(uuid, rules)
+    Client->>Server: PUT /api/v1/characters/{uuid}/sharing (SharingRuleDto[])
     Server-->>Client: 200 OK
     Form->>Form: Confirm save, refresh grid
 ```
+
+> **Note:** The typed client uses `SharingRuleDto` from `OE2EmpireTracker.Common.Client.FactionServer` namespace.
+> Methods `GetSharingRulesAsync` and `PutSharingRulesAsync` replace the raw HTTP calls previously made through `RemoteFactionClient`.

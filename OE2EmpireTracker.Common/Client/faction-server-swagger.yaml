@@ -1,0 +1,916 @@
+openapi: 3.0.3
+info:
+  title: Faction Server API
+  version: 1.0.0
+  description: >
+    OpenAPI specification for the Faction Server API. Covers server administration,
+    character management, and sync endpoints.
+
+servers:
+  - url: https://faction.example.com
+    description: Faction Server
+
+security:
+  - BearerAuth: []
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    ServerFaction:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: Unique identifier for the faction
+        name:
+          type: string
+          description: Faction display name
+        description:
+          type: string
+          description: Faction description text
+        leaderCharacterUUIDs:
+          type: array
+          items:
+            type: string
+          description: UUIDs of characters who lead this faction
+      required:
+        - uuid
+        - name
+        - description
+        - leaderCharacterUUIDs
+
+    ServerCharacter:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: Unique identifier for the character
+        name:
+          type: string
+          description: Character display name
+        factionUUID:
+          type: string
+          nullable: true
+          description: UUID of the faction this character belongs to (null if unaffiliated)
+      required:
+        - uuid
+        - name
+
+    SyncResponse:
+      type: object
+      properties:
+        factions:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServerFaction'
+          description: All server-level factions
+        characters:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServerCharacter'
+          description: All server-level characters
+        serverTimestamp:
+          type: string
+          format: date-time
+          description: Server timestamp of the snapshot
+      required:
+        - factions
+        - characters
+        - serverTimestamp
+
+    CreateCharacterRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Character name (required)
+        uuid:
+          type: string
+          description: Optional UUID to assign to the character
+      required:
+        - name
+
+    Colony:
+      type: object
+      description: A player colony with structures, resources, and processing state
+
+    Blueprint:
+      type: object
+      description: A blueprint owned by a character for manufacturing items
+
+    Survey:
+      type: object
+      description: A planet or asteroid resource survey
+
+    PlayerProfile:
+      type: object
+      description: A player profile with skills, rank, and profession data
+
+    DeliveryRoute:
+      type: object
+      description: A delivery route defining waypoints between colonies
+
+    DeliveryPlan:
+      type: object
+      description: A delivery plan specifying commodities to transport along a route
+
+    Ship:
+      type: object
+      description: A ship instance owned by a character
+
+    ShipTemplate:
+      type: object
+      description: A ship template defining slot configuration and hull type
+
+    MarketListing:
+      type: object
+      description: A market listing for buying or selling commodities
+
+    MarketTransaction:
+      type: object
+      description: A completed market transaction record
+
+    PricingPlan:
+      type: object
+      description: A pricing plan defining buy/sell prices for commodities at a colony
+
+    StockPlan:
+      type: object
+      description: A stock plan defining target inventory levels for a colony
+
+    StockProfile:
+      type: object
+      description: A stock profile grouping multiple stock plans
+
+    BuildPlan:
+      type: object
+      description: A build plan defining structure construction goals for a colony
+
+    SupplyChain:
+      type: object
+      description: A supply chain linking production and consumption across colonies
+
+    Asteroid:
+      type: object
+      description: An asteroid with mining resource data
+
+    Station:
+      type: object
+      description: A space station with docking and trade facilities
+
+    Faction:
+      type: object
+      description: A player-level faction contact record
+
+    ExternalCharacter:
+      type: object
+      description: An external character record for contacts and sharing
+
+    PlayerRoot:
+      type: object
+      description: Complete player data export containing all character entities
+
+    BaselineRoot:
+      type: object
+      description: Baseline game data (blueprint types, ship classes, commodities, etc.)
+
+    BulkImportResult:
+      type: object
+      properties:
+        imported:
+          type: object
+          additionalProperties:
+            type: integer
+          description: Dictionary of collection names to imported entity counts
+        total:
+          type: integer
+          description: Total number of entities imported
+      required:
+        - imported
+        - total
+
+    BulkImportRequest:
+      type: object
+      description: PlayerRoot containing all character data for import
+
+    SharingRuleDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the sharing rule
+        ownerCharacterUUID:
+          type: string
+          description: UUID of the character who owns the shared data
+        targetUUID:
+          type: string
+          description: UUID of the target (character or faction) receiving access
+        targetType:
+          type: string
+          description: Type of target (e.g. character, faction)
+        dataType:
+          type: string
+          description: Type of data being shared (e.g. colonies, blueprints)
+        entityUUID:
+          type: string
+          description: UUID of the specific entity being shared (or empty for all)
+      required:
+        - id
+        - ownerCharacterUUID
+        - targetUUID
+        - targetType
+        - dataType
+        - entityUUID
+
+    ValidationErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              entityType:
+                type: string
+                description: Type of entity that failed validation
+              entityUUID:
+                type: string
+                description: UUID of the entity that failed validation
+              field:
+                type: string
+                description: Field that failed validation
+              error:
+                type: string
+                description: Validation error message
+            required:
+              - entityType
+              - entityUUID
+              - field
+              - error
+      required:
+        - errors
+
+paths:
+  /health:
+    get:
+      operationId: CheckHealth
+      summary: Check server health
+      description: Returns 200 if the server is healthy
+      security: []
+      responses:
+        '200':
+          description: Server is healthy
+        '503':
+          description: Server is unhealthy
+
+  /api/v1/factions:
+    get:
+      operationId: GetFactions
+      summary: List all factions
+      description: Returns all server-level factions
+      responses:
+        '200':
+          description: List of factions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ServerFaction'
+        '403':
+          description: Unauthorized
+
+  /api/v1/characters:
+    get:
+      operationId: GetCharacters
+      summary: List all characters
+      description: Returns all server-level characters
+      responses:
+        '200':
+          description: List of characters
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ServerCharacter'
+        '403':
+          description: Unauthorized
+
+    post:
+      operationId: CreateCharacter
+      summary: Create a character
+      description: Creates a new character on the server
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCharacterRequest'
+      responses:
+        '201':
+          description: Character created successfully
+        '400':
+          description: Validation error (e.g. name already taken)
+        '403':
+          description: Unauthorized
+
+  /api/v1/sync/snapshot:
+    get:
+      operationId: GetSyncSnapshot
+      summary: Get sync snapshot
+      description: >
+        Returns a snapshot of all server-level factions, characters,
+        and the current server timestamp for divergence detection.
+      responses:
+        '200':
+          description: Sync snapshot
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncResponse'
+        '403':
+          description: Unauthorized
+
+  /api/v1/characters/{uuid}/colonies:
+    get:
+      operationId: GetColonies
+      summary: Get colonies for a character
+      description: Returns all colonies owned by the specified character
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Character UUID
+      responses:
+        '200':
+          description: List of colonies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Colony'
+        '403':
+          description: Unauthorized
+
+  /api/v1/characters/{uuid}/blueprints:
+    get:
+      operationId: GetBlueprints
+      summary: Get blueprints for a character
+      description: Returns all blueprints owned by the specified character
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Character UUID
+      responses:
+        '200':
+          description: List of blueprints
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Blueprint'
+        '403':
+          description: Unauthorized
+
+  /api/v1/characters/{uuid}/surveys:
+    get:
+      operationId: GetSurveys
+      summary: Get surveys for a character
+      description: Returns all surveys owned by the specified character
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Character UUID
+      responses:
+        '200':
+          description: List of surveys
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Survey'
+        '403':
+          description: Unauthorized
+
+  /api/v1/characters/{uuid}/playerProfiles:
+    get:
+      operationId: GetPlayerProfiles
+      summary: Get player profiles for a character
+      description: Returns all player profiles for the specified character
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Character UUID
+      responses:
+        '200':
+          description: List of player profiles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PlayerProfile'
+        '403':
+          description: Unauthorized
+
+  /api/v1/characters/{uuid}/deliveryRoutes:
+    get:
+      operationId: GetDeliveryRoutes
+      summary: Get delivery routes for a character
+      description: Returns all delivery routes owned by the specified character
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Character UUID
+      responses:
+        '200':
+          description: List of delivery routes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DeliveryRoute'
+        '403':
+          description: Unauthorized
+
+  /api/v1/characters/{uuid}/deliveryPlans:
+    get:
+      operationId: GetDeliveryPlans
+      summary: Get delivery plans for a character
+      description: Returns all delivery plans owned by the specified character
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Character UUID
+      responses:
+        '200':
+          description: List of delivery plans
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DeliveryPlan'
+        '403':
+          description: Unauthorized
+
+  /api/v1/characters/{uuid}/ships:
+    get:
+      operationId: GetShips
+      summary: Get ships for a character
+      description: Returns all ships owned by the specified character
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Character UUID
+      responses:
+        '200':
+          description: List of ships
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Ship'
+        '403':
+          description: Unauthorized
+
+  /api/v1/characters/{uuid}/shipTemplates:
+    get:
+      operationId: GetShipTemplates
+      summary: Get ship templates for a character
+      description: Returns all ship templates owned by the specified character
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Character UUID
+      responses:
+        '200':
+          description: List of ship templates
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ShipTemplate'
+        '403':
+          description: Unauthorized
+
+  /api/v1/characters/{uuid}/marketListings:
+    get:
+      operationId: GetMarketListings
+      summary: Get market listings for a character
+      description: Returns all market listings owned by the specified character
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Character UUID
+      responses:
+        '200':
+          description: List of market listings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MarketListing'
+        '403':
+          description: Unauthorized
+
+  /api/v1/characters/{uuid}/marketTransactions:
+    get:
+      operationId: GetMarketTransactions
+      summary: Get market transactions for a character
+      description: Returns all market transactions for the specified character
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Character UUID
+      responses:
+        '200':
+          description: List of market transactions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MarketTransaction'
+        '403':
+          description: Unauthorized
+
+  /api/v1/characters/{uuid}/pricingPlans:
+    get:
+      operationId: GetPricingPlans
+      summary: Get pricing plans for a character
+      description: Returns all pricing plans owned by the specified character
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Character UUID
+      responses:
+        '200':
+          description: List of pricing plans
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PricingPlan'
+        '403':
+          description: Unauthorized
+
+  /api/v1/characters/{uuid}/stockPlans:
+    get:
+      operationId: GetStockPlans
+      summary: Get stock plans for a character
+      description: Returns all stock plans owned by the specified character
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Character UUID
+      responses:
+        '200':
+          description: List of stock plans
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StockPlan'
+        '403':
+          description: Unauthorized
+
+  /api/v1/characters/{uuid}/stockProfiles:
+    get:
+      operationId: GetStockProfiles
+      summary: Get stock profiles for a character
+      description: Returns all stock profiles owned by the specified character
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Character UUID
+      responses:
+        '200':
+          description: List of stock profiles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StockProfile'
+        '403':
+          description: Unauthorized
+
+  /api/v1/characters/{uuid}/buildPlans:
+    get:
+      operationId: GetBuildPlans
+      summary: Get build plans for a character
+      description: Returns all build plans owned by the specified character
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Character UUID
+      responses:
+        '200':
+          description: List of build plans
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BuildPlan'
+        '403':
+          description: Unauthorized
+
+  /api/v1/characters/{uuid}/supplyChains:
+    get:
+      operationId: GetSupplyChains
+      summary: Get supply chains for a character
+      description: Returns all supply chains owned by the specified character
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Character UUID
+      responses:
+        '200':
+          description: List of supply chains
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SupplyChain'
+        '403':
+          description: Unauthorized
+
+  /api/v1/characters/{uuid}/asteroids:
+    get:
+      operationId: GetAsteroids
+      summary: Get asteroids for a character
+      description: Returns all asteroids owned by the specified character
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Character UUID
+      responses:
+        '200':
+          description: List of asteroids
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Asteroid'
+        '403':
+          description: Unauthorized
+
+  /api/v1/characters/{uuid}/stations:
+    get:
+      operationId: GetStations
+      summary: Get stations for a character
+      description: Returns all stations owned by the specified character
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Character UUID
+      responses:
+        '200':
+          description: List of stations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Station'
+        '403':
+          description: Unauthorized
+
+  /api/v1/characters/{uuid}/factions:
+    get:
+      operationId: GetFactionContacts
+      summary: Get faction contacts for a character
+      description: Returns all faction contacts for the specified character
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Character UUID
+      responses:
+        '200':
+          description: List of faction contacts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Faction'
+        '403':
+          description: Unauthorized
+
+  /api/v1/characters/{uuid}/externalCharacters:
+    get:
+      operationId: GetExternalCharacters
+      summary: Get external characters for a character
+      description: Returns all external character records for the specified character
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Character UUID
+      responses:
+        '200':
+          description: List of external characters
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ExternalCharacter'
+        '403':
+          description: Unauthorized
+
+  /api/v1/characters/{uuid}/import:
+    put:
+      operationId: BulkImport
+      summary: Bulk import character data
+      description: Imports all character data from a PlayerRoot payload
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Character UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkImportRequest'
+      responses:
+        '200':
+          description: Import completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkImportResult'
+        '400':
+          description: Validation errors in the import data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '403':
+          description: Unauthorized
+
+  /api/v1/global/baseline:
+    put:
+      operationId: UploadBaseline
+      summary: Upload baseline data
+      description: Uploads baseline game data (blueprint types, ship classes, commodities, etc.)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BaselineRoot'
+      responses:
+        '204':
+          description: Baseline data uploaded successfully
+        '403':
+          description: Unauthorized
+
+  /api/v1/characters/{uuid}/export:
+    get:
+      operationId: ExportCharacterData
+      summary: Export all character data
+      description: Exports all data for the specified character as a PlayerRoot object
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Character UUID
+      responses:
+        '200':
+          description: Complete character data export
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlayerRoot'
+        '403':
+          description: Unauthorized
+
+  /api/v1/characters/{uuid}/sharing:
+    get:
+      operationId: GetSharingRules
+      summary: Get sharing rules for a character
+      description: Returns all sharing rules for the specified character
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Character UUID
+      responses:
+        '200':
+          description: List of sharing rules
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SharingRuleDto'
+        '403':
+          description: Unauthorized
+
+    put:
+      operationId: PutSharingRules
+      summary: Replace sharing rules for a character
+      description: Replaces all sharing rules for the specified character
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Character UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/SharingRuleDto'
+      responses:
+        '204':
+          description: Sharing rules replaced successfully
+        '403':
+          description: Unauthorized

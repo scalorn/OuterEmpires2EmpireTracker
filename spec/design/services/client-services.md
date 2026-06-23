@@ -6,11 +6,83 @@ Design documentation for the remote faction server client infrastructure (Req 11
 
 The `Client/` folder contains infrastructure classes for communicating with the Remote Faction Service. These classes handle HTTP connectivity, offline queuing, and synchronization.
 
+The typed client layer (`IFactionServerTypedClient` / `FactionServerTypedClient`) in `OE2EmpireTracker.Common/Client/FactionServer/` provides a fully-typed replacement for the raw-JSON `RemoteFactionClient`. All method parameters and return types use domain model classes — no raw JSON strings in the public API surface.
+
 ## Classes
+
+### IFactionServerTypedClient
+
+Strongly-typed client interface for the Faction Server API. One async method per endpoint, returning typed domain objects. Located in `OE2EmpireTracker.Common/Client/FactionServer/IFactionServerTypedClient.cs`.
+
+Implements `IDisposable`. Exposes an `IsConnected` property.
+
+#### Methods (29 total)
+
+**Server Administration (4 methods):**
+- `CheckHealthAsync()` → `bool`
+- `GetFactionsAsync()` → `ServerFaction[]`
+- `GetCharactersAsync()` → `ServerCharacter[]`
+- `CreateCharacterAsync(name, uuid?)` → `void`
+
+**Sync and Export (2 methods):**
+- `GetSyncSnapshotAsync()` → `SyncResponse`
+- `ExportCharacterDataAsync(characterUUID)` → `PlayerRoot`
+
+**Data Mutation (4 methods):**
+- `UploadBaselineAsync(baseline)` → `void`
+- `BulkImportAsync(characterUUID, data)` → `BulkImportResult`
+- `GetSharingRulesAsync(characterUUID)` → `SharingRuleDto[]`
+- `PutSharingRulesAsync(characterUUID, rules)` → `void`
+
+
+**Per-Entity Collection GET Methods (19 methods):**
+- `GetColoniesAsync(characterUUID)` → `Colony[]`
+- `GetBlueprintsAsync(characterUUID)` → `Blueprint[]`
+- `GetSurveysAsync(characterUUID)` → `Survey[]`
+- `GetPlayerProfilesAsync(characterUUID)` → `PlayerProfile[]`
+- `GetDeliveryRoutesAsync(characterUUID)` → `DeliveryRoute[]`
+- `GetDeliveryPlansAsync(characterUUID)` → `DeliveryPlan[]`
+- `GetShipsAsync(characterUUID)` → `Ship[]`
+- `GetShipTemplatesAsync(characterUUID)` → `ShipTemplate[]`
+- `GetMarketListingsAsync(characterUUID)` → `MarketListing[]`
+- `GetMarketTransactionsAsync(characterUUID)` → `MarketTransaction[]`
+- `GetPricingPlansAsync(characterUUID)` → `PricingPlan[]`
+- `GetStockPlansAsync(characterUUID)` → `StockPlan[]`
+- `GetStockProfilesAsync(characterUUID)` → `StockProfile[]`
+- `GetBuildPlansAsync(characterUUID)` → `BuildPlan[]`
+- `GetSupplyChainsAsync(characterUUID)` → `SupplyChain[]`
+- `GetAsteroidsAsync(characterUUID)` → `Asteroid[]`
+- `GetStationsAsync(characterUUID)` → `Station[]`
+- `GetFactionContactsAsync(characterUUID)` → `Faction[]`
+- `GetExternalCharactersAsync(characterUUID)` → `ExternalCharacter[]`
+
+All methods accept an optional `CancellationToken` parameter.
+
+### FactionServerTypedClient
+
+HTTP implementation of `IFactionServerTypedClient`. Located in `OE2EmpireTracker.Common/Client/FactionServer/FactionServerTypedClient.cs`.
+
+#### Constructor Parameters
+
+| Parameter | Type | Description |
+|---|---|---|
+| `serverUrl` | `string` | Base URL (trailing slash trimmed) |
+| `bearerToken` | `SecureString` | API bearer token, disposed with client |
+| `trustedThumbprint` | `string` (optional) | SHA-256 cert thumbprint for pinning |
+| `timeout` | `TimeSpan?` (optional) | Request timeout (default: 5 min, no min/max bounds) |
+
+
+#### Key Behaviors
+
+- **Certificate pinning:** When `trustedThumbprint` is configured, only the thumbprint is checked — standard CA validation is bypassed. Mismatch rejects immediately.
+- **Rate limiting:** Semaphore-based, 60 requests/minute default. Token released after 60 seconds (sliding window approximation). `ApplyRateLimit(int)` allows dynamic adjustment from any source without bounds validation.
+- **Typed exceptions:** HTTP 400 → `FactionValidationException` (parsed errors) or `FactionServerException` (fallback); HTTP 403 → `FactionAuthorizationException`; network failures → `FactionConnectionException`.
+- **Serialization:** Uses Newtonsoft.Json for all serialization/deserialization. Server uses System.Text.Json with camelCase; client sends PascalCase (server is case-insensitive for deserialization). Responses parsed with `[JsonProperty("camelName")]` attributes.
+- **Disposal:** Disposes SecureString (zeroed), HttpClient, and SemaphoreSlim. Safe to call multiple times.
 
 ### RemoteFactionClient
 
-HTTP client that communicates with the Remote Faction Service API. Handles:
+**Legacy** — HTTP client that communicates with the Remote Faction Service API using raw JSON strings. Being replaced by `IFactionServerTypedClient` for all new code. Handles:
 - Bearer-token authentication on all requests
 - Self-signed certificate pinning via thumbprint validation
 - Connection status tracking with events
@@ -18,12 +90,16 @@ HTTP client that communicates with the Remote Faction Service API. Handles:
 
 ### SyncManager
 
-Coordinates data flow between local storage and the remote server:
+Coordinates data flow between local storage and the remote server. Depends on `IFactionServerTypedClient` (migrating from `RemoteFactionClient`):
 - Write-through: when local data changes, also writes to server via `BulkImportAsync`
 - Offline queuing: when disconnected, queues changes for later
 - Queue flushing: on reconnection, replays queued changes via bulk import
 - Operating mode awareness (LocalOnly, ServerOnly, ServerAndLocal)
 - Raises `SyncValidationFailed` event (via `SyncValidationFailedEventArgs`) when server returns HTTP 400
+- Retry logic: exponential backoff on `FactionConnectionException`, immediate fail on `FactionAuthorizationException`, validation errors surfaced without retry
+
+**Migration note:** SyncManager is transitioning from `RemoteFactionClient` (raw JSON) to `IFactionServerTypedClient` (typed domain objects). During transition both may coexist; new code should use the typed interface.
+
 
 ### OfflineQueue
 
@@ -87,7 +163,7 @@ Event args for real-time mode changes (Req 18 Fallback):
 
 ### SharingRuleDto
 
-Data transfer object for sharing rules returned from the server API (`GET /characters/{uuid}/sharing`):
+Data transfer object for sharing rules. Located in `OE2EmpireTracker.Common/Client/FactionServer/DTOs/SharingRuleDto.cs` (shared between WinForms and server):
 - Id — unique identifier of the sharing rule
 - OwnerCharacterUUID — UUID of the character who owns the shared data
 - TargetUUID — UUID of the target (character or faction) the data is shared with
@@ -102,6 +178,56 @@ All properties use `[JsonProperty]` for Newtonsoft.Json serialization matching t
 
 ```mermaid
 classDiagram
+    class IFactionServerTypedClient {
+        <<interface>>
+        +bool IsConnected
+        +CheckHealthAsync() Task~bool~
+        +GetFactionsAsync() Task~ServerFaction[]~
+        +GetCharactersAsync() Task~ServerCharacter[]~
+        +CreateCharacterAsync(name, uuid?) Task
+        +GetSyncSnapshotAsync() Task~SyncResponse~
+        +ExportCharacterDataAsync(characterUUID) Task~PlayerRoot~
+        +UploadBaselineAsync(baseline) Task
+        +BulkImportAsync(characterUUID, data) Task~BulkImportResult~
+        +GetSharingRulesAsync(characterUUID) Task~SharingRuleDto[]~
+        +PutSharingRulesAsync(characterUUID, rules) Task
+        +GetColoniesAsync(characterUUID) Task~Colony[]~
+        +GetBlueprintsAsync(characterUUID) Task~Blueprint[]~
+        +GetSurveysAsync(characterUUID) Task~Survey[]~
+        +GetPlayerProfilesAsync(characterUUID) Task~PlayerProfile[]~
+        +GetDeliveryRoutesAsync(characterUUID) Task~DeliveryRoute[]~
+        +GetDeliveryPlansAsync(characterUUID) Task~DeliveryPlan[]~
+        +GetShipsAsync(characterUUID) Task~Ship[]~
+        +GetShipTemplatesAsync(characterUUID) Task~ShipTemplate[]~
+        +GetMarketListingsAsync(characterUUID) Task~MarketListing[]~
+        +GetMarketTransactionsAsync(characterUUID) Task~MarketTransaction[]~
+        +GetPricingPlansAsync(characterUUID) Task~PricingPlan[]~
+        +GetStockPlansAsync(characterUUID) Task~StockPlan[]~
+        +GetStockProfilesAsync(characterUUID) Task~StockProfile[]~
+        +GetBuildPlansAsync(characterUUID) Task~BuildPlan[]~
+        +GetSupplyChainsAsync(characterUUID) Task~SupplyChain[]~
+        +GetAsteroidsAsync(characterUUID) Task~Asteroid[]~
+        +GetStationsAsync(characterUUID) Task~Station[]~
+        +GetFactionContactsAsync(characterUUID) Task~Faction[]~
+        +GetExternalCharactersAsync(characterUUID) Task~ExternalCharacter[]~
+        +Dispose() void
+    }
+
+    class FactionServerTypedClient {
+        -string _serverUrl
+        -SecureString _bearerToken
+        -string _trustedThumbprint
+        -TimeSpan _timeout
+        -HttpClient _httpClient
+        -SemaphoreSlim _rateLimiter
+        -int _rateLimitRequestsPerMinute
+        +bool IsConnected
+        +FactionServerTypedClient(serverUrl, bearerToken, trustedThumbprint?, timeout?)
+        +ApplyRateLimit(requestsPerMinute) void
+        +Dispose() void
+    }
+
+
     class RemoteFactionClient {
         -Logger Log
         -string _serverUrl
@@ -132,7 +258,7 @@ classDiagram
 
     class SyncManager {
         -Logger Log
-        -RemoteFactionClient _client
+        -IFactionServerTypedClient _typedClient
         -OfflineQueue _offlineQueue
         +OperatingMode Mode
         +bool IsOnline
@@ -140,7 +266,7 @@ classDiagram
         +int QueuedChangeCount
         +bool ServerProcessingActive
         +string LastSyncTimestamp
-        +SyncManager(client, offlineQueue)
+        +SyncManager(typedClient, offlineQueue)
         +SyncOnStartupAsync() Task
         +PullFullSyncAsync() Task
         +WriteToServerAsync(characterUUID, dataType, json) Task
@@ -177,6 +303,7 @@ classDiagram
         -Logger Log
         -ServerContext _instance$
         +RemoteFactionClient Client
+        +IFactionServerTypedClient TypedClient
         +SyncManager SyncManager
         +OfflineQueue OfflineQueue
         +OperatingMode Mode
@@ -207,6 +334,7 @@ classDiagram
         ServerAndLocal
     }
 
+
     class ConnectionStatusChangedEventArgs {
         +bool IsConnected
         +string Message
@@ -224,11 +352,14 @@ classDiagram
         +bool IsRealtime
     }
 
-    ServerContext --o RemoteFactionClient : holds
+    FactionServerTypedClient ..|> IFactionServerTypedClient : implements
+    FactionServerTypedClient --|> IDisposable : implements
+    ServerContext --o RemoteFactionClient : holds (legacy)
+    ServerContext --o IFactionServerTypedClient : holds
     ServerContext --o SyncManager : holds
     ServerContext --o OfflineQueue : holds
     ServerContext --> OperatingMode : uses
-    SyncManager --> RemoteFactionClient : uses
+    SyncManager --> IFactionServerTypedClient : uses
     SyncManager --> OfflineQueue : uses
     SyncManager --> OperatingMode : uses
     OfflineQueue --o QueuedChange : contains

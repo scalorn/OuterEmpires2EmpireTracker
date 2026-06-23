@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using Newtonsoft.Json;
 using NLog;
 using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Client.FactionServer;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Services;
 

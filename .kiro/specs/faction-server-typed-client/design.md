@@ -11,13 +11,13 @@ The client follows Option A: **one method per entity collection**, providing ful
 1. **Reuse existing domain models** — `PlayerRoot`, `BaselineRoot`, `Colony`, `Blueprint`, etc. already exist in Common. The typed client returns/accepts these directly.
 2. **No wrapper DTOs for entity collections** — Methods like `GetColoniesAsync` return `Colony[]` directly, not a wrapper DTO. This matches the server's wire format (JSON arrays).
 3. **BulkImportResult as a new DTO** — The server returns `{ imported: {}, total: N }` which needs a typed representation.
-4. **SyncResponse as a new DTO** — The `/api/v1/sync` endpoint returns factions, characters, and a timestamp.
-5. **ServerFaction/ServerCharacter moved to Common** — These models currently live in `OE2EmpireTracker.Server/Storage/Models.cs`. Since both the Server and the WinForms app (via the typed client) need them, they are migrated to `OE2EmpireTracker.Common/Models/` as part of this feature. The Server project references Common, so no circular dependency is introduced.
+4. **SyncResponse as a new DTO** — The `/api/v1/sync/snapshot` endpoint returns factions, characters, and a timestamp.
+5. **ServerFaction/ServerCharacter already in Common** — These models already exist in `OE2EmpireTracker.Common/Models/ServerModels.cs` with `EntityMetadata` properties. The typed client uses them directly for `GetFactionsAsync`/`GetCharactersAsync` return types. The `EntityMetadata` property is server-internal (tracks `LastModifiedUtc` for storage) and will be excluded from the typed client's serialization settings (`NullValueHandling.Ignore` ensures it is omitted on the wire when null).
 
 
 ### Requirements Note
 
-The requirements.md (Req 1 Criterion 1) references "get character data by type" and "get all character data" — these were the old generic endpoints (`/characters/{uuid}/data/{type}` and `/characters/{uuid}/data`). The server does NOT implement these generic endpoints. Instead, the server has per-entity CRUD endpoints and a full export endpoint. The typed client reflects the actual server API, not the outdated requirement language. Requirements should be updated to reflect per-entity-type methods.
+The design uses per-entity-type endpoints (19 entity types) which reflect the actual server API. The requirements have been updated to align with this approach. The existing `RemoteFactionClient` still has the legacy `GetCharacterDataAsync(uuid, dataType)` and `GetAllCharacterDataAsync(uuid)` generic endpoints — these will be deprecated once the typed client is adopted.
 
 ---
 
@@ -38,8 +38,7 @@ The requirements.md (Req 1 Criterion 1) references "get character data by type" 
 │  ├── DTOs/                                               │
 │  │   ├── SyncResponse.cs                                 │
 │  │   ├── BulkImportResult.cs                             │
-│  │   ├── ServerFactionDto.cs                             │
-│  │   └── ServerCharacterDto.cs                           │
+│  │   └── SharingRuleDto.cs                               │
 │  └── Exceptions/                                         │
 │      ├── FactionServerException.cs                       │
 │      ├── FactionValidationException.cs                   │
@@ -199,7 +198,7 @@ namespace OE2EmpireTracker.Common.Client.FactionServer
 | `/api/v1/factions` | GET | `GetFactionsAsync` | `ServerFaction[]` |
 | `/api/v1/characters` | GET | `GetCharactersAsync` | `ServerCharacter[]` |
 | `/api/v1/characters` | POST | `CreateCharacterAsync` | `void` |
-| `/api/v1/sync` | GET | `GetSyncSnapshotAsync` | `SyncResponse` |
+| `/api/v1/sync/snapshot` | GET | `GetSyncSnapshotAsync` | `SyncResponse` |
 | `/api/v1/characters/{uuid}/export` | GET | `ExportCharacterDataAsync` | `PlayerRoot` |
 | `/api/v1/global/baseline` | PUT | `UploadBaselineAsync` | `void` |
 | `/api/v1/characters/{uuid}/import` | PUT | `BulkImportAsync` | `BulkImportResult` |
@@ -241,6 +240,7 @@ namespace OE2EmpireTracker.Common.Client.FactionServer
         private readonly string _serverUrl;
         private readonly SecureString _bearerToken;
         private readonly string _trustedThumbprint;
+        private readonly TimeSpan _timeout;
         private readonly HttpClient _httpClient;
         private readonly SemaphoreSlim _rateLimiter;
         private int _rateLimitRequestsPerMinute;
@@ -249,11 +249,13 @@ namespace OE2EmpireTracker.Common.Client.FactionServer
         public FactionServerTypedClient(
             string serverUrl,
             SecureString bearerToken,
-            string trustedThumbprint = null)
+            string trustedThumbprint = null,
+            TimeSpan? timeout = null)
         {
             _serverUrl = (serverUrl ?? "").TrimEnd('/');
             _bearerToken = bearerToken;
             _trustedThumbprint = trustedThumbprint;
+            _timeout = timeout ?? TimeSpan.FromMinutes(5); // No min/max bounds enforced
             _rateLimitRequestsPerMinute = 60;
             _rateLimiter = new SemaphoreSlim(60, 60);
             _httpClient = CreateHttpClient();
@@ -278,6 +280,7 @@ namespace OE2EmpireTracker.Common.Client.FactionServer
 | `serverUrl` | `string` | Base URL (e.g. `https://faction.example.com`) |
 | `bearerToken` | `SecureString` | API bearer token, disposed with client |
 | `trustedThumbprint` | `string` | Optional SHA-256 cert thumbprint for pinning |
+| `timeout` | `TimeSpan?` | Optional request timeout (default: 5 min, no min/max bounds) |
 
 
 #### Internal Method Pattern
@@ -312,6 +315,10 @@ public async Task UploadBaselineAsync(BaselineRoot baseline, CancellationToken c
 
 #### Certificate Pinning
 
+Thumbprint verification is treated as separate from standard certificate validation. When a thumbprint is configured and the certificate does not match, the request is rejected immediately without performing further certificate validation (expired, untrusted CA, etc.).
+
+**Intentional behavioral change from RemoteFactionClient:** The existing `RemoteFactionClient.ValidateCertificate` first checks `if (sslPolicyErrors == SslPolicyErrors.None) return true` — accepting any certificate that passes standard CA validation regardless of thumbprint match. The typed client intentionally removes this early-out: when pinning is configured, ONLY the thumbprint matters. This is stricter and more secure.
+
 ```csharp
 private HttpClient CreateHttpClient()
 {
@@ -320,7 +327,8 @@ private HttpClient CreateHttpClient()
     {
         handler.ServerCertificateCustomValidationCallback = (msg, cert, chain, errors) =>
         {
-            if (errors == SslPolicyErrors.None) return true;
+            // Thumbprint check is separate from standard validation.
+            // Mismatch = reject immediately, no further validation performed.
             if (cert == null) return false;
             return string.Equals(
                 cert.GetCertHashString(),
@@ -329,7 +337,7 @@ private HttpClient CreateHttpClient()
         };
     }
 
-    var client = new HttpClient(handler) { Timeout = TimeSpan.FromMinutes(5) };
+    var client = new HttpClient(handler) { Timeout = _timeout };
     string token = SecureStringToString(_bearerToken);
     client.DefaultRequestHeaders.Authorization =
         new AuthenticationHeaderValue("Bearer", token);
@@ -353,7 +361,9 @@ private async Task AcquireRateLimitTokenAsync(CancellationToken ct)
 }
 
 /// <summary>
-/// Applies a new rate limit communicated by the server via WebSocket.
+/// Applies a new rate limit from any source (WebSocket, configuration, etc.).
+/// No bounds checking or validation is performed — any positive value is accepted
+/// regardless of how restrictive or permissive it is.
 /// </summary>
 public void ApplyRateLimit(int requestsPerMinute)
 {
@@ -448,7 +458,7 @@ using System;
 namespace OE2EmpireTracker.Common.Client.FactionServer
 {
     /// <summary>
-    /// Response from the /api/v1/sync endpoint.
+    /// Response from the /api/v1/sync/snapshot endpoint.
     /// Contains server-level factions, characters, and a timestamp.
     /// </summary>
     public class SyncResponse
@@ -466,15 +476,15 @@ namespace OE2EmpireTracker.Common.Client.FactionServer
 ```
 
 
-#### ServerFactionDto → ServerFaction (migrated from Server)
+#### ServerFaction (already in Common at `OE2EmpireTracker.Common/Models/ServerModels.cs`)
 
-`ServerFaction` is migrated from `OE2EmpireTracker.Server/Storage/Models.cs` to `OE2EmpireTracker.Common/Models/ServerFaction.cs`. The Server project will reference Common's version instead of maintaining its own.
+`ServerFaction` already exists in `OE2EmpireTracker.Common/Models/ServerModels.cs`. The typed client reuses it directly. The `EntityMetadata Metadata` property is present on the model but omitted from the wire format by `NullValueHandling.Ignore` (it will be null on client-side instances).
 
 ```csharp
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace OE2EmpireTracker.Models
+namespace OE2EmpireTracker.Common.Models
 {
     /// <summary>
     /// Server-level faction with leadership tracking.
@@ -493,18 +503,20 @@ namespace OE2EmpireTracker.Models
 
         [JsonProperty("leaderCharacterUUIDs")]
         public List<string> LeaderCharacterUUIDs { get; set; } = new List<string>();
+
+        public EntityMetadata Metadata { get; set; } = new EntityMetadata();
     }
 }
 ```
 
-#### ServerCharacterDto → ServerCharacter (migrated from Server)
+#### ServerCharacter (already in Common at `OE2EmpireTracker.Common/Models/ServerModels.cs`)
 
-`ServerCharacter` is migrated from `OE2EmpireTracker.Server/Storage/Models.cs` to `OE2EmpireTracker.Common/Models/ServerCharacter.cs`.
+`ServerCharacter` already exists in `OE2EmpireTracker.Common/Models/ServerModels.cs`. The typed client reuses it directly.
 
 ```csharp
 using Newtonsoft.Json;
 
-namespace OE2EmpireTracker.Models
+namespace OE2EmpireTracker.Common.Models
 {
     /// <summary>
     /// Server-level character record.
@@ -520,11 +532,13 @@ namespace OE2EmpireTracker.Models
 
         [JsonProperty("factionUUID")]
         public string FactionUUID { get; set; }
+
+        public EntityMetadata Metadata { get; set; } = new EntityMetadata();
     }
 }
 ```
 
-Note: The `EntityMetadata` property used by the Server is server-internal (tracks `LastModifiedUtc` for storage). It will remain on the Server's local copy as an extension or the Server will add it separately. The Common model only carries the wire-format properties.
+Note: The `EntityMetadata` property is server-internal (tracks `LastModifiedUtc` for storage). On the wire, it will be null for client-created instances and omitted by `NullValueHandling.Ignore`.
 
 #### SharingRuleDto (already exists at `OE2EmpireTracker/Client/SharingRuleDto.cs`)
 
@@ -669,8 +683,7 @@ The server deserializes this with `PropertyNameCaseInsensitive = true`, so Pasca
 ```
 OE2EmpireTracker.Common/
 ├── Models/
-│   ├── ServerFaction.cs          (migrated from Server)
-│   └── ServerCharacter.cs        (migrated from Server)
+│   └── ServerModels.cs           (already exists — ServerFaction, ServerCharacter)
 └── Client/
     └── FactionServer/
         ├── IFactionServerTypedClient.cs
@@ -730,7 +743,7 @@ OE2EmpireTracker.Common/
 
 ### Property 6: Rate Limiter Application
 
-*For any* positive integer rate limit value communicated by the server, calling `ApplyRateLimit` SHALL update the internal limiter to the new capacity without throwing an exception, regardless of how restrictive the value is.
+*For any* positive integer rate limit value received from any source, calling `ApplyRateLimit` SHALL update the internal limiter to the new capacity without throwing an exception, regardless of how restrictive or permissive the value is.
 
 **Validates: Requirements 6.3**
 
@@ -790,12 +803,13 @@ The `Dispose` pattern is safe to call multiple times and handles partial initial
 **Unit Tests (example-based):**
 - Constructor parameter validation (null URL, null token)
 - Certificate pinning acceptance/rejection with mock certificates
+- Certificate pinning rejects on thumbprint mismatch without performing standard validation
 - Bearer token header attachment verification
 - IsConnected property behavior
 - Dispose behavior (SecureString zeroed, no double-dispose crash)
 - Interface coverage verification (all endpoints have methods)
 - SharingRuleDto field mapping verification
-- Timeout default (5 minutes)
+- Timeout default (5 minutes) and configurable timeout (any value accepted)
 
 **Property Tests (FsCheck, minimum 100 iterations each):**
 - Property 1: DTO round-trip — generate random DTOs, serialize → deserialize → assert equality
@@ -863,3 +877,14 @@ The migration from `RemoteFactionClient` to `IFactionServerTypedClient` will be 
 | Req 8 (Migration) | Interface coverage, HTTP equivalence, SyncManager wiring |
 | Req 9 (Exceptions) | Exception hierarchy, Property 2 |
 | Req 10 (Shared Location) | File organization, no new dependencies |
+
+---
+
+## External Spec Updates (to include in implementation tasks)
+
+The following external spec/ and docs/ files must be updated as part of the implementation to maintain spec traceability:
+
+| File | Change |
+|---|---|
+| `spec/design/services/client-services.md` | Add `IFactionServerTypedClient` and `FactionServerTypedClient` classes. Update SyncManager class diagram to show `IFactionServerTypedClient` dependency instead of `RemoteFactionClient`. |
+| `spec/requirements/Sharing.md` | Update sequence diagram participant from `RemoteFactionClient` to `IFactionServerTypedClient` after migration. |

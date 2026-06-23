@@ -26,7 +26,7 @@ This feature replaces the raw JSON communication in `RemoteFactionClient` with a
 
 #### Acceptance Criteria
 
-1. THE OpenAPI_Spec SHALL define all Faction Server endpoints currently implemented in RemoteFactionClient: health check, list factions, list characters, create character, get character data by type, get all character data, bulk import, upload global data, get sync snapshot, export character data, get sharing rules, and put sharing rules
+1. THE OpenAPI_Spec SHALL define all Faction Server endpoints currently implemented in RemoteFactionClient: health check, list factions, list characters, create character, per-entity-type data retrieval (19 entity types: colonies, blueprints, surveys, playerProfiles, deliveryRoutes, deliveryPlans, ships, shipTemplates, marketListings, marketTransactions, pricingPlans, stockPlans, stockProfiles, buildPlans, supplyChains, asteroids, stations, factions, externalCharacters), bulk import, upload baseline data, get sync snapshot, export character data, get sharing rules, and put sharing rules
 2. THE OpenAPI_Spec SHALL define request and response schemas for every endpoint using JSON Schema types (no untyped `object` or `string` placeholders for structured data)
 3. THE OpenAPI_Spec SHALL define a Bearer token authentication security scheme matching the Faction Server's current auth mechanism
 4. THE OpenAPI_Spec SHALL use semantic versioning in the `info.version` field starting at `1.0.0`
@@ -56,7 +56,7 @@ This feature replaces the raw JSON communication in `RemoteFactionClient` with a
 1. THE Common_Project SHALL define an `IFactionServerTypedClient` interface with one async method per Faction Server endpoint, each returning a typed DTO
 2. THE IFactionServerTypedClient interface SHALL follow the same patterns as `IGameApiTypedClient`: async Task return types, CancellationToken parameters, and IDisposable implementation
 3. THE IFactionServerTypedClient interface SHALL expose a `bool IsConnected` property for connection status checking
-4. THE IFactionServerTypedClient interface SHALL expose methods for: CheckHealthAsync, GetFactionsAsync, GetCharactersAsync, CreateCharacterAsync, GetCharacterDataAsync, GetAllCharacterDataAsync, BulkImportAsync, UploadGlobalDataAsync, GetSyncSnapshotAsync, ExportCharacterDataAsync, GetSharingRulesAsync, and PutSharingRulesAsync
+4. THE IFactionServerTypedClient interface SHALL expose methods for: CheckHealthAsync, GetFactionsAsync, GetCharactersAsync, CreateCharacterAsync, per-entity-type retrieval methods (GetColoniesAsync, GetBlueprintsAsync, GetSurveysAsync, GetPlayerProfilesAsync, GetDeliveryRoutesAsync, GetDeliveryPlansAsync, GetShipsAsync, GetShipTemplatesAsync, GetMarketListingsAsync, GetMarketTransactionsAsync, GetPricingPlansAsync, GetStockPlansAsync, GetStockProfilesAsync, GetBuildPlansAsync, GetSupplyChainsAsync, GetAsteroidsAsync, GetStationsAsync, GetFactionContactsAsync, GetExternalCharactersAsync), BulkImportAsync, UploadBaselineAsync, GetSyncSnapshotAsync, ExportCharacterDataAsync, GetSharingRulesAsync, and PutSharingRulesAsync
 
 
 ### Requirement 4: Typed Client Implementation
@@ -69,7 +69,7 @@ This feature replaces the raw JSON communication in `RemoteFactionClient` with a
 2. THE FactionServerTypedClient SHALL accept a base URL, bearer token, and optional certificate thumbprint in its constructor (matching the existing RemoteFactionClient parameter set)
 3. THE FactionServerTypedClient SHALL serialize request DTOs to JSON and deserialize response JSON into typed DTOs using `Newtonsoft.Json`
 4. THE FactionServerTypedClient SHALL throw typed exceptions (not return null) on HTTP error responses: a distinct exception type for HTTP 400 (validation), HTTP 403 (forbidden), and general HTTP failures
-5. THE FactionServerTypedClient SHALL include a configurable request timeout defaulting to 5 minutes for large payloads (matching the existing RemoteFactionClient behavior)
+5. THE FactionServerTypedClient SHALL include a configurable request timeout defaulting to 5 minutes for large payloads (matching the existing RemoteFactionClient behavior); THE timeout SHALL accept any developer-specified value without minimum or maximum bounds
 6. IF the server returns HTTP 400, THEN THE FactionServerTypedClient SHALL attempt to parse the validation errors from the response body and throw a `FactionValidationException`; IF parsing the validation errors fails, THEN THE FactionServerTypedClient SHALL fall back to throwing the general HTTP failure exception
 
 
@@ -80,7 +80,7 @@ This feature replaces the raw JSON communication in `RemoteFactionClient` with a
 #### Acceptance Criteria
 
 1. THE FactionServerTypedClient SHALL support optional self-signed certificate pinning via a trusted thumbprint parameter
-2. WHEN a trusted thumbprint is configured, THE FactionServerTypedClient SHALL reject server certificates that do not match the thumbprint
+2. WHEN a trusted thumbprint is configured, THE FactionServerTypedClient SHALL reject server certificates that do not match the thumbprint; thumbprint verification SHALL be treated as separate from standard certificate validation (expired, untrusted CA), and a thumbprint mismatch SHALL prevent the request without performing further certificate validation. NOTE: This is an intentional behavioral change from RemoteFactionClient, which accepts certificates passing standard validation regardless of thumbprint match. The typed client enforces thumbprint-only validation when pinning is configured, improving security.
 3. THE FactionServerTypedClient SHALL attach the bearer token as an `Authorization: Bearer <token>` header on every HTTP request WHERE certificate validation has not already failed
 4. THE FactionServerTypedClient SHALL accept the bearer token as a `SecureString` and dispose it when the client is disposed regardless of whether client disposal succeeds or is interrupted
 
@@ -93,7 +93,7 @@ This feature replaces the raw JSON communication in `RemoteFactionClient` with a
 
 1. THE FactionServerTypedClient SHALL implement a configurable rate limiter defaulting to 60 requests per minute
 2. WHEN the rate limit is reached, THE FactionServerTypedClient SHALL queue the request and wait until a rate limit token is available before sending
-3. WHEN the server communicates a new rate limit (via WebSocket message), THE FactionServerTypedClient SHALL apply the updated limit without bounds checking regardless of how restrictive the new limit is
+3. WHEN a new rate limit is received from any source (including but not limited to the server's WebSocket messages), THE FactionServerTypedClient SHALL apply the updated limit without bounds checking or validation regardless of how restrictive or permissive the new limit is
 
 
 ### Requirement 7: DTO Serialization Round-Trip
@@ -114,7 +114,7 @@ This feature replaces the raw JSON communication in `RemoteFactionClient` with a
 #### Acceptance Criteria
 
 1. THE IFactionServerTypedClient interface SHALL cover all endpoints currently exposed by RemoteFactionClient (no loss of functionality)
-2. THE FactionServerTypedClient SHALL produce equivalent HTTP requests (same URL paths, HTTP methods, headers, and body structure) as the existing RemoteFactionClient for every endpoint
+2. THE FactionServerTypedClient SHALL produce equivalent HTTP requests (same URL paths, HTTP methods, headers, and body structure) as the existing RemoteFactionClient for every endpoint, with the exception of certificate pinning behavior which is intentionally stricter (see Requirement 5, Criterion 2)
 3. WHEN the typed client is integrated, THE SyncManager SHALL accept `IFactionServerTypedClient` instead of `RemoteFactionClient` as its client dependency
 4. THE typed client SHALL maintain the same error handling semantics: HTTP 400 returns validation errors, HTTP 403 signals unauthorized, network failures signal connection loss
 
