@@ -31,5 +31,11 @@ namespace OE2EmpireTracker.Common.Client.FactionServer
         /// </summary>
         [JsonProperty("serverTimestamp")]
         public DateTime ServerTimestamp { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether background processing is active on the server.
+        /// </summary>
+        [JsonProperty("processingActive")]
+        public bool ProcessingActive { get; set; }
     }
 }
