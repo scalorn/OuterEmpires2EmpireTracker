@@ -64,7 +64,7 @@ Migrate all consumers of `RemoteFactionClient` to `IFactionServerTypedClient` + 
   - _Output: QueuedChange.cs (modified, +5 lines)_
   - _Verification: Solution builds_
 
-- [ ] 4. Modify OfflineQueue.Load() for typed payload deserialization
+- [x] 4. Modify OfflineQueue.Load() for typed payload deserialization
   - After loading `List<QueuedChange>` from disk, iterate and try `JsonConvert.DeserializeObject<PlayerRoot>(change.Json)` for each entry
   - On success: set `change.TypedPayload = deserialized`
   - On failure (JsonException): log warning, skip that entry (remove from list)

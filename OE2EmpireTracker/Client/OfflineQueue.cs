@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 using NLog;
+using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Client
 {
@@ -133,6 +134,30 @@ namespace OE2EmpireTracker.Client
                 var loaded = JsonConvert.DeserializeObject<List<QueuedChange>>(json);
                 _changes = loaded ?? new List<QueuedChange>();
                 Log.Info("Loaded offline queue ({0} items) from {1}", _changes.Count, _queueFilePath);
+
+                // Deserialize typed payloads from stored JSON
+                var validChanges = new List<QueuedChange>();
+                foreach (var change in _changes)
+                {
+                    if (string.IsNullOrEmpty(change.Json))
+                    {
+                        Log.Warn("Skipping offline queue entry with empty JSON for {0}/{1}", change.CharacterUUID, change.DataType);
+                        continue;
+                    }
+
+                    try
+                    {
+                        change.TypedPayload = JsonConvert.DeserializeObject<PlayerRoot>(change.Json);
+                        validChanges.Add(change);
+                    }
+                    catch (JsonException ex)
+                    {
+                        Log.Warn(ex, "Failed to deserialize typed payload for {0}/{1}, skipping entry", change.CharacterUUID, change.DataType);
+                    }
+                }
+
+                _changes = validChanges;
+                Log.Info("Offline queue has {0} valid entries after typed payload deserialization", _changes.Count);
             }
             catch (JsonException ex)
             {
