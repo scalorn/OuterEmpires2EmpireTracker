@@ -168,7 +168,9 @@
     <Compile Include="Client\CredentialStore.cs" />
     <Compile Include="Client\OfflineQueue.cs" />
     <Compile Include="Client\PushEventArgs.cs" />
+    <Compile Include="Client\FactionPushClient.cs" />
     <Compile Include="Client\QueuedChange.cs" />
+    <Compile Include="Client\RateLimitChangedEventArgs.cs" />
     <Compile Include="Client\RealtimeModeChangedEventArgs.cs" />
     <Compile Include="Client\RemoteFactionClient.cs" />
     <Compile Include="Client\ServerContext.cs" />

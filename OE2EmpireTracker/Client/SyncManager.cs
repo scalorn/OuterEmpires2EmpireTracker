@@ -4,12 +4,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
+using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 using NLog;
 
+using OE2EmpireTracker.Common.Client.FactionServer;
 using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Client
@@ -23,17 +23,20 @@ namespace OE2EmpireTracker.Client
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-        private readonly RemoteFactionClient _client;
+        private readonly IFactionServerTypedClient _typedClient;
+        private readonly FactionPushClient _pushClient;
         private readonly OfflineQueue _offlineQueue;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SyncManager"/> class.
         /// </summary>
-        /// <param name="client">The remote faction client.</param>
+        /// <param name="typedClient">The typed faction server client for HTTP API calls.</param>
+        /// <param name="pushClient">The push client for WebSocket connection status awareness.</param>
         /// <param name="offlineQueue">The offline queue for storing changes while disconnected.</param>
-        public SyncManager(RemoteFactionClient client, OfflineQueue offlineQueue)
+        public SyncManager(IFactionServerTypedClient typedClient, FactionPushClient pushClient, OfflineQueue offlineQueue)
         {
-            _client = client;
+            _typedClient = typedClient;
+            _pushClient = pushClient;
             _offlineQueue = offlineQueue;
             Mode = OperatingMode.LocalOnly;
         }
@@ -51,7 +54,7 @@ namespace OE2EmpireTracker.Client
         /// <summary>
         /// Gets a value indicating whether the client is currently online.
         /// </summary>
-        public bool IsOnline => _client?.IsConnected ?? false;
+        public bool IsOnline => _pushClient?.IsConnected ?? false;
 
         /// <summary>
         /// Gets a value indicating whether divergence was detected after reconnection.
@@ -93,7 +96,7 @@ namespace OE2EmpireTracker.Client
 
             _offlineQueue.Load();
 
-            bool connected = await _client.TryConnectAsync().ConfigureAwait(false);
+            bool connected = await _pushClient.TryConnectAsync().ConfigureAwait(false);
             if (!connected)
             {
                 Log.Warn("Could not connect on startup — {0} changes remain queued", _offlineQueue.Count);
@@ -120,11 +123,11 @@ namespace OE2EmpireTracker.Client
         {
             try
             {
-                string syncJson = await _client.GetSyncSnapshotAsync().ConfigureAwait(false);
-                if (!string.IsNullOrEmpty(syncJson))
+                var response = await _typedClient.GetSyncSnapshotAsync().ConfigureAwait(false);
+                if (response != null)
                 {
-                    LastSyncTimestamp = ExtractTimestamp(syncJson);
-                    ServerProcessingActive = ExtractProcessingActive(syncJson);
+                    LastSyncTimestamp = response.ServerTimestamp.ToString("o");
+                    ServerProcessingActive = response.ProcessingActive;
                     Log.Info(
                         "Full sync pulled. Timestamp={0}, ServerProcessing={1}",
                         LastSyncTimestamp ?? "(none)",
@@ -132,7 +135,7 @@ namespace OE2EmpireTracker.Client
                 }
                 else
                 {
-                    Log.Warn("Sync snapshot returned empty — server may not support sync endpoint");
+                    Log.Warn("Sync snapshot returned null — server may not support sync endpoint");
                 }
             }
             catch (Exception ex)
@@ -144,14 +147,14 @@ namespace OE2EmpireTracker.Client
         /// <summary>
         /// Writes data to the server via bulk import. If offline, queues the change.
         /// Called by PlayerContext.WriteContext() when mode is ServerOnly or DualWrite.
-        /// On HTTP 400: logs validation errors, queues for user review, raises SyncValidationFailed.
-        /// On HTTP 403: logs denial, sets connection status to Unauthorized.
+        /// On validation failure: logs errors, queues for user review, raises SyncValidationFailed.
+        /// On authorization failure: logs denial, sets connection status to Unauthorized.
         /// </summary>
         /// <param name="characterUUID">The character UUID.</param>
         /// <param name="dataType">The data type (retained for offline queue compatibility).</param>
-        /// <param name="json">The JSON payload (PascalCase PlayerRoot).</param>
+        /// <param name="playerRoot">The typed player data to import.</param>
         /// <returns>A task representing the async operation.</returns>
-        public async Task WriteToServerAsync(string characterUUID, string dataType, string json)
+        public async Task WriteToServerAsync(string characterUUID, string dataType, PlayerRoot playerRoot)
         {
             if (Mode == OperatingMode.LocalOnly)
             {
@@ -160,49 +163,55 @@ namespace OE2EmpireTracker.Client
 
             if (!IsOnline)
             {
-                QueueOfflineChange(characterUUID, dataType, json);
+                QueueOfflineChange(characterUUID, dataType, playerRoot);
                 return;
             }
 
             try
             {
-                var response = await _client.BulkImportAsync(characterUUID, json).ConfigureAwait(false);
-
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    Log.Debug("Bulk import to server succeeded: {0}", characterUUID);
-                    return;
-                }
-
-                if (response.StatusCode == HttpStatusCode.BadRequest)
-                {
-                    await HandleValidationFailureAsync(characterUUID, dataType, json, response)
-                        .ConfigureAwait(false);
-                    return;
-                }
-
-                if (response.StatusCode == HttpStatusCode.Forbidden)
-                {
-                    HandleForbiddenResponse(characterUUID);
-                    return;
-                }
-
-                // Unexpected status — log and queue for retry
-                Log.Warn(
-                    "Bulk import returned unexpected status {0} for {1}, queuing offline",
-                    (int)response.StatusCode,
-                    characterUUID);
-                QueueOfflineChange(characterUUID, dataType, json);
+                await _typedClient.BulkImportAsync(characterUUID, playerRoot).ConfigureAwait(false);
+                Log.Debug("Bulk import to server succeeded: {0}", characterUUID);
             }
-            catch (HttpRequestException ex)
+            catch (FactionValidationException ex)
+            {
+                var errors = ex.Errors
+                    .Select(e => string.Format(
+                        "[{0}] {1}{2}: {3}",
+                        e.EntityType,
+                        !string.IsNullOrEmpty(e.EntityUUID) ? e.EntityUUID + " " : string.Empty,
+                        !string.IsNullOrEmpty(e.Field) ? e.Field : "(general)",
+                        e.Error))
+                    .ToList();
+
+                Log.Warn("Bulk import validation failed for {0}: {1} error(s)", characterUUID, errors.Count);
+                foreach (string error in errors)
+                {
+                    Log.Warn("  Validation error: {0}", error);
+                }
+
+                QueueOfflineChange(characterUUID, dataType + ":ValidationFailed", playerRoot);
+
+                SyncValidationFailed?.Invoke(this, new SyncValidationFailedEventArgs
+                {
+                    CharacterUUID = characterUUID,
+                    ErrorResponseBody = ex.Message,
+                    ValidationErrors = errors,
+                });
+            }
+            catch (FactionAuthorizationException)
+            {
+                Log.Error("Bulk import denied (HTTP 403) for character {0} — token unauthorized", characterUUID);
+                _pushClient.SetConnectionStatus(false, "Unauthorized");
+            }
+            catch (FactionConnectionException ex)
             {
                 Log.Warn(ex, "Bulk import failed (network) for {0}, queuing offline", characterUUID);
-                QueueOfflineChange(characterUUID, dataType, json);
+                QueueOfflineChange(characterUUID, dataType, playerRoot);
             }
             catch (Exception ex)
             {
                 Log.Warn(ex, "Bulk import failed for {0}, queuing offline", characterUUID);
-                QueueOfflineChange(characterUUID, dataType, json);
+                QueueOfflineChange(characterUUID, dataType, playerRoot);
             }
         }
 
@@ -212,14 +221,16 @@ namespace OE2EmpireTracker.Client
         /// </summary>
         /// <param name="characterUUID">The character UUID.</param>
         /// <param name="dataType">The data type.</param>
-        /// <param name="json">The JSON payload.</param>
-        public void QueueOfflineChange(string characterUUID, string dataType, string json)
+        /// <param name="playerRoot">The typed player data to queue.</param>
+        public void QueueOfflineChange(string characterUUID, string dataType, PlayerRoot playerRoot)
         {
+            string json = JsonConvert.SerializeObject(playerRoot);
             var change = new QueuedChange
             {
                 CharacterUUID = characterUUID,
                 DataType = dataType,
                 Json = json,
+                TypedPayload = playerRoot,
                 QueuedUtc = SystemClock.UtcNow,
             };
 
@@ -241,7 +252,7 @@ namespace OE2EmpireTracker.Client
                 return;
             }
 
-            bool connected = await _client.TryConnectAsync().ConfigureAwait(false);
+            bool connected = await _pushClient.TryConnectAsync().ConfigureAwait(false);
             if (!connected)
             {
                 Log.Warn("Reconnection attempt failed — still offline");
@@ -255,11 +266,11 @@ namespace OE2EmpireTracker.Client
 
             try
             {
-                string syncJson = await _client.GetSyncSnapshotAsync().ConfigureAwait(false);
-                if (!string.IsNullOrEmpty(syncJson))
+                var syncResponse = await _typedClient.GetSyncSnapshotAsync().ConfigureAwait(false);
+                if (syncResponse != null)
                 {
-                    currentServerTimestamp = ExtractTimestamp(syncJson);
-                    ServerProcessingActive = ExtractProcessingActive(syncJson);
+                    currentServerTimestamp = syncResponse.ServerTimestamp.ToString("o");
+                    ServerProcessingActive = syncResponse.ProcessingActive;
                 }
             }
             catch (Exception ex)
@@ -341,203 +352,66 @@ namespace OE2EmpireTracker.Client
             for (int i = changes.Count - 1; i >= 0; i--)
             {
                 var change = changes[i];
-                try
-                {
-                    var response = await _client.BulkImportAsync(change.CharacterUUID, change.Json)
-                        .ConfigureAwait(false);
 
-                    if (response.StatusCode == HttpStatusCode.OK)
-                    {
-                        _offlineQueue.Remove(change);
-                        flushed++;
-                    }
-                    else if (response.StatusCode == HttpStatusCode.BadRequest)
-                    {
-                        await HandleValidationFailureAsync(
-                            change.CharacterUUID, change.DataType, change.Json, response)
-                            .ConfigureAwait(false);
-                        _offlineQueue.Remove(change);
-                        flushed++;
-                    }
-                    else if (response.StatusCode == HttpStatusCode.Forbidden)
-                    {
-                        HandleForbiddenResponse(change.CharacterUUID);
-                        break;
-                    }
-                    else
-                    {
-                        Log.Warn(
-                            "Flush: unexpected status {0} for {1}/{2}, stopping flush",
-                            (int)response.StatusCode,
-                            change.CharacterUUID,
-                            change.DataType);
-                        break;
-                    }
-                }
-                catch (HttpRequestException ex)
+                if (change.TypedPayload == null)
                 {
                     Log.Warn(
-                        ex,
-                        "Failed to flush queued change {0}/{1} (network error), stopping flush",
+                        "Skipping queued change {0}/{1} — typed payload is null (legacy entry)",
                         change.CharacterUUID,
                         change.DataType);
+                    _offlineQueue.Remove(change);
+                    continue;
+                }
+
+                try
+                {
+                    await _typedClient.BulkImportAsync(change.CharacterUUID, change.TypedPayload)
+                        .ConfigureAwait(false);
+                    _offlineQueue.Remove(change);
+                    flushed++;
+                }
+                catch (FactionValidationException ex)
+                {
+                    var errors = ex.Errors
+                        .Select(e => string.Format(
+                            "[{0}] {1}{2}: {3}",
+                            e.EntityType,
+                            !string.IsNullOrEmpty(e.EntityUUID) ? e.EntityUUID + " " : string.Empty,
+                            !string.IsNullOrEmpty(e.Field) ? e.Field : "(general)",
+                            e.Error))
+                        .ToList();
+
+                    Log.Warn("Flush: validation failed for {0}: {1} error(s)", change.CharacterUUID, errors.Count);
+                    _offlineQueue.Remove(change);
+                    flushed++;
+
+                    SyncValidationFailed?.Invoke(this, new SyncValidationFailedEventArgs
+                    {
+                        CharacterUUID = change.CharacterUUID,
+                        ErrorResponseBody = ex.Message,
+                        ValidationErrors = errors,
+                    });
+                }
+                catch (FactionAuthorizationException)
+                {
+                    Log.Error("Flush: denied (HTTP 403) for {0} — stopping flush", change.CharacterUUID);
+                    _pushClient.SetConnectionStatus(false, "Unauthorized");
+                    break;
+                }
+                catch (FactionConnectionException ex)
+                {
+                    Log.Warn(ex, "Flush: network error for {0}/{1}, stopping flush", change.CharacterUUID, change.DataType);
                     break;
                 }
                 catch (Exception ex)
                 {
-                    Log.Warn(
-                        ex,
-                        "Failed to flush queued change {0}/{1}, stopping flush",
-                        change.CharacterUUID,
-                        change.DataType);
+                    Log.Warn(ex, "Flush: failed for {0}/{1}, stopping flush", change.CharacterUUID, change.DataType);
                     break;
                 }
             }
 
             _offlineQueue.Save();
             Log.Info("Flushed {0}/{1} offline changes", flushed, changes.Count);
-        }
-
-        /// <summary>
-        /// Extracts the timestamp field from a sync snapshot JSON response.
-        /// Returns null if parsing fails.
-        /// </summary>
-        private static string ExtractTimestamp(string syncJson)
-        {
-            try
-            {
-                var obj = JObject.Parse(syncJson);
-                return obj.Value<string>("timestamp");
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Extracts the processingActive field from a sync snapshot JSON response.
-        /// Returns false if parsing fails or field is absent.
-        /// </summary>
-        private static bool ExtractProcessingActive(string syncJson)
-        {
-            try
-            {
-                var obj = JObject.Parse(syncJson);
-                return obj.Value<bool>("processingActive");
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Parses validation errors from the bulk import error response body.
-        /// Expected format: { "errors": [ { "entityType": "...", "error": "..." }, ... ] }.
-        /// </summary>
-        private static List<string> ParseValidationErrors(string responseBody)
-        {
-            var errors = new List<string>();
-
-            try
-            {
-                var obj = JObject.Parse(responseBody);
-                var errorsArray = obj["errors"] as JArray;
-                if (errorsArray != null)
-                {
-                    foreach (var item in errorsArray)
-                    {
-                        string entityType = item.Value<string>("entityType") ?? "Unknown";
-                        string entityUUID = item.Value<string>("entityUUID");
-                        string field = item.Value<string>("field");
-                        string error = item.Value<string>("error") ?? "Unknown error";
-
-                        string message = string.Format(
-                            "[{0}] {1}{2}: {3}",
-                            entityType,
-                            !string.IsNullOrEmpty(entityUUID) ? entityUUID + " " : string.Empty,
-                            !string.IsNullOrEmpty(field) ? field : "(general)",
-                            error);
-
-                        errors.Add(message);
-                    }
-                }
-                else
-                {
-                    // Fallback: try to get a single error message
-                    string singleError = obj.Value<string>("error");
-                    if (!string.IsNullOrEmpty(singleError))
-                    {
-                        errors.Add(singleError);
-                    }
-                    else
-                    {
-                        errors.Add("Validation failed (unable to parse error details)");
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                errors.Add("Validation failed: " + (responseBody ?? "(empty response)"));
-            }
-
-            return errors;
-        }
-
-        /// <summary>
-        /// Handles an HTTP 400 validation failure response from the bulk import endpoint.
-        /// Logs the errors, queues the change for user review, and raises the SyncValidationFailed event.
-        /// </summary>
-        private async Task HandleValidationFailureAsync(
-            string characterUUID,
-            string dataType,
-            string json,
-            HttpResponseMessage response)
-        {
-            string responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            var errors = ParseValidationErrors(responseBody);
-
-            Log.Warn(
-                "Bulk import validation failed for {0}: {1} error(s)",
-                characterUUID,
-                errors.Count);
-
-            foreach (string error in errors)
-            {
-                Log.Warn("  Validation error: {0}", error);
-            }
-
-            // Queue for user review with a ValidationFailed marker in the DataType
-            var reviewChange = new QueuedChange
-            {
-                CharacterUUID = characterUUID,
-                DataType = dataType + ":ValidationFailed",
-                Json = json,
-                QueuedUtc = SystemClock.UtcNow,
-            };
-
-            _offlineQueue.Enqueue(reviewChange);
-            _offlineQueue.Save();
-
-            SyncValidationFailed?.Invoke(this, new SyncValidationFailedEventArgs
-            {
-                CharacterUUID = characterUUID,
-                ErrorResponseBody = responseBody,
-                ValidationErrors = errors,
-            });
-        }
-
-        /// <summary>
-        /// Handles an HTTP 403 Forbidden response from the bulk import endpoint.
-        /// Logs the denial and sets connection status to Unauthorized.
-        /// </summary>
-        private void HandleForbiddenResponse(string characterUUID)
-        {
-            Log.Error(
-                "Bulk import denied (HTTP 403) for character {0} — token unauthorized",
-                characterUUID);
-            _client.SetConnectionStatus(false, "Unauthorized");
         }
     }
 }

@@ -249,6 +249,34 @@ namespace OE2EmpireTracker.Client
         }
 
         /// <summary>
+        /// Masks the bearer token in a WebSocket URL for safe logging.
+        /// </summary>
+        /// <param name="url">The WebSocket URL containing the token query parameter.</param>
+        /// <returns>The URL with the token value replaced by asterisks.</returns>
+        private static string MaskTokenInUrl(string url)
+        {
+            int tokenIdx = url.IndexOf("token=", StringComparison.Ordinal);
+            if (tokenIdx < 0)
+            {
+                return url;
+            }
+
+            return url.Substring(0, tokenIdx + 6) + "***";
+        }
+
+        /// <summary>
+        /// Calculates exponential backoff delay for reconnection attempts.
+        /// Doubles each attempt: 1s, 2s, 4s, 8s, 16s, 32s, capped at MaxReconnectDelayMs.
+        /// </summary>
+        /// <param name="attempt">The reconnection attempt number (1-based).</param>
+        /// <returns>The delay in milliseconds before the next reconnection attempt.</returns>
+        private static int CalculateBackoffDelay(int attempt)
+        {
+            int delayMs = (int)Math.Pow(2, attempt - 1) * 1000;
+            return Math.Min(delayMs, MaxReconnectDelayMs);
+        }
+
+        /// <summary>
         /// Initializes the HTTP client with certificate pinning and bearer token authentication.
         /// Creates a handler with custom certificate validation if a trusted thumbprint is configured,
         /// and sets the ServicePointManager callback for WebSocket connections.
@@ -341,34 +369,6 @@ namespace OE2EmpireTracker.Client
             }
 
             return match;
-        }
-
-        /// <summary>
-        /// Masks the bearer token in a WebSocket URL for safe logging.
-        /// </summary>
-        /// <param name="url">The WebSocket URL containing the token query parameter.</param>
-        /// <returns>The URL with the token value replaced by asterisks.</returns>
-        private static string MaskTokenInUrl(string url)
-        {
-            int tokenIdx = url.IndexOf("token=", StringComparison.Ordinal);
-            if (tokenIdx < 0)
-            {
-                return url;
-            }
-
-            return url.Substring(0, tokenIdx + 6) + "***";
-        }
-
-        /// <summary>
-        /// Calculates exponential backoff delay for reconnection attempts.
-        /// Doubles each attempt: 1s, 2s, 4s, 8s, 16s, 32s, capped at MaxReconnectDelayMs.
-        /// </summary>
-        /// <param name="attempt">The reconnection attempt number (1-based).</param>
-        /// <returns>The delay in milliseconds before the next reconnection attempt.</returns>
-        private static int CalculateBackoffDelay(int attempt)
-        {
-            int delayMs = (int)Math.Pow(2, attempt - 1) * 1000;
-            return Math.Min(delayMs, MaxReconnectDelayMs);
         }
 
         /// <summary>

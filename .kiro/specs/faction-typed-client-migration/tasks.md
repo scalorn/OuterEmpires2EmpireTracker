@@ -89,7 +89,7 @@ Migrate all consumers of `RemoteFactionClient` to `IFactionServerTypedClient` + 
   - _Output: SyncManager.cs (modified)_
   - _Verification: getDiagnostics (may have errors until methods are updated — that's OK, this is intermediate)_
 
-- [ ] 6. Migrate SyncManager.WriteToServerAsync to typed client
+- [x] 6. Migrate SyncManager.WriteToServerAsync to typed client
   - Change signature to accept `PlayerRoot playerRoot` instead of `string json`
   - Call `_typedClient.BulkImportAsync(characterUUID, playerRoot)` instead of `_client.BulkImportAsync(characterUUID, json)`
   - Replace `response.StatusCode == HttpStatusCode.OK` check with: success = no exception thrown
@@ -104,7 +104,7 @@ Migrate all consumers of `RemoteFactionClient` to `IFactionServerTypedClient` + 
   - _Output: SyncManager.cs (modified, net -50 lines)_
   - _Verification: Solution builds_
 
-- [ ] 7. Migrate SyncManager.PullFullSyncAsync and HandleReconnectionAsync
+- [x] 7. Migrate SyncManager.PullFullSyncAsync and HandleReconnectionAsync
   - PullFullSyncAsync: call `_typedClient.GetSyncSnapshotAsync()` → typed `SyncResponse`
   - Read `response.ServerTimestamp.ToString("o")` for LastSyncTimestamp
   - Read `response.ProcessingActive` for ServerProcessingActive
@@ -133,7 +133,7 @@ Migrate all consumers of `RemoteFactionClient` to `IFactionServerTypedClient` + 
   - Ensure all SyncManager references to RemoteFactionClient are removed
   - _Verification: MSBuild OE2EmpireTracker.sln with zero errors/warnings_
 
-- [ ] 10. Migrate ServerContext to use typed client and push client
+- [x] 10. Migrate ServerContext to use typed client and push client
   - Remove `RemoteFactionClient Client` property
   - Add `IFactionServerTypedClient TypedClient` property
   - Add `FactionPushClient PushClient` property

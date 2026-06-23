@@ -4,10 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Newtonsoft.Json;
 using NLog;
 using OE2EmpireTracker.Common.Interfaces;
 using OE2EmpireTracker.Common.Storage;
 using OE2EmpireTracker.Forms;
+using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Parsers;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.Services.Migration;
@@ -47,7 +49,8 @@ namespace OE2EmpireTracker
                 var sc = Client.ServerContext.Instance;
                 if (sc?.SyncManager == null || sc.SyncManager.Mode == Client.OperatingMode.LocalOnly)
                     return;
-                await sc.SyncManager.WriteToServerAsync(characterUUID, "player-data", jsonContent).ConfigureAwait(false);
+                var playerRoot = JsonConvert.DeserializeObject<PlayerRoot>(jsonContent);
+                await sc.SyncManager.WriteToServerAsync(characterUUID, "player-data", playerRoot).ConfigureAwait(false);
             };
             PlayerContext.ExportFromServer = async (characterUUID) =>
             {

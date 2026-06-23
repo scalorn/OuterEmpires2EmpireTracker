@@ -5,13 +5,14 @@
 using System;
 using System.Security;
 using NLog;
+using OE2EmpireTracker.Common.Client.FactionServer;
 using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Client
 {
     /// <summary>
     /// Singleton that holds the remote server infrastructure instances
-    /// (RemoteFactionClient, SyncManager, OfflineQueue).
+    /// (IFactionServerTypedClient, FactionPushClient, SyncManager, OfflineQueue).
     /// Initialized on application startup when operating mode is not LocalOnly.
     /// </summary>
     public class ServerContext : IDisposable
@@ -23,11 +24,15 @@ namespace OE2EmpireTracker.Client
         private bool _disposed;
 
         private ServerContext(
+            IFactionServerTypedClient typedClient,
+            FactionPushClient pushClient,
             RemoteFactionClient client,
             SyncManager syncManager,
             OfflineQueue offlineQueue,
             OperatingMode mode)
         {
+            TypedClient = typedClient;
+            PushClient = pushClient;
             Client = client;
             SyncManager = syncManager;
             OfflineQueue = offlineQueue;
@@ -40,7 +45,18 @@ namespace OE2EmpireTracker.Client
         public static ServerContext Instance => _instance;
 
         /// <summary>
-        /// Gets the remote faction client (null if LocalOnly).
+        /// Gets the typed faction server client for HTTP API calls (null if LocalOnly).
+        /// </summary>
+        public IFactionServerTypedClient TypedClient { get; }
+
+        /// <summary>
+        /// Gets the push client for WebSocket events (null if LocalOnly).
+        /// </summary>
+        public FactionPushClient PushClient { get; }
+
+        /// <summary>
+        /// Gets the legacy remote faction client (null if LocalOnly).
+        /// Retained for backward compatibility until all consumers are migrated.
         /// </summary>
         public RemoteFactionClient Client { get; }
 
@@ -88,18 +104,36 @@ namespace OE2EmpireTracker.Client
 
             SecureString token = CredentialStore.Unprotect(settings.ProtectedBearerToken);
 
-            RemoteFactionClient client = null;
+            FactionServerTypedClient typedClient = null;
+            FactionPushClient pushClient = null;
+            RemoteFactionClient legacyClient = null;
             try
             {
-                client = new RemoteFactionClient(
+                typedClient = new FactionServerTypedClient(
                     settings.ServerUrl,
                     token,
                     settings.TrustedThumbprint);
-                Log.Info("ServerContext: Created RemoteFactionClient for {0}", settings.ServerUrl);
+
+                SecureString tokenCopy = token.Copy();
+                pushClient = new FactionPushClient(
+                    settings.ServerUrl,
+                    tokenCopy,
+                    settings.TrustedThumbprint,
+                    typedClient);
+
+                legacyClient = new RemoteFactionClient(
+                    settings.ServerUrl,
+                    token,
+                    settings.TrustedThumbprint);
+
+                Log.Info("ServerContext: Created FactionServerTypedClient + FactionPushClient for {0}", settings.ServerUrl);
             }
             catch (Exception ex)
             {
-                Log.Warn(ex, "ServerContext: Failed to create RemoteFactionClient, continuing offline");
+                Log.Warn(ex, "ServerContext: Failed to create clients, continuing offline");
+                typedClient?.Dispose();
+                pushClient?.Dispose();
+                legacyClient?.Dispose();
                 token?.Dispose();
                 return;
             }
@@ -107,10 +141,12 @@ namespace OE2EmpireTracker.Client
             var offlineQueue = new OfflineQueue();
             offlineQueue.Load();
 
-            var syncManager = new SyncManager(client, offlineQueue);
+            var syncManager = new SyncManager(typedClient, pushClient, offlineQueue);
             syncManager.Mode = settings.Mode;
 
-            _instance = new ServerContext(client, syncManager, offlineQueue, settings.Mode);
+            _instance = new ServerContext(typedClient, pushClient, legacyClient, syncManager, offlineQueue, settings.Mode);
+            _instance.PushClient.RateLimitChanged += _instance.OnRateLimitChanged;
+
             Log.Info(
                 "ServerContext: Initialized (Mode={0}, QueuedChanges={1})",
                 settings.Mode,
@@ -146,12 +182,34 @@ namespace OE2EmpireTracker.Client
         {
             if (!_disposed)
             {
+                _disposed = true;
+
                 if (disposing)
                 {
+                    if (PushClient != null)
+                    {
+                        PushClient.RateLimitChanged -= OnRateLimitChanged;
+                        PushClient.Dispose();
+                    }
+
+                    TypedClient?.Dispose();
                     Client?.Dispose();
                 }
+            }
+        }
 
-                _disposed = true;
+        private void OnRateLimitChanged(object sender, RateLimitChangedEventArgs e)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            var typedClient = TypedClient as FactionServerTypedClient;
+            if (typedClient != null)
+            {
+                typedClient.ApplyRateLimit(e.RequestsPerMinute);
+                Log.Debug("Rate limit synchronized to typed client: {0} RPM", e.RequestsPerMinute);
             }
         }
     }
