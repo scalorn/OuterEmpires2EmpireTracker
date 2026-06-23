@@ -280,7 +280,7 @@ Extends the faction server with named capabilities, permission groups, clearance
   - Verify: Creating a faction produces 5 clearance levels in storage
 
 
-- [ ] 19. Faction Capability endpoints — POST and GET
+- [x] 19. Faction Capability endpoints — POST and GET
   - [x] 19.1 Implement POST /api/v1/factions/{uuid}/capabilities
     - Create new `Endpoints/FactionCapabilityEndpoints.cs`
     - Validate: faction exists, caller is Leader/Owner, name not empty, name unique within faction
@@ -292,7 +292,7 @@ Extends the faction server with named capabilities, permission groups, clearance
     - _Requirements: 1.13_
     - Verify: Integration test — GET returns list of capabilities
 
-- [ ] 20. Faction Capability endpoints — PUT and DELETE
+- [x] 20. Faction Capability endpoints — PUT and DELETE
   - [x] 20.1 Implement PUT /api/v1/factions/{uuid}/capabilities/{capId}
     - Rename capability (update Name/Description)
     - Validate: capability exists, caller is Leader/Owner
@@ -305,7 +305,7 @@ Extends the faction server with named capabilities, permission groups, clearance
     - _Requirements: 1.8, 1.12_
     - Verify: Integration test — DELETE returns 204, capability gone from storage
 
-- [ ] 21. Faction ClearanceLevel endpoints — POST and GET
+- [x] 21. Faction ClearanceLevel endpoints — POST and GET
   - [x] 21.1 Implement POST /api/v1/factions/{uuid}/clearance-levels
     - Create new clearance level with Level (int), Name, Description
     - Validate: faction exists, caller is Leader/Owner
@@ -317,7 +317,7 @@ Extends the faction server with named capabilities, permission groups, clearance
     - _Requirements: 3.5_
     - Verify: Integration test — GET returns ordered list
 
-- [ ] 22. Faction ClearanceLevel endpoints — PUT and DELETE
+- [x] 22. Faction ClearanceLevel endpoints — PUT and DELETE
   - [x] 22.1 Implement PUT /api/v1/factions/{uuid}/clearance-levels/{levelId}
     - Update Level number, Name, or Description
     - Validate: level exists, caller is Leader/Owner
@@ -331,7 +331,7 @@ Extends the faction server with named capabilities, permission groups, clearance
     - Verify: Integration test — DELETE returns 204
 
 
-- [ ] 23. Faction PermissionGroup endpoints — POST and GET
+- [x] 23. Faction PermissionGroup endpoints — POST and GET
   - [x] 23.1 Implement POST /api/v1/factions/{uuid}/groups
     - Create new `Endpoints/FactionGroupEndpoints.cs`
     - Create group with Name, Description, DefaultClearanceLevelUUID
@@ -344,7 +344,7 @@ Extends the faction server with named capabilities, permission groups, clearance
     - _Requirements: 2.9_
     - Verify: Integration test — GET returns list
 
-- [ ] 24. Faction PermissionGroup endpoints — PUT and DELETE
+- [x] 24. Faction PermissionGroup endpoints — PUT and DELETE
   - [x] 24.1 Implement PUT /api/v1/factions/{uuid}/groups/{groupId}
     - Update group Name, Description, DefaultClearanceLevelUUID
     - Validate: group exists, caller is Leader/Owner
@@ -356,7 +356,7 @@ Extends the faction server with named capabilities, permission groups, clearance
     - _Requirements: 2.9_
     - Verify: Integration test — DELETE returns 204, members' GroupUUID nulled
 
-- [ ] 25. Faction Group member management
+- [x] 25. Faction Group member management
   - [x] 25.1 Implement PUT /api/v1/factions/{uuid}/groups/{groupId}/members
     - Assign character to group (set FactionMemberPermissions.GroupUUID)
     - Enforce single-group constraint: if character already in another group, move them
@@ -369,7 +369,7 @@ Extends the faction server with named capabilities, permission groups, clearance
     - _Requirements: 2.11_
     - Verify: Integration test — DELETE returns 204
 
-- [ ] 26. Faction Group sharing rules and capability grants
+- [x] 26. Faction Group sharing rules and capability grants
   - [x] 26.1 Implement POST /api/v1/factions/{uuid}/groups/{groupId}/sharing-rules
     - Add a FactionGroupSharingRule to the group
     - Validate: MinClearanceLevelUUID references valid level
@@ -393,7 +393,7 @@ Extends the faction server with named capabilities, permission groups, clearance
     - Verify: Integration test — DELETE returns 204
 
 
-- [ ] 27. Faction member clearance and individual capabilities
+- [x] 27. Faction member clearance and individual capabilities
   - [x] 27.1 Implement PUT /api/v1/factions/{uuid}/members/{charUUID}/clearance
     - Set a member's clearance level (update FactionMemberPermissions.ClearanceLevelUUID)
     - Validate: level exists, caller is Leader/Owner
@@ -422,7 +422,7 @@ Extends the faction server with named capabilities, permission groups, clearance
   - Ask the user if questions arise
 
 
-- [ ] 30. Character Capability endpoints — POST and GET
+- [x] 30. Character Capability endpoints — POST and GET
   - [x] 30.1 Implement POST /api/v1/characters/{uuid}/capabilities
     - Create new `Endpoints/CharacterCapabilityEndpoints.cs`
     - Validate: character exists, caller is character owner or Owner, name unique within character
@@ -434,7 +434,7 @@ Extends the faction server with named capabilities, permission groups, clearance
     - _Requirements: 1.14_
     - Verify: Integration test — GET returns list
 
-- [ ] 31. Character Capability endpoints — PUT and DELETE
+- [x] 31. Character Capability endpoints — PUT and DELETE
   - [x] 31.1 Implement PUT /api/v1/characters/{uuid}/capabilities/{capId}
     - Rename capability (update Name/Description)
     - Validate: capability exists, caller is owner or Owner
@@ -446,7 +446,7 @@ Extends the faction server with named capabilities, permission groups, clearance
     - _Requirements: 1.9_
     - Verify: Integration test — DELETE returns 204
 
-- [ ] 32. Character ClearanceLevel endpoints — POST and GET
+- [x] 32. Character ClearanceLevel endpoints — POST and GET
   - [x] 32.1 Implement POST /api/v1/characters/{uuid}/clearance-levels
     - Create clearance level for character scope
     - Validate: character exists, caller is owner or Owner
@@ -458,7 +458,7 @@ Extends the faction server with named capabilities, permission groups, clearance
     - _Requirements: 3.5_
     - Verify: Integration test — GET returns ordered list
 
-- [ ] 33. Character ClearanceLevel endpoints — PUT and DELETE
+- [x] 33. Character ClearanceLevel endpoints — PUT and DELETE
   - [x] 33.1 Implement PUT /api/v1/characters/{uuid}/clearance-levels/{levelId}
     - Update Level number, Name, or Description
     - _Requirements: 3.4_
@@ -470,7 +470,7 @@ Extends the faction server with named capabilities, permission groups, clearance
     - Verify: Integration test — DELETE returns 204
 
 
-- [ ] 34. Character PermissionGroup endpoints — POST and GET
+- [x] 34. Character PermissionGroup endpoints — POST and GET
   - [x] 34.1 Implement POST /api/v1/characters/{uuid}/groups
     - Create new `Endpoints/CharacterGroupEndpoints.cs`
     - Create group with Name, Description, DefaultClearanceLevelUUID
@@ -483,7 +483,7 @@ Extends the faction server with named capabilities, permission groups, clearance
     - _Requirements: 2.9_
     - Verify: Integration test — GET returns list
 
-- [ ] 35. Character PermissionGroup endpoints — PUT and DELETE
+- [x] 35. Character PermissionGroup endpoints — PUT and DELETE
   - [x] 35.1 Implement PUT /api/v1/characters/{uuid}/groups/{groupId}
     - Update group Name, Description, DefaultClearanceLevelUUID
     - _Requirements: 2.9_
@@ -494,7 +494,7 @@ Extends the faction server with named capabilities, permission groups, clearance
     - _Requirements: 2.9_
     - Verify: Integration test — DELETE returns 204
 
-- [ ] 36. Character Group member (grantee) management
+- [x] 36. Character Group member (grantee) management
   - [x] 36.1 Implement PUT /api/v1/characters/{uuid}/groups/{groupId}/members
     - Assign grantee (character or faction) to group
     - Enforce single-group constraint per granting character
@@ -506,7 +506,7 @@ Extends the faction server with named capabilities, permission groups, clearance
     - _Requirements: 2.11_
     - Verify: Integration test — DELETE returns 204
 
-- [ ] 37. Character Group sharing rules and capability grants
+- [x] 37. Character Group sharing rules and capability grants
   - [x] 37.1 Implement POST /api/v1/characters/{uuid}/groups/{groupId}/sharing-rules
     - Add a CharacterGroupSharingRule (DataType, optional EntityUUID — no MinClearanceLevel)
     - _Requirements: 2.4_
@@ -528,7 +528,7 @@ Extends the faction server with named capabilities, permission groups, clearance
     - Verify: Integration test — DELETE returns 204
 
 
-- [ ] 38. Character individual grantee capabilities
+- [x] 38. Character individual grantee capabilities
   - [x] 38.1 Implement PUT /api/v1/characters/{uuid}/grantees/{granteeUUID}/capabilities (grant)
     - Add individual CharacterGranteeCapability
     - _Requirements: 1.7, 1.9_
@@ -544,7 +544,7 @@ Extends the faction server with named capabilities, permission groups, clearance
   - All character permission endpoints registered in Program.cs
   - Ask the user if questions arise
 
-- [ ] 40. Intel Comment endpoints — create and query
+- [x] 40. Intel Comment endpoints — create and query
   - [x] 40.1 Implement POST /api/v1/characters/{uuid}/intel
     - Create new `Endpoints/IntelEndpoints.cs`
     - Create private intel comment (visible only to submitter)
@@ -559,7 +559,7 @@ Extends the faction server with named capabilities, permission groups, clearance
     - _Requirements: 4.13, 4.14_
     - Verify: Integration test — GET returns filtered results
 
-- [ ] 41. Intel Comment endpoints — share and revoke
+- [x] 41. Intel Comment endpoints — share and revoke
   - [x] 41.1 Implement POST /api/v1/characters/{uuid}/intel/{commentId}/share
     - Share comment with a faction (create IntelCommentFactionShare with null classification)
     - Validate: caller is submitter, faction exists
@@ -573,7 +573,7 @@ Extends the faction server with named capabilities, permission groups, clearance
     - Verify: Integration test — DELETE returns 204, comment invisible to faction
 
 
-- [ ] 42. Intel Comment endpoints — classify and delete
+- [x] 42. Intel Comment endpoints — classify and delete
   - [x] 42.1 Implement PUT /api/v1/factions/{uuid}/intel/{shareId}/classify
     - Assign classification level to a shared comment
     - Validate: caller has `classify_intel` capability, share exists, level exists
