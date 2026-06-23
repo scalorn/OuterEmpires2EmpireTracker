@@ -183,7 +183,7 @@ Migrate all consumers of `RemoteFactionClient` to `IFactionServerTypedClient` + 
   - _Verification: MSBuild OE2EmpireTracker.sln with zero errors/warnings_
 
 - [ ] 13. Update DesktopSyncMigrationTests to use typed client and push client
-  - [ ] 13.1 Update test setup to construct mock IFactionServerTypedClient and FactionPushClient
+  - [x] 13.1 Update test setup to construct mock IFactionServerTypedClient and FactionPushClient
     - Replace `RemoteFactionClient` construction with mock `IFactionServerTypedClient` (or real FactionServerTypedClient pointing at test server)
     - Create `FactionPushClient` (or mock for connection status)
     - Update `SyncManager` construction to use new signature
@@ -192,7 +192,7 @@ Migrate all consumers of `RemoteFactionClient` to `IFactionServerTypedClient` + 
     - _Output: DesktopSyncMigrationTests.cs (modified)_
     - _Verification: Tests compile_
 
-  - [ ] 13.2 Update test scenarios for typed exception handling
+  - [x] 13.2 Update test scenarios for typed exception handling
     - Update write-through test to verify `BulkImportAsync(characterUUID, PlayerRoot)` is called
     - Update validation failure test: mock throws `FactionValidationException`, verify `SyncValidationFailed` raised
     - Update authorization test: mock throws `FactionAuthorizationException`, verify unauthorized status

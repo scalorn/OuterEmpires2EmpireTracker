@@ -21,9 +21,8 @@ using OE2EmpireTracker.Services;
 namespace OE2EmpireTracker.Tests.Client
 {
     /// <summary>
-    /// Tests verifying the desktop SyncManager migration to bulk import.
-    /// Satisfies: Req 4, Criteria 1-6.
-    /// These tests will be fully rewritten in Task 13 to use mocked typed client.
+    /// Tests verifying the desktop SyncManager migration to typed client and push client.
+    /// Satisfies: Req 8, Criteria 1-4.
     /// </summary>
     [TestFixture]
     public class DesktopSyncMigrationTests
@@ -32,8 +31,8 @@ namespace OE2EmpireTracker.Tests.Client
         private const string TestServerUrl = "https://localhost:9999";
 
         private FakeHttpHandler _handler;
-        private RemoteFactionClient _client;
         private FactionServerTypedClient _typedClient;
+        private FactionPushClient _pushClient;
         private OfflineQueue _offlineQueue;
         private SyncManager _syncManager;
 
@@ -44,19 +43,7 @@ namespace OE2EmpireTracker.Tests.Client
 
             _handler = new FakeHttpHandler();
 
-            // Create client with a dummy token
-            var token = new SecureString();
-            foreach (char c in "test-token")
-            {
-                token.AppendChar(c);
-            }
-
-            _client = new RemoteFactionClient(TestServerUrl, token, string.Empty);
-
-            // Replace the internal HttpClient with one using our fake handler
-            InjectFakeHttpClient(_client, _handler);
-
-            // Create typed client for the new SyncManager constructor
+            // Create typed client with a dummy token
             var typedToken = new SecureString();
             foreach (char c in "test-token")
             {
@@ -66,14 +53,22 @@ namespace OE2EmpireTracker.Tests.Client
             _typedClient = new FactionServerTypedClient(TestServerUrl, typedToken, string.Empty);
             InjectFakeHttpClientIntoTypedClient(_typedClient, _handler);
 
-            // Use a temp file path for the offline queue so it doesn't touch real data
+            // Create push client with a separate token copy
+            var pushToken = new SecureString();
+            foreach (char c in "test-token")
+            {
+                pushToken.AppendChar(c);
+            }
+
+            _pushClient = new FactionPushClient(TestServerUrl, pushToken, string.Empty, _typedClient);
+
+            // Use a temp file path for the offline queue
             string tempPath = System.IO.Path.Combine(
                 System.IO.Path.GetTempPath(),
                 "oe2-test-" + Guid.NewGuid().ToString("N") + ".json");
             _offlineQueue = new OfflineQueue(tempPath);
 
-            // Pass null for pushClient — IsOnline will be false, tests set connected via other means
-            _syncManager = new SyncManager(_typedClient, null, _offlineQueue);
+            _syncManager = new SyncManager(_typedClient, _pushClient, _offlineQueue);
             _syncManager.Mode = OperatingMode.ServerOnly;
         }
 
@@ -81,107 +76,150 @@ namespace OE2EmpireTracker.Tests.Client
         public void TearDown()
         {
             SystemClock.Reset();
-            _client?.Dispose();
             _typedClient?.Dispose();
+            _pushClient?.Dispose();
         }
 
         /// <summary>
-        /// Test 1: WriteToServerAsync calls BulkImportAsync (not old upload methods).
-        /// Verifies the SyncManager uses the bulk import endpoint.
-        /// </summary>
-        [Test]
-        public async Task WriteToServerAsync_CallsBulkImportAsync()
-        {
-            // Arrange: SyncManager with null pushClient means IsOnline=false,
-            // so writes go to offline queue. This test validates queuing behavior.
-            _handler.ResponseToReturn = CreateResponse(HttpStatusCode.OK, "{}");
-
-            var playerRoot = new PlayerRoot();
-
-            // Act
-            await _syncManager.WriteToServerAsync(TestCharacterUUID, "colonies", playerRoot);
-
-            // Assert: since IsOnline is false (no push client), change goes to offline queue
-            var queued = _offlineQueue.GetAll();
-            Assert.That(queued.Count, Is.EqualTo(1));
-            Assert.That(queued[0].CharacterUUID, Is.EqualTo(TestCharacterUUID));
-        }
-
-        /// <summary>
-        /// Test 2: BulkImportAsync calls the correct URL (/characters/{uuid}/import).
-        /// </summary>
-        [Test]
-        public async Task BulkImportAsync_CallsCorrectUrl()
-        {
-            // Arrange
-            _handler.ResponseToReturn = CreateResponse(HttpStatusCode.OK, "{}");
-
-            // Act
-            await _client.BulkImportAsync(TestCharacterUUID, "{\"Colonies\":[]}");
-
-            // Assert
-            string expectedPath = "/api/v1/characters/" + TestCharacterUUID + "/import";
-            Assert.That(_handler.LastRequestUri, Is.Not.Null);
-            StringAssert.EndsWith(expectedPath, _handler.LastRequestUri);
-            Assert.That(_handler.LastRequest.Method, Is.EqualTo(HttpMethod.Put));
-        }
-
-        /// <summary>
-        /// Test 3: When WriteToServerAsync is called offline, the change is queued.
+        /// Test 1: WriteToServerAsync queues change when offline (pushClient not connected).
         /// </summary>
         [Test]
         public async Task WriteToServerAsync_WhenOffline_QueuesChange()
         {
-            // Arrange: no push client means offline
+            // Arrange: pushClient IsConnected is false by default
             var playerRoot = new PlayerRoot();
 
             // Act
             await _syncManager.WriteToServerAsync(TestCharacterUUID, "colonies", playerRoot);
 
-            // Assert: change queued
+            // Assert: change queued because IsOnline is false
             var queued = _offlineQueue.GetAll();
             Assert.That(queued.Count, Is.EqualTo(1));
             Assert.That(queued[0].CharacterUUID, Is.EqualTo(TestCharacterUUID));
         }
 
         /// <summary>
-        /// Test 4: SyncValidationFailed event can be subscribed.
-        /// Full validation failure testing deferred to Task 13 with mocked typed client.
+        /// Test 2: WriteToServerAsync succeeds when online and server returns 200.
+        /// Verifies no exception raised and nothing queued offline.
         /// </summary>
         [Test]
-        public void SyncValidationFailed_EventCanBeSubscribed()
+        public async Task WriteToServerAsync_WhenOnline_BulkImportSucceeds()
         {
-            // Arrange
+            // Arrange: set pushClient to connected
+            SetPushClientOnline(_pushClient);
+            var successBody = JsonConvert.SerializeObject(new { imported = new { colonies = 1 }, total = 1 });
+            _handler.ResponseToReturn = CreateResponse(HttpStatusCode.OK, successBody);
+
+            var playerRoot = new PlayerRoot();
+
+            // Act
+            await _syncManager.WriteToServerAsync(TestCharacterUUID, "colonies", playerRoot);
+
+            // Assert: no offline queuing — successful write-through
+            var queued = _offlineQueue.GetAll();
+            Assert.That(queued.Count, Is.EqualTo(0));
+        }
+
+        /// <summary>
+        /// Test 3: WriteToServerAsync raises SyncValidationFailed on HTTP 400 with validation errors.
+        /// </summary>
+        [Test]
+        public async Task WriteToServerAsync_ValidationFailure_RaisesSyncValidationFailed()
+        {
+            // Arrange: set pushClient to connected
+            SetPushClientOnline(_pushClient);
+            var errorBody = JsonConvert.SerializeObject(new
+            {
+                errors = new[]
+                {
+                    new { entityType = "Colony", entityUUID = "col-001", field = "Name", error = "Name is required" },
+                },
+            });
+            _handler.ResponseToReturn = CreateResponse(HttpStatusCode.BadRequest, errorBody);
+
             SyncValidationFailedEventArgs raisedArgs = null;
             _syncManager.SyncValidationFailed += (sender, args) => raisedArgs = args;
 
-            // Assert: just verifying the event subscription compiles and works
-            Assert.That(raisedArgs, Is.Null);
+            var playerRoot = new PlayerRoot();
+
+            // Act
+            await _syncManager.WriteToServerAsync(TestCharacterUUID, "colonies", playerRoot);
+
+            // Assert: SyncValidationFailed event was raised with error details
+            Assert.That(raisedArgs, Is.Not.Null);
+            Assert.That(raisedArgs.CharacterUUID, Is.EqualTo(TestCharacterUUID));
+            Assert.That(raisedArgs.ValidationErrors, Is.Not.Null);
+            Assert.That(raisedArgs.ValidationErrors.Count, Is.EqualTo(1));
+            StringAssert.Contains("Colony", raisedArgs.ValidationErrors[0]);
+            StringAssert.Contains("Name is required", raisedArgs.ValidationErrors[0]);
         }
 
         /// <summary>
-        /// Test 5: FlushOfflineQueueAsync processes queued changes.
-        /// Full integration testing deferred to Task 13 with mocked typed client.
+        /// Test 4: WriteToServerAsync sets unauthorized on HTTP 403.
         /// </summary>
         [Test]
-        public async Task FlushOfflineQueueAsync_ProcessesQueue()
+        public async Task WriteToServerAsync_AuthorizationFailure_SetsUnauthorized()
         {
-            // Arrange: queue two changes
-            var playerRoot1 = new PlayerRoot();
-            var playerRoot2 = new PlayerRoot();
-            _syncManager.QueueOfflineChange("char-1", "colonies", playerRoot1);
-            _syncManager.QueueOfflineChange("char-2", "blueprints", playerRoot2);
+            // Arrange: set pushClient to connected
+            SetPushClientOnline(_pushClient);
+            _handler.ResponseToReturn = CreateResponse(HttpStatusCode.Forbidden, "Access denied");
 
-            // Assert: changes are queued
-            Assert.That(_offlineQueue.Count, Is.EqualTo(2));
+            var playerRoot = new PlayerRoot();
 
-            // Note: FlushOfflineQueueAsync will try to send via typed client
-            // but since we don't have a real server, this test is limited.
-            // Full integration testing deferred to Task 13.
+            // Act
+            await _syncManager.WriteToServerAsync(TestCharacterUUID, "colonies", playerRoot);
+
+            // Assert: pushClient should have IsConnected set to false
+            Assert.That(_pushClient.IsConnected, Is.False);
         }
 
         /// <summary>
-        /// Test 6: QueueOfflineChange stores both JSON and typed payload.
+        /// Test 5: WriteToServerAsync queues offline on connection failure.
+        /// When the HTTP handler throws, the change goes to the offline queue.
+        /// </summary>
+        [Test]
+        public async Task WriteToServerAsync_ConnectionFailure_QueuesOffline()
+        {
+            // Arrange: set pushClient to connected
+            SetPushClientOnline(_pushClient);
+            _handler.ExceptionToThrow = new HttpRequestException("Connection refused");
+
+            var playerRoot = new PlayerRoot();
+
+            // Act
+            await _syncManager.WriteToServerAsync(TestCharacterUUID, "colonies", playerRoot);
+
+            // Assert: change queued offline due to connection failure
+            var queued = _offlineQueue.GetAll();
+            Assert.That(queued.Count, Is.EqualTo(1));
+            Assert.That(queued[0].CharacterUUID, Is.EqualTo(TestCharacterUUID));
+        }
+
+        /// <summary>
+        /// Test 6: FlushOfflineQueueAsync removes items from queue on success.
+        /// </summary>
+        [Test]
+        public async Task FlushOfflineQueueAsync_SuccessfulFlush_RemovesFromQueue()
+        {
+            // Arrange: queue a change while offline
+            var playerRoot = new PlayerRoot();
+            _syncManager.QueueOfflineChange(TestCharacterUUID, "colonies", playerRoot);
+            Assert.That(_offlineQueue.Count, Is.EqualTo(1));
+
+            // Now set online and configure success response
+            SetPushClientOnline(_pushClient);
+            var successBody = JsonConvert.SerializeObject(new { imported = new { colonies = 1 }, total = 1 });
+            _handler.ResponseToReturn = CreateResponse(HttpStatusCode.OK, successBody);
+
+            // Act
+            await _syncManager.FlushOfflineQueueAsync();
+
+            // Assert: queue is empty after successful flush
+            Assert.That(_offlineQueue.Count, Is.EqualTo(0));
+        }
+
+        /// <summary>
+        /// Test 7: QueueOfflineChange stores both JSON and typed payload.
         /// </summary>
         [Test]
         public void QueueOfflineChange_StoresTypedPayload()
@@ -201,17 +239,27 @@ namespace OE2EmpireTracker.Tests.Client
         }
 
         /// <summary>
-        /// Uses reflection to replace the internal HttpClient with one using our fake handler.
+        /// Test 8: SyncValidationFailed event can be subscribed.
         /// </summary>
-        private static void InjectFakeHttpClient(RemoteFactionClient client, FakeHttpHandler handler)
+        [Test]
+        public void SyncValidationFailed_EventCanBeSubscribed()
         {
-            var httpClient = new HttpClient(handler);
-            httpClient.Timeout = TimeSpan.FromSeconds(30);
+            // Arrange
+            SyncValidationFailedEventArgs raisedArgs = null;
+            _syncManager.SyncValidationFailed += (sender, args) => raisedArgs = args;
 
-            var field = typeof(RemoteFactionClient).GetField(
-                "_httpClient",
-                BindingFlags.NonPublic | BindingFlags.Instance);
-            field.SetValue(client, httpClient);
+            // Assert: just verifying the event subscription compiles and works
+            Assert.That(raisedArgs, Is.Null);
+        }
+
+        /// <summary>
+        /// Sets the push client's IsConnected property to true via reflection.
+        /// FactionPushClient.IsConnected has a public getter but is set internally
+        /// via SetConnectionStatus, which we call directly.
+        /// </summary>
+        private static void SetPushClientOnline(FactionPushClient pushClient)
+        {
+            pushClient.SetConnectionStatus(true, "Test: online");
         }
 
         /// <summary>
@@ -241,6 +289,7 @@ namespace OE2EmpireTracker.Tests.Client
 
         /// <summary>
         /// Fake HTTP message handler that captures requests and returns a configured response.
+        /// Supports throwing exceptions to simulate connection failures.
         /// </summary>
         private class FakeHttpHandler : HttpMessageHandler
         {
@@ -248,6 +297,11 @@ namespace OE2EmpireTracker.Tests.Client
             /// Gets or sets the response to return for all requests.
             /// </summary>
             public HttpResponseMessage ResponseToReturn { get; set; }
+
+            /// <summary>
+            /// Gets or sets an exception to throw instead of returning a response.
+            /// </summary>
+            public Exception ExceptionToThrow { get; set; }
 
             /// <summary>
             /// Gets the last request that was sent.
@@ -278,6 +332,11 @@ namespace OE2EmpireTracker.Tests.Client
                 LastRequestUri = request.RequestUri?.ToString();
                 AllRequests.Add(request);
                 AllRequestUris.Add(LastRequestUri);
+
+                if (ExceptionToThrow != null)
+                {
+                    throw ExceptionToThrow;
+                }
 
                 var response = ResponseToReturn ?? new HttpResponseMessage(HttpStatusCode.OK);
                 return Task.FromResult(response);
