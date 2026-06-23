@@ -135,8 +135,8 @@ Apply the immutable data model pattern to the Ship form (FormShipInstance). Crea
   - All existing tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [-] 8. Add ViewModel property tests
-  - [-] 8.1 Write property test: LoadFrom round-trip preserves all fields
+- [x] 8. Add ViewModel property tests
+  - [x] 8.1 Write property test: LoadFrom round-trip preserves all fields
     - Create OE2EmpireTracker.Tests/ViewModels/ShipViewModelPropertyTests.cs
     - Create ValidShipGen() generator producing random Ship entities with random Name, UUID, OwnerUUID, TemplateUUID, HullBlueprintUUID, LocationType, LocationUUID, HullCurrentHP, HullMaxHP, HullMaxRepairPercent, 0-10 ShipComponentSlot entries, 0-5 Cargo items, 0-5 Hopper items
     - **Property 1: LoadFrom Round-Trip Preserves All Fields**
@@ -144,36 +144,36 @@ Apply the immutable data model pattern to the Ship form (FormShipInstance). Crea
     - **Validates: Requirements 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9**
     - Add Compile Include to test csproj
 
-  - [ ] 8.2 Write property test: IsDirty false immediately after LoadFrom
+  - [x] 8.2 Write property test: IsDirty false immediately after LoadFrom
     - **Property 2: IsDirty False Immediately After LoadFrom**
     - [FsCheck.NUnit.Property(MaxTest = 25)]
     - **Validates: Requirements 6.1, 6.11**
 
-  - [ ] 8.3 Write property test: IsDirty detects Name change
+  - [x] 8.3 Write property test: IsDirty detects Name change
     - **Property 3: IsDirty Detects Name Change**
     - [FsCheck.NUnit.Property(MaxTest = 50)]
     - Test changing Name to a different value causes IsDirty to return true
     - **Validates: Requirements 6.1, 6.2**
 
-  - [ ] 8.4 Write property test: IsDirty detects HullBlueprintUUID change
+  - [x] 8.4 Write property test: IsDirty detects HullBlueprintUUID change
     - **Property 4: IsDirty Detects HullBlueprintUUID Change**
     - [FsCheck.NUnit.Property(MaxTest = 50)]
     - Test changing HullBlueprintUUID to a different value causes IsDirty to return true
     - **Validates: Requirements 6.1, 6.4**
 
-  - [ ] 8.5 Write property test: IsDirty detects Components change
+  - [x] 8.5 Write property test: IsDirty detects Components change
     - **Property 5: IsDirty Detects Components Change**
     - [FsCheck.NUnit.Property(MaxTest = 50)]
     - Test adding a component, removing a component, or modifying a component field causes IsDirty to return true
     - **Validates: Requirements 6.1, 6.8**
 
-  - [ ] 8.6 Write property test: IsDirty detects Location change
+  - [x] 8.6 Write property test: IsDirty detects Location change
     - **Property 6: IsDirty Detects Location Change**
     - [FsCheck.NUnit.Property(MaxTest = 50)]
     - Test changing LocationType or LocationUUID to a different value causes IsDirty to return true
     - **Validates: Requirements 6.1, 6.5, 6.6**
 
-  - [ ] 8.7 Write property test: IsDirty detects Cargo change
+  - [x] 8.7 Write property test: IsDirty detects Cargo change
     - **Property 7: IsDirty Detects Cargo Change**
     - [FsCheck.NUnit.Property(MaxTest = 50)]
     - Test adding or removing a cargo item causes IsDirty to return true

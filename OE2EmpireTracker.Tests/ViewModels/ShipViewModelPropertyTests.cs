@@ -216,5 +216,86 @@ namespace OE2EmpireTracker.Tests.ViewModels
                     return vm.IsDirty.Label(vm.IsDirty ? "OK" : "IsDirty was false after " + mutationType);
                 });
         }
+
+        // Property 6: IsDirty Detects Location Change
+        // **Validates: Requirements 6.1, 6.5, 6.6**
+
+        [FsCheck.NUnit.Property(MaxTest = 50)]
+        public Property IsDirty_DetectsLocationChange()
+        {
+            var mutationGen = Gen.Choose(0, 1);
+            return Prop.ForAll(
+                ValidShipGen().ToArbitrary(),
+                Arb.From(mutationGen),
+                Arb.From(SafeStringGen()),
+                (template, mutation, suffix) =>
+                {
+                    var ro = new ReadOnlyShip(template);
+                    var vm = new ShipViewModel();
+                    vm.LoadFrom(ro);
+                    string mutationType;
+                    switch (mutation)
+                    {
+                        case 0:
+                            vm.LocationType = vm.LocationType == DestinationType.Station
+                                ? DestinationType.Colony
+                                : DestinationType.Station;
+                            mutationType = "ChangeLocationType";
+                            break;
+                        default:
+                            vm.LocationUUID = (vm.LocationUUID ?? string.Empty) + suffix;
+                            mutationType = "ChangeLocationUUID";
+                            break;
+                    }
+
+                    return vm.IsDirty.Label(vm.IsDirty ? "OK" : "IsDirty was false after " + mutationType);
+                });
+        }
+
+        // Property 7: IsDirty Detects Cargo Change
+        // **Validates: Requirements 6.1, 6.9**
+
+        [FsCheck.NUnit.Property(MaxTest = 50)]
+        public Property IsDirty_DetectsCargoChange()
+        {
+            var mutationGen = Gen.Choose(0, 1);
+            return Prop.ForAll(
+                ValidShipGen().ToArbitrary(),
+                Arb.From(mutationGen),
+                (template, mutation) =>
+                {
+                    var ro = new ReadOnlyShip(template);
+                    var vm = new ShipViewModel();
+                    vm.LoadFrom(ro);
+                    string mutationType;
+                    switch (mutation)
+                    {
+                        case 0:
+                            var newItem = new Item
+                            {
+                                UUID = Guid.NewGuid().ToString(),
+                                Name = "TestCargo",
+                                ItemType = ItemType.ItemTypeEnum.Resource,
+                                Quantity = 10,
+                            };
+                            vm.AddCargoItem(newItem);
+                            mutationType = "AddCargoItem";
+                            break;
+                        default:
+                            var hopperItem = new Item
+                            {
+                                UUID = Guid.NewGuid().ToString(),
+                                Name = "TestHopper",
+                                ItemType = ItemType.ItemTypeEnum.Resource,
+                                Quantity = 5,
+                            };
+                            vm.AddHopperItem(hopperItem);
+                            mutationType = "AddHopperItem";
+                            break;
+                    }
+
+                    return vm.IsDirty.Label(vm.IsDirty ? "OK" : "IsDirty was false after " + mutationType);
+                });
+        }
     }
 }
