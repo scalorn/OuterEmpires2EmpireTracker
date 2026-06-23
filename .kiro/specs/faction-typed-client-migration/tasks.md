@@ -210,7 +210,7 @@ Migrate all consumers of `RemoteFactionClient` to `IFactionServerTypedClient` + 
   - _Output: RemoteFactionClient.cs (deleted)_
   - _Verification: Solution builds with zero errors, zero warnings (Req 7.3)_
 
-- [ ] 15. Final checkpoint — full build and test verification
+- [x] 15. Final checkpoint — full build and test verification
   - Build full solution: zero errors, zero warnings
   - Run all test suites (vstest.console for WinForms, dotnet test for Server)
   - Run `node .kiro/tools/audit.js` — zero findings
