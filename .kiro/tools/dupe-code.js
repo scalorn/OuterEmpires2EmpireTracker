@@ -65,6 +65,9 @@ const KNOWN_DUPES = new Set([
     'StartPolling',
     'StopWebSocket',
     'ReconnectLoopAsync',
+    'ValidateWebSocketCertificate',
+    'SetConnectionStatus',
+    'SetConnected',
 ]);
 
 function findCsFiles(dir, results) {

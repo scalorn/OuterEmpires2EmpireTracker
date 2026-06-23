@@ -4,8 +4,11 @@
 
 using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Security;
 using System.Net.WebSockets;
 using System.Security;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -83,6 +86,7 @@ namespace OE2EmpireTracker.Client
             _typedClient = typedClient;
             _rateLimitRequestsPerMinute = 60;
             _rateLimiter = new SemaphoreSlim(60, 60);
+            InitializeHttpClient();
         }
 
         /// <summary>
@@ -177,16 +181,30 @@ namespace OE2EmpireTracker.Client
         /// </summary>
         public void Disconnect()
         {
-            throw new NotImplementedException();
+            StopWebSocket();
+            StopPolling();
+            SetConnectionStatus(false, "Disconnected");
+            Log.Info("Disconnected from remote server {0}", _serverUrl);
         }
 
         /// <summary>
         /// Attempts to connect to the server by calling the typed client's health check.
         /// </summary>
         /// <returns>True if the server is reachable; otherwise false.</returns>
-        public Task<bool> TryConnectAsync()
+        public async Task<bool> TryConnectAsync()
         {
-            throw new NotImplementedException();
+            try
+            {
+                bool healthy = await _typedClient.CheckHealthAsync().ConfigureAwait(false);
+                SetConnectionStatus(healthy, healthy ? "Connected" : "Health check failed");
+                return healthy;
+            }
+            catch (Exception ex)
+            {
+                Log.Warn(ex, "TryConnectAsync failed for {0}", _serverUrl);
+                SetConnectionStatus(false, ex.Message);
+                return false;
+            }
         }
 
         /// <summary>
@@ -196,7 +214,15 @@ namespace OE2EmpireTracker.Client
         /// <param name="message">Human-readable status message.</param>
         public void SetConnectionStatus(bool connected, string message)
         {
-            throw new NotImplementedException();
+            if (IsConnected != connected)
+            {
+                IsConnected = connected;
+                ConnectionStatusChanged?.Invoke(this, new ConnectionStatusChangedEventArgs
+                {
+                    IsConnected = connected,
+                    Message = message,
+                });
+            }
         }
 
         /// <summary>
@@ -220,6 +246,101 @@ namespace OE2EmpireTracker.Client
             _httpClient?.Dispose();
             _rateLimiter?.Dispose();
             _bearerToken?.Dispose();
+        }
+
+        /// <summary>
+        /// Initializes the HTTP client with certificate pinning and bearer token authentication.
+        /// Creates a handler with custom certificate validation if a trusted thumbprint is configured,
+        /// and sets the ServicePointManager callback for WebSocket connections.
+        /// </summary>
+        private void InitializeHttpClient()
+        {
+            var handler = new HttpClientHandler();
+
+            if (!string.IsNullOrEmpty(_trustedThumbprint))
+            {
+                handler.ServerCertificateCustomValidationCallback = (request, certificate, chain, sslPolicyErrors) =>
+                {
+                    if (sslPolicyErrors == SslPolicyErrors.None)
+                    {
+                        return true;
+                    }
+
+                    if (certificate == null)
+                    {
+                        return false;
+                    }
+
+                    string thumbprint = certificate.GetCertHashString();
+                    bool match = string.Equals(thumbprint, _trustedThumbprint, StringComparison.OrdinalIgnoreCase);
+                    if (!match)
+                    {
+                        Log.Warn(
+                            "HTTP certificate thumbprint mismatch. Expected={0}..., Actual={1}...",
+                            _trustedThumbprint.Substring(0, Math.Min(8, _trustedThumbprint.Length)),
+                            thumbprint.Substring(0, Math.Min(8, thumbprint.Length)));
+                    }
+
+                    return match;
+                };
+
+                // Also set ServicePointManager callback for WebSocket connections
+                // (ClientWebSocket in .NET Framework 4.8.1 uses ServicePointManager)
+                System.Net.ServicePointManager.ServerCertificateValidationCallback = ValidateWebSocketCertificate;
+            }
+
+            _httpClient = new HttpClient(handler);
+            _httpClient.Timeout = TimeSpan.FromMinutes(5);
+
+            // Set the Authorization header using the SecureString token.
+            string token = CredentialStore.SecureStringToString(_bearerToken);
+            _httpClient.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", token);
+        }
+
+        /// <summary>
+        /// Validates server certificates for WebSocket connections via ServicePointManager.
+        /// Returns true if there are no SSL errors, false if the certificate is null,
+        /// otherwise compares the certificate thumbprint against the trusted thumbprint.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="certificate">The X.509 certificate presented by the server.</param>
+        /// <param name="chain">The X.509 certificate chain.</param>
+        /// <param name="sslPolicyErrors">Any SSL policy errors detected.</param>
+        /// <returns>True if the certificate is valid; otherwise false.</returns>
+        private bool ValidateWebSocketCertificate(
+            object sender,
+            X509Certificate certificate,
+            X509Chain chain,
+            SslPolicyErrors sslPolicyErrors)
+        {
+            if (sslPolicyErrors == SslPolicyErrors.None)
+            {
+                return true;
+            }
+
+            if (certificate == null)
+            {
+                return false;
+            }
+
+            string thumbprint = certificate.GetCertHashString();
+
+            if (string.IsNullOrEmpty(_trustedThumbprint))
+            {
+                return false;
+            }
+
+            bool match = string.Equals(thumbprint, _trustedThumbprint, StringComparison.OrdinalIgnoreCase);
+            if (!match)
+            {
+                Log.Warn(
+                    "WebSocket certificate thumbprint mismatch. Expected={0}..., Actual={1}...",
+                    _trustedThumbprint.Substring(0, Math.Min(8, _trustedThumbprint.Length)),
+                    thumbprint.Substring(0, Math.Min(8, thumbprint.Length)));
+            }
+
+            return match;
         }
 
         /// <summary>
