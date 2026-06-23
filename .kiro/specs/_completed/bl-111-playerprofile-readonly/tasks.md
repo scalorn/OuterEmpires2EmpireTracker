@@ -18,7 +18,7 @@ This plan migrates FormPlayerProfile to the immutable data model pattern establi
     - Add CompletionStartTime, CompletionEndTime, CompletionTimeRemaining, CompletionTimeRemainingString properties (expose CountDownTime fields as read-only scalars)
     - _Requirements: 2.1, 2.2_
 
-  - [ ] 1.3 Write unit tests for ReadOnly wrapper gap fill
+  - [x] 1.3 Write unit tests for ReadOnly wrapper gap fill
     - Test ReadOnlyPlayerProfile exposes Faction, TotalCredits, SkillPoints, CitizenId, RegistrationDate, ActiveTime
     - Test ReadOnlyPlayerProfile.Skills returns wrapped ReadOnlyPlayerSkill entries
     - Test ReadOnlyPlayerSkill exposes TrainingStarted and CompletionTime fields
