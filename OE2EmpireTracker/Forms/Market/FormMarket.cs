@@ -629,7 +629,8 @@ namespace OE2EmpireTracker.Forms.Market
                 return;
             }
 
-            var secureSecret = apiContext.CredentialManager.GetKey(characterUUID);
+            var credManager = new GameApiCredentialManager();
+            var secureSecret = credManager.GetKey(characterUUID);
             if (secureSecret == null)
             {
                 MessageBox.Show(
