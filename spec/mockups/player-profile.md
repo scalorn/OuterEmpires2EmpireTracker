@@ -8,11 +8,11 @@ MDI child form. Left-list / right-detail with scrollable skill groups.
 ┌─────────────────────────────────────────────────────────────────────────────────────┐
 │ Player Profiles                                                         [_][□][X]│
 ├─────────────────────────────┬───────────────────────────────────────────────────────┤
-│ Name: [________________]    │ Player Name: [Captain Kirk_______]                    │
+│ Name: [________________]    │ First Name: [James____] Last Name: [Kirk_______]      │
 │ Resource: [All          ▼]  │ Total Credits: [1250000__________]                    │
 │                             │ Faction: [____] [The Space Pirates         ▼]         │
 │ ┌─────────────────────────┐ │                                                      │
-│ │▸ Captain Kirk           │ │ Public Rank:  [Citizen_____] XP:[1200] Next:[2000]   │
+│ │▸ James Kirk             │ │ Public Rank:  [Citizen_____] XP:[1200] Next:[2000]   │
 │ │  Alice the Builder      │ │ Private Rank: [Freelancer__] XP:[800]  Next:[1500]   │
 │ │  Bob the Miner          │ │ Military Rank:[Recruit_____] XP:[100]  Next:[500]    │
 │ │                         │ │ Skill Points: [42]                                   │
@@ -44,7 +44,7 @@ Controls:
   - `lvwPlayerProfiles` (ListView, full-row select)
 - Right: `flpPlayerData` (top-down, AutoScroll, WrapContents=false):
   - `flpPlayerDetails` (top-down, AutoScroll) — scrollable detail area:
-    - `txtPlayerName`, `txtTotalCredits`, `txtFaction` + `cmbFaction`
+    - `txtFirstName`, `txtLastName`, `txtTotalCredits`, `txtFaction` + `cmbFaction`
     - Public Rank: `txtPublicRank`, `txtPublicRankCurXP`, `txtPublicRankNextXP`
     - Private Rank: `txtPrivateRank`, `txtPrivateRankCurXP`, `txtPrivateRankNextXP`
     - Military Rank: `txtMilitaryRank`, `txtMilitaryRankCurXP`, `txtMilitaryRankNextXP`

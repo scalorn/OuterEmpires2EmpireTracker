@@ -37,7 +37,9 @@ namespace OE2EmpireTracker.Services
                 uuid, profile.Name, request.Name);
 
             // Apply scalar fields
-            profile.Name = request.Name;
+            profile.FirstName = request.FirstName ?? string.Empty;
+            profile.LastName = request.LastName ?? string.Empty;
+            profile.Name = DeriveDisplayName(profile.FirstName, profile.LastName, request.Name);
             profile.Faction = request.Faction;
             profile.TotalCredits = request.TotalCredits;
             profile.SkillPoints = request.SkillPoints;
@@ -90,7 +92,9 @@ namespace OE2EmpireTracker.Services
 
             var profile = new PlayerProfile();
             profile.UUID = Guid.NewGuid().ToString();
-            profile.Name = request.Name;
+            profile.FirstName = request.FirstName ?? string.Empty;
+            profile.LastName = request.LastName ?? string.Empty;
+            profile.Name = DeriveDisplayName(profile.FirstName, profile.LastName, request.Name);
             profile.Faction = request.Faction;
             profile.TotalCredits = request.TotalCredits;
             profile.SkillPoints = request.SkillPoints;
@@ -205,7 +209,9 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         internal static void MergeProfile(PlayerProfile existing, PlayerProfile parsed)
         {
-            existing.Name = parsed.Name;
+            existing.FirstName = parsed.FirstName;
+            existing.LastName = parsed.LastName;
+            existing.Name = DeriveDisplayName(parsed.FirstName, parsed.LastName, parsed.Name);
             existing.Faction = parsed.Faction;
             existing.TotalCredits = parsed.TotalCredits;
             existing.SkillPoints = parsed.SkillPoints;
@@ -232,6 +238,16 @@ namespace OE2EmpireTracker.Services
                 existingSkill.TrainingStarted = skillEntry.Value.TrainingStarted;
                 existingSkill.CompletionTime = skillEntry.Value.CompletionTime;
             }
+        }
+
+        /// <summary>
+        /// Derives a display name from FirstName + LastName, falling back to the explicit Name
+        /// if both parts are empty (backward compatibility with legacy profiles).
+        /// </summary>
+        internal static string DeriveDisplayName(string firstName, string lastName, string fallbackName)
+        {
+            string derived = ((firstName ?? string.Empty) + " " + (lastName ?? string.Empty)).Trim();
+            return string.IsNullOrEmpty(derived) ? (fallbackName ?? string.Empty) : derived;
         }
 
         private static void ApplyRank(PlayerRank rank, int level, long curXp, long xpToNext, string rankName)

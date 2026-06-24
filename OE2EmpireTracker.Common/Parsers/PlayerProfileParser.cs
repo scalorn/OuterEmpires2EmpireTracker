@@ -58,7 +58,12 @@ namespace OE2EmpireTracker.Parsers
                     .Where(s => !string.IsNullOrEmpty(s));
                 string fullName = string.Join(" ", nameParts);
                 if (!string.IsNullOrEmpty(fullName))
+                {
                     profile.Name = fullName;
+                    var parts = fullName.Split(new[] { ' ' }, 2);
+                    profile.FirstName = parts[0];
+                    profile.LastName = parts.Length > 1 ? parts[1] : string.Empty;
+                }
             }
 
             // Extract faction from ui_text_purple div -- strip brackets

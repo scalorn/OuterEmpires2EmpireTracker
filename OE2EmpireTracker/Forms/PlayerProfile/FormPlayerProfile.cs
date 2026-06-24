@@ -99,6 +99,8 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             PopulateForm();
 
             // Wire edit buffer handlers
+            txtFirstName.TextChanged += TxtFirstName_TextChanged;
+            txtLastName.TextChanged += TxtLastName_TextChanged;
             txtTotalCredits.TextChanged += TxtTotalCredits_TextChanged;
             txtSkillPoints.TextChanged += TxtSkillPoints_TextChanged;
             txtPublicRank.TextChanged += TxtPublicRank_TextChanged;
@@ -131,14 +133,11 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
         public void PopulateForm()
         {
             var sw = Stopwatch.StartNew();
-            txtPlayerName.Text = viewModel.Name;
+            txtFirstName.Text = viewModel.FirstName;
+            txtLastName.Text = viewModel.LastName;
             lblCharacterIdValue.Text = viewModel.CharacterId > 0
                 ? viewModel.CharacterId.ToString()
                 : "\u2014";
-            lblFirstNameValue.Text = viewModel.FirstName ?? string.Empty;
-            flpFirstName.Visible = !string.IsNullOrEmpty(viewModel.FirstName);
-            lblLastNameValue.Text = viewModel.LastName ?? string.Empty;
-            flpLastName.Visible = !string.IsNullOrEmpty(viewModel.LastName);
             lblActiveTimeValue.Text = PlayerProfileViewModel.FormatActiveTime(viewModel.ActiveTimeMinutes);
             cmbFaction.Text = viewModel.Faction;
             txtTotalCredits.Text = viewModel.TotalCredits.ToString();
@@ -499,32 +498,49 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             }
         }
 
-        private void TxtPlayerName_TextChanged(object sender, EventArgs e)
+        private void TxtFirstName_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
 
-            string name = txtPlayerName.Text?.Trim();
-            if (string.IsNullOrEmpty(name))
+            viewModel.FirstName = txtFirstName.Text?.Trim() ?? string.Empty;
+            viewModel.Name = PlayerProfileService.DeriveDisplayName(viewModel.FirstName, viewModel.LastName, null);
+            ValidateNameFields();
+            UpdateSaveButtonState();
+        }
+
+        private void TxtLastName_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+
+            viewModel.LastName = txtLastName.Text?.Trim() ?? string.Empty;
+            viewModel.Name = PlayerProfileService.DeriveDisplayName(viewModel.FirstName, viewModel.LastName, null);
+            ValidateNameFields();
+            UpdateSaveButtonState();
+        }
+
+        private void ValidateNameFields()
+        {
+            string derivedName = viewModel.Name;
+            if (string.IsNullOrEmpty(derivedName))
             {
-                txtPlayerName.SetError("Name cannot be empty");
-                UpdateSaveButtonState();
+                txtFirstName.SetError("At least one name is required");
+                txtLastName.SetError("At least one name is required");
                 return;
             }
 
             bool duplicate = playerContext.GetReadOnlyPlayerProfileList()
                 .Any(p => p.UUID != viewModel.UUID &&
-                     string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase));
+                     string.Equals(p.Name, derivedName, StringComparison.OrdinalIgnoreCase));
             if (duplicate)
             {
-                txtPlayerName.SetError("Duplicate name");
+                txtFirstName.SetError("Duplicate name");
+                txtLastName.SetError("Duplicate name");
             }
             else
             {
-                txtPlayerName.ClearError();
+                txtFirstName.ClearError();
+                txtLastName.ClearError();
             }
-
-            viewModel.Name = txtPlayerName.Text?.Trim() ?? string.Empty;
-            UpdateSaveButtonState();
         }
 
         private void TxtTotalCredits_TextChanged(object sender, EventArgs e)
@@ -790,8 +806,8 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
         /// </summary>
         private void SaveCurrentProfile()
         {
-            string newName = txtPlayerName.Text?.Trim();
-            if (string.IsNullOrEmpty(newName) || !txtPlayerName.IsValid)
+            string derivedName = viewModel.Name;
+            if (string.IsNullOrEmpty(derivedName) || !txtFirstName.IsValid || !txtLastName.IsValid)
             {
                 return;
             }

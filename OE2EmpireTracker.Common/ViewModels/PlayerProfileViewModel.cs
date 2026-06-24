@@ -199,7 +199,9 @@ namespace OE2EmpireTracker.ViewModels
 
             _original = ro;
             _uuid = ro.UUID;
-            _name = ro.Name;
+            _firstName = ro.FirstName;
+            _lastName = ro.LastName;
+            _name = PlayerProfileService.DeriveDisplayName(_firstName, _lastName, ro.Name);
             _faction = ro.Faction;
             _totalCredits = ro.TotalCredits;
             _skillPoints = ro.SkillPoints;
@@ -274,6 +276,8 @@ namespace OE2EmpireTracker.ViewModels
             {
                 Original = _original,
                 Name = _name,
+                FirstName = _firstName,
+                LastName = _lastName,
                 Faction = _faction,
                 TotalCredits = _totalCredits,
                 SkillPoints = _skillPoints,
@@ -313,6 +317,8 @@ namespace OE2EmpireTracker.ViewModels
             return new PlayerProfileCreateRequest
             {
                 Name = _name,
+                FirstName = _firstName,
+                LastName = _lastName,
                 Faction = _faction,
                 TotalCredits = _totalCredits,
                 SkillPoints = _skillPoints,
