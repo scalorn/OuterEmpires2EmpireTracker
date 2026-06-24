@@ -104,14 +104,14 @@
     <Reference Include="Microsoft.Data.Sqlite, Version=8.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Data.Sqlite.Core.8.0.0\lib\netstandard2.0\Microsoft.Data.Sqlite.dll</HintPath>
     </Reference>
-    <Reference Include="SQLitePCLRaw.batteries_v2, Version=2.1.6.2060, Culture=neutral, PublicKeyToken=8226ea5df37bcae9, processorArchitecture=MSIL">
-      <HintPath>..\packages\SQLitePCLRaw.bundle_e_sqlite3.2.1.6\lib\net461\SQLitePCLRaw.batteries_v2.dll</HintPath>
+    <Reference Include="SQLitePCLRaw.batteries_v2, Version=2.1.11.2622, Culture=neutral, PublicKeyToken=8226ea5df37bcae9, processorArchitecture=MSIL">
+      <HintPath>..\packages\SQLitePCLRaw.bundle_e_sqlite3.2.1.11\lib\net461\SQLitePCLRaw.batteries_v2.dll</HintPath>
     </Reference>
-    <Reference Include="SQLitePCLRaw.core, Version=2.1.6.2060, Culture=neutral, PublicKeyToken=1488e028ca7ab535, processorArchitecture=MSIL">
-      <HintPath>..\packages\SQLitePCLRaw.core.2.1.6\lib\netstandard2.0\SQLitePCLRaw.core.dll</HintPath>
+    <Reference Include="SQLitePCLRaw.core, Version=2.1.11.2622, Culture=neutral, PublicKeyToken=1488e028ca7ab535, processorArchitecture=MSIL">
+      <HintPath>..\packages\SQLitePCLRaw.core.2.1.11\lib\netstandard2.0\SQLitePCLRaw.core.dll</HintPath>
     </Reference>
-    <Reference Include="SQLitePCLRaw.provider.dynamic_cdecl, Version=2.1.6.2060, Culture=neutral, PublicKeyToken=b68184102cba0b3b, processorArchitecture=MSIL">
-      <HintPath>..\packages\SQLitePCLRaw.provider.dynamic_cdecl.2.1.6\lib\netstandard2.0\SQLitePCLRaw.provider.dynamic_cdecl.dll</HintPath>
+    <Reference Include="SQLitePCLRaw.provider.dynamic_cdecl, Version=2.1.11.2622, Culture=neutral, PublicKeyToken=b68184102cba0b3b, processorArchitecture=MSIL">
+      <HintPath>..\packages\SQLitePCLRaw.provider.dynamic_cdecl.2.1.11\lib\netstandard2.0\SQLitePCLRaw.provider.dynamic_cdecl.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -175,14 +175,6 @@
     <Compile Include="Client\ServerContext.cs" />
     <Compile Include="Client\SyncManager.cs" />
     <Compile Include="Client\SyncValidationFailedEventArgs.cs" />
-
-
-
-
-
-
-
-
     <Compile Include="Forms\Market\FormMarket.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -249,60 +241,13 @@
     <Compile Include="Forms\ShipInstance\FormShipInstance.Designer.cs">
       <DependentUpon>FormShipInstance.cs</DependentUpon>
     </Compile>
-
     <Compile Include="Services\HelpTopicRegistry.cs" />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     <Compile Include="Services\ColonyAdminReportBuilder.cs" />
-
-
-
-
-
-
     <Compile Include="Parsers\ClipboardHelper.cs" />
     <Compile Include="Parsers\ClipboardContentDetector.cs" />
-
-
-
-
-
     <Compile Include="Services\HelpRenderer.cs" />
-
-
-
-
     <Compile Include="Persistence\BoundsValidator.cs" />
     <Compile Include="Persistence\WindowStateHelper.cs" />
-
-
     <Compile Include="Constants\BankingTransactionTypes.cs" />
     <Compile Include="Constants\ChartColors.cs" />
     <Compile Include="Controls\DataGridViewValidatedTextBoxColumn.cs" />
@@ -310,8 +255,6 @@
     <Compile Include="Controls\LayoutHelper.cs" />
     <Compile Include="Controls\RtfBuilder.cs" />
     <Compile Include="Controls\ProgrammaticUpdateGuard.cs" />
-
-
     <Compile Include="Controls\DataEntryGridView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -321,7 +264,6 @@
     <Compile Include="Controls\ValidatedTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-
     <Compile Include="Forms\BlueprintV2\FormBlueprintV2.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -669,14 +611,11 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets'))" />
     <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.Metrics.4.14.0\buildTransitive\Microsoft.CodeAnalysis.Metrics.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.Metrics.4.14.0\buildTransitive\Microsoft.CodeAnalysis.Metrics.targets'))" />
-    <Error Condition="!Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.2.1.6\buildTransitive\net461\SQLitePCLRaw.lib.e_sqlite3.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SQLitePCLRaw.lib.e_sqlite3.2.1.6\buildTransitive\net461\SQLitePCLRaw.lib.e_sqlite3.targets'))" />
+    <Error Condition="!Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.2.1.11\buildTransitive\net461\SQLitePCLRaw.lib.e_sqlite3.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SQLitePCLRaw.lib.e_sqlite3.2.1.11\buildTransitive\net461\SQLitePCLRaw.lib.e_sqlite3.targets'))" />
   </Target>
   <Import Project="..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets" Condition="Exists('..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets')" />
   <Import Project="..\packages\Microsoft.CodeAnalysis.Metrics.4.14.0\buildTransitive\Microsoft.CodeAnalysis.Metrics.targets" Condition="Exists('..\packages\Microsoft.CodeAnalysis.Metrics.4.14.0\buildTransitive\Microsoft.CodeAnalysis.Metrics.targets')" />
-  <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.2.1.6\buildTransitive\net461\SQLitePCLRaw.lib.e_sqlite3.targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.2.1.6\buildTransitive\net461\SQLitePCLRaw.lib.e_sqlite3.targets')" />
+  <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.2.1.11\buildTransitive\net461\SQLitePCLRaw.lib.e_sqlite3.targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.2.1.11\buildTransitive\net461\SQLitePCLRaw.lib.e_sqlite3.targets')" />
   <!-- StyleCop analyzers loaded via Directory.Build.props for CLI builds only -->
   <!-- stylecop.json loaded via Directory.Build.props -->
 </Project>
-
-
-

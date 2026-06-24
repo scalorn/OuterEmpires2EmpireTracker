@@ -1,6 +1,8 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Input.Platform;
 
 namespace OE2EmpireTracker.Desktop.Services;
@@ -34,25 +36,28 @@ public sealed class ClipboardService : IClipboardService
             return null;
         }
 
-        // Try HTML format first
-        var formats = await clipboard.GetFormatsAsync();
-        if (formats is not null)
+        // Try to get clipboard data and look for HTML format
+        var dataTransfer = await clipboard.TryGetDataAsync();
+        if (dataTransfer is not null)
         {
-            foreach (var format in formats)
+            foreach (var item in dataTransfer.Items)
             {
-                if (format.Contains("html", System.StringComparison.OrdinalIgnoreCase))
+                foreach (var format in item.Formats)
                 {
-                    var data = await clipboard.GetDataAsync(format);
-                    if (data is string html)
+                    if (format.Identifier.Contains("html", System.StringComparison.OrdinalIgnoreCase))
                     {
-                        return html;
+                        var data = await item.TryGetRawAsync(format);
+                        if (data is string html)
+                        {
+                            return html;
+                        }
                     }
                 }
             }
         }
 
         // Fall back to text
-        return await clipboard.GetTextAsync();
+        return await clipboard.TryGetTextAsync();
     }
 
     public async Task<string?> GetTextAsync()
@@ -63,7 +68,7 @@ public sealed class ClipboardService : IClipboardService
             return null;
         }
 
-        return await clipboard.GetTextAsync();
+        return await clipboard.TryGetTextAsync();
     }
 
     public async Task SetTextAsync(string text)
