@@ -96,7 +96,8 @@ Controls:
 │ ┌─ Listings ─┬─ Transactions ─┬─ Summary ─┬─ Saved Searches ─┬─ ...    │
 │ │                                                                      │
 │ │ Character:[All chars ▼] Name:[________] Type:[All  ▼]              │
-│ │ Item:[All items ▼] Purity:[All ▼] Order Type:[All ▼] [✓]RunOnSync │
+│ │ Item:[All items ▼] Purity:[All ▼] Order Type:[All ▼]              │
+│ │ Range:[150 ↕] [✓]RunOnSync [Test Search]                            │
 │ │                                                                      │
 │ │ ┌──────────────┬──────────┬─────────┐                                │
 │ │ │ Name         │ Type     │ Enabled │                                │
@@ -111,7 +112,7 @@ Controls:
 │ │ │ Iron (High)  │  12.50 │ 500 │ Bob      │ Stn A   │               │
 │ │ └──────────────┴────────┴─────┴──────────┴──────────┘               │
 │ │                                                                      │
-│ │ [Test Search] [Save] [Delete]                                        │
+│ │ [Save] [Delete]                                                      │
 │ └──────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -123,8 +124,10 @@ Controls:
 - `cmbSearchItem` — specific item filter
 - `cmbSearchPurity` — purity filter
 - `cmbSearchOrderType` — buy/sell/all filter
+- `lblRange` — "Range:" label
+- `nudRange` — trade-network range (0–500, default 150)
 - `chkRunOnSync` — run on sync checkbox
-- `cmdTestSearch` — test search button
+- `cmdTestSearch` — test search button (calls real Game API)
 - `cmdSaveSearch` — save search button
 - `cmdDeleteSearch` — delete search button
 - `dgvTestResults` — test results grid

@@ -113,6 +113,8 @@ namespace OE2EmpireTracker.Forms.Market
             this.cmbSearchItem = new System.Windows.Forms.ComboBox();
             this.cmbSearchPurity = new System.Windows.Forms.ComboBox();
             this.cmbSearchOrderType = new System.Windows.Forms.ComboBox();
+            this.lblRange = new System.Windows.Forms.Label();
+            this.nudRange = new System.Windows.Forms.NumericUpDown();
             this.chkRunOnSync = new System.Windows.Forms.CheckBox();
             this.cmdTestSearch = new System.Windows.Forms.Button();
             this.cmdSaveSearch = new System.Windows.Forms.Button();
@@ -237,6 +239,7 @@ namespace OE2EmpireTracker.Forms.Market
             ((System.ComponentModel.ISupportInitialize)(this.dgvPriceStats)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAlerts)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numDaysBack)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudRange)).BeginInit();
             this.SuspendLayout();
 
             // tabControl
@@ -662,7 +665,10 @@ namespace OE2EmpireTracker.Forms.Market
             this.flpSearchFilters.Controls.Add(this.cmbSearchPurity);
             this.flpSearchFilters.Controls.Add(this.lblSearchOrderType);
             this.flpSearchFilters.Controls.Add(this.cmbSearchOrderType);
+            this.flpSearchFilters.Controls.Add(this.lblRange);
+            this.flpSearchFilters.Controls.Add(this.nudRange);
             this.flpSearchFilters.Controls.Add(this.chkRunOnSync);
+            this.flpSearchFilters.Controls.Add(this.cmdTestSearch);
             this.flpSearchFilters.Dock = System.Windows.Forms.DockStyle.Top;
             this.flpSearchFilters.Name = "flpSearchFilters";
             this.flpSearchFilters.Size = new System.Drawing.Size(936, 56);
@@ -709,13 +715,21 @@ namespace OE2EmpireTracker.Forms.Market
             this.cmbSearchOrderType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbSearchOrderType.Size = new System.Drawing.Size(80, 21);
             this.cmbSearchOrderType.Name = "cmbSearchOrderType";
+            this.lblRange.AutoSize = true;
+            this.lblRange.Text = "Range:";
+            this.lblRange.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblRange.Name = "lblRange";
+            this.nudRange.Minimum = 0;
+            this.nudRange.Maximum = 500;
+            this.nudRange.Value = 150;
+            this.nudRange.Size = new System.Drawing.Size(60, 20);
+            this.nudRange.Name = "nudRange";
             this.chkRunOnSync.AutoSize = true;
             this.chkRunOnSync.Text = "Run on Sync";
             this.chkRunOnSync.Name = "chkRunOnSync";
 
             // flpSearchCommands
             this.flpSearchCommands.AutoSize = true;
-            this.flpSearchCommands.Controls.Add(this.cmdTestSearch);
             this.flpSearchCommands.Controls.Add(this.cmdSaveSearch);
             this.flpSearchCommands.Controls.Add(this.cmdDeleteSearch);
             this.flpSearchCommands.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -1278,6 +1292,7 @@ namespace OE2EmpireTracker.Forms.Market
             ((System.ComponentModel.ISupportInitialize)(this.dgvPriceStats)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAlerts)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numDaysBack)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudRange)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
         }
@@ -1380,6 +1395,8 @@ namespace OE2EmpireTracker.Forms.Market
         private System.Windows.Forms.ComboBox cmbSearchItem;
         private System.Windows.Forms.ComboBox cmbSearchPurity;
         private System.Windows.Forms.ComboBox cmbSearchOrderType;
+        private System.Windows.Forms.Label lblRange;
+        private System.Windows.Forms.NumericUpDown nudRange;
         private System.Windows.Forms.CheckBox chkRunOnSync;
         private System.Windows.Forms.Button cmdTestSearch;
         private System.Windows.Forms.Button cmdSaveSearch;

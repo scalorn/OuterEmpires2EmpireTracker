@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using NLog;
 using OE2EmpireTracker.Client;
@@ -606,7 +607,7 @@ namespace OE2EmpireTracker.Forms.Market
             Log.Info("Deleted search '{0}'", search.Name);
         }
 
-        private void CmdTestSearch_Click(object sender, EventArgs e)
+        private async void CmdTestSearch_Click(object sender, EventArgs e)
         {
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvTestResults.Rows.Clear();
@@ -622,30 +623,107 @@ namespace OE2EmpireTracker.Forms.Market
                 return;
             }
 
-            // Show stored results from MarketSyncData for now (API call would be async)
             string characterUUID = GetSelectedSearchCharacterUUID();
-            if (string.IsNullOrEmpty(characterUUID)) return;
-
-            if (_marketDataService == null) return;
-            var visibleOrders = _marketDataService.GetVisibleOrders(characterUUID);
-
-            string typeFilter = cmbSearchType.SelectedItem?.ToString() ?? "All";
-            string purityFilter = GetSelectedSearchPurity();
-
-            foreach (var order in visibleOrders.Take(100))
+            if (string.IsNullOrEmpty(characterUUID))
             {
-                if (typeFilter != "All" && order.ItemType.ToString() != typeFilter) continue;
-                if (!string.IsNullOrEmpty(purityFilter) && !string.Equals(order.ResourcePurity, purityFilter, StringComparison.OrdinalIgnoreCase)) continue;
-
-                dgvTestResults.Rows.Add(
-                    order.ItemName,
-                    order.PricePerUnit.ToString("N2"),
-                    (order.AmountRemaining ?? order.Quantity).ToString(),
-                    order.SellerName,
-                    order.LocationName);
+                return;
             }
 
-            Log.Info("Test search completed: {0} results displayed", dgvTestResults.Rows.Count);
+            var secureSecret = apiContext.CredentialManager.GetKey(characterUUID);
+            if (secureSecret == null)
+            {
+                MessageBox.Show(
+                    "No API credentials configured for this character.",
+                    "Test Search",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            var settings = PreferencesStore.GetInstance().Preferences.GameApiConnection;
+            string plainSecret = CredentialStore.SecureStringToString(secureSecret);
+            secureSecret.Dispose();
+
+            var typedClient = apiContext.TypedClient;
+
+            try
+            {
+                await typedClient.ExchangeTokenAsync(
+                    settings.AppId, settings.ClientId, plainSecret, CancellationToken.None).ConfigureAwait(true);
+            }
+            catch (Common.Client.ApiHttpException ex)
+            {
+                MessageBox.Show(
+                    "Token exchange failed: HTTP " + ex.StatusCode,
+                    "Test Search",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    "Token exchange failed: " + ex.Message,
+                    "Test Search",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
+
+            string orderType = cmbSearchOrderType.SelectedItem?.ToString();
+            string view;
+            if (string.Equals(orderType, "Buy", StringComparison.OrdinalIgnoreCase))
+            {
+                view = "buy";
+            }
+            else if (string.Equals(orderType, "Sell", StringComparison.OrdinalIgnoreCase))
+            {
+                view = "sell";
+            }
+            else
+            {
+                view = "all";
+            }
+
+            int? range = (int)nudRange.Value == 0 ? null : (int?)nudRange.Value;
+            string search = string.IsNullOrWhiteSpace(txtSearchName.Text) ? null : txtSearchName.Text;
+
+            try
+            {
+                var listings = await typedClient.GetMarketListingsAsync(
+                    view, range, search, CancellationToken.None).ConfigureAwait(true);
+
+                if (listings?.Listings != null)
+                {
+                    foreach (var listing in listings.Listings)
+                    {
+                        dgvTestResults.Rows.Add(
+                            listing.Description ?? listing.Type,
+                            listing.Price.ToString("N2"),
+                            listing.AmountRemaining.ToString(),
+                            listing.SellerName,
+                            listing.LocationName);
+                    }
+                }
+
+                Log.Info("Test search completed: {0} results displayed", dgvTestResults.Rows.Count);
+            }
+            catch (Common.Client.ApiHttpException ex)
+            {
+                MessageBox.Show(
+                    "Market search failed: HTTP " + ex.StatusCode,
+                    "Test Search",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    "Market search failed: " + ex.Message,
+                    "Test Search",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
         }
 
         // -----------------------------------------------------------------------
