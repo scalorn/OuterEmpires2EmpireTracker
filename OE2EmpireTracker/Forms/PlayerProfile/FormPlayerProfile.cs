@@ -35,6 +35,8 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
         private string _previousSelectedUUID;
 
+        private bool _isSaving;
+
         private Dictionary<SkillGroupName, CheckBox> _skillGroups = new Dictionary<SkillGroupName, CheckBox>();
 
         private Dictionary<string, PlayerSkillBlock> skillBlocks = new Dictionary<string, PlayerSkillBlock>();
@@ -228,7 +230,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
         private void OnPlayerProfileDataChanged(object sender, PlayerProfileDataChangedEventArgs e)
         {
-            if (IsDisposed) return;
+            if (IsDisposed || _isSaving) return;
             if (InvokeRequired)
             {
                 try
@@ -252,7 +254,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
         private void OnPlayerProfilesChanged(object sender, EventArgs e)
         {
-            if (IsDisposed) return;
+            if (IsDisposed || _isSaving) return;
             if (InvokeRequired)
             {
                 try
@@ -416,8 +418,8 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             lvwPlayerProfiles.Items.Clear();
             foreach (var profile in profiles)
             {
-                var item = new ListViewItem(profile.Name);
-                item.SubItems.Add(profile.Faction);
+                var item = new ListViewItem(profile.Name ?? string.Empty);
+                item.SubItems.Add(profile.Faction ?? string.Empty);
                 item.SubItems.Add(profile.CharacterId == 0 ? string.Empty : profile.CharacterId.ToString());
                 item.Tag = profile;
                 lvwPlayerProfiles.Items.Add(item);
@@ -812,22 +814,30 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
                 return;
             }
 
-            ReadOnlyPlayerProfile saved;
-            if (viewModel.IsNew)
+            _isSaving = true;
+            try
             {
-                saved = _profileService.Create(viewModel.BuildCreateRequest());
-            }
-            else
-            {
-                saved = _profileService.Update(viewModel.UUID, viewModel.BuildUpdateRequest());
-            }
+                ReadOnlyPlayerProfile saved;
+                if (viewModel.IsNew)
+                {
+                    saved = _profileService.Create(viewModel.BuildCreateRequest());
+                }
+                else
+                {
+                    saved = _profileService.Update(viewModel.UUID, viewModel.BuildUpdateRequest());
+                }
 
-            viewModel.LoadFrom(saved);
-            _previousSelectedUUID = viewModel.UUID;
-            PopulateListView();
-            SelectProfileInList(viewModel.UUID);
-            PopulateForm();
-            UpdateSaveButtonState();
+                viewModel.LoadFrom(saved);
+                _previousSelectedUUID = viewModel.UUID;
+                PopulateListView();
+                SelectProfileInList(viewModel.UUID);
+                PopulateForm();
+                UpdateSaveButtonState();
+            }
+            finally
+            {
+                _isSaving = false;
+            }
         }
 
         /// <summary>
