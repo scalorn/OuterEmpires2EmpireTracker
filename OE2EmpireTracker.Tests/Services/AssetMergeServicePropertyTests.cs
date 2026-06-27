@@ -25,7 +25,7 @@ namespace OE2EmpireTracker.Tests.Services
         // Known TypeC codes and their expected mappings
         private static readonly string[] KnownTypeCCodes = new[]
         {
-            AssetTypeCodes.Resource, AssetTypeCodes.Commodity, AssetTypeCodes.Flatpack, AssetTypeCodes.Blueprint, AssetTypeCodes.ShipPart, AssetTypeCodes.Survey, AssetTypeCodes.Workforce, AssetTypeCodes.ShipHull, AssetTypeCodes.Ammunition, AssetTypeCodes.Share, AssetTypeCodes.Crate,
+            AssetTypeCodes.Resource, AssetTypeCodes.Commodity, AssetTypeCodes.CommodityL, AssetTypeCodes.Flatpack, AssetTypeCodes.Blueprint, AssetTypeCodes.ShipPart, AssetTypeCodes.Survey, AssetTypeCodes.Workforce, AssetTypeCodes.ShipHull, AssetTypeCodes.Ammunition, AssetTypeCodes.Share, AssetTypeCodes.Crate,
         };
 
         private static readonly string[] PurityDescriptors = new[]

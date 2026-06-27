@@ -80,6 +80,11 @@ namespace OE2EmpireTracker.Services
                 return ItemType.ItemTypeEnum.Commodity;
             }
 
+            if (string.Equals(trimmed, AssetTypeCodes.CommodityL, StringComparison.OrdinalIgnoreCase))
+            {
+                return ItemType.ItemTypeEnum.Commodity;
+            }
+
             if (string.Equals(trimmed, AssetTypeCodes.Flatpack, StringComparison.OrdinalIgnoreCase))
             {
                 return ItemType.ItemTypeEnum.Flatpack;
