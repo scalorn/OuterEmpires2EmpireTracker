@@ -48,6 +48,40 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         /// <summary>Structure UUID of the selected structure after OK.</summary>
         public string SelectedStructureUUID { get; private set; }
 
+        /// <summary>
+        /// Checks whether a commodity factory industry type can produce the given commodity.
+        /// Looks up the commodity by name in the EmpireContext to find its CommodityIndustry,
+        /// then compares the enum name against the factory's industry suffix.
+        /// </summary>
+        private static bool IsFactoryMatchForCommodity(string factoryIndustry, string commodityName)
+        {
+            if (string.IsNullOrEmpty(factoryIndustry) || string.IsNullOrEmpty(commodityName))
+            {
+                return false;
+            }
+
+            var empireContext = EmpireContext.GetInstance();
+            if (empireContext == null)
+            {
+                return true;
+            }
+
+            var commodity = empireContext.CommodityList?
+                .FirstOrDefault(c => string.Equals(c.Name, commodityName, StringComparison.OrdinalIgnoreCase));
+            if (commodity == null)
+            {
+                return true;
+            }
+
+            if (commodity.CommodityIndustry == CommodityIndustry.CommodityIndustryEnum.None)
+            {
+                return true;
+            }
+
+            string expectedIndustry = commodity.CommodityIndustry.ToString();
+            return string.Equals(factoryIndustry, expectedIndustry, StringComparison.OrdinalIgnoreCase);
+        }
+
         private void PopulateGrid()
         {
             dgvStructures.Rows.Clear();
@@ -82,8 +116,14 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                     {
                         if (bp.BluePrintType.IsCommodityFactory())
                         {
-                            eligible = true;
-                            typeLabel = "Commodity";
+                            // Only show factories that match the commodity's industry
+                            string factoryIndustry = bp.BluePrintType.Substring(
+                                BlueprintTypes.CommodityFactoryPrefix.Length);
+                            if (IsFactoryMatchForCommodity(factoryIndustry, _buildItem.ItemName))
+                            {
+                                eligible = true;
+                                typeLabel = "Commodity";
+                            }
                         }
                     }
                     else if (_buildItem.ItemType == BuildItemType.Mining)
