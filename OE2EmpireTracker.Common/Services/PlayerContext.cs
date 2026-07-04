@@ -1413,7 +1413,7 @@ namespace OE2EmpireTracker.Services
             }
 
             // Stamp BuildQueueSequence for existing data where values are all zero (migration).
-            // Don't sort the list Ã¢â‚¬â€ consumers sort by BuildQueueSequence themselves.
+            // Don't sort the list -- consumers sort by BuildQueueSequence themselves.
             foreach (var colony in list)
             {
                 if (colony.Structures != null && colony.Structures.Count > 0
