@@ -21,9 +21,15 @@ const path = require('path');
 
 const SCAN_DIRS = [
     { dir: 'OE2EmpireTracker', ext: '.cs' },
+    { dir: 'OE2EmpireTracker.Common', ext: '.cs' },
     { dir: 'OE2EmpireTracker.Tests', ext: '.cs' },
+    { dir: 'OE2EmpireTracker.Server', ext: '.cs' },
+    { dir: 'OE2EmpireTracker.Server.Tests', ext: '.cs' },
+    { dir: 'OE2EmpireTracker.Desktop', ext: '.cs' },
     { dir: 'spec', ext: '.md' },
     { dir: 'docs', ext: '.md' },
+    { dir: '.kiro/specs', ext: '.md' },
+    { dir: '.kiro/steering', ext: '.md' },
 ];
 
 const SKIP_DIRS = new Set(['obj', 'bin', '.vs', 'node_modules', 'packages']);
