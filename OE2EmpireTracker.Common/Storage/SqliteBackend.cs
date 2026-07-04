@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
@@ -977,15 +978,15 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
 
         /// <summary>
         /// Ordered list of migration actions. Each entry migrates from version N to
-        /// version N+1 (i.e. Migrations[0] migrates v1 → v2). Currently empty because
+        /// version N+1 (i.e. Migrations[0] migrates v1 â†’ v2). Currently empty because
         /// the schema is at version 1 with no prior versions to migrate from.
         /// </summary>
         private static readonly List<Action<SqliteConnection, SqliteTransaction>> Migrations = new List<Action<SqliteConnection, SqliteTransaction>>
         {
-            // Version 1 → 2: BankingTransactions decimal columns REAL → TEXT
+            // Version 1 â†’ 2: BankingTransactions decimal columns REAL â†’ TEXT
             MigrateBankingTransactionsDecimalToText,
 
-            // Version 2 → 3: MarketTransactions decimal columns REAL → TEXT
+            // Version 2 â†’ 3: MarketTransactions decimal columns REAL â†’ TEXT
             MigrateMarketTransactionsDecimalToText,
         };
 
@@ -1007,9 +1008,9 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
             _connectionString = $"Data Source={_databasePath}";
         }
 
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // Lifecycle
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task InitializeAsync(CancellationToken ct = default)
@@ -1021,7 +1022,7 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
                     using (var cmd = conn.CreateCommand())
                     {
                         cmd.CommandText = "CREATE TABLE IF NOT EXISTS _metadata (Key TEXT PRIMARY KEY, Value TEXT NOT NULL);";
-                        cmd.ExecuteNonQuery();
+                        ExecuteNonQueryLogged(cmd);
                     }
 
                     int version = GetSchemaVersion(conn);
@@ -1093,9 +1094,9 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
             };
         }
 
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // Server Factions
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<ServerFaction> GetFactionAsync(string uuid)
@@ -1105,7 +1106,7 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
             {
                 cmd.CommandText = "SELECT UUID, Name, Description, Metadata_LastModifiedUtc, Metadata_ModifiedByTokenId FROM ServerFactions WHERE UUID = @uuid";
                 cmd.Parameters.AddWithValue("@uuid", uuid);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     if (reader.Read())
                     {
@@ -1128,7 +1129,7 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = "SELECT UUID, Name, Description, Metadata_LastModifiedUtc, Metadata_ModifiedByTokenId FROM ServerFactions";
-                    using (var reader = cmd.ExecuteReader())
+                    using (var reader = ExecuteReaderLogged(cmd))
                     {
                         while (reader.Read())
                         {
@@ -1162,7 +1163,7 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
                     cmd.Parameters.AddWithValue("@desc", faction.Description ?? string.Empty);
                     cmd.Parameters.AddWithValue("@modUtc", faction.Metadata?.LastModifiedUtc.ToString("O") ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("@modBy", (object)faction.Metadata?.ModifiedByTokenId ?? DBNull.Value);
-                    cmd.ExecuteNonQuery();
+                    ExecuteNonQueryLogged(cmd);
                 }
 
                 using (var delCmd = conn.CreateCommand())
@@ -1170,7 +1171,7 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
                     delCmd.Transaction = tx;
                     delCmd.CommandText = "DELETE FROM ServerFactionLeaders WHERE FactionUUID = @uuid";
                     delCmd.Parameters.AddWithValue("@uuid", faction.UUID);
-                    delCmd.ExecuteNonQuery();
+                    ExecuteNonQueryLogged(delCmd);
                 }
 
                 if (faction.LeaderCharacterUUIDs != null)
@@ -1183,7 +1184,7 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
                             insCmd.CommandText = "INSERT INTO ServerFactionLeaders (FactionUUID, CharacterUUID) VALUES (@fid, @cid)";
                             insCmd.Parameters.AddWithValue("@fid", faction.UUID);
                             insCmd.Parameters.AddWithValue("@cid", leaderUUID);
-                            insCmd.ExecuteNonQuery();
+                            ExecuteNonQueryLogged(insCmd);
                         }
                     }
                 }
@@ -1202,15 +1203,15 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
             {
                 cmd.CommandText = "DELETE FROM ServerFactions WHERE UUID = @uuid";
                 cmd.Parameters.AddWithValue("@uuid", uuid);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
         }
 
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // Server Characters
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<ServerCharacter> GetCharacterAsync(string uuid)
@@ -1220,7 +1221,7 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
             {
                 cmd.CommandText = "SELECT UUID, Name, FactionUUID, Metadata_LastModifiedUtc, Metadata_ModifiedByTokenId FROM ServerCharacters WHERE UUID = @uuid";
                 cmd.Parameters.AddWithValue("@uuid", uuid);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     if (reader.Read())
                     {
@@ -1240,7 +1241,7 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
             using (var cmd = conn.CreateCommand())
             {
                 cmd.CommandText = "SELECT UUID, Name, FactionUUID, Metadata_LastModifiedUtc, Metadata_ModifiedByTokenId FROM ServerCharacters";
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -1265,7 +1266,7 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
                 cmd.Parameters.AddWithValue("@factionUUID", (object)character.FactionUUID ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@modUtc", character.Metadata?.LastModifiedUtc.ToString("O") ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@modBy", (object)character.Metadata?.ModifiedByTokenId ?? DBNull.Value);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -1279,15 +1280,15 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
             {
                 cmd.CommandText = "DELETE FROM ServerCharacters WHERE UUID = @uuid";
                 cmd.Parameters.AddWithValue("@uuid", uuid);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
         }
 
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // Global Data
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<string> GetGlobalDataAsync(string dataType)
@@ -1297,7 +1298,7 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
             {
                 cmd.CommandText = "SELECT Value FROM _metadata WHERE Key = @key";
                 cmd.Parameters.AddWithValue("@key", "global_" + dataType);
-                var result = cmd.ExecuteScalar();
+                var result = ExecuteScalarLogged(cmd);
                 if (result == null || result == DBNull.Value)
                 {
                     return Task.FromResult<string>(null);
@@ -1316,15 +1317,15 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
                 cmd.CommandText = "INSERT OR REPLACE INTO _metadata (Key, Value) VALUES (@key, @val)";
                 cmd.Parameters.AddWithValue("@key", "global_" + dataType);
                 cmd.Parameters.AddWithValue("@val", json ?? string.Empty);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
         }
 
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // Star Systems
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<IReadOnlyList<StarSystem>> GetAllStarSystemsAsync()
@@ -1334,7 +1335,7 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
             using (var cmd = conn.CreateCommand())
             {
                 cmd.CommandText = "SELECT Id, Name, X, Y, Quadrant, Sector, Region, Locality, SpectralClass, FactionId, FactionName, FactionColor, HasOrbital, HasSpaceport, HasStarbase FROM StarSystems";
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -1356,7 +1357,7 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
                 {
                     delCmd.Transaction = tx;
                     delCmd.CommandText = "DELETE FROM StarSystems";
-                    delCmd.ExecuteNonQuery();
+                    ExecuteNonQueryLogged(delCmd);
                 }
 
                 foreach (var system in systems)
@@ -1381,7 +1382,7 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
                         cmd.Parameters.AddWithValue("@hasOrbital", system.HasOrbital ? 1 : 0);
                         cmd.Parameters.AddWithValue("@hasSpaceport", system.HasSpaceport ? 1 : 0);
                         cmd.Parameters.AddWithValue("@hasStarbase", system.HasStarbase ? 1 : 0);
-                        cmd.ExecuteNonQuery();
+                        ExecuteNonQueryLogged(cmd);
                     }
                 }
 
@@ -1391,9 +1392,9 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
             return Task.CompletedTask;
         }
 
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // Colony Summaries
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<IReadOnlyList<ColonySummary>> GetColonySummariesForSystemAsync(int systemId)
@@ -1404,7 +1405,7 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
             {
                 cmd.CommandText = "SELECT ColonyName, ColonySize, PlanetName FROM Colonies WHERE SystemId = @systemId";
                 cmd.Parameters.AddWithValue("@systemId", systemId);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -1421,9 +1422,9 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
             return Task.FromResult<IReadOnlyList<ColonySummary>>(results);
         }
 
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // API Tokens
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<ApiToken> FindTokenByHashAsync(string tokenHash)
@@ -1433,7 +1434,7 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
             {
                 cmd.CommandText = "SELECT Id, TokenHash, CharacterUUID, Role, FactionUUID, CreatedUtc, LastUsedUtc, IsRevoked, RateLimits_RequestsPerMinute FROM ApiTokens WHERE TokenHash = @hash";
                 cmd.Parameters.AddWithValue("@hash", tokenHash);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     if (reader.Read())
                     {
@@ -1453,7 +1454,7 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
             using (var cmd = conn.CreateCommand())
             {
                 cmd.CommandText = "SELECT Id, TokenHash, CharacterUUID, Role, FactionUUID, CreatedUtc, LastUsedUtc, IsRevoked, RateLimits_RequestsPerMinute FROM ApiTokens";
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -1482,7 +1483,7 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
                 cmd.Parameters.AddWithValue("@lastUsed", token.LastUsedUtc.HasValue ? (object)token.LastUsedUtc.Value.ToString("O") : DBNull.Value);
                 cmd.Parameters.AddWithValue("@revoked", token.IsRevoked ? 1 : 0);
                 cmd.Parameters.AddWithValue("@rpm", token.RateLimits?.RequestsPerMinute ?? 300);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -1496,15 +1497,15 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
             {
                 cmd.CommandText = "DELETE FROM ApiTokens WHERE Id = @id";
                 cmd.Parameters.AddWithValue("@id", id);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
         }
 
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // Membership Actions
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<IReadOnlyList<MembershipAction>> GetFactionActionsAsync(string factionUUID)
@@ -1515,7 +1516,7 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
             {
                 cmd.CommandText = "SELECT Id, FactionUUID, CharacterUUID, Type, CreatedUtc, ExpiresUtc FROM MembershipActions WHERE FactionUUID = @fid";
                 cmd.Parameters.AddWithValue("@fid", factionUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -1541,7 +1542,7 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
                 cmd.Parameters.AddWithValue("@type", (int)action.Type);
                 cmd.Parameters.AddWithValue("@created", action.CreatedUtc.ToString("O"));
                 cmd.Parameters.AddWithValue("@expires", action.ExpiresUtc.ToString("O"));
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -1555,7 +1556,7 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
             {
                 cmd.CommandText = "DELETE FROM MembershipActions WHERE Id = @id";
                 cmd.Parameters.AddWithValue("@id", id);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -1569,15 +1570,15 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
             {
                 cmd.CommandText = "DELETE FROM MembershipActions WHERE ExpiresUtc < @cutoff";
                 cmd.Parameters.AddWithValue("@cutoff", cutoff.ToString("O"));
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
         }
 
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // Sharing Rules
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<IReadOnlyList<SharingRule>> GetSharingRulesForCharacterAsync(string characterUUID)
@@ -1588,7 +1589,7 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
             {
                 cmd.CommandText = "SELECT Id, OwnerCharacterUUID, TargetUUID, TargetType, DataType, EntityUUID FROM SharingRules WHERE OwnerCharacterUUID = @cid";
                 cmd.Parameters.AddWithValue("@cid", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -1611,7 +1612,7 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
                     delCmd.Transaction = tx;
                     delCmd.CommandText = "DELETE FROM SharingRules WHERE OwnerCharacterUUID = @cid";
                     delCmd.Parameters.AddWithValue("@cid", characterUUID);
-                    delCmd.ExecuteNonQuery();
+                    ExecuteNonQueryLogged(delCmd);
                 }
 
                 foreach (var rule in rules)
@@ -1627,7 +1628,7 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
                         cmd.Parameters.AddWithValue("@targetType", (int)rule.TargetType);
                         cmd.Parameters.AddWithValue("@dataType", (object)rule.DataType ?? DBNull.Value);
                         cmd.Parameters.AddWithValue("@entityUUID", (object)rule.EntityUUID ?? DBNull.Value);
-                        cmd.ExecuteNonQuery();
+                        ExecuteNonQueryLogged(cmd);
                     }
                 }
 
@@ -1637,9 +1638,9 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
             return Task.CompletedTask;
         }
 
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // Character Preferences
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<CharacterPreferences> GetCharacterPreferencesAsync(string characterUUID)
@@ -1649,7 +1650,7 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
             {
                 cmd.CommandText = "SELECT CharacterUUID, ServerProcessing FROM CharacterPreferences WHERE CharacterUUID = @cid";
                 cmd.Parameters.AddWithValue("@cid", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     if (reader.Read())
                     {
@@ -1675,15 +1676,15 @@ CREATE TABLE IF NOT EXISTS PropertyTypeDefinitions (
                                    VALUES (@cid, @processing)";
                 cmd.Parameters.AddWithValue("@cid", prefs.CharacterUUID);
                 cmd.Parameters.AddWithValue("@processing", prefs.ServerProcessing ? 1 : 0);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
         }
 
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // Character Discovery
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<IReadOnlyList<string>> GetAllCharacterUUIDsAsync()
@@ -1716,7 +1717,7 @@ UNION SELECT DISTINCT OwnerUUID FROM WarehouseOverflowRules
 UNION SELECT DISTINCT OwnerUUID FROM MailMessages
 UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
 
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -1732,9 +1733,9 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             return Task.FromResult<IReadOnlyList<string>>(results);
         }
 
-        // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — Colony
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        // Per-Character Entity CRUD â€” Colony
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<IReadOnlyList<Colony>> GetAllColoniesAsync(string characterUUID)
@@ -1745,7 +1746,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             {
                 cmd.CommandText = "SELECT * FROM Colonies WHERE OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -1772,7 +1773,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "SELECT * FROM Colonies WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@uuid", entityUUID);
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     if (reader.Read())
                     {
@@ -1813,7 +1814,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 {
                     delItems.CommandText = "DELETE FROM Items WHERE ParentUUID = @uuid AND ParentType = 'Colony'";
                     delItems.Parameters.AddWithValue("@uuid", entityUUID);
-                    delItems.ExecuteNonQuery();
+                    ExecuteNonQueryLogged(delItems);
                 }
 
                 // CASCADE handles ColonyStructures, ColonyStructureProperties, ColonyStructureWorkers
@@ -1822,16 +1823,16 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                     cmd.CommandText = "DELETE FROM Colonies WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                     cmd.Parameters.AddWithValue("@uuid", entityUUID);
                     cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                    cmd.ExecuteNonQuery();
+                    ExecuteNonQueryLogged(cmd);
                 }
             }
 
             return Task.CompletedTask;
         }
 
-        // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — Blueprint
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        // Per-Character Entity CRUD â€” Blueprint
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<IReadOnlyList<Blueprint>> GetAllBlueprintsAsync(string characterUUID)
@@ -1842,7 +1843,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             {
                 cmd.CommandText = "SELECT * FROM Blueprints WHERE OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -1869,7 +1870,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "SELECT * FROM Blueprints WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@uuid", entityUUID);
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     if (reader.Read())
                     {
@@ -1909,15 +1910,15 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "DELETE FROM Blueprints WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@uuid", entityUUID);
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
         }
 
-        // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — Survey
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        // Per-Character Entity CRUD â€” Survey
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<IReadOnlyList<Survey>> GetAllSurveysAsync(string characterUUID)
@@ -1928,7 +1929,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             {
                 cmd.CommandText = "SELECT * FROM Surveys WHERE OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -1955,7 +1956,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "SELECT * FROM Surveys WHERE SurveyID = @surveyId AND OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@surveyId", entityUUID);
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     if (reader.Read())
                     {
@@ -1995,15 +1996,15 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "DELETE FROM Surveys WHERE SurveyID = @surveyId AND OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@surveyId", entityUUID);
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
         }
 
-        // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — PlayerProfile
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        // Per-Character Entity CRUD â€” PlayerProfile
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<IReadOnlyList<PlayerProfile>> GetAllPlayerProfilesAsync(string characterUUID)
@@ -2015,7 +2016,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 {
                     cmd.CommandText = "SELECT * FROM PlayerProfiles WHERE UUID = @uuid";
                     cmd.Parameters.AddWithValue("@uuid", characterUUID);
-                    using (var reader = cmd.ExecuteReader())
+                    using (var reader = ExecuteReaderLogged(cmd))
                     {
                         while (reader.Read())
                         {
@@ -2041,7 +2042,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             {
                 cmd.CommandText = "SELECT * FROM PlayerProfiles WHERE UUID = @uuid";
                 cmd.Parameters.AddWithValue("@uuid", entityUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     if (reader.Read())
                     {
@@ -2079,15 +2080,15 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 // CASCADE handles PlayerSkills
                 cmd.CommandText = "DELETE FROM PlayerProfiles WHERE UUID = @uuid";
                 cmd.Parameters.AddWithValue("@uuid", entityUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
         }
 
-        // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — DeliveryRoute
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        // Per-Character Entity CRUD â€” DeliveryRoute
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<IReadOnlyList<DeliveryRoute>> GetAllDeliveryRoutesAsync(string characterUUID)
@@ -2099,7 +2100,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 {
                     cmd.CommandText = "SELECT * FROM DeliveryRoutes WHERE OwnerUUID = @ownerUUID";
                     cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                    using (var reader = cmd.ExecuteReader())
+                    using (var reader = ExecuteReaderLogged(cmd))
                     {
                         while (reader.Read())
                         {
@@ -2126,7 +2127,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "SELECT * FROM DeliveryRoutes WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@uuid", entityUUID);
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     if (reader.Read())
                     {
@@ -2165,15 +2166,15 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "DELETE FROM DeliveryRoutes WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@uuid", entityUUID);
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
         }
 
-        // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — DeliveryPlan
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        // Per-Character Entity CRUD â€” DeliveryPlan
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<IReadOnlyList<DeliveryPlan>> GetAllDeliveryPlansAsync(string characterUUID)
@@ -2185,7 +2186,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 {
                     cmd.CommandText = "SELECT * FROM DeliveryPlans WHERE OwnerUUID = @ownerUUID";
                     cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                    using (var reader = cmd.ExecuteReader())
+                    using (var reader = ExecuteReaderLogged(cmd))
                     {
                         while (reader.Read())
                         {
@@ -2212,7 +2213,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "SELECT * FROM DeliveryPlans WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@uuid", entityUUID);
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     if (reader.Read())
                     {
@@ -2251,15 +2252,15 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "DELETE FROM DeliveryPlans WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@uuid", entityUUID);
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
         }
 
-        // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — Ship
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        // Per-Character Entity CRUD â€” Ship
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<IReadOnlyList<Ship>> GetAllShipsAsync(string characterUUID)
@@ -2271,7 +2272,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 {
                     cmd.CommandText = "SELECT * FROM Ships WHERE OwnerUUID = @ownerUUID";
                     cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                    using (var reader = cmd.ExecuteReader())
+                    using (var reader = ExecuteReaderLogged(cmd))
                     {
                         while (reader.Read())
                         {
@@ -2300,7 +2301,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "SELECT * FROM Ships WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@uuid", entityUUID);
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     if (reader.Read())
                     {
@@ -2343,7 +2344,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 {
                     delItems.CommandText = "DELETE FROM Items WHERE ParentUUID = @uuid AND (ParentType = 'ShipCargo' OR ParentType = 'ShipHopper')";
                     delItems.Parameters.AddWithValue("@uuid", entityUUID);
-                    delItems.ExecuteNonQuery();
+                    ExecuteNonQueryLogged(delItems);
                 }
 
                 // CASCADE handles ShipComponents
@@ -2352,16 +2353,16 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                     cmd.CommandText = "DELETE FROM Ships WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                     cmd.Parameters.AddWithValue("@uuid", entityUUID);
                     cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                    cmd.ExecuteNonQuery();
+                    ExecuteNonQueryLogged(cmd);
                 }
             }
 
             return Task.CompletedTask;
         }
 
-        // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — ShipTemplate
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        // Per-Character Entity CRUD â€” ShipTemplate
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<IReadOnlyList<ShipTemplate>> GetAllShipTemplatesAsync(string characterUUID)
@@ -2373,7 +2374,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 {
                     cmd.CommandText = "SELECT * FROM ShipTemplates WHERE OwnerUUID = @ownerUUID";
                     cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                    using (var reader = cmd.ExecuteReader())
+                    using (var reader = ExecuteReaderLogged(cmd))
                     {
                         while (reader.Read())
                         {
@@ -2400,7 +2401,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "SELECT * FROM ShipTemplates WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@uuid", entityUUID);
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     if (reader.Read())
                     {
@@ -2439,15 +2440,15 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "DELETE FROM ShipTemplates WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@uuid", entityUUID);
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
         }
 
-        // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — MarketListing
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        // Per-Character Entity CRUD â€” MarketListing
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<IReadOnlyList<MarketListing>> GetAllMarketListingsAsync(string characterUUID)
@@ -2458,7 +2459,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             {
                 cmd.CommandText = "SELECT * FROM MarketListings WHERE OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -2479,7 +2480,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "SELECT * FROM MarketListings WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@uuid", entityUUID);
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     if (reader.Read())
                     {
@@ -2570,7 +2571,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.Parameters.AddWithValue("@competitorId", entity.CompetitorForMarketId.HasValue ? (object)entity.CompetitorForMarketId.Value : DBNull.Value);
                 cmd.Parameters.AddWithValue("@syncBy", entity.SyncedByCharacterUUID ?? string.Empty);
                 cmd.Parameters.AddWithValue("@syncTs", entity.SyncTimestamp ?? string.Empty);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -2585,15 +2586,15 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "DELETE FROM MarketListings WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@uuid", entityUUID);
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
         }
 
-        // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — MarketTransaction
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        // Per-Character Entity CRUD â€” MarketTransaction
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<IReadOnlyList<MarketTransaction>> GetAllMarketTransactionsAsync(string characterUUID)
@@ -2604,7 +2605,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             {
                 cmd.CommandText = "SELECT * FROM MarketTransactions WHERE OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -2625,7 +2626,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "SELECT * FROM MarketTransactions WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@uuid", entityUUID);
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     if (reader.Read())
                     {
@@ -2674,7 +2675,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.Parameters.AddWithValue("@curHp", entity.CurrentHP);
                 cmd.Parameters.AddWithValue("@maxHp", entity.MaxHP);
                 cmd.Parameters.AddWithValue("@maxRepair", entity.MaxRepairPercent.ToString("G"));
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -2689,15 +2690,15 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "DELETE FROM MarketTransactions WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@uuid", entityUUID);
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
         }
 
-        // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — PricingPlan
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        // Per-Character Entity CRUD â€” PricingPlan
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<IReadOnlyList<PricingPlan>> GetAllPricingPlansAsync(string characterUUID)
@@ -2709,7 +2710,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 {
                     cmd.CommandText = "SELECT * FROM PricingPlans WHERE OwnerUUID = @ownerUUID";
                     cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                    using (var reader = cmd.ExecuteReader())
+                    using (var reader = ExecuteReaderLogged(cmd))
                     {
                         while (reader.Read())
                         {
@@ -2736,7 +2737,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "SELECT * FROM PricingPlans WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@uuid", entityUUID);
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     if (reader.Read())
                     {
@@ -2775,15 +2776,15 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "DELETE FROM PricingPlans WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@uuid", entityUUID);
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
         }
 
-        // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — StockPlan
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        // Per-Character Entity CRUD â€” StockPlan
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<IReadOnlyList<StockPlan>> GetAllStockPlansAsync(string characterUUID)
@@ -2795,7 +2796,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 {
                     cmd.CommandText = "SELECT * FROM StockPlans WHERE OwnerUUID = @ownerUUID";
                     cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                    using (var reader = cmd.ExecuteReader())
+                    using (var reader = ExecuteReaderLogged(cmd))
                     {
                         while (reader.Read())
                         {
@@ -2822,7 +2823,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "SELECT * FROM StockPlans WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@uuid", entityUUID);
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     if (reader.Read())
                     {
@@ -2861,15 +2862,15 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "DELETE FROM StockPlans WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@uuid", entityUUID);
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
         }
 
-        // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — StockProfile
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        // Per-Character Entity CRUD â€” StockProfile
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<IReadOnlyList<StockProfile>> GetAllStockProfilesAsync(string characterUUID)
@@ -2881,7 +2882,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 {
                     cmd.CommandText = "SELECT * FROM StockProfiles WHERE OwnerUUID = @ownerUUID";
                     cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                    using (var reader = cmd.ExecuteReader())
+                    using (var reader = ExecuteReaderLogged(cmd))
                     {
                         while (reader.Read())
                         {
@@ -2908,7 +2909,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "SELECT * FROM StockProfiles WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@uuid", entityUUID);
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     if (reader.Read())
                     {
@@ -2947,15 +2948,15 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "DELETE FROM StockProfiles WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@uuid", entityUUID);
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
         }
 
-        // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — BuildPlan
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        // Per-Character Entity CRUD â€” BuildPlan
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<IReadOnlyList<BuildPlan>> GetAllBuildPlansAsync(string characterUUID)
@@ -2967,7 +2968,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 {
                     cmd.CommandText = "SELECT * FROM BuildPlans WHERE OwnerUUID = @ownerUUID";
                     cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                    using (var reader = cmd.ExecuteReader())
+                    using (var reader = ExecuteReaderLogged(cmd))
                     {
                         while (reader.Read())
                         {
@@ -2994,7 +2995,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "SELECT * FROM BuildPlans WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@uuid", entityUUID);
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     if (reader.Read())
                     {
@@ -3033,15 +3034,15 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "DELETE FROM BuildPlans WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@uuid", entityUUID);
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
         }
 
-        // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — SupplyChain
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        // Per-Character Entity CRUD â€” SupplyChain
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<IReadOnlyList<SupplyChain>> GetAllSupplyChainsAsync(string characterUUID)
@@ -3053,7 +3054,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 {
                     cmd.CommandText = "SELECT * FROM SupplyChains WHERE OwnerUUID = @ownerUUID";
                     cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                    using (var reader = cmd.ExecuteReader())
+                    using (var reader = ExecuteReaderLogged(cmd))
                     {
                         while (reader.Read())
                         {
@@ -3080,7 +3081,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "SELECT * FROM SupplyChains WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@uuid", entityUUID);
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     if (reader.Read())
                     {
@@ -3119,15 +3120,15 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "DELETE FROM SupplyChains WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@uuid", entityUUID);
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
         }
 
-        // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — Asteroid
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        // Per-Character Entity CRUD â€” Asteroid
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<IReadOnlyList<Asteroid>> GetAllAsteroidsAsync(string characterUUID)
@@ -3139,7 +3140,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 {
                     cmd.CommandText = "SELECT * FROM Asteroids WHERE OwnerUUID = @ownerUUID";
                     cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                    using (var reader = cmd.ExecuteReader())
+                    using (var reader = ExecuteReaderLogged(cmd))
                     {
                         while (reader.Read())
                         {
@@ -3166,7 +3167,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "SELECT * FROM Asteroids WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@uuid", entityUUID);
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     if (reader.Read())
                     {
@@ -3205,15 +3206,15 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "DELETE FROM Asteroids WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@uuid", entityUUID);
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
         }
 
-        // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — Station
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        // Per-Character Entity CRUD â€” Station
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<IReadOnlyList<Station>> GetAllStationsAsync(string characterUUID)
@@ -3225,7 +3226,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 {
                     cmd.CommandText = "SELECT * FROM Stations WHERE OwnerUUID = @ownerUUID";
                     cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                    using (var reader = cmd.ExecuteReader())
+                    using (var reader = ExecuteReaderLogged(cmd))
                     {
                         while (reader.Read())
                         {
@@ -3253,7 +3254,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "SELECT * FROM Stations WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@uuid", entityUUID);
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     if (reader.Read())
                     {
@@ -3294,7 +3295,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 {
                     delItems.CommandText = "DELETE FROM Items WHERE ParentUUID = @uuid AND (ParentType = 'StationMunitions' OR ParentType LIKE 'StationHold:%')";
                     delItems.Parameters.AddWithValue("@uuid", entityUUID);
-                    delItems.ExecuteNonQuery();
+                    ExecuteNonQueryLogged(delItems);
                 }
 
                 // CASCADE handles StationComponents
@@ -3303,16 +3304,16 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                     cmd.CommandText = "DELETE FROM Stations WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                     cmd.Parameters.AddWithValue("@uuid", entityUUID);
                     cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                    cmd.ExecuteNonQuery();
+                    ExecuteNonQueryLogged(cmd);
                 }
             }
 
             return Task.CompletedTask;
         }
 
-        // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — Faction contacts
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        // Per-Character Entity CRUD â€” Faction contacts
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<IReadOnlyList<Faction>> GetAllFactionsForCharacterAsync(string characterUUID)
@@ -3323,7 +3324,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             {
                 cmd.CommandText = "SELECT * FROM Factions WHERE OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -3350,7 +3351,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "SELECT * FROM Factions WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@uuid", entityUUID);
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     if (reader.Read())
                     {
@@ -3381,7 +3382,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.Parameters.AddWithValue("@owner", characterUUID);
                 cmd.Parameters.AddWithValue("@tag", string.Empty);
                 cmd.Parameters.AddWithValue("@desc", entity.Description ?? string.Empty);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -3396,15 +3397,15 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "DELETE FROM Factions WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@uuid", entityUUID);
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
         }
 
-        // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — ExternalCharacter
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        // Per-Character Entity CRUD â€” ExternalCharacter
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<IReadOnlyList<ExternalCharacter>> GetAllExternalCharactersAsync(string characterUUID)
@@ -3415,7 +3416,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             {
                 cmd.CommandText = "SELECT * FROM ExternalCharacters WHERE OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -3442,7 +3443,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "SELECT * FROM ExternalCharacters WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@uuid", entityUUID);
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     if (reader.Read())
                     {
@@ -3475,7 +3476,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.Parameters.AddWithValue("@factionName", string.Empty);
                 cmd.Parameters.AddWithValue("@charId", 0);
                 cmd.Parameters.AddWithValue("@notes", string.Empty);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -3490,15 +3491,15 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "DELETE FROM ExternalCharacters WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@uuid", entityUUID);
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
         }
 
-        // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — WarehouseOverflowRule
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        // Per-Character Entity CRUD â€” WarehouseOverflowRule
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<IReadOnlyList<WarehouseOverflowRule>> GetAllWarehouseOverflowRulesAsync(string characterUUID)
@@ -3509,7 +3510,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             {
                 cmd.CommandText = "SELECT * FROM WarehouseOverflowRules WHERE OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -3530,7 +3531,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "SELECT * FROM WarehouseOverflowRules WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@uuid", entityUUID);
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     if (reader.Read())
                     {
@@ -3557,7 +3558,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.Parameters.AddWithValue("@ruleType", (int)entity.RuleType);
                 cmd.Parameters.AddWithValue("@threshold", (int)entity.TriggerThreshold);
                 cmd.Parameters.AddWithValue("@dest", entity.DestinationUUID ?? string.Empty);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -3572,15 +3573,15 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "DELETE FROM WarehouseOverflowRules WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@uuid", entityUUID);
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
         }
 
-        // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — MailMessage
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        // Per-Character Entity CRUD â€” MailMessage
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<IReadOnlyList<MailMessage>> GetAllMailMessagesAsync(string characterUUID)
@@ -3591,7 +3592,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             {
                 cmd.CommandText = "SELECT * FROM MailMessages WHERE OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -3612,7 +3613,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "SELECT * FROM MailMessages WHERE OwnerUUID = @ownerUUID AND MailId = CAST(@mailId AS INTEGER)";
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
                 cmd.Parameters.AddWithValue("@mailId", entityUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     if (reader.Read())
                     {
@@ -3644,7 +3645,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.Parameters.AddWithValue("@mailType", (object)entity.MailType ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@content", entity.MailContent ?? string.Empty);
                 cmd.Parameters.AddWithValue("@localRead", entity.LocalRead ? 1 : 0);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -3659,15 +3660,15 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "DELETE FROM MailMessages WHERE OwnerUUID = @ownerUUID AND MailId = CAST(@mailId AS INTEGER)";
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
                 cmd.Parameters.AddWithValue("@mailId", entityUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
         }
 
-        // ═══════════════════════════════════════════════════════════
-        // Per-Character Entity CRUD — BankingTransaction
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        // Per-Character Entity CRUD â€” BankingTransaction
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<IReadOnlyList<BankingTransaction>> GetAllBankingTransactionsAsync(string characterUUID)
@@ -3678,7 +3679,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             {
                 cmd.CommandText = "SELECT * FROM BankingTransactions WHERE OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -3699,7 +3700,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "SELECT * FROM BankingTransactions WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@uuid", entityUUID);
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     if (reader.Read())
                     {
@@ -3731,7 +3732,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.Parameters.AddWithValue("@sysObjId", entity.SystemObjectId.HasValue ? (object)entity.SystemObjectId.Value : DBNull.Value);
                 cmd.Parameters.AddWithValue("@sysId", entity.SystemId.HasValue ? (object)entity.SystemId.Value : DBNull.Value);
                 cmd.Parameters.AddWithValue("@manual", entity.IsManualEntry ? 1 : 0);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -3746,15 +3747,15 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "DELETE FROM BankingTransactions WHERE UUID = @uuid AND OwnerUUID = @ownerUUID";
                 cmd.Parameters.AddWithValue("@uuid", entityUUID);
                 cmd.Parameters.AddWithValue("@ownerUUID", characterUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
         }
 
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // Faction Permission Entities
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<IReadOnlyList<FactionCapability>> GetFactionCapabilitiesAsync(string factionUUID)
@@ -3765,7 +3766,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             {
                 cmd.CommandText = "SELECT * FROM FactionCapabilities WHERE FactionUUID = @fid";
                 cmd.Parameters.AddWithValue("@fid", factionUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -3795,7 +3796,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.Parameters.AddWithValue("@fid", capability.FactionUUID);
                 cmd.Parameters.AddWithValue("@name", capability.Name ?? string.Empty);
                 cmd.Parameters.AddWithValue("@desc", capability.Description ?? string.Empty);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -3810,7 +3811,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "DELETE FROM FactionCapabilities WHERE UUID = @uuid AND FactionUUID = @fid";
                 cmd.Parameters.AddWithValue("@uuid", capabilityUUID);
                 cmd.Parameters.AddWithValue("@fid", factionUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -3825,7 +3826,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             {
                 cmd.CommandText = "SELECT * FROM FactionClearanceLevels WHERE FactionUUID = @fid";
                 cmd.Parameters.AddWithValue("@fid", factionUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -3857,7 +3858,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.Parameters.AddWithValue("@level", level.Level);
                 cmd.Parameters.AddWithValue("@name", level.Name ?? string.Empty);
                 cmd.Parameters.AddWithValue("@desc", level.Description ?? string.Empty);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -3872,7 +3873,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "DELETE FROM FactionClearanceLevels WHERE UUID = @uuid AND FactionUUID = @fid";
                 cmd.Parameters.AddWithValue("@uuid", levelUUID);
                 cmd.Parameters.AddWithValue("@fid", factionUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -3887,7 +3888,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             {
                 cmd.CommandText = "SELECT * FROM FactionPermissionGroups WHERE FactionUUID = @fid";
                 cmd.Parameters.AddWithValue("@fid", factionUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -3915,7 +3916,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "SELECT * FROM FactionPermissionGroups WHERE UUID = @uuid AND FactionUUID = @fid";
                 cmd.Parameters.AddWithValue("@uuid", groupUUID);
                 cmd.Parameters.AddWithValue("@fid", factionUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     if (reader.Read())
                     {
@@ -3947,7 +3948,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.Parameters.AddWithValue("@name", group.Name ?? string.Empty);
                 cmd.Parameters.AddWithValue("@desc", group.Description ?? string.Empty);
                 cmd.Parameters.AddWithValue("@defaultCl", group.DefaultClearanceLevelUUID ?? string.Empty);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -3962,7 +3963,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "DELETE FROM FactionPermissionGroups WHERE UUID = @uuid AND FactionUUID = @fid";
                 cmd.Parameters.AddWithValue("@uuid", groupUUID);
                 cmd.Parameters.AddWithValue("@fid", factionUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -3977,7 +3978,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             {
                 cmd.CommandText = "SELECT * FROM FactionGroupCapabilities WHERE GroupUUID = @gid";
                 cmd.Parameters.AddWithValue("@gid", groupUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -4003,7 +4004,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                                    VALUES (@gid, @cid)";
                 cmd.Parameters.AddWithValue("@gid", item.GroupUUID);
                 cmd.Parameters.AddWithValue("@cid", item.CapabilityUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -4018,7 +4019,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "DELETE FROM FactionGroupCapabilities WHERE GroupUUID = @gid AND CapabilityUUID = @cid";
                 cmd.Parameters.AddWithValue("@gid", groupUUID);
                 cmd.Parameters.AddWithValue("@cid", capabilityUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -4033,7 +4034,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             {
                 cmd.CommandText = "SELECT * FROM FactionGroupSharingRules WHERE GroupUUID = @gid";
                 cmd.Parameters.AddWithValue("@gid", groupUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -4065,7 +4066,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.Parameters.AddWithValue("@dataType", (object)rule.DataType ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@entityUUID", (object)rule.EntityUUID ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@minCl", rule.MinClearanceLevelUUID ?? string.Empty);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -4080,7 +4081,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "DELETE FROM FactionGroupSharingRules WHERE UUID = @uuid AND GroupUUID = @gid";
                 cmd.Parameters.AddWithValue("@uuid", ruleUUID);
                 cmd.Parameters.AddWithValue("@gid", groupUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -4095,7 +4096,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "SELECT * FROM FactionMemberPermissions WHERE FactionUUID = @fid AND CharacterUUID = @cid";
                 cmd.Parameters.AddWithValue("@fid", factionUUID);
                 cmd.Parameters.AddWithValue("@cid", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     if (reader.Read())
                     {
@@ -4125,7 +4126,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.Parameters.AddWithValue("@cid", perms.CharacterUUID);
                 cmd.Parameters.AddWithValue("@gid", (object)perms.GroupUUID ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@clid", perms.ClearanceLevelUUID ?? string.Empty);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -4140,7 +4141,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             {
                 cmd.CommandText = "SELECT * FROM FactionMemberPermissions WHERE FactionUUID = @fid";
                 cmd.Parameters.AddWithValue("@fid", factionUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -4168,7 +4169,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "SELECT * FROM FactionMemberCapabilities WHERE FactionUUID = @fid AND CharacterUUID = @cid";
                 cmd.Parameters.AddWithValue("@fid", factionUUID);
                 cmd.Parameters.AddWithValue("@cid", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -4196,7 +4197,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.Parameters.AddWithValue("@fid", item.FactionUUID);
                 cmd.Parameters.AddWithValue("@cid", item.CharacterUUID);
                 cmd.Parameters.AddWithValue("@capId", item.CapabilityUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -4212,15 +4213,15 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.Parameters.AddWithValue("@fid", factionUUID);
                 cmd.Parameters.AddWithValue("@cid", characterUUID);
                 cmd.Parameters.AddWithValue("@capId", capabilityUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
         }
 
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // Character Permission Entities
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<IReadOnlyList<CharacterCapability>> GetCharacterCapabilitiesAsync(string characterUUID)
@@ -4231,7 +4232,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             {
                 cmd.CommandText = "SELECT * FROM CharacterCapabilities WHERE OwnerCharacterUUID = @cid";
                 cmd.Parameters.AddWithValue("@cid", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -4261,7 +4262,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.Parameters.AddWithValue("@cid", capability.OwnerCharacterUUID);
                 cmd.Parameters.AddWithValue("@name", capability.Name ?? string.Empty);
                 cmd.Parameters.AddWithValue("@desc", capability.Description ?? string.Empty);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -4276,7 +4277,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "DELETE FROM CharacterCapabilities WHERE UUID = @uuid AND OwnerCharacterUUID = @cid";
                 cmd.Parameters.AddWithValue("@uuid", capabilityUUID);
                 cmd.Parameters.AddWithValue("@cid", characterUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -4291,7 +4292,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             {
                 cmd.CommandText = "SELECT * FROM CharacterClearanceLevels WHERE OwnerCharacterUUID = @cid";
                 cmd.Parameters.AddWithValue("@cid", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -4323,7 +4324,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.Parameters.AddWithValue("@level", level.Level);
                 cmd.Parameters.AddWithValue("@name", level.Name ?? string.Empty);
                 cmd.Parameters.AddWithValue("@desc", level.Description ?? string.Empty);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -4338,7 +4339,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "DELETE FROM CharacterClearanceLevels WHERE UUID = @uuid AND OwnerCharacterUUID = @cid";
                 cmd.Parameters.AddWithValue("@uuid", levelUUID);
                 cmd.Parameters.AddWithValue("@cid", characterUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -4353,7 +4354,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             {
                 cmd.CommandText = "SELECT * FROM CharacterPermissionGroups WHERE OwnerCharacterUUID = @cid";
                 cmd.Parameters.AddWithValue("@cid", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -4381,7 +4382,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "SELECT * FROM CharacterPermissionGroups WHERE UUID = @uuid AND OwnerCharacterUUID = @cid";
                 cmd.Parameters.AddWithValue("@uuid", groupUUID);
                 cmd.Parameters.AddWithValue("@cid", characterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     if (reader.Read())
                     {
@@ -4413,7 +4414,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.Parameters.AddWithValue("@name", group.Name ?? string.Empty);
                 cmd.Parameters.AddWithValue("@desc", group.Description ?? string.Empty);
                 cmd.Parameters.AddWithValue("@defaultCl", group.DefaultClearanceLevelUUID ?? string.Empty);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -4428,7 +4429,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "DELETE FROM CharacterPermissionGroups WHERE UUID = @uuid AND OwnerCharacterUUID = @cid";
                 cmd.Parameters.AddWithValue("@uuid", groupUUID);
                 cmd.Parameters.AddWithValue("@cid", characterUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -4443,7 +4444,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             {
                 cmd.CommandText = "SELECT * FROM CharacterGroupCapabilities WHERE GroupUUID = @gid";
                 cmd.Parameters.AddWithValue("@gid", groupUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -4469,7 +4470,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                                    VALUES (@gid, @cid)";
                 cmd.Parameters.AddWithValue("@gid", item.GroupUUID);
                 cmd.Parameters.AddWithValue("@cid", item.CapabilityUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -4484,7 +4485,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "DELETE FROM CharacterGroupCapabilities WHERE GroupUUID = @gid AND CapabilityUUID = @cid";
                 cmd.Parameters.AddWithValue("@gid", groupUUID);
                 cmd.Parameters.AddWithValue("@cid", capabilityUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -4499,7 +4500,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             {
                 cmd.CommandText = "SELECT * FROM CharacterGroupSharingRules WHERE GroupUUID = @gid";
                 cmd.Parameters.AddWithValue("@gid", groupUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -4529,7 +4530,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.Parameters.AddWithValue("@gid", rule.GroupUUID);
                 cmd.Parameters.AddWithValue("@dataType", (object)rule.DataType ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@entityUUID", (object)rule.EntityUUID ?? DBNull.Value);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -4544,7 +4545,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "DELETE FROM CharacterGroupSharingRules WHERE UUID = @uuid AND GroupUUID = @gid";
                 cmd.Parameters.AddWithValue("@uuid", ruleUUID);
                 cmd.Parameters.AddWithValue("@gid", groupUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -4559,7 +4560,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             {
                 cmd.CommandText = "SELECT * FROM CharacterGranteePermissions WHERE OwnerCharacterUUID = @cid";
                 cmd.Parameters.AddWithValue("@cid", ownerCharacterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -4591,7 +4592,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.Parameters.AddWithValue("@granteeUUID", perms.GranteeUUID);
                 cmd.Parameters.AddWithValue("@gid", (object)perms.GroupUUID ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@clid", (object)perms.ClearanceLevelUUID ?? DBNull.Value);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -4606,7 +4607,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "DELETE FROM CharacterGranteePermissions WHERE OwnerCharacterUUID = @cid AND GranteeUUID = @gid";
                 cmd.Parameters.AddWithValue("@cid", ownerCharacterUUID);
                 cmd.Parameters.AddWithValue("@gid", granteeUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -4622,7 +4623,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = "SELECT * FROM CharacterGranteeCapabilities WHERE OwnerCharacterUUID = @cid AND GranteeUUID = @gid";
                 cmd.Parameters.AddWithValue("@cid", ownerCharacterUUID);
                 cmd.Parameters.AddWithValue("@gid", granteeUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -4651,7 +4652,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.Parameters.AddWithValue("@cid", item.OwnerCharacterUUID);
                 cmd.Parameters.AddWithValue("@gid", item.GranteeUUID);
                 cmd.Parameters.AddWithValue("@capId", item.CapabilityUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -4667,15 +4668,15 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.Parameters.AddWithValue("@cid", ownerCharacterUUID);
                 cmd.Parameters.AddWithValue("@gid", granteeUUID);
                 cmd.Parameters.AddWithValue("@capId", capabilityUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
         }
 
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // Intel
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<IReadOnlyList<IntelComment>> GetIntelCommentsForTargetAsync(string targetCharacterUUID)
@@ -4686,7 +4687,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             {
                 cmd.CommandText = "SELECT * FROM IntelComments WHERE TargetCharacterUUID = @tid";
                 cmd.Parameters.AddWithValue("@tid", targetCharacterUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -4706,7 +4707,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             {
                 cmd.CommandText = "SELECT * FROM IntelComments WHERE UUID = @uuid";
                 cmd.Parameters.AddWithValue("@uuid", commentUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     if (reader.Read())
                     {
@@ -4731,7 +4732,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.Parameters.AddWithValue("@submitter", comment.SubmitterCharacterUUID ?? string.Empty);
                 cmd.Parameters.AddWithValue("@text", comment.Text ?? string.Empty);
                 cmd.Parameters.AddWithValue("@created", comment.CreatedUtc.ToString("O"));
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -4745,7 +4746,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             {
                 cmd.CommandText = "DELETE FROM IntelComments WHERE UUID = @uuid";
                 cmd.Parameters.AddWithValue("@uuid", commentUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -4760,7 +4761,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             {
                 cmd.CommandText = "SELECT * FROM IntelCommentFactionShares WHERE IntelCommentUUID = @cid";
                 cmd.Parameters.AddWithValue("@cid", commentUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -4781,7 +4782,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             {
                 cmd.CommandText = "SELECT * FROM IntelCommentFactionShares WHERE FactionUUID = @fid";
                 cmd.Parameters.AddWithValue("@fid", factionUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -4808,7 +4809,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.Parameters.AddWithValue("@classifiedBy", (object)share.ClassifiedByCharacterUUID ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@shared", share.SharedUtc.ToString("O"));
                 cmd.Parameters.AddWithValue("@classifiedUtc", share.ClassifiedUtc.HasValue ? (object)share.ClassifiedUtc.Value.ToString("O") : DBNull.Value);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -4822,15 +4823,15 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             {
                 cmd.CommandText = "DELETE FROM IntelCommentFactionShares WHERE UUID = @uuid";
                 cmd.Parameters.AddWithValue("@uuid", shareUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
         }
 
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // Audit
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<IReadOnlyList<PermissionAuditEntry>> GetPermissionAuditEntriesAsync(DateTime? startDate = null, DateTime? endDate = null, PermissionActionType? actionType = null, string actorUUID = null, string targetUUID = null)
@@ -4874,7 +4875,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                     + (where.Count > 0 ? " WHERE " + string.Join(" AND ", where) : string.Empty)
                     + " ORDER BY Timestamp DESC";
 
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -4910,7 +4911,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.Parameters.AddWithValue("@action", (int)entry.ActionType);
                 cmd.Parameters.AddWithValue("@oldVal", entry.OldValue ?? string.Empty);
                 cmd.Parameters.AddWithValue("@newVal", entry.NewValue ?? string.Empty);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -4924,15 +4925,15 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             {
                 cmd.CommandText = "DELETE FROM PermissionAuditEntries WHERE Timestamp < @cutoff";
                 cmd.Parameters.AddWithValue("@cutoff", cutoff.ToString("O"));
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
         }
 
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // Baseline / Global Lookup Data
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <inheritdoc/>
         public Task<BaselineGameConstants> GetBaselineGameConstantsAsync()
@@ -4941,7 +4942,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             using (var cmd = conn.CreateCommand())
             {
                 cmd.CommandText = "SELECT * FROM BaselineGameConstants WHERE Id = 1";
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     if (reader.Read())
                     {
@@ -4969,7 +4970,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 cmd.CommandText = @"INSERT OR REPLACE INTO BaselineGameConstants (Id, DataVersion, LastUpdatedUtc)
                                    VALUES (1, 1, @utc)";
                 cmd.Parameters.AddWithValue("@utc", SystemClock.UtcNow.ToString("O"));
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             return Task.CompletedTask;
@@ -4983,7 +4984,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             using (var cmd = conn.CreateCommand())
             {
                 cmd.CommandText = "SELECT * FROM BlueprintTypes";
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -5017,7 +5018,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 {
                     del.Transaction = tx;
                     del.CommandText = "DELETE FROM BlueprintTypes";
-                    del.ExecuteNonQuery();
+                    ExecuteNonQueryLogged(del);
                 }
 
                 foreach (var bt in types)
@@ -5032,7 +5033,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                         cmd.Parameters.AddWithValue("@tech", string.Empty);
                         cmd.Parameters.AddWithValue("@vol", 0.0);
                         cmd.Parameters.AddWithValue("@mass", 0.0);
-                        cmd.ExecuteNonQuery();
+                        ExecuteNonQueryLogged(cmd);
                     }
 
                     if (bt.Properties != null)
@@ -5047,7 +5048,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                                 cmd.Parameters.AddWithValue("@name", bt.Name ?? bt.Id ?? string.Empty);
                                 cmd.Parameters.AddWithValue("@key", prop ?? string.Empty);
                                 cmd.Parameters.AddWithValue("@val", string.Empty);
-                                cmd.ExecuteNonQuery();
+                                ExecuteNonQueryLogged(cmd);
                             }
                         }
                     }
@@ -5065,7 +5066,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                                 cmd.Parameters.AddWithValue("@key", prop ?? string.Empty);
                                 cmd.Parameters.AddWithValue("@min", string.Empty);
                                 cmd.Parameters.AddWithValue("@max", string.Empty);
-                                cmd.ExecuteNonQuery();
+                                ExecuteNonQueryLogged(cmd);
                             }
                         }
                     }
@@ -5085,7 +5086,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             using (var cmd = conn.CreateCommand())
             {
                 cmd.CommandText = "SELECT * FROM ShipClasses";
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -5111,7 +5112,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 {
                     del.Transaction = tx;
                     del.CommandText = "DELETE FROM ShipClasses";
-                    del.ExecuteNonQuery();
+                    ExecuteNonQueryLogged(del);
                 }
 
                 foreach (var sc in classes)
@@ -5127,7 +5128,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                         cmd.Parameters.AddWithValue("@hopper", 0);
                         cmd.Parameters.AddWithValue("@slots", 0);
                         cmd.Parameters.AddWithValue("@hp", 0);
-                        cmd.ExecuteNonQuery();
+                        ExecuteNonQueryLogged(cmd);
                     }
                 }
 
@@ -5145,7 +5146,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             using (var cmd = conn.CreateCommand())
             {
                 cmd.CommandText = "SELECT * FROM TechLevels";
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -5170,7 +5171,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 {
                     del.Transaction = tx;
                     del.CommandText = "DELETE FROM TechLevels";
-                    del.ExecuteNonQuery();
+                    ExecuteNonQueryLogged(del);
                 }
 
                 foreach (var tl in levels)
@@ -5183,7 +5184,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                         cmd.Parameters.AddWithValue("@name", tl.Name ?? string.Empty);
                         cmd.Parameters.AddWithValue("@level", 0);
                         cmd.Parameters.AddWithValue("@desc", string.Empty);
-                        cmd.ExecuteNonQuery();
+                        ExecuteNonQueryLogged(cmd);
                     }
                 }
 
@@ -5202,7 +5203,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = "SELECT * FROM Commodities";
-                    using (var reader = cmd.ExecuteReader())
+                    using (var reader = ExecuteReaderLogged(cmd))
                     {
                         while (reader.Read())
                         {
@@ -5222,7 +5223,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                     {
                         cmd.CommandText = "SELECT ResourceName, Quantity FROM CommodityResources WHERE CommodityName = @name";
                         cmd.Parameters.AddWithValue("@name", c.Name);
-                        using (var reader = cmd.ExecuteReader())
+                        using (var reader = ExecuteReaderLogged(cmd))
                         {
                             while (reader.Read())
                             {
@@ -5247,7 +5248,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 {
                     del.Transaction = tx;
                     del.CommandText = "DELETE FROM Commodities";
-                    del.ExecuteNonQuery();
+                    ExecuteNonQueryLogged(del);
                 }
 
                 foreach (var c in commodities)
@@ -5262,7 +5263,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                         cmd.Parameters.AddWithValue("@vol", 0.0);
                         cmd.Parameters.AddWithValue("@mass", 0.0);
                         cmd.Parameters.AddWithValue("@val", 0.0);
-                        cmd.ExecuteNonQuery();
+                        ExecuteNonQueryLogged(cmd);
                     }
 
                     if (c.ConstructionResources != null)
@@ -5279,7 +5280,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                                 int qty = 0;
                                 int.TryParse(kvp.Value, out qty);
                                 cmd.Parameters.AddWithValue("@qty", qty);
-                                cmd.ExecuteNonQuery();
+                                ExecuteNonQueryLogged(cmd);
                             }
                         }
                     }
@@ -5299,7 +5300,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             using (var cmd = conn.CreateCommand())
             {
                 cmd.CommandText = "SELECT * FROM RefiningRecipes";
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -5329,7 +5330,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 {
                     del.Transaction = tx;
                     del.CommandText = "DELETE FROM RefiningRecipes";
-                    del.ExecuteNonQuery();
+                    ExecuteNonQueryLogged(del);
                 }
 
                 int idx = 0;
@@ -5347,7 +5348,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                         cmd.Parameters.AddWithValue("@outPur", string.Empty);
                         cmd.Parameters.AddWithValue("@outQty", r.ProduceRate);
                         cmd.Parameters.AddWithValue("@procTime", 0);
-                        cmd.ExecuteNonQuery();
+                        ExecuteNonQueryLogged(cmd);
                     }
                 }
 
@@ -5365,7 +5366,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             using (var cmd = conn.CreateCommand())
             {
                 cmd.CommandText = "SELECT * FROM ResearchTimes";
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -5391,7 +5392,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 {
                     del.Transaction = tx;
                     del.CommandText = "DELETE FROM ResearchTimes";
-                    del.ExecuteNonQuery();
+                    ExecuteNonQueryLogged(del);
                 }
 
                 int idx = 0;
@@ -5407,7 +5408,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                         cmd.Parameters.AddWithValue("@tech", string.Empty);
                         cmd.Parameters.AddWithValue("@propKey", string.Empty);
                         cmd.Parameters.AddWithValue("@minutes", (int)(e.ResearchTimeSeconds / 60));
-                        cmd.ExecuteNonQuery();
+                        ExecuteNonQueryLogged(cmd);
                     }
                 }
 
@@ -5425,7 +5426,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             using (var cmd = conn.CreateCommand())
             {
                 cmd.CommandText = "SELECT * FROM PropertyTypeDefinitions";
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -5453,7 +5454,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                 {
                     del.Transaction = tx;
                     del.CommandText = "DELETE FROM PropertyTypeDefinitions";
-                    del.ExecuteNonQuery();
+                    ExecuteNonQueryLogged(del);
                 }
 
                 foreach (var d in definitions)
@@ -5468,7 +5469,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
                         cmd.Parameters.AddWithValue("@cat", string.Empty);
                         cmd.Parameters.AddWithValue("@dataType", "string");
                         cmd.Parameters.AddWithValue("@unit", d.Unit ?? string.Empty);
-                        cmd.ExecuteNonQuery();
+                        ExecuteNonQueryLogged(cmd);
                     }
                 }
 
@@ -5486,7 +5487,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             using (var cmd = conn.CreateCommand())
             {
                 cmd.CommandText = "SELECT * FROM Blueprints WHERE OwnerUUID = ''";
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -5523,9 +5524,9 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             return Task.CompletedTask;
         }
 
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // Private Helpers
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         /// <summary>
         /// Detects whether the legacy JSON-blob EntityData table exists in the
@@ -5538,7 +5539,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
             using (var cmd = conn.CreateCommand())
             {
                 cmd.CommandText = "SELECT name FROM sqlite_master WHERE type='table' AND name='EntityData'";
-                var result = cmd.ExecuteScalar();
+                var result = ExecuteScalarLogged(cmd);
                 return result != null;
             }
         }
@@ -5557,7 +5558,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
         {
             for (int i = fromVersion; i < CurrentSchemaVersion; i++)
             {
-                int migrationIndex = i - 1; // Migrations[0] goes from v1 → v2
+                int migrationIndex = i - 1; // Migrations[0] goes from v1 â†’ v2
                 if (migrationIndex < 0 || migrationIndex >= Migrations.Count)
                 {
                     continue;
@@ -5595,7 +5596,7 @@ UNION SELECT DISTINCT OwnerUUID FROM BankingTransactions";
         }
 
         /// <summary>
-        /// Migration v1 → v2: Rebuilds the BankingTransactions table to use TEXT
+        /// Migration v1 â†’ v2: Rebuilds the BankingTransactions table to use TEXT
         /// columns for CreditChange, OldBalance, and NewBalance instead of REAL,
         /// preserving decimal precision on round-trip.
         /// </summary>
@@ -5628,12 +5629,12 @@ FROM BankingTransactions_old;
 
 DROP TABLE BankingTransactions_old;
 ";
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
         }
 
         /// <summary>
-        /// Migration v2 → v3: Rebuilds the MarketTransactions table to use TEXT
+        /// Migration v2 â†’ v3: Rebuilds the MarketTransactions table to use TEXT
         /// columns for PricePerUnit, TotalPrice, and MaxRepairPercent instead of REAL,
         /// preserving decimal precision on round-trip.
         /// </summary>
@@ -5672,7 +5673,7 @@ FROM MarketTransactions_old;
 
 DROP TABLE MarketTransactions_old;
 ";
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
         }
 
@@ -5717,7 +5718,7 @@ DROP TABLE MarketTransactions_old;
             {
                 cmd.CommandText = "SELECT * FROM ColonyStructures WHERE ColonyUUID = @cid ORDER BY Sequence";
                 cmd.Parameters.AddWithValue("@cid", colonyUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -5789,7 +5790,7 @@ DROP TABLE MarketTransactions_old;
             {
                 cmd.CommandText = $"SELECT Key, Value FROM {tableName} WHERE {fkColumn} = @fk";
                 cmd.Parameters.AddWithValue("@fk", fkValue);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -5809,7 +5810,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.CommandText = "SELECT * FROM Items WHERE ParentUUID = @pid AND ParentType = @pt";
                 cmd.Parameters.AddWithValue("@pid", parentUUID);
                 cmd.Parameters.AddWithValue("@pt", parentType);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -5921,7 +5922,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.Parameters.AddWithValue("@specAlloc", entity.SpecialistAllocated);
                 cmd.Parameters.AddWithValue("@specUnalloc", entity.SpecialistUnallocated);
                 cmd.Parameters.AddWithValue("@wage", entity.WageLevel);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
         }
 
@@ -5933,7 +5934,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.Transaction = tx;
                 cmd.CommandText = "DELETE FROM Items WHERE ParentUUID = @uuid AND ParentType = 'Colony'";
                 cmd.Parameters.AddWithValue("@uuid", colonyUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             // Delete structure items
@@ -5943,7 +5944,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.CommandText = @"DELETE FROM Items WHERE ParentType = 'ColonyStructure' AND ParentUUID IN
                     (SELECT UUID FROM ColonyStructures WHERE ColonyUUID = @uuid)";
                 cmd.Parameters.AddWithValue("@uuid", colonyUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             // CASCADE handles ColonyStructureProperties and ColonyStructureWorkers
@@ -5952,7 +5953,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.Transaction = tx;
                 cmd.CommandText = "DELETE FROM ColonyStructures WHERE ColonyUUID = @uuid";
                 cmd.Parameters.AddWithValue("@uuid", colonyUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
         }
 
@@ -6039,7 +6040,7 @@ DROP TABLE MarketTransactions_old;
                         cmd.Parameters.AddWithValue("@pcRepeat", DBNull.Value);
                     }
 
-                    cmd.ExecuteNonQuery();
+                    ExecuteNonQueryLogged(cmd);
                 }
 
                 // Insert properties
@@ -6052,7 +6053,7 @@ DROP TABLE MarketTransactions_old;
                         propCmd.Parameters.AddWithValue("@sid", s.UUID);
                         propCmd.Parameters.AddWithValue("@key", kvp.Key);
                         propCmd.Parameters.AddWithValue("@val", kvp.Value);
-                        propCmd.ExecuteNonQuery();
+                        ExecuteNonQueryLogged(propCmd);
                     }
                 }
 
@@ -6066,7 +6067,7 @@ DROP TABLE MarketTransactions_old;
                         wCmd.Parameters.AddWithValue("@sid", s.UUID);
                         wCmd.Parameters.AddWithValue("@key", kvp.Key);
                         wCmd.Parameters.AddWithValue("@val", kvp.Value);
-                        wCmd.ExecuteNonQuery();
+                        ExecuteNonQueryLogged(wCmd);
                     }
                 }
             }
@@ -6122,14 +6123,14 @@ DROP TABLE MarketTransactions_old;
                     cmd.Parameters.AddWithValue("@shipPart", item.ShipPartType ?? string.Empty);
                     cmd.Parameters.AddWithValue("@jobName", item.JobName ?? string.Empty);
                     cmd.Parameters.AddWithValue("@jobTrack", item.JobTrack ?? string.Empty);
-                    cmd.ExecuteNonQuery();
+                    ExecuteNonQueryLogged(cmd);
                 }
             }
         }
 
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // Blueprint Helpers
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         private static Blueprint ReadBlueprintParent(SqliteDataReader reader)
         {
@@ -6182,7 +6183,7 @@ DROP TABLE MarketTransactions_old;
             {
                 cmd.CommandText = "SELECT ResourceName, Amount FROM BlueprintResources WHERE BlueprintUUID = @bpUUID";
                 cmd.Parameters.AddWithValue("@bpUUID", blueprintUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -6230,7 +6231,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.Parameters.AddWithValue("@vol", (double)entity.Volume);
                 cmd.Parameters.AddWithValue("@gameApiId", entity.GameApiBlueprintId.HasValue ? (object)entity.GameApiBlueprintId.Value : DBNull.Value);
                 cmd.Parameters.AddWithValue("@lastImport", entity.LastDetailImportUtc.HasValue ? (object)entity.LastDetailImportUtc.Value.ToString("O") : DBNull.Value);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
         }
 
@@ -6242,7 +6243,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.Transaction = tx;
                 cmd.CommandText = "DELETE FROM BlueprintProperties WHERE BlueprintUUID = @uuid";
                 cmd.Parameters.AddWithValue("@uuid", blueprintUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             using (var cmd = conn.CreateCommand())
@@ -6250,7 +6251,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.Transaction = tx;
                 cmd.CommandText = "DELETE FROM BlueprintResources WHERE BlueprintUUID = @uuid";
                 cmd.Parameters.AddWithValue("@uuid", blueprintUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
         }
 
@@ -6267,7 +6268,7 @@ DROP TABLE MarketTransactions_old;
                         cmd.Parameters.AddWithValue("@bpUUID", entity.UUID);
                         cmd.Parameters.AddWithValue("@key", kvp.Key);
                         cmd.Parameters.AddWithValue("@val", kvp.Value);
-                        cmd.ExecuteNonQuery();
+                        ExecuteNonQueryLogged(cmd);
                     }
                 }
             }
@@ -6283,15 +6284,15 @@ DROP TABLE MarketTransactions_old;
                         cmd.Parameters.AddWithValue("@bpUUID", entity.UUID);
                         cmd.Parameters.AddWithValue("@resName", kvp.Key);
                         cmd.Parameters.AddWithValue("@amount", int.TryParse(kvp.Value, out var amt) ? amt : 0);
-                        cmd.ExecuteNonQuery();
+                        ExecuteNonQueryLogged(cmd);
                     }
                 }
             }
         }
 
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // Survey Helpers
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         private static Survey ReadSurveyParent(SqliteDataReader reader)
         {
@@ -6351,7 +6352,7 @@ DROP TABLE MarketTransactions_old;
             {
                 cmd.CommandText = "SELECT Key, Value FROM SurveyProperties WHERE SurveyUUID = @sUUID";
                 cmd.Parameters.AddWithValue("@sUUID", surveyUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -6370,7 +6371,7 @@ DROP TABLE MarketTransactions_old;
             {
                 cmd.CommandText = "SELECT ResourceKey, Resource, Purity, Amount FROM SurveyResources WHERE SurveyUUID = @sUUID";
                 cmd.Parameters.AddWithValue("@sUUID", surveyUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -6426,7 +6427,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.Parameters.AddWithValue("@sysObjId", entity.SystemObjectId);
                 cmd.Parameters.AddWithValue("@gameApiId", entity.GameApiSurveyId.HasValue ? (object)entity.GameApiSurveyId.Value : DBNull.Value);
                 cmd.Parameters.AddWithValue("@lastImport", entity.LastDetailImportUtc.HasValue ? (object)entity.LastDetailImportUtc.Value.ToString("O") : DBNull.Value);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
         }
 
@@ -6437,7 +6438,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.Transaction = tx;
                 cmd.CommandText = "DELETE FROM SurveyProperties WHERE SurveyUUID = @uuid";
                 cmd.Parameters.AddWithValue("@uuid", surveyUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             using (var cmd = conn.CreateCommand())
@@ -6445,7 +6446,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.Transaction = tx;
                 cmd.CommandText = "DELETE FROM SurveyResources WHERE SurveyUUID = @uuid";
                 cmd.Parameters.AddWithValue("@uuid", surveyUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
         }
 
@@ -6462,7 +6463,7 @@ DROP TABLE MarketTransactions_old;
                         cmd.Parameters.AddWithValue("@sUUID", entity.UUID);
                         cmd.Parameters.AddWithValue("@key", kvp.Key);
                         cmd.Parameters.AddWithValue("@val", kvp.Value);
-                        cmd.ExecuteNonQuery();
+                        ExecuteNonQueryLogged(cmd);
                     }
                 }
             }
@@ -6480,15 +6481,15 @@ DROP TABLE MarketTransactions_old;
                         cmd.Parameters.AddWithValue("@res", kvp.Value.Resource ?? string.Empty);
                         cmd.Parameters.AddWithValue("@purity", kvp.Value.Purity ?? string.Empty);
                         cmd.Parameters.AddWithValue("@amount", int.TryParse(kvp.Value.Amount, out var amt) ? amt : 0);
-                        cmd.ExecuteNonQuery();
+                        ExecuteNonQueryLogged(cmd);
                     }
                 }
             }
         }
 
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // Station Helpers
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         private static Station ReadStationParent(SqliteDataReader reader)
         {
@@ -6516,7 +6517,7 @@ DROP TABLE MarketTransactions_old;
             {
                 cmd.CommandText = "SELECT * FROM StationComponents WHERE StationUUID = @sUUID ORDER BY Sequence";
                 cmd.Parameters.AddWithValue("@sUUID", stationUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -6544,7 +6545,7 @@ DROP TABLE MarketTransactions_old;
             {
                 cmd.CommandText = "SELECT DISTINCT ParentType FROM Items WHERE ParentUUID = @uuid AND ParentType LIKE 'StationHold:%'";
                 cmd.Parameters.AddWithValue("@uuid", station.UUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     var holdTypes = new List<string>();
                     while (reader.Read())
@@ -6575,7 +6576,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.Parameters.AddWithValue("@sysId", entity.SystemId ?? 0);
                 cmd.Parameters.AddWithValue("@sysObjId", 0);
                 cmd.Parameters.AddWithValue("@gameLocId", entity.GameLocationId.HasValue ? (object)entity.GameLocationId.Value : DBNull.Value);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
         }
 
@@ -6587,7 +6588,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.Transaction = tx;
                 cmd.CommandText = "DELETE FROM Items WHERE ParentUUID = @uuid AND (ParentType = 'StationMunitions' OR ParentType LIKE 'StationHold:%')";
                 cmd.Parameters.AddWithValue("@uuid", stationUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             // Delete components
@@ -6596,7 +6597,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.Transaction = tx;
                 cmd.CommandText = "DELETE FROM StationComponents WHERE StationUUID = @uuid";
                 cmd.Parameters.AddWithValue("@uuid", stationUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
         }
 
@@ -6621,7 +6622,7 @@ DROP TABLE MarketTransactions_old;
                     cmd.Parameters.AddWithValue("@bpUUID", comp.BlueprintUUID ?? string.Empty);
                     cmd.Parameters.AddWithValue("@curHp", comp.CurrentHP);
                     cmd.Parameters.AddWithValue("@maxHp", comp.MaxHP);
-                    cmd.ExecuteNonQuery();
+                    ExecuteNonQueryLogged(cmd);
                 }
             }
         }
@@ -6641,9 +6642,9 @@ DROP TABLE MarketTransactions_old;
             }
         }
 
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // Asteroid Helpers
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         private static Asteroid ReadAsteroidParent(SqliteDataReader reader)
         {
@@ -6666,7 +6667,7 @@ DROP TABLE MarketTransactions_old;
             {
                 cmd.CommandText = "SELECT * FROM AsteroidReserves WHERE AsteroidUUID = @aUUID ORDER BY Sequence";
                 cmd.Parameters.AddWithValue("@aUUID", asteroidUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -6709,7 +6710,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.Parameters.AddWithValue("@sysId", 0);
                 cmd.Parameters.AddWithValue("@sysObjId", entity.SystemObjectId);
                 cmd.Parameters.AddWithValue("@gameApiId", DBNull.Value);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
         }
 
@@ -6720,7 +6721,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.Transaction = tx;
                 cmd.CommandText = "DELETE FROM AsteroidReserves WHERE AsteroidUUID = @uuid";
                 cmd.Parameters.AddWithValue("@uuid", asteroidUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
         }
 
@@ -6746,14 +6747,14 @@ DROP TABLE MarketTransactions_old;
                     cmd.Parameters.AddWithValue("@maxRes", reserve.MaxReserve);
                     cmd.Parameters.AddWithValue("@curRes", reserve.CurrentReserve != 0 ? (object)reserve.CurrentReserve : DBNull.Value);
                     cmd.Parameters.AddWithValue("@resetTs", !string.IsNullOrEmpty(reserve.ResetTimestamp) ? (object)reserve.ResetTimestamp : DBNull.Value);
-                    cmd.ExecuteNonQuery();
+                    ExecuteNonQueryLogged(cmd);
                 }
             }
         }
 
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // SupplyChain Helpers
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         private static SupplyChain ReadSupplyChainParent(SqliteDataReader reader)
         {
@@ -6772,7 +6773,7 @@ DROP TABLE MarketTransactions_old;
             {
                 cmd.CommandText = "SELECT * FROM SupplyChainStages WHERE SupplyChainUUID = @cUUID ORDER BY Sequence";
                 cmd.Parameters.AddWithValue("@cUUID", chainUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -6801,7 +6802,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.Parameters.AddWithValue("@name", entity.Name ?? string.Empty);
                 cmd.Parameters.AddWithValue("@owner", characterUUID);
                 cmd.Parameters.AddWithValue("@desc", string.Empty);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
         }
 
@@ -6812,7 +6813,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.Transaction = tx;
                 cmd.CommandText = "DELETE FROM SupplyChainStages WHERE SupplyChainUUID = @uuid";
                 cmd.Parameters.AddWithValue("@uuid", chainUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
         }
 
@@ -6837,14 +6838,14 @@ DROP TABLE MarketTransactions_old;
                     cmd.Parameters.AddWithValue("@bpUUID", string.Empty);
                     cmd.Parameters.AddWithValue("@outputType", stage.ResourceName ?? string.Empty);
                     cmd.Parameters.AddWithValue("@outputQty", stage.AccumulationThreshold);
-                    cmd.ExecuteNonQuery();
+                    ExecuteNonQueryLogged(cmd);
                 }
             }
         }
 
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // BuildPlan Helpers
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         private static BuildPlan ReadBuildPlanParent(SqliteDataReader reader)
         {
@@ -6863,7 +6864,7 @@ DROP TABLE MarketTransactions_old;
             {
                 cmd.CommandText = "SELECT * FROM BuildItems WHERE BuildPlanUUID = @pUUID ORDER BY Sequence";
                 cmd.Parameters.AddWithValue("@pUUID", planUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -6894,7 +6895,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.Parameters.AddWithValue("@bp", string.Empty);
                 cmd.Parameters.AddWithValue("@qty", 0);
                 cmd.Parameters.AddWithValue("@priority", 0);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
         }
 
@@ -6905,7 +6906,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.Transaction = tx;
                 cmd.CommandText = "DELETE FROM BuildItems WHERE BuildPlanUUID = @uuid";
                 cmd.Parameters.AddWithValue("@uuid", planUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
         }
 
@@ -6929,14 +6930,14 @@ DROP TABLE MarketTransactions_old;
                     cmd.Parameters.AddWithValue("@resName", item.ItemName ?? string.Empty);
                     cmd.Parameters.AddWithValue("@qty", item.Quantity);
                     cmd.Parameters.AddWithValue("@fulfilled", 0);
-                    cmd.ExecuteNonQuery();
+                    ExecuteNonQueryLogged(cmd);
                 }
             }
         }
 
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // StockProfile Helpers
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         private static StockProfile ReadStockProfileParent(SqliteDataReader reader)
         {
@@ -6955,7 +6956,7 @@ DROP TABLE MarketTransactions_old;
             {
                 cmd.CommandText = "SELECT * FROM StockProfileEntries WHERE StockProfileUUID = @pUUID ORDER BY Sequence";
                 cmd.Parameters.AddWithValue("@pUUID", profileUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -6982,7 +6983,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.Parameters.AddWithValue("@name", entity.Name ?? string.Empty);
                 cmd.Parameters.AddWithValue("@owner", characterUUID);
                 cmd.Parameters.AddWithValue("@desc", string.Empty);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
         }
 
@@ -6993,7 +6994,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.Transaction = tx;
                 cmd.CommandText = "DELETE FROM StockProfileEntries WHERE StockProfileUUID = @uuid";
                 cmd.Parameters.AddWithValue("@uuid", profileUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
         }
 
@@ -7017,14 +7018,14 @@ DROP TABLE MarketTransactions_old;
                     cmd.Parameters.AddWithValue("@resName", entry.GroupID ?? string.Empty);
                     cmd.Parameters.AddWithValue("@minQty", 0);
                     cmd.Parameters.AddWithValue("@maxQty", 0);
-                    cmd.ExecuteNonQuery();
+                    ExecuteNonQueryLogged(cmd);
                 }
             }
         }
 
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // StockPlan Helpers
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         private static StockPlan ReadStockPlanParent(SqliteDataReader reader)
         {
@@ -7043,7 +7044,7 @@ DROP TABLE MarketTransactions_old;
             {
                 cmd.CommandText = "SELECT * FROM StockTargets WHERE StockPlanUUID = @pUUID ORDER BY Sequence";
                 cmd.Parameters.AddWithValue("@pUUID", planUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -7072,7 +7073,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.Parameters.AddWithValue("@name", entity.Name ?? string.Empty);
                 cmd.Parameters.AddWithValue("@owner", characterUUID);
                 cmd.Parameters.AddWithValue("@colony", string.Empty);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
         }
 
@@ -7083,7 +7084,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.Transaction = tx;
                 cmd.CommandText = "DELETE FROM StockTargets WHERE StockPlanUUID = @uuid";
                 cmd.Parameters.AddWithValue("@uuid", planUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
         }
 
@@ -7107,14 +7108,14 @@ DROP TABLE MarketTransactions_old;
                     cmd.Parameters.AddWithValue("@resName", target.ItemName ?? string.Empty);
                     cmd.Parameters.AddWithValue("@targetQty", target.TargetQuantity);
                     cmd.Parameters.AddWithValue("@priority", target.CriticalThreshold);
-                    cmd.ExecuteNonQuery();
+                    ExecuteNonQueryLogged(cmd);
                 }
             }
         }
 
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // PricingPlan Helpers
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         private static PricingPlan ReadPricingPlanParent(SqliteDataReader reader)
         {
@@ -7136,7 +7137,7 @@ DROP TABLE MarketTransactions_old;
             {
                 cmd.CommandText = "SELECT ResourceName, Price FROM PricingPlanPrices WHERE PricingPlanUUID = @pUUID";
                 cmd.Parameters.AddWithValue("@pUUID", planUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -7163,7 +7164,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.Parameters.AddWithValue("@desc", entity.Description ?? string.Empty);
                 cmd.Parameters.AddWithValue("@fixed", (double)entity.FixedCostPerItem);
                 cmd.Parameters.AddWithValue("@hourly", (double)entity.HourlyCostRate);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
         }
 
@@ -7174,7 +7175,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.Transaction = tx;
                 cmd.CommandText = "DELETE FROM PricingPlanPrices WHERE PricingPlanUUID = @uuid";
                 cmd.Parameters.AddWithValue("@uuid", planUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
         }
 
@@ -7194,14 +7195,14 @@ DROP TABLE MarketTransactions_old;
                     cmd.Parameters.AddWithValue("@pUUID", entity.UUID);
                     cmd.Parameters.AddWithValue("@resName", kvp.Key);
                     cmd.Parameters.AddWithValue("@price", (double)kvp.Value);
-                    cmd.ExecuteNonQuery();
+                    ExecuteNonQueryLogged(cmd);
                 }
             }
         }
 
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // PlayerProfile Helpers
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         private static PlayerProfile ReadPlayerProfileParent(SqliteDataReader reader)
         {
@@ -7253,7 +7254,7 @@ DROP TABLE MarketTransactions_old;
             {
                 cmd.CommandText = "SELECT * FROM PlayerSkills WHERE PlayerUUID = @pUUID";
                 cmd.Parameters.AddWithValue("@pUUID", playerUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -7335,7 +7336,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.Parameters.AddWithValue("@milXp", entity.Military?.CurrentXp ?? 0L);
                 cmd.Parameters.AddWithValue("@milNext", entity.Military?.XpToNextLevel ?? 0L);
                 cmd.Parameters.AddWithValue("@milName", entity.Military?.RankName ?? string.Empty);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
         }
 
@@ -7346,7 +7347,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.Transaction = tx;
                 cmd.CommandText = "DELETE FROM PlayerSkills WHERE PlayerUUID = @uuid";
                 cmd.Parameters.AddWithValue("@uuid", playerUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
         }
 
@@ -7401,14 +7402,14 @@ DROP TABLE MarketTransactions_old;
                         cmd.Parameters.AddWithValue("@cRepeat", DBNull.Value);
                     }
 
-                    cmd.ExecuteNonQuery();
+                    ExecuteNonQueryLogged(cmd);
                 }
             }
         }
 
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // DeliveryRoute Helpers
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         private static DeliveryRoute ReadDeliveryRouteParent(SqliteDataReader reader)
         {
@@ -7427,7 +7428,7 @@ DROP TABLE MarketTransactions_old;
             {
                 cmd.CommandText = "SELECT * FROM DeliveryRouteStops WHERE DeliveryRouteUUID = @rUUID ORDER BY Sequence";
                 cmd.Parameters.AddWithValue("@rUUID", routeUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -7469,7 +7470,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.Parameters.AddWithValue("@uuid", entity.UUID);
                 cmd.Parameters.AddWithValue("@name", entity.Name ?? string.Empty);
                 cmd.Parameters.AddWithValue("@owner", characterUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
         }
 
@@ -7480,7 +7481,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.Transaction = tx;
                 cmd.CommandText = "DELETE FROM DeliveryRouteStops WHERE DeliveryRouteUUID = @uuid";
                 cmd.Parameters.AddWithValue("@uuid", routeUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
         }
 
@@ -7509,14 +7510,14 @@ DROP TABLE MarketTransactions_old;
                     cmd.Parameters.AddWithValue("@destUUID", stop.DestinationUUID ?? string.Empty);
                     cmd.Parameters.AddWithValue("@purpose", stop.Purpose.ToString());
                     cmd.Parameters.AddWithValue("@fuel", (double)stop.FuelEstimate);
-                    cmd.ExecuteNonQuery();
+                    ExecuteNonQueryLogged(cmd);
                 }
             }
         }
 
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // DeliveryPlan Helpers
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         private static DeliveryPlan ReadDeliveryPlanParent(SqliteDataReader reader)
         {
@@ -7538,7 +7539,7 @@ DROP TABLE MarketTransactions_old;
             {
                 cmd.CommandText = "SELECT * FROM DeliveryPlanStops WHERE DeliveryPlanUUID = @pUUID ORDER BY Sequence";
                 cmd.Parameters.AddWithValue("@pUUID", planUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -7577,7 +7578,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.CommandText = "SELECT * FROM DeliveryPlanItems WHERE DeliveryPlanUUID = @pUUID AND StopSequence = @seq ORDER BY Direction, Sequence";
                 cmd.Parameters.AddWithValue("@pUUID", planUUID);
                 cmd.Parameters.AddWithValue("@seq", stop.Sequence);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -7623,7 +7624,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.Parameters.AddWithValue("@route", entity.RouteUUID ?? string.Empty);
                 cmd.Parameters.AddWithValue("@ship", entity.ShipUUID ?? string.Empty);
                 cmd.Parameters.AddWithValue("@completed", entity.Completed ? 1 : 0);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
         }
 
@@ -7635,7 +7636,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.Transaction = tx;
                 cmd.CommandText = "DELETE FROM DeliveryPlanItems WHERE DeliveryPlanUUID = @uuid";
                 cmd.Parameters.AddWithValue("@uuid", planUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             using (var cmd = conn.CreateCommand())
@@ -7643,7 +7644,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.Transaction = tx;
                 cmd.CommandText = "DELETE FROM DeliveryPlanStops WHERE DeliveryPlanUUID = @uuid";
                 cmd.Parameters.AddWithValue("@uuid", planUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
         }
 
@@ -7654,7 +7655,7 @@ DROP TABLE MarketTransactions_old;
                 return;
             }
 
-            // Repair duplicate sequences before inserting — renumber all stops
+            // Repair duplicate sequences before inserting â€” renumber all stops
             // sequentially to ensure uniqueness without losing any data.
             for (int i = 0; i < entity.Stops.Count; i++)
             {
@@ -7677,7 +7678,7 @@ DROP TABLE MarketTransactions_old;
                     cmd.Parameters.AddWithValue("@completed", stop.StopCompleted ? 1 : 0);
                     cmd.Parameters.AddWithValue("@destType", stop.DestinationType.ToString());
                     cmd.Parameters.AddWithValue("@destUUID", stop.DestinationUUID ?? string.Empty);
-                    cmd.ExecuteNonQuery();
+                    ExecuteNonQueryLogged(cmd);
                 }
 
                 // Insert drop-off items
@@ -7718,14 +7719,14 @@ DROP TABLE MarketTransactions_old;
                     cmd.Parameters.AddWithValue("@purity", item.ResourcePurity ?? string.Empty);
                     cmd.Parameters.AddWithValue("@qty", item.Quantity);
                     cmd.Parameters.AddWithValue("@delivered", item.Delivered ? 1 : 0);
-                    cmd.ExecuteNonQuery();
+                    ExecuteNonQueryLogged(cmd);
                 }
             }
         }
 
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // Ship Helpers
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         private static Ship ReadShipParent(SqliteDataReader reader)
         {
@@ -7763,7 +7764,7 @@ DROP TABLE MarketTransactions_old;
             {
                 cmd.CommandText = "SELECT * FROM ShipComponents WHERE ShipUUID = @sUUID ORDER BY Sequence";
                 cmd.Parameters.AddWithValue("@sUUID", shipUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -7806,7 +7807,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.Parameters.AddWithValue("@hullCurHp", entity.HullCurrentHP);
                 cmd.Parameters.AddWithValue("@hullMaxHp", entity.HullMaxHP);
                 cmd.Parameters.AddWithValue("@hullMaxRepair", (double)entity.HullMaxRepairPercent);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
         }
 
@@ -7818,7 +7819,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.Transaction = tx;
                 cmd.CommandText = "DELETE FROM Items WHERE ParentUUID = @uuid AND (ParentType = 'ShipCargo' OR ParentType = 'ShipHopper')";
                 cmd.Parameters.AddWithValue("@uuid", shipUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             // Delete components (CASCADE would handle this on parent delete, but for upsert we delete explicitly)
@@ -7827,7 +7828,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.Transaction = tx;
                 cmd.CommandText = "DELETE FROM ShipComponents WHERE ShipUUID = @uuid";
                 cmd.Parameters.AddWithValue("@uuid", shipUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
         }
 
@@ -7852,14 +7853,14 @@ DROP TABLE MarketTransactions_old;
                     cmd.Parameters.AddWithValue("@bpUUID", comp.BlueprintUUID ?? string.Empty);
                     cmd.Parameters.AddWithValue("@curHp", comp.CurrentHP);
                     cmd.Parameters.AddWithValue("@maxHp", comp.MaxHP);
-                    cmd.ExecuteNonQuery();
+                    ExecuteNonQueryLogged(cmd);
                 }
             }
         }
 
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // ShipTemplate Helpers
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         private static ShipTemplate ReadShipTemplateParent(SqliteDataReader reader)
         {
@@ -7879,7 +7880,7 @@ DROP TABLE MarketTransactions_old;
             {
                 cmd.CommandText = "SELECT * FROM ShipTemplateComponents WHERE ShipTemplateUUID = @tUUID ORDER BY Sequence";
                 cmd.Parameters.AddWithValue("@tUUID", templateUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -7910,7 +7911,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.Parameters.AddWithValue("@name", entity.Name ?? string.Empty);
                 cmd.Parameters.AddWithValue("@owner", characterUUID);
                 cmd.Parameters.AddWithValue("@hullBp", entity.HullBlueprintUUID ?? string.Empty);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
         }
 
@@ -7921,7 +7922,7 @@ DROP TABLE MarketTransactions_old;
                 cmd.Transaction = tx;
                 cmd.CommandText = "DELETE FROM ShipTemplateComponents WHERE ShipTemplateUUID = @uuid";
                 cmd.Parameters.AddWithValue("@uuid", templateUUID);
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
         }
 
@@ -7948,14 +7949,14 @@ DROP TABLE MarketTransactions_old;
                     cmd.Parameters.AddWithValue("@curHp", comp.CurrentHP);
                     cmd.Parameters.AddWithValue("@maxHp", comp.MaxHP);
                     cmd.Parameters.AddWithValue("@maxRepair", (double)comp.MaxRepairPercent);
-                    cmd.ExecuteNonQuery();
+                    ExecuteNonQueryLogged(cmd);
                 }
             }
         }
 
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // MarketListing Helpers
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         private static MarketListing ReadMarketListing(SqliteDataReader reader)
         {
@@ -8065,9 +8066,9 @@ DROP TABLE MarketTransactions_old;
             return listing;
         }
 
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // MarketTransaction Helpers
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         private static MarketTransaction ReadMarketTransaction(SqliteDataReader reader)
         {
@@ -8136,7 +8137,7 @@ DROP TABLE MarketTransactions_old;
             {
                 cmd.CommandText = "SELECT CharacterUUID FROM ServerFactionLeaders WHERE FactionUUID = @fid";
                 cmd.Parameters.AddWithValue("@fid", factionUUID);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -8268,7 +8269,7 @@ DROP TABLE MarketTransactions_old;
             using (var cmd = conn.CreateCommand())
             {
                 cmd.CommandText = "SELECT Value FROM _metadata WHERE Key = 'schema_version';";
-                var result = cmd.ExecuteScalar();
+                var result = ExecuteScalarLogged(cmd);
                 if (result == null || result == DBNull.Value)
                 {
                     return 0;
@@ -8284,13 +8285,13 @@ DROP TABLE MarketTransactions_old;
             {
                 cmd.CommandText = "INSERT OR REPLACE INTO _metadata (Key, Value) VALUES ('schema_version', @v);";
                 cmd.Parameters.AddWithValue("@v", version.ToString());
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
         }
 
-        // ═══════════════════════════════════════════════════════════
-        // Task 6.7 Helpers — WarehouseOverflowRule, Mail, Banking, Intel
-        // ═══════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        // Task 6.7 Helpers â€” WarehouseOverflowRule, Mail, Banking, Intel
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
         private static WarehouseOverflowRule ReadWarehouseOverflowRule(SqliteDataReader reader)
         {
@@ -8399,7 +8400,7 @@ DROP TABLE MarketTransactions_old;
             {
                 cmd.CommandText = "SELECT Key FROM BlueprintTypeProperties WHERE BlueprintTypeName = @name";
                 cmd.Parameters.AddWithValue("@name", blueprintTypeName);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -8418,7 +8419,7 @@ DROP TABLE MarketTransactions_old;
             {
                 cmd.CommandText = "SELECT Key FROM BlueprintTypeResearchableProperties WHERE BlueprintTypeName = @name";
                 cmd.Parameters.AddWithValue("@name", blueprintTypeName);
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -8446,7 +8447,7 @@ DROP TABLE MarketTransactions_old;
             using (var cmd = conn.CreateCommand())
             {
                 cmd.CommandText = "SELECT EntityType, EntityId, CharacterUUID, JsonData FROM EntityData";
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = ExecuteReaderLogged(cmd))
                 {
                     while (reader.Read())
                     {
@@ -8482,7 +8483,7 @@ DROP TABLE MarketTransactions_old;
             using (var cmd = conn.CreateCommand())
             {
                 cmd.CommandText = "DROP TABLE IF EXISTS EntityData";
-                cmd.ExecuteNonQuery();
+                ExecuteNonQueryLogged(cmd);
             }
 
             Log.Info("Legacy migration complete. Migrated {0} of {1} entities.", migrated, entities.Count);
@@ -8702,6 +8703,102 @@ DROP TABLE MarketTransactions_old;
                     Log.Debug("Unknown legacy entity type: {0}", entity.EntityType);
                     break;
             }
+        }
+
+
+        // ===============================================================
+        // SQL Logging Helpers
+        // ===============================================================
+
+        /// <summary>
+        /// Executes a non-query command with logging of the SQL text, parameters, and duration.
+        /// </summary>
+        private static int ExecuteNonQueryLogged(SqliteCommand cmd, [CallerMemberName] string caller = "")
+        {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+            int affected = cmd.ExecuteNonQuery();
+            sw.Stop();
+            if (sw.ElapsedMilliseconds > 0 || Log.IsTraceEnabled)
+            {
+                Log.Debug(
+                    "SQL|{0}|{1}ms|rows={2}|{3}|{4}",
+                    caller,
+                    sw.ElapsedMilliseconds,
+                    affected,
+                    cmd.CommandText.Replace("\n", " ").Replace("\r", string.Empty).Substring(0, Math.Min(cmd.CommandText.Length, 200)),
+                    FormatParameters(cmd.Parameters));
+            }
+
+            return affected;
+        }
+
+        /// <summary>
+        /// Executes a reader command with logging of the SQL text, parameters, and duration.
+        /// </summary>
+        private static SqliteDataReader ExecuteReaderLogged(SqliteCommand cmd, [CallerMemberName] string caller = "")
+        {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+            var reader = cmd.ExecuteReader();
+            sw.Stop();
+            if (sw.ElapsedMilliseconds > 0 || Log.IsTraceEnabled)
+            {
+                Log.Debug(
+                    "SQL|{0}|{1}ms|{2}|{3}",
+                    caller,
+                    sw.ElapsedMilliseconds,
+                    cmd.CommandText.Replace("\n", " ").Replace("\r", string.Empty).Substring(0, Math.Min(cmd.CommandText.Length, 200)),
+                    FormatParameters(cmd.Parameters));
+            }
+
+            return reader;
+        }
+
+        /// <summary>
+        /// Executes a scalar command with logging.
+        /// </summary>
+        private static object ExecuteScalarLogged(SqliteCommand cmd, [CallerMemberName] string caller = "")
+        {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+            var result = cmd.ExecuteScalar();
+            sw.Stop();
+            if (sw.ElapsedMilliseconds > 0 || Log.IsTraceEnabled)
+            {
+                Log.Debug(
+                    "SQL|{0}|{1}ms|{2}|{3}",
+                    caller,
+                    sw.ElapsedMilliseconds,
+                    cmd.CommandText.Replace("\n", " ").Replace("\r", string.Empty).Substring(0, Math.Min(cmd.CommandText.Length, 200)),
+                    FormatParameters(cmd.Parameters));
+            }
+
+            return result;
+        }
+
+        private static string FormatParameters(SqliteParameterCollection parameters)
+        {
+            if (parameters == null || parameters.Count == 0)
+            {
+                return string.Empty;
+            }
+
+            var sb = new System.Text.StringBuilder();
+            foreach (SqliteParameter p in parameters)
+            {
+                if (sb.Length > 0)
+                {
+                    sb.Append(", ");
+                }
+
+                string val = p.Value == null || p.Value == DBNull.Value ? "NULL" : p.Value.ToString();
+                if (val.Length > 50)
+                {
+                    val = val.Substring(0, 50) + "...";
+                }
+
+                sb.AppendFormat("{0}={1}", p.ParameterName, val);
+            }
+
+            return sb.ToString();
         }
 
         private SqliteConnection OpenConnection()
