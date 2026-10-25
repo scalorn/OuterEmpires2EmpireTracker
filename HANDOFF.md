@@ -342,6 +342,34 @@ parts worth keeping:
      which is a proxy for “what is affected by this”. A missing marker is invisible
      to it. This is the load-bearing reason every marker gate is mandatory rather
      than advisory, and why closures are candidate lists rather than proofs.
+8f. **Cycles are not real. The owner's question drove a design fix** (seed §6.2.5).
+   An earlier draft said requirement cycles “will” happen and should be collapsed
+   and reported as a smell. That was treating a symptom. The correct position falls
+   straight out of one fact, one place:
+   - **The dependency graph is acyclic by construction. A cycle is never legitimate
+     — it is a *detector* for a violation of the rule.**
+   - Every apparent cycle resolves to one of two defects: **mis-decomposition** (one
+     fact modelled as several — simultaneous systems, recursive definitions, state
+     machines) or **edge-type conflation** (a symmetric relation represented as two
+     opposing directed dependency edges).
+   - The fix was to name the relations and traverse only the acyclic ones:
+     `derives-from`, `implements` and `verifies` form the dependency graph;
+     `constrains` and `references` are **symmetric, stored as undirected adjacency,
+     never walked for impact.** That is what stops them fabricating cycles. The
+     earlier draft had a single undifferentiated “citation” edge, which is where the
+     phantom cycles came from.
+   - **A cycle in the domain is not a cycle in the graph**, and this matters here
+     because the domain is loop-heavy (resources → commodities → ships → resources).
+     Domain loops live *inside* one node as content. Rule of thumb: if breaking the
+     cycle would require changing the game, it is a domain loop; if it only requires
+     reorganising the spec, it is a decomposition defect.
+   - SCC detection is retained as an **assertion**: `just cascade` fails the build
+     and prints the cycle path. No acceptable-cycles list, because admitting one
+     would concede that two facts can occupy one place.
+   - **Why it is load-bearing:** acyclicity is what makes closures terminate, hop
+     distance meaningful, `must-change` cascades deterministic, and the regeneration
+     drill well-founded. One fact, one place applied properly *implies* a DAG, and
+     the cycle check is how that rule gets tested.
 8b. **The drift principle is the owner's core thesis and the reason §6.2 exists:**
    every value was decided by something; if the value changes and the thing that
    decided it does not, the system is lying about itself. This is the origin of both

@@ -889,10 +889,14 @@ acknowledgement only within a configured hop budget — start at 2 — with deep
 reported for awareness. A core fact five hops from a UI label does not need a
 sign-off on the label.
 
-**Handle cycles explicitly.** Requirements citing each other will form cycles. The
-closure computation must collapse strongly-connected components rather than loop,
-and **a cycle among requirements should be reported as a specification smell** — if
-A justifies B and B justifies A, neither is grounded in anything.
+**Two orthogonal axes, do not conflate them.** The table above types an edge by
+*force* — how strongly a change propagates. §6.2.5 types edges by *relation* — what
+kind of dependency it is. They correlate (`derives-from` between facts is
+`must-change`; `implements` and `verifies` are `may-change`; `references` is
+`informational`) but they answer different questions, and the relation type is what
+determines whether the closure traverses an edge at all.
+
+**Cycles are not a case to handle. See §6.2.5.**
 
 #### What the cascade query returns
 
@@ -929,6 +933,90 @@ answers **“this code exists — why?”**, which is the question behind dead-c
 detection, the untagged-public-item check, and the regeneration drill's input
 gathering. One pass-two artifact serves both directions; do not build a second graph
 for it.
+
+#### 6.2.5 Cycles are not real, and that is load-bearing
+
+An earlier draft said requirements citing each other “will form cycles” and that the
+closure should collapse strongly-connected components and report the cycle as a
+smell. **That was treating a symptom.** The correct position, which falls straight
+out of one fact, one place:
+
+> **The dependency graph is acyclic by construction. A cycle is never a legitimate
+> structure — it is a detector for a violation of one fact, one place, or for
+> edge-type conflation.**
+
+This is worth proving case by case, because “but some things really are
+interdependent” is the obvious objection and it does not survive contact.
+
+| Apparent cycle | What it actually is |
+|---|---|
+| `FACT-A` derived from `FACT-B`, `FACT-B` derived from `FACT-A` | A **simultaneous system**. Neither is a fact; the *solution* is the fact. One node holding the system, emitting both values. |
+| `REQ-A` justifies `REQ-B`, `REQ-B` justifies `REQ-A` | **Circular justification.** Neither is grounded in anything. One of them is really an axiom, or they are one requirement. |
+| Two requirements that mutually constrain each other | **Edge-type conflation.** `constrains` is symmetric by nature; representing it as two opposing *dependency* edges manufactures a cycle that does not exist in the thing being described. |
+| “A blueprint contains components; a component may be a blueprint” | **A recursive definition**, which is one fact: blueprints are recursively composable. Modelled as two facts, it looks like a cycle. |
+| A state machine where `A → B` and `B → A` | **One fact** — the machine and its transition table. The loop is *inside* the fact's content. |
+
+In every case the cycle means one of exactly two things, which is precisely the
+diagnosis the question was aimed at:
+
+1. **Mis-decomposition** — one fact modelled as several. The cycle is the symptom of
+   having split something that is not separable.
+2. **Edge-type conflation** — a symmetric or informational relation represented as a
+   directed dependency.
+
+#### Relation types, and which ones the closure traverses
+
+The fix for conflation is to name the relations and traverse only the acyclic ones.
+This replaces the single undifferentiated “citation” edge the earlier draft assumed.
+
+| Relation | Direction | Acyclic? | In the closure? |
+|---|---|---|---|
+| `derives-from` | directed | **must be** — enforced | yes, traversed transitively |
+| `implements` | code → spec, directed | yes by construction | yes |
+| `verifies` | test → spec, directed | yes by construction | yes |
+| `constrains` | **symmetric** | n/a | recorded, **not traversed** |
+| `references` | symmetric, informational | n/a | reported, never gated |
+
+Only `derives-from`, `implements` and `verifies` form the dependency graph, and all
+three are acyclic by their nature. `constrains` and `references` are stored as
+undirected adjacency and never walked for impact — which is what stops them
+fabricating cycles.
+
+#### A cycle in the domain is not a cycle in the graph
+
+This distinction matters more here than it would in most projects, because **this
+domain is full of genuine loops**: resources feed commodities, commodities build
+ships, ships mine resources. Colony output feeds colony growth which feeds colony
+output.
+
+Those are cycles in the *modelled world*. They belong **inside** a fact or
+requirement describing the economy's structure — as content — not as edges between
+separate nodes. An implementer who maps every domain arrow onto a graph edge will
+produce a graph full of cycles and conclude the rule is unworkable. It is not; the
+mapping was wrong.
+
+> Rule of thumb: if removing the cycle would require changing the **game**, it is a
+> domain loop and belongs inside one node. If removing it only requires changing how
+> the specification is *organised*, it is a decomposition defect.
+
+#### Enforcement
+
+Strongly-connected-component detection is still needed — but as an **assertion**,
+not a coping mechanism:
+
+- `just cascade` detects any cycle in the traversed relations and **fails the build**,
+  printing the full cycle path
+- the failure message points at the §6.2.5 table, because the fix is always a
+  re-decomposition or a relation retype, never a tolerance setting
+- there is no “acceptable cycles” list. Admitting one would concede that the
+  specification can contain two facts occupying one place
+
+**Why this is load-bearing rather than pedantry:** acyclicity is what makes the
+closure terminate, makes hop distance meaningful, makes `must-change` cascades
+deterministic, and makes the regeneration drill well-founded — a module cannot be
+regenerated from requirements that circularly justify each other. One fact, one
+place is not merely tidy; **applied properly it *implies* a DAG, and the cycle check
+is how that rule gets tested.**
 
 #### The limit of this, stated plainly
 
@@ -1022,8 +1110,10 @@ does rather than inventing a second convention.**
 - a sidecar entry that does not resolve: missing file, or a `section:` / `region:` /
   `offset:` selector not present in it (§6.2.3)
 - a stale impact graph — pass 2 output not matching current pass 1 output (§6.2.4)
-- a reference cycle among requirements: if A justifies B and B justifies A, neither
-  is grounded. Reported as a specification smell (§6.2.4)
+- **any cycle in the traversed relations** (`derives-from`, `implements`,
+  `verifies`). Not a smell to report — a hard failure, because a cycle means one
+  fact is modelled as several or a symmetric relation was typed as a dependency
+  (§6.2.5)
 
 **Exemptions must be individually reasoned.** Not everything implements a
 requirement: `serde` impls, `Display`, error conversions, port trait definitions.
@@ -1219,6 +1309,9 @@ These must be true from the first commit, not added in a later cleanup phase.
 31. **Every artifact that can carry a marker carries one.** Artifacts whose format cannot are covered by a sidecar, and **every sidecar entry must resolve** to an existing file and selector (§6.2.3).
 32. Reference generation is two-pass: per-package direct indexes, then one global impact graph. **Pass 2 emits a single graph artifact**; `just impact`, the gate and any visualisation derive from it rather than from parallel closure files (§6.2.4).
 33. Graph edges are typed `must-change` / `may-change` / `informational`. `must-change` is enforced at any depth; `may-change` within a hop budget. **An unusable closure report is how this mechanism degrades into a rubber stamp** (§6.2.4).
+34. Edges are also typed by relation: `derives-from`, `implements`, `verifies` are traversed; `constrains` and `references` are **symmetric and never traversed**, which is what stops them fabricating cycles (§6.2.5).
+35. **The dependency graph is acyclic. A cycle is a hard build failure, not a reported smell**, because it means one fact is modelled as several or a symmetric relation was typed as a dependency. There is no acceptable-cycles list (§6.2.5).
+36. Loops in the modelled domain (resources → commodities → ships → resources) live **inside** a single node as content, never as edges between nodes (§6.2.5).
 
 ---
 
@@ -1324,6 +1417,12 @@ The architecture in this document assumes the spec process will provide:
    one impact graph. Edges must be classifiable as `must-change`, `may-change` or
    `informational` — if the process records only “X references Y” with no force,
    every closure is “most of the system” and the gate becomes a rubber stamp.
+13. **Distinguishable relation types, with symmetric relations marked as such**
+   (§6.2.5). The format must separate `derives-from` from `constrains` from
+   `references`. If every link is one undifferentiated “reference”, symmetric
+   relations become opposing directed edges, the graph fills with phantom cycles,
+   and the acyclicity guarantee — which is what makes closures terminate and the
+   regeneration drill well-founded — is unavailable.
 
 If any of those assumptions is wrong, flag it to the owner rather than working around it.
 
@@ -1415,6 +1514,7 @@ Do not guess at these. Ask before the relevant phase begins.
 | The change-impact gate becomes a rubber stamp, with everything “acknowledged” | The way §6.2.2 most plausibly fails | Acknowledgements require a per-node reason and are reviewed; a node reachable by a test may not be acknowledged instead of tested; typed edges and the hop budget (§6.2.4) keep the report small enough to actually read |
 | The impact graph is incomplete because a marker is missing, so a real dependency never appears in any closure | **The epistemic limit of the whole scheme** — the graph answers “what references this”, a proxy for “what is affected by this” | Every marker gate is mandatory rather than advisory for exactly this reason (§6.2.4). Treat closures as high-quality candidate lists, never proofs of completeness |
 | Pass 2 becomes slow enough that people stop running it | Plausible as the repo grows | Pass 1 is per-package, parallel and content-hash cached; only pass 2 is global. Keep that separation — collapsing them makes every edit pay global cost |
+| Domain loops get mapped onto graph edges, filling the graph with phantom cycles and making §6.2.5 look unworkable | **Likely, and this domain is unusually loop-heavy** (resources → commodities → ships → resources) | The §6.2.5 rule of thumb: if breaking the cycle would require changing the *game*, it is a domain loop belonging inside one node; if it only requires reorganising the spec, it is a decomposition defect |
 | A game patch silently invalidates `observed` facts | Inherent to tracking someone else's game | `provenance` is a required field precisely so `just impact` can enumerate every observation needing re-measurement (§6.2.2) |
 | `cargo-mutants` has a single maintainer with limited time | Accepted under C1 | Measurement only; nothing in the build or release path may depend on it (§6.3) |
 
