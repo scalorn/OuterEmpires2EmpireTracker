@@ -739,15 +739,14 @@ trying for one phase before committing to.
 
 The indexes make the cascade visible. The gate makes acting on it mandatory.
 
-`just impact` **joins both index families** — the spec-side reverse index and every
-package's code-side index — and walks derived facts transitively. Neither family is
-sufficient alone: the spec side knows which requirements cite a fact, the code side
-knows which constants, call sites, tests and fixtures reference it, and the closure
-is the union.
+`just impact` reads the impact graph produced by the cascade pass (§6.2.4), which
+joins every direct index — spec-side, per-package code-side, and sidecars — and
+walks derived facts transitively. Neither side is sufficient alone: the spec side
+knows which requirements cite a fact, the code side knows which constants, call
+sites, tests and fixtures reference it.
 
 ```
-just impact FACT-REF-012     # full transitive closure across spec and all packages,
-                             # direct hops marked, derived facts followed
+just impact FACT-REF-012
 ```
 
 When a change edits an axiom, CI requires that every node in that axiom's closure is
@@ -798,6 +797,159 @@ requirements and tests to expect movement in before touching anything.
 This also gives V1's `spec/Ambiguities.md` a permanent home: an `assumed` axiom with
 low confidence *is* a tracked ambiguity, in the same structure as everything else,
 rather than in a side document that drifts.
+
+#### 6.2.3 Markers on every artifact, sidecars where the format cannot carry them
+
+`@specref` is a code-comment convention and the previous sections leaned on it as
+though code were the only artifact that references requirements. It is not. The
+general rule:
+
+> **Every artifact that *can* carry a marker carries one. Artifacts whose format
+> cannot carry a marker are covered by a sidecar mapping file.**
+
+The marker is a concept, not a syntax. Where a format has structure, use a
+structured field; where it only has comments, use a plain-text token. Both normalise
+to the same edge in the graph, so the spelling is a local convention and can be
+changed freely.
+
+| Artifact | Mechanism |
+|---|---|
+| Rust, TypeScript | `@specref` in the doc comment |
+| Markdown (`spec/`, `docs/`) | `spec_refs` field in frontmatter |
+| TOML / YAML / JSON-with-comments | structured `spec_refs` key |
+| SQL migrations | leading comment marker |
+| `.resx`, binary assets, images, mockup exports, generated files | **sidecar** |
+
+Sidecar entries are explicit about what they point at:
+
+```
+REQ-100  file:docs/reports/colony-summary.rdl  section:DataSet/ColonyYield
+REQ-100  file:spec/mockups/exports/colony.png  region:structures-panel
+FACT-REF-012  file:assets/balance/refining.bin  offset:0x1A40
+```
+
+**Sidecars are strictly worse than in-band markers, and the reason needs stating.**
+An in-band marker travels with the thing it marks: rename the file, move the
+function, and the marker goes with it. A sidecar entry is a *second location* for
+the relationship, so a rename or a removed section leaves it silently pointing at
+nothing — drift, in the precise sense of §6.2.1.
+
+So sidecars carry a compensating control, and it is mandatory:
+
+- **every sidecar entry must resolve.** The named file must exist and the named
+  section, region or offset selector must be present in it. `just trace` fails
+  otherwise.
+- prefer in-band always. A sidecar is a fallback for formats that leave no choice,
+  never a convenience.
+
+#### 6.2.4 Two-pass generation: direct indexes, then the cascade
+
+Everything described so far is **pass one**: direct, local, single-hop references.
+That answers “who mentions `REQ-100`?” It does not answer the question that actually
+matters before a change: **“if I change `REQ-100`, what might be impacted
+downstream?”**
+
+That needs a second generation pass over the completed pass-one output.
+
+| Pass | Input | Output | Properties |
+|---|---|---|---|
+| **1 — direct** | markers and sidecars within one artifact or package | per-package and per-node direct reference indexes | local, parallel, cacheable on content hash, needs no global knowledge |
+| **2 — cascade** | the union of all pass-one indexes | a single **impact graph**, plus closure queries derived from it | global reduce; must rerun whenever any pass-one output changes |
+
+The separation is what makes this affordable. Pass one is per-package and runs in
+parallel with incremental caching, so ordinary edits are cheap. Pass two is one
+global join, and only it needs to see the whole repository.
+
+**Emit the graph, derive the views.** Pass two produces *one* machine-readable graph
+artifact. `just impact`, the committed closure manifests, the change-impact gate and
+any visualisation all read from it. Generating a pile of per-node closure files as
+primary output would put the same relationships in many places — the mistake already
+made once in §6.2.2 and corrected.
+
+#### Edge typing: the distinction that makes the output usable
+
+The owner's phrasing — what **might** get impacted — is the right one, and the graph
+should preserve that uncertainty rather than flatten it. Not every edge carries the
+same force:
+
+| Edge class | Meaning | Examples | Gate behaviour |
+|---|---|---|---|
+| **must-change** | changing the source *necessarily* changes the target | derived facts, generated constants, generated indexes | regenerated automatically; enforced at **any** depth |
+| **may-change** | changing the source *might* affect the target; needs judgement | a requirement citing another, an implementation, a test, a worked example | must be tested or acknowledged, within a hop budget |
+| **informational** | mentions for navigation only | help docs, design prose that does not restate a value | reported, never gated |
+
+Without this split the closure of a widely-cited requirement is “most of the
+system”, which nobody reads and every reviewer waves through. **An unusable report
+is how this whole mechanism degrades into the rubber stamp already flagged as
+§6.2.2's most likely failure mode.**
+
+**Report hop distance, and budget on it.** `must-change` edges are enforced to any
+depth because the cascade is deterministic. `may-change` edges require
+acknowledgement only within a configured hop budget — start at 2 — with deeper hops
+reported for awareness. A core fact five hops from a UI label does not need a
+sign-off on the label.
+
+**Handle cycles explicitly.** Requirements citing each other will form cycles. The
+closure computation must collapse strongly-connected components rather than loop,
+and **a cycle among requirements should be reported as a specification smell** — if
+A justifies B and B justifies A, neither is grounded in anything.
+
+#### What the cascade query returns
+
+```
+just impact REQ-100
+
+REQ-100  "Colony structures process on a fixed tick"
+
+  must-change (2)
+    FACT-TICK-003          derived: tick_interval_ms        hop 1
+    oe2_core::time::TICK_MS  generated constant             hop 1
+
+  may-change (6)
+    REQ-100 -> REQ-104     "Overflow is evaluated per tick"  hop 1
+    REQ-100 -> REQ-118     "Activity log granularity"        hop 2
+    oe2-core   rules::colony::process_tick                   hop 1   [tested]
+    oe2-core   rules::overflow::evaluate                     hop 2   [tested]
+    oe2-server handlers::colony::tick_now                    hop 1   [tested]
+    spec/design/colony.md#tick-worked-example                hop 1   [ACK REQUIRED]
+
+  informational (3)
+    docs/colonies.md, docs/colony-activity.md, spec/flows/colony-tick.md
+
+  beyond hop budget (11)  — reported, not gated
+```
+
+The `[ACK REQUIRED]` line is the one that earns the tool its keep: a prose worked
+example no test can reach, which is exactly where §6.2.1's drift hides.
+
+#### The same graph answers the upstream question
+
+The downstream query is “what does changing this affect?” Inverted, the same graph
+answers **“this code exists — why?”**, which is the question behind dead-code
+detection, the untagged-public-item check, and the regeneration drill's input
+gathering. One pass-two artifact serves both directions; do not build a second graph
+for it.
+
+#### The limit of this, stated plainly
+
+The graph answers **“what references this”**, which is a *proxy* for “what is affected
+by this”. The two are not identical:
+
+- code can depend on a requirement's behaviour without carrying its marker — a
+  **missing** annotation, invisible to the graph
+- a marker can survive after the real dependence is gone — a **stale** annotation,
+  inflating the closure
+
+So the impact graph is only ever as good as marker coverage. **This is why the marker
+gates are mandatory rather than advisory**, and it is the load-bearing justification
+for several rules that would otherwise look like zealotry: the untagged-public-item
+failure, the literal-duplication check, mandatory sidecar resolution, 100% coverage,
+and the regeneration drill. Each one closes a path by which a dependency could exist
+without appearing in the graph.
+
+Treat the closure as a **high-quality candidate list**, never a proof of
+completeness. It is the best available answer to “what might be impacted”, and the
+word *might* is doing real work.
 
 #### The consequences that make this work
 
@@ -867,6 +1019,11 @@ does rather than inventing a second convention.**
 - an unacknowledged node in a changed axiom's transitive closure (§6.2.2)
 - an `@specref` to a domain requirement appearing in a `shells/` package index —
   business logic leaking out of the core, founding rule 7
+- a sidecar entry that does not resolve: missing file, or a `section:` / `region:` /
+  `offset:` selector not present in it (§6.2.3)
+- a stale impact graph — pass 2 output not matching current pass 1 output (§6.2.4)
+- a reference cycle among requirements: if A justifies B and B justifies A, neither
+  is grounded. Reported as a specification smell (§6.2.4)
 
 **Exemptions must be individually reasoned.** Not everything implements a
 requirement: `serde` impls, `Display`, error conversions, port trait definitions.
@@ -1004,7 +1161,8 @@ agent should treat them that way:
 | Where is this requirement implemented? | the per-package code index (§6.2.2) |
 | Where did this value come from? | Tier 1 generation — exactly one home per fact (§6.2) |
 | How do we know it is true? | the fact's `provenance` and `rationale` (§6.2.2) |
-| What breaks if I change it? | the generated reverse index; `just impact` (§6.2.2) |
+| What breaks if I change it? | `must-change` edges in the impact graph (§6.2.4) |
+| What *might* break if I change it? | `may-change` edges, within the hop budget (§6.2.4) |
 | Does the test suite reach every path? | region coverage, 100% |
 | Does the test suite *constrain* every path? | mutation testing, zero survivors |
 | Is the specification sufficient on its own? | regeneration drill, Pass A |
@@ -1058,6 +1216,9 @@ These must be true from the first commit, not added in a later cleanup phase.
 28. Derived facts store their **formula, never their value**. Only axioms are hand-editable.
 29. Both generated index families are **committed** — the spec-side reverse index and the per-package code-side `@specref` index. A stale index of either kind fails the build. `@specref` is the single declaration of a code-to-spec relationship; nothing restates it (§6.2.2).
 30. A change to an axiom must leave no unacknowledged node in its transitive closure. `just impact` enumerates it; CI enforces it (§6.2.2).
+31. **Every artifact that can carry a marker carries one.** Artifacts whose format cannot are covered by a sidecar, and **every sidecar entry must resolve** to an existing file and selector (§6.2.3).
+32. Reference generation is two-pass: per-package direct indexes, then one global impact graph. **Pass 2 emits a single graph artifact**; `just impact`, the gate and any visualisation derive from it rather than from parallel closure files (§6.2.4).
+33. Graph edges are typed `must-change` / `may-change` / `informational`. `must-change` is enforced at any depth; `may-change` within a hop budget. **An unusable closure report is how this mechanism degrades into a rubber stamp** (§6.2.4).
 
 ---
 
@@ -1081,7 +1242,9 @@ just test             # every suite: cargo nextest, vitest, wasm tests
 just lint             # clippy, fmt, eslint, tsc
 just audit            # spec and code audit checks
 just trace            # bidirectional requirement and fact traceability (§6.2)
-just impact FACT-xxx  # transitive closure of a fact: what changing it touches (§6.2.2)
+just index            # pass 1: direct reference indexes, per package (§6.2.4)
+just cascade          # pass 2: build the impact graph from all pass-1 output
+just impact REQ-xxx   # query the graph: what might changing this affect? (§6.2.4)
 just coverage         # cargo-llvm-cov + vitest coverage, enforces 100% (§6.3)
 just check            # lint + build + test + trace + coverage + audit
                       #   (the pre-commit gate)
@@ -1152,6 +1315,15 @@ The architecture in this document assumes the spec process will provide:
    different defects. Either `@specref` carries a role, or it is inferred from
    context (an annotation on a `#[test]` item being a verification). Confirm which
    the process already does; do not invent a parallel convention.
+11. **A sidecar mechanism for formats that cannot carry markers** (§6.2.3), with
+   selector syntax (`section:`, `region:`, `offset:`) and mandatory resolution
+   checking. Without resolution checking a sidecar is a drift vector rather than a
+   traceability mechanism.
+12. **A cascade pass, and typed edges to make it usable** (§6.2.4). Pass one gives
+   direct references; the downstream-impact question needs a second pass producing
+   one impact graph. Edges must be classifiable as `must-change`, `may-change` or
+   `informational` — if the process records only “X references Y” with no force,
+   every closure is “most of the system” and the gate becomes a rubber stamp.
 
 If any of those assumptions is wrong, flag it to the owner rather than working around it.
 
@@ -1240,7 +1412,9 @@ Do not guess at these. Ask before the relevant phase begins.
 | An exhaustive specification can be confidently *wrong*, and prose has no compiler | The residual risk once drift is solved | Tier 1 is schema-validated and generated, so it is effectively compiled; Tier 2 is pinned by tests and by the drill. Nothing relies on prose being correct unaided |
 | The spec-first editing workflow is half-adopted, leaving some facts generated and others hand-written | Likely, and worse than not adopting it | Dirty-generated check plus the literal-duplication check (checklist 23, 24) fail the build rather than warn |
 | Committed indexes create large diffs and merge conflicts on shared facts | Lower than first assessed | Per-package scoping already localises the code side — a change churns only its own package's index. Keep the spec side one file per fact rather than a monolith and the same holds there |
-| The change-impact gate becomes a rubber stamp, with everything “acknowledged” | The way §6.2.2 most plausibly fails | Acknowledgements require a per-node reason and are reviewed; a node that can be reached by a test may not be acknowledged instead of tested |
+| The change-impact gate becomes a rubber stamp, with everything “acknowledged” | The way §6.2.2 most plausibly fails | Acknowledgements require a per-node reason and are reviewed; a node reachable by a test may not be acknowledged instead of tested; typed edges and the hop budget (§6.2.4) keep the report small enough to actually read |
+| The impact graph is incomplete because a marker is missing, so a real dependency never appears in any closure | **The epistemic limit of the whole scheme** — the graph answers “what references this”, a proxy for “what is affected by this” | Every marker gate is mandatory rather than advisory for exactly this reason (§6.2.4). Treat closures as high-quality candidate lists, never proofs of completeness |
+| Pass 2 becomes slow enough that people stop running it | Plausible as the repo grows | Pass 1 is per-package, parallel and content-hash cached; only pass 2 is global. Keep that separation — collapsing them makes every edit pay global cost |
 | A game patch silently invalidates `observed` facts | Inherent to tracking someone else's game | `provenance` is a required field precisely so `just impact` can enumerate every observation needing re-measurement (§6.2.2) |
 | `cargo-mutants` has a single maintainer with limited time | Accepted under C1 | Measurement only; nothing in the build or release path may depend on it (§6.3) |
 

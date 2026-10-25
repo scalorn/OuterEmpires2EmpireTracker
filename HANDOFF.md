@@ -314,6 +314,34 @@ parts worth keeping:
      since citations and annotations did not change. The indexes say where to look;
      enumeration comes from querying them. The seed recommends the change-impact
      gate write its `just impact` closure manifest into the commit to close that gap.
+8e. **Markers are a concept, not a syntax; and reference generation is two-pass**
+   (seed §6.2.3, §6.2.4). `@specref` is javadoc-flavoured and an earlier draft
+   treated code annotations as the only marker mechanism.
+   - **General rule:** every artifact that *can* carry a marker does — doc comments
+     in code, `spec_refs` frontmatter in Markdown, structured keys in TOML/YAML.
+     Artifacts whose format cannot (`.resx`, binaries, images, mockup exports) get
+     a **sidecar**: `REQ-100 file:report.rdl section:DataSet/ColonyYield`.
+   - **Sidecars are strictly worse than in-band markers** because an in-band marker
+     travels with the thing it marks, while a sidecar is a second location that
+     silently rots on rename. Compensating control: **every sidecar entry must
+     resolve** — file exists, selector present — checked in CI.
+   - **Two passes.** Pass 1 = direct references, per package, parallel, content-hash
+     cached. Pass 2 = one global **impact graph** joining all pass-1 output, which is
+     what answers “change REQ-100, what might be impacted downstream?” Emit the
+     graph; derive `just impact`, the gate and visualisations from it. Do not
+     generate parallel closure files.
+   - **Typed edges are what make it usable:** `must-change` (derived facts,
+     generated constants — deterministic, enforced at any depth), `may-change`
+     (citations, implementations, tests — judgement, enforced within a hop budget,
+     start at 2), `informational` (never gated). Without this split the closure of a
+     widely-cited requirement is “most of the system”, which nobody reads — **that
+     is the mechanism by which the gate degrades into a rubber stamp.**
+   - Cycles among requirements must be collapsed, and reported as a spec smell: if A
+     justifies B and B justifies A, neither is grounded.
+   - **The limit, recorded honestly:** the graph answers “what references this”,
+     which is a proxy for “what is affected by this”. A missing marker is invisible
+     to it. This is the load-bearing reason every marker gate is mandatory rather
+     than advisory, and why closures are candidate lists rather than proofs.
 8b. **The drift principle is the owner's core thesis and the reason §6.2 exists:**
    every value was decided by something; if the value changes and the thing that
    decided it does not, the system is lying about itself. This is the origin of both
