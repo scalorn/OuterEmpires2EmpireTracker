@@ -471,9 +471,14 @@ oe2/
 
 ---
 
-## 6. Lessons from V1 that are now founding rules
+## 6. Founding rules
 
-V1's `.kiro/steering/` is a record of problems discovered the hard way. These are the ones worth carrying, restated for V2. **Each should be enforced mechanically, not by discipline.**
+The table below carries forward V1's hard-won lessons; §6.1 to §6.3 add rules that
+are specific to V2. **Every rule here must be enforced mechanically, not by
+discipline.** V1 demonstrated repeatedly that a rule depending on someone
+remembering it is a rule that is already broken.
+
+V1's `.kiro/steering/` is a record of problems discovered the hard way. These are the ones worth carrying, restated for V2.
 
 | V1 lesson | V2 rule | Enforcement |
 |---|---|---|
@@ -497,6 +502,207 @@ V1's `.kiro/steering/` is a record of problems discovered the hard way. These ar
 
 **No panics in the engine.** `oe2-core` returns `Result` and never panics. `unwrap`, `expect`, indexing that can panic, and arithmetic that can overflow are denied outside `#[cfg(test)]`. A panic inside WASM aborts the whole module, and a panic on the server takes down a request handler; neither is an acceptable way to report a domain error. Use `thiserror` for typed domain errors and `anyhow` only at shell boundaries.
 
+### 6.2 Traceability with provable regenerability
+
+**The rule.** Every requirement traces forward to the code implementing it and the
+tests verifying it, and every code unit traces back to a requirement — both
+directions mechanically checked. The standard is stronger than documentation:
+**it must be possible to delete any implementation module and reconstruct
+equivalent behaviour from its requirement references and its tests.**
+
+#### What the regeneration inputs actually are
+
+Be precise here, because the achievable version differs from the obvious reading.
+The inputs are:
+
+1. the requirement text in `spec/`, reached via the deleted module's `Satisfies:` tags
+2. the module's public API documentation
+3. **the module's test suite**
+
+Spec prose alone is not sufficient, and no realistic specification ever will be. No
+requirements document encodes every numeric tolerance, error variant, sort order and
+boundary condition. The tests carry those, which is the right place for them,
+because tests are executable. So the standard is: **specification and tests are
+jointly sufficient to regenerate the implementation.**
+
+#### The consequences that make this work
+
+If tests are a regeneration input, three things follow, and they are the real value
+of this rule:
+
+- **Tests are never regenerated in the same exercise.** That would be circular.
+  Tests are authored from the spec and serve as the oracle; the implementation is the
+  regenerable artifact.
+- **Tests must not couple to implementation detail.** A test asserting on internal
+  structure will fail against a correct regeneration. This rule therefore forbids
+  implementation-coupled tests *mechanically*, which is worth having on its own.
+- **Uncovered code is unregenerable code.** If the oracle never executes a path, it
+  does not constrain that path, so nothing pins its behaviour. This is why §6.3 is
+  not a separate rule — it is the measurement that makes this one provable.
+
+#### Annotation mechanism
+
+Structured doc-comment tags, parsed by `xtask`. **Not** a proc macro: a macro
+validating against an external spec file is fragile, slows every build, and buys
+nothing a lint cannot.
+
+```rust
+/// Computes the ideal structure count for a colony.
+///
+/// Satisfies: REQ-COL-014, REQ-COL-015
+pub fn ideal_structure_count(/* ... */) { }
+```
+
+```rust
+/// Verifies: REQ-COL-014
+#[test]
+fn ideal_count_scales_with_population() { }
+```
+
+TypeScript uses the same tags in JSDoc, checked by the same `xtask`.
+
+**Granularity: tag modules, public API items, and every test.** Do not tag private
+functions — it is noise and it rots. The regeneration unit is the module, so the
+module is the annotation unit.
+
+#### `just trace` fails on
+
+- a `Satisfies:` or `Verifies:` tag naming a requirement ID absent from `spec/`
+- a requirement with no implementation
+- a requirement with no verifying test
+- a public item in `oe2-core` with neither a tag nor a listed exemption
+
+**Exemptions must be individually reasoned.** Not everything implements a
+requirement: `serde` impls, `Display`, error conversions, port trait definitions.
+These go in `spec/trace-exemptions.toml` with a one-line justification each, and the
+file is reviewed. A blanket skip pattern would hollow this rule out within a month.
+
+#### The regeneration drill
+
+This is what converts the aspiration into evidence. A **scheduled** CI job, not a
+per-PR gate:
+
+1. select a module from `oe2-core`
+2. delete its implementation, keeping its tests and public signatures
+3. regenerate from the requirement text plus the tests
+4. **pass condition:** the full suite passes and the coverage gate still holds
+
+**A failed drill is a specification defect, not a code defect.** The output is a gap
+in `spec/`, filed and fixed. This is the only mechanism in the plan that tests the
+specification itself rather than the code, which is what justifies the CI time.
+
+Scope it to `oe2-core` modules. The shells are not regenerable in this sense and are
+out of scope.
+
+### 6.3 Coverage, and what to do when 100% is not reachable
+
+**The rule.** 100% coverage of `oe2-core`, `oe2-sync` and the storage adapters, with
+every exclusion named and justified individually.
+
+#### Why 100% rather than a percentage target
+
+A threshold of 90% tells you nothing about *which* 10% is unverified, and it
+ratchets downward under delivery pressure because every uncovered line is
+pre-approved. “100% minus an explicit exclusion list” is enforceable, the exclusions
+are visible, and each one is arguable on review. Keep the bar at 100 and argue about
+the list instead.
+
+**The owner's diagnosis is the operative principle and should be quoted in review:**
+if a branch cannot be covered, the usual cause is that the failure cannot be
+injected, which means there is no seam, which is a design defect. The correct
+response is to fix the design, not to lower the target. In a sans-IO core (§4.2)
+where time, IDs, randomness and storage all arrive through injected ports, there is
+very little excuse available.
+
+#### A measurement problem that changes the rule's shape
+
+Rust branch coverage is **not reliably measurable on stable**. `cargo-llvm-cov`
+reports line, region and branch coverage, but
+[branch coverage is optional and requires nightly](https://github.com/taiki-e/cargo-llvm-cov/blob/main/README.md),
+and it has known inconsistencies on generic functions. A hard 100% gate on an
+unreliable measurement is worse than no gate, because it teaches people to disbelieve
+the gate.
+
+So the Rust gate is:
+
+| Measure | Toolchain | Gate |
+|---|---|---|
+| **Region coverage** | `cargo-llvm-cov`, stable | **100%**, exclusions listed |
+| Line coverage | `cargo-llvm-cov`, stable | 100%, implied by region |
+| Branch coverage | nightly | reported, informational, **not gated** |
+
+**Region coverage is the correct stable proxy and is stricter than line coverage.**
+Regions are sub-expression granular, so both arms of a `match` and both sides of a
+short-circuit `&&` are distinct regions. It delivers most of what branch coverage
+would, on a stable toolchain, which matters under C1.
+
+TypeScript has no such problem: `vitest` reports statement, branch, function and
+line coverage, and 100% thresholds are gated per package.
+
+#### Coverage is necessary and not sufficient
+
+Coverage proves the tests *execute* the code. It does not prove they *constrain* it.
+100% coverage with weak assertions is worthless, and under §6.2 it would also mean
+the regeneration oracle has no teeth — a module could be “fully covered” and still
+not be regenerable. Mutation testing closes that gap by checking whether a change to
+the code is actually detected.
+
+`cargo-mutants` for Rust, with one caveat recorded against C1: by its author's own
+description it is a
+[semi-actively-maintained spare-time project](https://github.com/sourcefrog/cargo-mutants)
+with a single maintainer. That is accepted here **only** because it is a measurement
+tool — if it stalls, nothing ships broken and the coverage and property-test gates
+are unaffected. **Nothing in the build or release path may depend on it.**
+
+Mutation testing is therefore scheduled, not per-PR:
+
+- weekly CI run over `oe2-core`
+- surviving mutants tracked in `spec/mutation-survivors.toml` with a reason each
+- target for `oe2-core` is **zero unexplained survivors**
+- a surviving mutant is a missing assertion, which is also a regenerability gap
+
+`stryker-mutator` is the TypeScript counterpart, scoped to `@oe2/hooks`.
+
+#### Where 100% is deliberately not the target
+
+The shells. Covering Electron window-management glue, Capacitor bridges and
+`napi-rs` boundary code to 100% means mocking entire platform APIs for very little
+return.
+
+This is legitimate **only** because of founding rule 7: the shells contain no
+business logic. All logic lives in `oe2-core` and `@oe2/hooks`, both of which are
+held at 100%. The two rules are load-bearing for each other — **if a shell ever
+needs heavy testing, that is evidence it is doing something that belongs in the
+core**, and the fix is to move the logic, not to raise the shell's coverage target.
+
+An audit check for business logic appearing under `shells/` is what keeps this
+honest. Without it, the shell exemption becomes a place for logic to hide from the
+coverage gate.
+
+#### 6.3.1 How §6.2 and §6.3 fit together
+
+These arrived as two separate owner requirements but they are one mechanism, and an
+agent should treat them that way:
+
+| Question | Answered by |
+|---|---|
+| What should this code do? | the requirement, reached via `Satisfies:` tags |
+| Does the test suite reach every path? | region coverage, 100% |
+| Does the test suite *constrain* every path? | mutation testing, zero survivors |
+| Can the implementation be reconstructed? | the regeneration drill |
+
+Read in that order: traceability supplies the intent, coverage proves the oracle is
+complete, mutation testing proves the oracle has teeth, and the drill proves the
+whole chain actually works. Remove any one and “provable regenerability” degrades to
+a claim rather than a measurement.
+
+The owner's framing is the right one to hold onto: **if these rules cannot be kept
+in a greenfield rewrite, that is evidence the design is wrong, not that the rules
+are unreasonable.** V1 could not have met them — a 4000-line `PlayerContext`
+singleton and 8800-line storage class are not testable to 100% and not regenerable
+in units. A sans-IO core with injected ports is both, which is a large part of why
+§4.2 is written the way it is.
+
 ---
 
 ## 7. Founding rules checklist
@@ -519,6 +725,12 @@ These must be true from the first commit, not added in a later cleanup phase.
 14. The desktop shell satisfies the input and density contract in §4.5. Keyboard parity with the mouse is a requirement, not a stretch goal.
 15. No JSON file persistence. SQLite is the local store; JSON is import, export, and fixtures only (§4.3).
 16. The desktop application is fully functional with no server and no network, and CI proves it.
+17. Every requirement in `spec/` traces to an implementation and to a verifying test. `just trace` enforces both directions and fails the build (§6.2).
+18. Every public item in `oe2-core` carries a `Satisfies:` tag or a reasoned entry in `spec/trace-exemptions.toml`. No blanket skip patterns.
+19. 100% region coverage on `oe2-core`, `oe2-sync` and the storage adapters, with every exclusion individually justified (§6.3).
+20. **No test asserts on implementation detail.** Tests are the regeneration oracle and must be behavioural (§6.2).
+21. Zero unexplained surviving mutants in `oe2-core`. Nothing in the build or release path depends on `cargo-mutants`.
+22. Shells contain no business logic. This is what makes their reduced coverage target legitimate, and it is audit-enforced (§6.3).
 
 ---
 
@@ -530,6 +742,7 @@ These must be true from the first commit, not added in a later cleanup phase.
 - Node LTS with `pnpm`
 - `just` as the task runner — this is the direct replacement for V1's PowerShell scripts
 - `cargo-nextest` for test running, `cargo-deny` for licence and advisory auditing, `wasm-bindgen-cli`, `napi-rs` CLI
+- `cargo-llvm-cov` for region and line coverage (§6.3), `cargo-mutants` for the scheduled mutation run
 - Android SDK and NDK for mobile builds
 
 Minimum task surface in the `justfile`:
@@ -540,7 +753,12 @@ just build            # engine + contract codegen + all packages
 just test             # every suite: cargo nextest, vitest, wasm tests
 just lint             # clippy, fmt, eslint, tsc
 just audit            # spec and code audit checks
-just check            # lint + build + test + audit  (the pre-commit gate)
+just trace            # bidirectional requirement traceability (§6.2)
+just coverage         # cargo-llvm-cov + vitest coverage, enforces 100% (§6.3)
+just check            # lint + build + test + trace + coverage + audit
+                      #   (the pre-commit gate)
+just mutants          # mutation run; slow, normally left to scheduled CI
+just regen-drill      # regeneration drill for one module (§6.2); scheduled CI
 just dev-desktop      # Electron with hot reload
 just dev-web          # Vite dev server
 just dev-mobile       # Capacitor live reload on device
@@ -554,7 +772,8 @@ just refresh-legacy   # re-sync legacy/ from the V1 tree, record SHA (§2.2)
 
 | Runner | Responsibility |
 |---|---|
-| `ubuntu-latest` | Everything: engine, server, WASM, all packages, lint, full test suite, audit, Linux and Android packaging. **This is the gate for every PR.** |
+| `ubuntu-latest` | Everything: engine, server, WASM, all packages, lint, full test suite, traceability, coverage, audit, Linux and Android packaging. **This is the gate for every PR.** |
+| `ubuntu-latest` (scheduled, weekly) | `just mutants` over `oe2-core` and `just regen-drill` on a rotating module. Not a PR gate — both are slow, and a regen-drill failure is a specification defect to triage rather than a change to block (§6.2). |
 | `windows-latest` | Windows Electron build and signing. Release only. |
 | `macos-latest` | macOS Electron build and signing; iOS build and signing. Release only. |
 
@@ -580,8 +799,21 @@ The architecture in this document assumes the spec process will provide:
 2. **Machine-validated structure** — a schema or linter that fails CI on a malformed document
 3. **Validated interlinking** — every reference between requirement, design, flow, mockup, test, and help document resolves, in both directions
 4. **Shardable ownership** — documents partitioned so two developers can work concurrently without conflict
+5. **Granularity fine enough to annotate code with** — §6.2 requires `Satisfies:`
+   tags naming individual requirement IDs on modules and public API items. A
+   requirement the size of a chapter cannot be referenced usefully; the ID must
+   correspond to roughly one verifiable behaviour.
+6. **Completeness sufficient to drive regeneration** — the regeneration drill
+   (§6.2) consumes requirement text plus tests. Requirements written as summaries
+   rather than as specifications of behaviour will cause drills to fail, and those
+   failures are reported as specification defects.
 
 If any of those assumptions is wrong, flag it to the owner rather than working around it.
+
+**Note on 5 and 6:** these two are new as of the §6.2 traceability rule and are the
+most demanding things this document asks of the spec process. They are worth
+confirming before the process is finalised, because retrofitting requirement
+granularity after the fact means renumbering every ID that code already references.
 
 ### 9.2 Interim arrangement
 
@@ -598,11 +830,11 @@ Until the process arrives:
 
 Each phase ends with `just check` passing and a working artifact. No phase is “done” because code exists — it is done when the verification named in the phase passes.
 
-**Phase 0 — Skeleton.** Repository layout per §5, Cargo and pnpm workspaces, pinned toolchain, `justfile`, Linux CI running lint plus a trivial test, `legacy/` populated, `spec/README.md` placeholder. *Verification:* `just check` passes on a clean clone on Linux, and CI is green.
+**Phase 0 — Skeleton.** Repository layout per §5, Cargo and pnpm workspaces, pinned toolchain, `justfile`, Linux CI running lint plus a trivial test, `legacy/` populated, `spec/README.md` placeholder. **The coverage and traceability gates must be wired up and enforcing in Phase 0, against a trivial amount of code** — a 100% gate introduced once there are 40,000 lines is a gate that gets switched off. *Verification:* `just check` passes on a clean clone on Linux, CI is green, and `just coverage` fails if a line is deliberately left untested.
 
 **Phase 1 — Walking skeleton end to end.** One trivial aggregate carried all the way through: `oe2-core` command, `oe2-contract` type, generated TS contract, `oe2-storage-sqlite`, `oe2-node` addon, Electron shell rendering one MDI child window, Vite shell rendering one page, Capacitor Android build. *Verification:* the same command produces the same result in all three shells, proven by a test, and the contract staleness check fails when `oe2-contract` changes without regeneration.
 
-**Phase 2 — Domain core.** Port the game rules from `legacy/csharp/` and `legacy/spec/` into `oe2-core`: resources, purities, refining, colonies, structures, timers, blueprints. Property tests for every rule. No UI work. *Verification:* property tests cover every rule; results cross-checked against V1 behaviour on real `PlayerData.json` fixtures.
+**Phase 2 — Domain core.** Port the game rules from `legacy/csharp/` and `legacy/spec/` into `oe2-core`: resources, purities, refining, colonies, structures, timers, blueprints. Property tests for every rule. No UI work. *Verification:* property tests cover every rule; 100% region coverage holds; `just trace` reports no untraced requirement and no untagged public item; results cross-checked against V1 behaviour on real `PlayerData.json` fixtures. **Run the first regeneration drill on one small module in this phase** and judge the value before extending it.
 
 **Phase 3 — Desktop MDI shell.** `@oe2/mdi` complete per §4.4, `@oe2/tokens` matching the V1 appearance, the grid and form primitives, and the highest-value views first — colony, blueprint, survey. *Verification:* layout persists across restart; a 10k-row grid scrolls smoothly; keyboard navigation works.
 
@@ -648,6 +880,10 @@ Do not guess at these. Ask before the relevant phase begins.
 | WASM-in-webview underperforms on mobile where comparable apps use FFI | The least-proven element of the plan (§3.9.1) | Measure in Phase 6; `uniffi` bindings are an additive escape hatch because the engine is UI-independent |
 | Desktop shell drifts into web-page idioms, as happened to 1Password | **High.** The most common criticism of every Electron app in §3.9, and the owner's stated pet hate — the console-game-ported-to-desktop smell | The §4.5 contract with named requirements, founding rule 14, and two mechanical checks by end of Phase 3 |
 | Porting game rules introduces behavioural regressions against V1 | High, and the most likely source of real bugs | Phase 2 cross-checks against V1 using real `PlayerData.json` fixtures; mine V1's tests for edge cases |
+| The 100% coverage gate slows early feature work | Certain, and partly the point | Accepted. The cost lands in Phase 2 where the core is pure and coverage is cheapest; it is far more expensive to retrofit |
+| The coverage exclusion list erodes into a dumping ground | **The main long-term threat to §6.3** | Every exclusion needs an individual written reason; review the list as a whole each phase, not entry by entry |
+| The regeneration drill has no precedent and may prove expensive or inconclusive | Real — this is the most novel process idea in the plan | Scheduled, never a PR gate. Start with one small `oe2-core` module in Phase 2 and judge the value before extending it |
+| `cargo-mutants` has a single maintainer with limited time | Accepted under C1 | Measurement only; nothing in the build or release path may depend on it (§6.3) |
 
 ---
 

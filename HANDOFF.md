@@ -248,6 +248,18 @@ parts worth keeping:
 7. **WASM-in-webview on mobile is the least-proven element.** Comparable apps (Anki,
    Bitwarden, Element) all use FFI there. `uniffi` is the recorded escape hatch, and
    it is additive because the engine has no UI coupling.
+8. **Traceability and coverage are one mechanism, not two rules.** Regeneration
+   consumes spec text *plus tests*, because no realistic spec encodes every
+   tolerance and error variant. That makes the tests the oracle, which means
+   uncovered code is literally unregenerable code — so 100% coverage is what makes
+   regenerability provable rather than aspirational. It also means tests may never
+   assert on implementation detail, or a correct regeneration would fail them.
+9. **Rust branch coverage is not reliably measurable on stable** — `cargo-llvm-cov`
+   needs nightly for it and is inconsistent on generics. The gate is therefore
+   **100% region coverage** (sub-expression granular, stricter than line coverage)
+   plus scheduled mutation testing, which together prove more than a branch
+   percentage would. Do not “restore” a branch-coverage gate without rechecking
+   whether the tooling has improved.
 
 ### Owner decisions captured this session (do not re-ask)
 
@@ -266,6 +278,13 @@ parts worth keeping:
 - **MDI on desktop** is deliberate and heavily used. Keep it.
 - **Visual consistency** is a nice-to-have, not a requirement.
 - **Maturity over novelty** is a hard requirement.
+- **Complete traceability with provable regenerability** (seed §6.2). Every
+  requirement traces both ways; it must be possible to delete a module and
+  reconstruct it from its REQ references and its tests.
+- **100% coverage** of the core, server logic and storage adapters (seed §6.3).
+  The owner's stated reasoning, which should be quoted in review: an uncoverable
+  branch usually means the failure cannot be injected, which means there is no
+  seam, which is a design defect. Fix the design, not the target.
 
 ### Still open (from `V2-TECHNICAL-SEED.md` §11)
 
