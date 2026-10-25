@@ -610,7 +610,7 @@ fine, but in the gap that opens between the value and its justification.
 
 - A Tier 1 value can only be changed by editing the specification, so the rationale
   is in the same diff. Hand-editing the generated constant fails the build.
-- A Tier 2 behaviour change fails `just trace` unless the `Satisfies:` requirement is
+- A Tier 2 behaviour change fails `just trace` unless the `@specref` requirement is
   updated in the same change.
 - `just trace` additionally validates **spec-internal consistency**, because an
   exhaustive agent-maintained specification is large enough to contradict itself:
@@ -644,18 +644,45 @@ FACT-REF-012
   referenced by:                      (generated — do not edit)
     spec:      REQ-COL-014, REQ-COL-022, spec/design/refining.md#worked-example
     derived:   FACT-REF-019, FACT-REF-020
-    code:      oe2_core::rules::refining::TIER2_YIELD  (generated constant)
-               oe2_core::rules::refining::apply_yield  (call site)
-    tests:     refining_yield_scales_with_purity
-               refining_cycle_totals  (fixture: expected_totals.json)
+    packages:  oe2-core, oe2-server      → see each package's code index
 ```
 
-**The index must span spec, code, tests and fixtures — not just spec-to-spec.**
-Changing a number cascades into requirements that cite it, worked examples that
-compute with it, the generated constant, every call site, tests that assert derived
-values, and — the one that bites — **test fixtures holding precomputed expected
-outputs**. A fixture with a hardcoded expected total is where a fact change either
-breaks mysteriously or, worse, keeps passing while meaning something different.
+The spec-side node deliberately stops at package granularity. It does **not** list
+individual constants, call sites, tests or fixtures — those live in the code-side
+indexes described next. Inlining them here would make a spec artifact depend on
+scanning the whole code tree, and would churn `spec/` on every code movement.
+
+#### Code-side indexes, and why this still satisfies one fact, one place
+
+Code carries `@specref` annotations, and every `@specref` is collected into a
+**generated index per package**. To find where `REQ-100` or `FACT-REF-012` is
+referenced in code, you read that package's index.
+
+This preserves the one-fact-one-place rule, and it is worth being explicit about
+*why*, because an earlier draft of this section got it wrong:
+
+> **The `@specref` annotation is the single declaration of the relationship. Both
+> index families are derived views of it.**
+
+The previous draft listed code call sites inside the spec-side fact node *and*
+assumed `@specref` annotations in code — which meant the same relationship was
+asserted in two places, with no answer to which one was authoritative. That is the
+exact duplication §6.2 exists to prevent, reintroduced one level up. The annotation
+is the source; nothing restates it.
+
+So there are two generated index families, each derived from a single source:
+
+| Index | Generated from | Direction | Lives in |
+|---|---|---|---|
+| spec-side reverse index | `REQ-`/`FACT-` citations within `spec/` | spec → spec | `spec/`, beside the node |
+| code-side package index | `@specref` annotations in that package | code → spec | the package |
+
+**Per-package scoping matters beyond tidiness.** Indexes generate in parallel, a
+code change churns only its own package's index, and merge conflicts localise to the
+package being worked on rather than landing in a shared global file. It also keeps
+the `oe2-core` / `shells` boundary legible: if a `shells/` index contains refs to
+domain requirements, that is business logic having leaked out of the core, which
+founding rule 7 forbids. **The shell indexes become an audit surface for free.**
 
 #### Axioms and derived facts
 
@@ -676,25 +703,51 @@ This makes the cascade transitive and the index must reflect that: changing
 *they* feed. Distinguish direct from transitive references in the generated output,
 because a one-hop change and a five-hop change warrant different scrutiny.
 
-#### The index is generated and committed
+#### The indexes are generated and committed
 
-Generated artifacts are often kept out of version control. **Commit this one.** The
-whole objective is “change a number, see the cascade”, and the place that gets seen
-is the diff. If the index is committed, then changing one axiom produces a pull
-request whose diff *is* the blast radius report — every affected requirement,
-derived fact, constant, call site and fixture, enumerated, in review, without anyone
-running a tool.
+Generated artifacts are often kept out of version control. **Commit these.** The
+objective is “change a number, see the cascade”, and the place a cascade gets seen is
+a diff.
 
 The usual objection to committing generated files is drift between source and
 artifact, and that is already handled: the dirty-generated check (§6.2 Tier 1) fails
-the build if the index does not match what the generator produces.
+the build if an index does not match what the generator produces.
+
+**What a fact-value change actually shows in the diff — being precise, because an
+earlier draft of this section overclaimed:**
+
+| Artifact | Moves on a fact-value change? |
+|---|---|
+| the axiom's own node in `spec/` | yes — `0.85` → `0.9` |
+| generated Rust and TypeScript constants | yes |
+| derived facts computed from it | yes |
+| spec-side reverse index | **no** — citations did not change |
+| code-side package indexes | **no** — `@specref` annotations did not change |
+
+So the diff shows the *value* cascade but not the *reference* cascade. The indexes
+only move when citations or annotations move. They tell you where to look; the
+enumeration comes from querying them.
+
+**Closing that gap:** have the change-impact gate write its own output into the
+change. `just impact` for every edited axiom emits a closure manifest that is part
+of the commit, so the diff then literally contains the blast radius list alongside
+the value change. This is cheap and delivers the stated goal exactly — recorded here
+as a recommendation rather than a mandate, since it is the kind of thing worth
+trying for one phase before committing to.
 
 #### `just impact` and the change-impact gate
 
-The index makes the cascade visible. The gate makes acting on it mandatory.
+The indexes make the cascade visible. The gate makes acting on it mandatory.
+
+`just impact` **joins both index families** — the spec-side reverse index and every
+package's code-side index — and walks derived facts transitively. Neither family is
+sufficient alone: the spec side knows which requirements cite a fact, the code side
+knows which constants, call sites, tests and fixtures reference it, and the closure
+is the union.
 
 ```
-just impact FACT-REF-012     # full transitive closure, direct hops marked
+just impact FACT-REF-012     # full transitive closure across spec and all packages,
+                             # direct hops marked, derived facts followed
 ```
 
 When a change edits an axiom, CI requires that every node in that axiom's closure is
@@ -763,32 +816,41 @@ oracle, three things follow:
 
 #### Annotation mechanism
 
-Structured doc-comment tags, parsed by `xtask`. **Not** a proc macro: a macro
-validating against an external spec file is fragile, slows every build, and buys
-nothing a lint cannot.
+`@specref` doc-comment annotations, collected by `xtask` into a generated index per
+package (§6.2.2). **Not** a proc macro: a macro validating against an external spec
+file is fragile, slows every build, and buys nothing a lint cannot.
 
 ```rust
 /// Computes the ideal structure count for a colony.
 ///
-/// Satisfies: REQ-COL-014, REQ-COL-015
+/// @specref REQ-COL-014, REQ-COL-015
 pub fn ideal_structure_count(/* ... */) { }
 ```
 
 ```rust
-/// Verifies: REQ-COL-014
+/// @specref REQ-COL-014
 #[test]
 fn ideal_count_scales_with_population() { }
 ```
 
-TypeScript uses the same tags in JSDoc, checked by the same `xtask`.
+TypeScript uses the same annotation in JSDoc, collected by the same `xtask`.
 
-**Granularity: tag modules, public API items, and every test.** Do not tag private
-functions — it is noise and it rots. The regeneration unit is the module, so the
-module is the annotation unit.
+**Granularity: annotate modules, public API items, and every test.** Do not annotate
+private functions — it is noise and it rots. The regeneration unit is the module, so
+the module is the annotation unit.
+
+**Open point for the spec process.** §6.2 requires distinguishing *implements* from
+*verifies*, because the gate must fail a requirement that has code but no test, and
+one that has a test but no implementation. Those are different defects. Either
+`@specref` carries a role (`@specref implements REQ-COL-014` /
+`@specref verifies REQ-COL-014`), or the role is inferred from context — an
+annotation on a `#[test]` item being a verification by construction. Inference is
+less noisy and probably sufficient; **confirm which the existing process already
+does rather than inventing a second convention.**
 
 #### `just trace` fails on
 
-- a `Satisfies:` or `Verifies:` tag naming a requirement ID absent from `spec/`
+- an `@specref` naming a requirement ID absent from `spec/`
 - a requirement with no implementation
 - a requirement with no verifying test
 - a public item in `oe2-core` with neither a tag nor a listed exemption
@@ -798,11 +860,13 @@ module is the annotation unit.
   carried forward and extended to numbers
 - an internal contradiction in `spec/`: two requirements asserting different values
   for the same Tier 1 fact, or a worked example inconsistent with the fact it cites
-- a reference to a nonexistent `FACT-` ID, or a fact with an empty reverse index
-  (dead fact — delete it)
+- an `@specref` naming a nonexistent `REQ-` or `FACT-` ID (dangling annotation)
+- a fact with an empty reverse index across *both* families (dead fact — delete it)
 - a derived fact whose value is stored rather than computed from its formula
-- a stale generated reverse index, or an unacknowledged node in a changed axiom's
-  transitive closure (§6.2.2)
+- a stale generated index, spec-side or code-side (dirty-generated check)
+- an unacknowledged node in a changed axiom's transitive closure (§6.2.2)
+- an `@specref` to a domain requirement appearing in a `shells/` package index —
+  business logic leaking out of the core, founding rule 7
 
 **Exemptions must be individually reasoned.** Not everything implements a
 requirement: `serde` impls, `Display`, error conversions, port trait definitions.
@@ -819,7 +883,8 @@ gate. It runs in two passes, and the distinction between them is the entire poin
 1. select a module from `oe2-core`
 2. delete its implementation, keeping its public signatures
 3. regenerate from the **specification alone** — the requirement text reached via the
-   deleted module's `Satisfies:` tags, plus the Tier 1 generated constants
+   deleted module's `@specref` annotations, recovered from the package's code index,
+   plus the Tier 1 generated constants
 4. the tests are **withheld from the regenerator** and used only as a hidden oracle
 5. **pass condition:** the full test suite passes and the coverage gate still holds
 
@@ -935,7 +1000,8 @@ agent should treat them that way:
 
 | Question | Answered by |
 |---|---|
-| What should this code do? | the requirement, reached via `Satisfies:` tags |
+| What should this code do? | the requirement, reached via `@specref` |
+| Where is this requirement implemented? | the per-package code index (§6.2.2) |
 | Where did this value come from? | Tier 1 generation — exactly one home per fact (§6.2) |
 | How do we know it is true? | the fact's `provenance` and `rationale` (§6.2.2) |
 | What breaks if I change it? | the generated reverse index; `just impact` (§6.2.2) |
@@ -979,7 +1045,7 @@ These must be true from the first commit, not added in a later cleanup phase.
 15. No JSON file persistence. SQLite is the local store; JSON is import, export, and fixtures only (§4.3).
 16. The desktop application is fully functional with no server and no network, and CI proves it.
 17. Every requirement in `spec/` traces to an implementation and to a verifying test. `just trace` enforces both directions and fails the build (§6.2).
-18. Every public item in `oe2-core` carries a `Satisfies:` tag or a reasoned entry in `spec/trace-exemptions.toml`. No blanket skip patterns.
+18. Every public item in `oe2-core` carries an `@specref` annotation or a reasoned entry in `spec/trace-exemptions.toml`. No blanket skip patterns.
 19. 100% region coverage on `oe2-core`, `oe2-sync` and the storage adapters, with every exclusion individually justified (§6.3).
 20. **No test asserts on implementation detail.** Tests are the regeneration oracle and must be behavioural (§6.2).
 21. Zero unexplained surviving mutants in `oe2-core`. Nothing in the build or release path depends on `cargo-mutants`.
@@ -990,7 +1056,7 @@ These must be true from the first commit, not added in a later cleanup phase.
 26. Changing an observable value is impossible without the change appearing in `spec/` in the same diff. **Drift is prevented by construction, never by review** (§6.2.1).
 27. Every Tier 1 fact is an addressable `FACT-` node carrying value, unit, kind, provenance, confidence and rationale. Provenance and confidence are **required**, because these facts are observations of someone else's game (§6.2.2).
 28. Derived facts store their **formula, never their value**. Only axioms are hand-editable.
-29. The generated reverse index is **committed**, so a one-number change produces a diff that is itself the blast radius report. A stale index fails the build (§6.2.2).
+29. Both generated index families are **committed** — the spec-side reverse index and the per-package code-side `@specref` index. A stale index of either kind fails the build. `@specref` is the single declaration of a code-to-spec relationship; nothing restates it (§6.2.2).
 30. A change to an axiom must leave no unacknowledged node in its transitive closure. `just impact` enumerates it; CI enforces it (§6.2.2).
 
 ---
@@ -1061,8 +1127,8 @@ The architecture in this document assumes the spec process will provide:
 2. **Machine-validated structure** — a schema or linter that fails CI on a malformed document
 3. **Validated interlinking** — every reference between requirement, design, flow, mockup, test, and help document resolves, in both directions
 4. **Shardable ownership** — documents partitioned so two developers can work concurrently without conflict
-5. **Granularity fine enough to annotate code with** — §6.2 requires `Satisfies:`
-   tags naming individual requirement IDs on modules and public API items. A
+5. **Granularity fine enough to annotate code with** — §6.2 requires `@specref`
+   annotations naming individual requirement IDs on modules and public API items. A
    requirement the size of a chapter cannot be referenced usefully; the ID must
    correspond to roughly one verifiable behaviour.
 6. **Completeness sufficient to drive regeneration from the spec alone** — Pass A of
@@ -1075,12 +1141,17 @@ The architecture in this document assumes the spec process will provide:
 8. **Validated internal consistency.** An exhaustive specification is large enough
    to contradict itself. The format must make contradiction detectable, not merely
    discouraged.
-9. **Facts as addressable nodes, with generated reverse indexes** (§6.2.2). The
-   process already generates reverse-reference indexes for requirements —
-   `REQ-099` gaining a `referenced by: REQ-100, REQ-101` section. The same must
-   apply to `FACT-` nodes, and the fact index must reach beyond `spec/` into
-   generated constants, call sites, tests and test fixtures. A spec-only index
-   would miss most of a fact's blast radius.
+9. **Facts as addressable nodes in both index families** (§6.2.2). The process
+   already generates two kinds of index: spec-side reverse-reference indexes
+   (`REQ-099` gaining `referenced by: REQ-100, REQ-101`) and per-package code
+   indexes collected from `@specref` annotations. `FACT-` nodes must be
+   first-class in both, so a fact's blast radius is the join of the two.
+   Requirements already work this way; facts need to.
+10. **A declared `@specref` role, or a documented inference rule.** §6.2 must fail a
+   requirement with code but no test, and one with a test but no implementation —
+   different defects. Either `@specref` carries a role, or it is inferred from
+   context (an annotation on a `#[test]` item being a verification). Confirm which
+   the process already does; do not invent a parallel convention.
 
 If any of those assumptions is wrong, flag it to the owner rather than working around it.
 
@@ -1168,7 +1239,7 @@ Do not guess at these. Ask before the relevant phase begins.
 | An exhaustive agent-maintained specification grows large enough to contradict itself | Real, and the cost of the §6.2 ambition | Tier 1 generation gives every numeric fact one home, which removes most of it; `just trace` validates internal consistency for the rest |
 | An exhaustive specification can be confidently *wrong*, and prose has no compiler | The residual risk once drift is solved | Tier 1 is schema-validated and generated, so it is effectively compiled; Tier 2 is pinned by tests and by the drill. Nothing relies on prose being correct unaided |
 | The spec-first editing workflow is half-adopted, leaving some facts generated and others hand-written | Likely, and worse than not adopting it | Dirty-generated check plus the literal-duplication check (checklist 23, 24) fail the build rather than warn |
-| The committed reverse index creates large diffs and merge conflicts on shared facts | Certain for widely-referenced axioms | Accepted: the diff *is* the deliverable (§6.2.2). Keep the index as one file per fact rather than one monolith, so conflicts localise |
+| Committed indexes create large diffs and merge conflicts on shared facts | Lower than first assessed | Per-package scoping already localises the code side — a change churns only its own package's index. Keep the spec side one file per fact rather than a monolith and the same holds there |
 | The change-impact gate becomes a rubber stamp, with everything “acknowledged” | The way §6.2.2 most plausibly fails | Acknowledgements require a per-node reason and are reviewed; a node that can be reached by a test may not be acknowledged instead of tested |
 | A game patch silently invalidates `observed` facts | Inherent to tracking someone else's game | `provenance` is a required field precisely so `just impact` can enumerate every observation needing re-measurement (§6.2.2) |
 | `cargo-mutants` has a single maintainer with limited time | Accepted under C1 | Measurement only; nothing in the build or release path may depend on it (§6.3) |

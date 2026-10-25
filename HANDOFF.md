@@ -291,6 +291,29 @@ parts worth keeping:
      are they still true?” — `just impact` over every `observed` axiom answers it.
      An `assumed` low-confidence axiom is also where V1's `spec/Ambiguities.md`
      lands permanently.
+8d. **Code-side indexes already exist in the owner's process, and the annotation is
+   `@specref`, not the `Satisfies:`/`Verifies:` tags an earlier draft invented.**
+   Every `@specref` is collected into a generated index per package, so finding
+   where `REQ-100` is referenced in code means reading that package's index.
+   - **This is what preserves one-fact-one-place for code references:** the
+     `@specref` annotation is the *single declaration* of the relationship, and
+     both index families are derived views of it. An earlier draft listed code call
+     sites inside the spec-side fact node *as well as* assuming `@specref` in code,
+     which asserted the same relationship twice with no authoritative source. That
+     was the exact duplication §6.2 exists to prevent, reintroduced one level up.
+   - The spec-side fact node therefore stops at **package granularity** and points
+     at the code indexes. Inlining call sites would make a spec artifact depend on
+     scanning the code tree and churn `spec/` on every code movement.
+   - `just impact` is a **join** of both families, walking derived facts
+     transitively. Neither side is sufficient alone.
+   - Side benefit worth keeping: a `shells/` package index containing refs to domain
+     requirements is business logic having leaked out of the core. **The shell
+     indexes are an audit surface for founding rule 7 for free.**
+   - Honest correction recorded in the seed: a *fact-value* change moves the axiom
+     node, the generated constants and the derived facts — but **not** either index,
+     since citations and annotations did not change. The indexes say where to look;
+     enumeration comes from querying them. The seed recommends the change-impact
+     gate write its `just impact` closure manifest into the commit to close that gap.
 8b. **The drift principle is the owner's core thesis and the reason §6.2 exists:**
    every value was decided by something; if the value changes and the thing that
    decided it does not, the system is lying about itself. This is the origin of both
