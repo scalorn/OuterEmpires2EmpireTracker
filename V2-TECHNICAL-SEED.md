@@ -109,6 +109,26 @@ Because V1 continues to evolve, `legacy/` needs a defined refresh procedure rath
 - it records the source V1 commit SHA in `legacy/PROVENANCE.md`
 - the resulting diff is reviewed, because a change in V1 may represent a rule the V2 port has not yet accounted for
 
+### 2.3 Why C2 is a hard constraint and not a preference
+
+An agent reading this later may wonder whether “Linux is the development host” is dogma. It is not. It is a conclusion reached from sustained evidence, and the session that produced this document is a fair sample.
+
+While writing one Markdown file and repairing one four-line shell script, the following were all hit. **None relates to the problem being solved:**
+
+- `git` was not on `PATH` at all, so every git invocation needed an absolute path to the executable.
+- PowerShell does not treat `\` as an escape character. This is what had silently broken `oebackup.ps1`'s ssh identity path, for an unknown length of time.
+- Windows PowerShell 5.1 does not support the `?.` null-conditional operator, so the first script revision was a syntax error.
+- `$ErrorActionPreference = 'Stop'` converts a native command's routine stderr output into a thrown exception, so ordinary git warnings aborted the script.
+- `Test-NetConnection` progress rendering swamped stdout and made the result unreadable, twice.
+- Multi-line commands were silently swallowed by the shell wrapper, returning nothing at all, twice.
+- Reliable file writing required standing up a dedicated MCP server, because the built-in write tooling fails silently on larger content.
+
+Seven distinct failures, none of them domain problems. Individually each is trivial. Collectively they tax every operation, and under an agent-driven workflow (C9) that tax is paid on every tool call rather than once per developer. The cost is not any single failure; it is that they never stop.
+
+A `just` recipe on Linux produces none of them: one shell with predictable quoting, tools on `PATH`, exit codes that mean what they say, and no escaping translation layer between the agent and the command.
+
+**The corollary matters more than the inconvenience.** V1's `oebackup.ps1` printed `Backup complete.` unconditionally while all three of its pushes failed, and had done so since the script was written. Windows-shell friction does not merely slow work down — it hides failures behind false success. Founding rule 10 exists for this reason, and so does the insistence throughout §6 that enforcement be mechanical rather than a matter of discipline.
+
 ---
 
 ## 3. The decided stack
