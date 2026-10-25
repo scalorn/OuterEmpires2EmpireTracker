@@ -416,3 +416,28 @@ spec-kit/
 *.Metrics.xml
 # Game API discovery tool raw output (reference only, not source control)
 spec/game-api-data/
+
+# ---------------------------------------------------------------------------
+# Server runtime state and secrets.
+# Contains tokens.json (auth tokens) and server-cert.pfx (certificate with
+# private key). *.pfx was already ignored, but tokens.json was not, leaving it
+# one `git add -A` away from being committed. Ignore the whole directory: it is
+# runtime state, never source.
+# ---------------------------------------------------------------------------
+OE2EmpireTracker.Server/data/
+
+# ---------------------------------------------------------------------------
+# Build, test and diagnostic output that was previously tracked by mistake.
+# ---------------------------------------------------------------------------
+build_out.txt
+diag.txt
+diag2.txt
+diag_test.txt
+response.txt
+dynamodb-local-metadata.json
+
+# Artifact of SafeFileWriter tests that write to a deliberately absent path.
+nonexistent_player_data.json
+
+# 5.5 MB Windows PE binary committed without an extension, origin unknown.
+/Snapshot
