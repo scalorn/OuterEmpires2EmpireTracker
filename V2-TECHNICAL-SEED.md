@@ -561,7 +561,7 @@ from a reimplementation.
 
 | Tier | Content | Lives as | Drift protection |
 |---|---|---|---|
-| **1** | Machine-readable facts: constants, rates, recipes, lookup tables | structured data in `spec/`, schema-validated | **generated into code** — drift is impossible |
+| **1** | Machine-readable facts: constants, rates, recipes, lookup tables | **addressable `FACT-` nodes** in `spec/`, schema-validated (§6.2.2) | **generated into code**, plus a generated reverse index — drift is impossible and the cascade is visible |
 | **2** | Behavioural rules and their rationale | prose carrying `REQ-` IDs | verified by tests, enforced by `just trace` |
 | **3** | Implementation freedom | not specified at all | n/a |
 
@@ -620,6 +620,132 @@ fine, but in the gap that opens between the value and its justification.
 
 Nobody is asked to catch drift in review. If drift is possible, it will happen.
 
+#### 6.2.2 Facts as addressable nodes with generated reverse indexes
+
+Tier 1 as described above gives a fact one *home*. That is not enough. A fact also
+needs an **identity**, so that everything depending on it can be enumerated.
+
+The incoming spec process generates reverse-reference indexes for requirements:
+`REQ-100` cites `REQ-099`, and a generated section under `REQ-099` reads
+`referenced by: REQ-100, REQ-101`. **Apply exactly that to facts.** A fact becomes a
+first-class addressable node, and its generated reverse index is the blast radius of
+changing it.
+
+```
+FACT-REF-012
+  value:       0.85
+  unit:        ratio
+  kind:        axiom
+  provenance:  observed
+  confidence:  confirmed
+  rationale:   Tier-2 synthetic refining yield. Measured across 40 cycles
+               at Kepler-9 refinery, 2026-03. Matches in-game tooltip.
+
+  referenced by:                      (generated — do not edit)
+    spec:      REQ-COL-014, REQ-COL-022, spec/design/refining.md#worked-example
+    derived:   FACT-REF-019, FACT-REF-020
+    code:      oe2_core::rules::refining::TIER2_YIELD  (generated constant)
+               oe2_core::rules::refining::apply_yield  (call site)
+    tests:     refining_yield_scales_with_purity
+               refining_cycle_totals  (fixture: expected_totals.json)
+```
+
+**The index must span spec, code, tests and fixtures — not just spec-to-spec.**
+Changing a number cascades into requirements that cite it, worked examples that
+compute with it, the generated constant, every call site, tests that assert derived
+values, and — the one that bites — **test fixtures holding precomputed expected
+outputs**. A fixture with a hardcoded expected total is where a fact change either
+breaks mysteriously or, worse, keeps passing while meaning something different.
+
+#### Axioms and derived facts
+
+This is the extension that keeps “one fact, one place” from collapsing one level up.
+
+| Kind | Definition | Editable | Stored |
+|---|---|---|---|
+| **axiom** | set directly in `spec/` | yes | the value |
+| **derived** | computed from other facts by a stated formula | **no** | the formula only |
+
+**A derived fact stored as a literal is drift waiting to happen.** If total yield is
+base × rate, then writing the product down anywhere creates a second place the same
+fact lives. So derived facts store the formula, and their values are computed by
+`xtask` at generation time. Only axioms are hand-editable.
+
+This makes the cascade transitive and the index must reflect that: changing
+`FACT-REF-012` changes `FACT-REF-019` and `FACT-REF-020`, and therefore everything
+*they* feed. Distinguish direct from transitive references in the generated output,
+because a one-hop change and a five-hop change warrant different scrutiny.
+
+#### The index is generated and committed
+
+Generated artifacts are often kept out of version control. **Commit this one.** The
+whole objective is “change a number, see the cascade”, and the place that gets seen
+is the diff. If the index is committed, then changing one axiom produces a pull
+request whose diff *is* the blast radius report — every affected requirement,
+derived fact, constant, call site and fixture, enumerated, in review, without anyone
+running a tool.
+
+The usual objection to committing generated files is drift between source and
+artifact, and that is already handled: the dirty-generated check (§6.2 Tier 1) fails
+the build if the index does not match what the generator produces.
+
+#### `just impact` and the change-impact gate
+
+The index makes the cascade visible. The gate makes acting on it mandatory.
+
+```
+just impact FACT-REF-012     # full transitive closure, direct hops marked
+```
+
+When a change edits an axiom, CI requires that every node in that axiom's closure is
+either:
+
+- **regenerated** (constants, derived facts, the index itself), or
+- **covered by a test that ran and passed**, or
+- **explicitly acknowledged** in the change, for nodes a test cannot reach — prose
+  worked examples being the main case
+
+An unacknowledged node in the closure fails the build. This is what turns the index
+from documentation into enforcement, and it is the mechanical answer to §6.2.1: you
+cannot change a value and leave its justification behind, because the justification
+is a node in the closure and the closure is checked.
+
+#### Bidirectional integrity for facts
+
+Same discipline as requirements (§6.2):
+
+- a fact with an **empty reverse index is dead** — nothing references it, so delete
+  it. This is V1's `orphans` check from `depgraph.js`, applied to facts.
+- a reference to a **nonexistent fact ID** fails `just trace`
+- a **literal in code or spec that equals a known fact value** but does not reference
+  it fails `just trace`. This is the check that stops the index quietly going stale
+  while new duplicates accumulate beside it.
+
+#### Why provenance is a required field, not decoration
+
+This project's facts are **empirical observations of somebody else's game**, not
+design decisions. That makes their epistemic status load-bearing in a way it would
+not be for ordinary business software, and a value with one home is still tribal
+knowledge if nobody recorded how it was obtained.
+
+So `provenance` and `confidence` are required on every axiom:
+
+| provenance | meaning | on a game patch |
+|---|---|---|
+| `documented` | stated by the game's own UI, tooltips or official material | re-verify cheaply |
+| `observed` | measured empirically, method recorded in `rationale` | **must be re-measured** |
+| `inferred` | deduced from other observations | re-derive once inputs are re-verified |
+| `assumed` | placeholder; a known gap | should be tracked as an open question |
+
+When Outer Empires 2 patches its economy, the question is not “what changed in our
+code” but **“which of our facts were observations, and are they still true?”**
+`just impact` over every `observed` axiom answers that directly, and tells you which
+requirements and tests to expect movement in before touching anything.
+
+This also gives V1's `spec/Ambiguities.md` a permanent home: an `assumed` axiom with
+low confidence *is* a tracked ambiguity, in the same structure as everything else,
+rather than in a side document that drifts.
+
 #### The consequences that make this work
 
 Because tests are derived from the specification and serve as the regeneration
@@ -672,6 +798,11 @@ module is the annotation unit.
   carried forward and extended to numbers
 - an internal contradiction in `spec/`: two requirements asserting different values
   for the same Tier 1 fact, or a worked example inconsistent with the fact it cites
+- a reference to a nonexistent `FACT-` ID, or a fact with an empty reverse index
+  (dead fact — delete it)
+- a derived fact whose value is stored rather than computed from its formula
+- a stale generated reverse index, or an unacknowledged node in a changed axiom's
+  transitive closure (§6.2.2)
 
 **Exemptions must be individually reasoned.** Not everything implements a
 requirement: `serde` impls, `Display`, error conversions, port trait definitions.
@@ -806,6 +937,8 @@ agent should treat them that way:
 |---|---|
 | What should this code do? | the requirement, reached via `Satisfies:` tags |
 | Where did this value come from? | Tier 1 generation — exactly one home per fact (§6.2) |
+| How do we know it is true? | the fact's `provenance` and `rationale` (§6.2.2) |
+| What breaks if I change it? | the generated reverse index; `just impact` (§6.2.2) |
 | Does the test suite reach every path? | region coverage, 100% |
 | Does the test suite *constrain* every path? | mutation testing, zero survivors |
 | Is the specification sufficient on its own? | regeneration drill, Pass A |
@@ -855,6 +988,10 @@ These must be true from the first commit, not added in a later cleanup phase.
 24. No literal in `oe2-core` duplicates a Tier 1 fact. Reference the generated constant (§6.2).
 25. `spec/` is internally consistent, mechanically verified. Two requirements may not assert different values for the same fact (§6.2.1).
 26. Changing an observable value is impossible without the change appearing in `spec/` in the same diff. **Drift is prevented by construction, never by review** (§6.2.1).
+27. Every Tier 1 fact is an addressable `FACT-` node carrying value, unit, kind, provenance, confidence and rationale. Provenance and confidence are **required**, because these facts are observations of someone else's game (§6.2.2).
+28. Derived facts store their **formula, never their value**. Only axioms are hand-editable.
+29. The generated reverse index is **committed**, so a one-number change produces a diff that is itself the blast radius report. A stale index fails the build (§6.2.2).
+30. A change to an axiom must leave no unacknowledged node in its transitive closure. `just impact` enumerates it; CI enforces it (§6.2.2).
 
 ---
 
@@ -877,7 +1014,8 @@ just build            # engine + contract codegen + all packages
 just test             # every suite: cargo nextest, vitest, wasm tests
 just lint             # clippy, fmt, eslint, tsc
 just audit            # spec and code audit checks
-just trace            # bidirectional requirement traceability (§6.2)
+just trace            # bidirectional requirement and fact traceability (§6.2)
+just impact FACT-xxx  # transitive closure of a fact: what changing it touches (§6.2.2)
 just coverage         # cargo-llvm-cov + vitest coverage, enforces 100% (§6.3)
 just check            # lint + build + test + trace + coverage + audit
                       #   (the pre-commit gate)
@@ -937,6 +1075,12 @@ The architecture in this document assumes the spec process will provide:
 8. **Validated internal consistency.** An exhaustive specification is large enough
    to contradict itself. The format must make contradiction detectable, not merely
    discouraged.
+9. **Facts as addressable nodes, with generated reverse indexes** (§6.2.2). The
+   process already generates reverse-reference indexes for requirements —
+   `REQ-099` gaining a `referenced by: REQ-100, REQ-101` section. The same must
+   apply to `FACT-` nodes, and the fact index must reach beyond `spec/` into
+   generated constants, call sites, tests and test fixtures. A spec-only index
+   would miss most of a fact's blast radius.
 
 If any of those assumptions is wrong, flag it to the owner rather than working around it.
 
@@ -1024,6 +1168,9 @@ Do not guess at these. Ask before the relevant phase begins.
 | An exhaustive agent-maintained specification grows large enough to contradict itself | Real, and the cost of the §6.2 ambition | Tier 1 generation gives every numeric fact one home, which removes most of it; `just trace` validates internal consistency for the rest |
 | An exhaustive specification can be confidently *wrong*, and prose has no compiler | The residual risk once drift is solved | Tier 1 is schema-validated and generated, so it is effectively compiled; Tier 2 is pinned by tests and by the drill. Nothing relies on prose being correct unaided |
 | The spec-first editing workflow is half-adopted, leaving some facts generated and others hand-written | Likely, and worse than not adopting it | Dirty-generated check plus the literal-duplication check (checklist 23, 24) fail the build rather than warn |
+| The committed reverse index creates large diffs and merge conflicts on shared facts | Certain for widely-referenced axioms | Accepted: the diff *is* the deliverable (§6.2.2). Keep the index as one file per fact rather than one monolith, so conflicts localise |
+| The change-impact gate becomes a rubber stamp, with everything “acknowledged” | The way §6.2.2 most plausibly fails | Acknowledgements require a per-node reason and are reviewed; a node that can be reached by a test may not be acknowledged instead of tested |
+| A game patch silently invalidates `observed` facts | Inherent to tracking someone else's game | `provenance` is a required field precisely so `just impact` can enumerate every observation needing re-measurement (§6.2.2) |
 | `cargo-mutants` has a single maintainer with limited time | Accepted under C1 | Measurement only; nothing in the build or release path may depend on it (§6.3) |
 
 ---

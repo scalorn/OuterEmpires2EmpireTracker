@@ -270,6 +270,27 @@ parts worth keeping:
    - **Drill Pass A withholds the tests from the regenerator.** Supplying them
      measures test sufficiency, not spec sufficiency. The Pass A/B diff localises
      the specification gap precisely.
+8c. **Facts are addressable nodes with generated reverse indexes** (seed §6.2.2).
+   The owner's spec process already generates reverse-reference indexes for
+   requirements (`REQ-099` gains `referenced by: REQ-100, REQ-101`); the same is
+   applied to facts, so changing a number shows its cascade. Four things were added
+   on top:
+   - **The fact index spans spec, code, tests AND fixtures.** A spec-only index
+     misses most of the blast radius. Test fixtures holding precomputed expected
+     values are the dangerous case — they either break mysteriously or keep passing
+     while meaning something different.
+   - **Axioms vs derived facts.** A derived fact stored as a literal is drift one
+     level up, so derived facts store the *formula* and are computed at generation
+     time. Only axioms are hand-editable. This makes the cascade transitive.
+   - **The index is committed**, against the usual convention for generated files,
+     because the diff of a one-number change *is* the blast radius report and the
+     diff is where it gets seen. A stale index fails the build.
+   - **`provenance` and `confidence` are required fields**, because this project's
+     facts are empirical observations of someone else's game, not design decisions.
+     When OE2 patches, the question is “which of our facts were observations, and
+     are they still true?” — `just impact` over every `observed` axiom answers it.
+     An `assumed` low-confidence axiom is also where V1's `spec/Ambiguities.md`
+     lands permanently.
 8b. **The drift principle is the owner's core thesis and the reason §6.2 exists:**
    every value was decided by something; if the value changes and the thing that
    decided it does not, the system is lying about itself. This is the origin of both
