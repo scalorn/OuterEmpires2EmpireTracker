@@ -510,25 +510,120 @@ directions mechanically checked. The standard is stronger than documentation:
 **it must be possible to delete any implementation module and reconstruct
 equivalent behaviour from its requirement references and its tests.**
 
-#### What the regeneration inputs actually are
+#### What the regeneration inputs are
 
-Be precise here, because the achievable version differs from the obvious reading.
-The inputs are:
+An earlier draft of this section claimed spec prose alone could never be sufficient,
+because no realistic specification encodes every numeric tolerance, error variant,
+sort order and boundary condition. **That argument was wrong, and why it was wrong
+matters more than the correction.**
 
-1. the requirement text in `spec/`, reached via the deleted module's `Satisfies:` tags
-2. the module's public API documentation
-3. **the module's test suite**
+It was an argument from the economics of *human* authorship, presented as though it
+were a property of specifications. Humans will not write exhaustive specifications
+and will not maintain them: the effort is large, the work is tedious, and the
+document rots faster than the code. Every serious attempt to require it — literate
+programming, the formal specification languages — foundered on that cost rather than
+on any defect in the idea. **The cost was the whole objection.**
 
-Spec prose alone is not sufficient, and no realistic specification ever will be. No
-requirements document encodes every numeric tolerance, error variant, sort order and
-boundary condition. The tests carry those, which is the right place for them,
-because tests are executable. So the standard is: **specification and tests are
-jointly sufficient to regenerate the implementation.**
+Agent authorship changes that cost function by orders of magnitude. An exhaustive,
+pedantically formatted specification is no longer expensive to write or to keep
+current. The constraint that made “spec alone is insufficient” true has been removed,
+so the target reverts to the stronger one:
+
+> **Everything affecting observable behaviour is specified. The specification is
+> sufficient to regenerate the implementation. Tests remain the executable oracle,
+> but they are *derived from* the specification rather than being a second reservoir
+> of undocumented truth.**
+
+That last clause is the operative difference. A tolerance existing only in a test
+assertion is tribal knowledge that happens to be executable — somebody chose a number
+and recorded it somewhere it would be enforced but never explained.
+
+#### The boundary: what does NOT belong in the spec
+
+The rule above needs a limit, or the specification degrades into a prose
+transliteration of the code — at which point two artifacts hold the same facts and
+*both* can drift. The discriminator:
+
+> **Would a different choice change observable behaviour?** If yes, it is
+> specification. If no, it is implementation freedom and must *not* be specified.
+
+**Specified:** refining yield rates, purity multipliers, build-time formulas, error
+variants and the conditions producing them, user-observable sort orders, boundary
+conditions, rounding rules.
+
+**Not specified:** whether a lookup uses a `HashMap` or a sorted `Vec`, internal
+variable names, loop versus iterator chain, the internal module split inside a crate.
+
+This is not a concession to authorship cost. It is what distinguishes a specification
+from a reimplementation.
+
+#### Three tiers of specification content
+
+| Tier | Content | Lives as | Drift protection |
+|---|---|---|---|
+| **1** | Machine-readable facts: constants, rates, recipes, lookup tables | structured data in `spec/`, schema-validated | **generated into code** — drift is impossible |
+| **2** | Behavioural rules and their rationale | prose carrying `REQ-` IDs | verified by tests, enforced by `just trace` |
+| **3** | Implementation freedom | not specified at all | n/a |
+
+**Tier 1 is stronger than the rule as originally stated, and it is where most of the
+value is.** If the spec says a rate is `0.85` and the code separately contains
+`0.85`, that single fact now lives in two places and *both* can drift. Detecting
+that drift with an audit check is weaker than making it impossible.
+
+So Tier 1 facts are the **source**, and the Rust and TypeScript constants are
+**generated** from them by `xtask`. Changing a rate means editing the specification;
+the code follows mechanically and the test suite reports what the change broke.
+
+V1 already has the raw material: `BaselineData.json` holds blueprint types, ship
+classes and tech levels as shared game data. V2 promotes that from a data file the
+application reads at runtime into a specification artifact the build generates from.
+
+**This inverts the editing workflow, and half-adopting it is worse than not adopting
+it at all.** The specification is the thing you edit. If anyone hand-edits a
+generated constant, the generator overwrites it and a dirty-generated check fails the
+build — the same mechanism already protecting `packages/contract` (§5.1).
+
+#### 6.2.1 The drift principle
+
+This is the reason the rest of §6.2 exists. It is the failure mode that produces
+both tribal knowledge and what gets called AI slop, and it deserves stating plainly:
+
+> **Every value in the system was decided by something. If the value changes and the
+> thing that decided it does not, the system is now lying about itself.**
+
+The mechanism is mundane. A prompt says “make the refining rate 0.9”. The agent
+changes the constant. The requirement that justified `0.85`, the worked example in
+the design document, and the comment explaining the trade-off all still say `0.85`.
+Nothing fails. **The code is correct and every explanation of it is now false.**
+
+The next person into that area — human or agent — reasons from the false
+explanation. That is precisely how the real reason migrates out of the artifacts and
+into somebody's memory, which is the definition of tribal knowledge. It is also why
+agent-assisted codebases decay in a characteristic way: an agent is extremely good at
+satisfying the prompt and has no reason to notice that the change invalidated a
+documented rationale, because nothing asks it to.
+
+**The drift is where the problems live.** Not in the changed value, which is usually
+fine, but in the gap that opens between the value and its justification.
+
+**Enforcement, by construction rather than by review:**
+
+- A Tier 1 value can only be changed by editing the specification, so the rationale
+  is in the same diff. Hand-editing the generated constant fails the build.
+- A Tier 2 behaviour change fails `just trace` unless the `Satisfies:` requirement is
+  updated in the same change.
+- `just trace` additionally validates **spec-internal consistency**, because an
+  exhaustive agent-maintained specification is large enough to contradict itself:
+  requirement A stating `0.85` while requirement B's worked example assumes `0.9` is
+  the same drift one level up. Tier 1 generation removes most of this by giving every
+  numeric fact exactly one home.
+
+Nobody is asked to catch drift in review. If drift is possible, it will happen.
 
 #### The consequences that make this work
 
-If tests are a regeneration input, three things follow, and they are the real value
-of this rule:
+Because tests are derived from the specification and serve as the regeneration
+oracle, three things follow:
 
 - **Tests are never regenerated in the same exercise.** That would be circular.
   Tests are authored from the spec and serve as the oracle; the implementation is the
@@ -571,6 +666,12 @@ module is the annotation unit.
 - a requirement with no implementation
 - a requirement with no verifying test
 - a public item in `oe2-core` with neither a tag nor a listed exemption
+- a hand-edited generated constant (dirty-generated check, §6.2 Tier 1)
+- a numeric or string literal in `oe2-core` that duplicates a Tier 1 fact instead of
+  referencing the generated constant — this is the V1 `magic-strings.js` check,
+  carried forward and extended to numbers
+- an internal contradiction in `spec/`: two requirements asserting different values
+  for the same Tier 1 fact, or a worked example inconsistent with the fact it cites
 
 **Exemptions must be individually reasoned.** Not everything implements a
 requirement: `serde` impls, `Display`, error conversions, port trait definitions.
@@ -579,20 +680,37 @@ file is reviewed. A blanket skip pattern would hollow this rule out within a mon
 
 #### The regeneration drill
 
-This is what converts the aspiration into evidence. A **scheduled** CI job, not a
-per-PR gate:
+This converts the aspiration into evidence. A **scheduled** CI job, never a per-PR
+gate. It runs in two passes, and the distinction between them is the entire point.
+
+**Pass A — specification sufficiency (the real test).**
 
 1. select a module from `oe2-core`
-2. delete its implementation, keeping its tests and public signatures
-3. regenerate from the requirement text plus the tests
-4. **pass condition:** the full suite passes and the coverage gate still holds
+2. delete its implementation, keeping its public signatures
+3. regenerate from the **specification alone** — the requirement text reached via the
+   deleted module's `Satisfies:` tags, plus the Tier 1 generated constants
+4. the tests are **withheld from the regenerator** and used only as a hidden oracle
+5. **pass condition:** the full test suite passes and the coverage gate still holds
+
+Withholding the tests is what makes this a test of the specification. Feed the tests
+to the regenerator and you are measuring test sufficiency instead — a much weaker
+claim, and one that would pass even with a near-empty spec.
+
+**Pass B — diagnostic, only when Pass A fails.** Re-run with the tests supplied to
+the regenerator.
+
+| A | B | Meaning |
+|---|---|---|
+| pass | — | the specification is sufficient. This is the goal state. |
+| fail | pass | **the gap is exactly what the tests encode and the spec does not.** The diff between the two regenerations is the specification defect report, already localised. |
+| fail | fail | neither artifact pins the behaviour. Missing requirement *and* missing assertion. |
 
 **A failed drill is a specification defect, not a code defect.** The output is a gap
 in `spec/`, filed and fixed. This is the only mechanism in the plan that tests the
-specification itself rather than the code, which is what justifies the CI time.
+specification rather than the code, which is what justifies the CI time.
 
-Scope it to `oe2-core` modules. The shells are not regenerable in this sense and are
-out of scope.
+Scope it to `oe2-core`. The shells are not regenerable in this sense and are out of
+scope.
 
 ### 6.3 Coverage, and what to do when 100% is not reachable
 
@@ -687,9 +805,11 @@ agent should treat them that way:
 | Question | Answered by |
 |---|---|
 | What should this code do? | the requirement, reached via `Satisfies:` tags |
+| Where did this value come from? | Tier 1 generation — exactly one home per fact (§6.2) |
 | Does the test suite reach every path? | region coverage, 100% |
 | Does the test suite *constrain* every path? | mutation testing, zero survivors |
-| Can the implementation be reconstructed? | the regeneration drill |
+| Is the specification sufficient on its own? | regeneration drill, Pass A |
+| If not, what exactly is missing? | regeneration drill, Pass A/B diff |
 
 Read in that order: traceability supplies the intent, coverage proves the oracle is
 complete, mutation testing proves the oracle has teeth, and the drill proves the
@@ -731,6 +851,10 @@ These must be true from the first commit, not added in a later cleanup phase.
 20. **No test asserts on implementation detail.** Tests are the regeneration oracle and must be behavioural (§6.2).
 21. Zero unexplained surviving mutants in `oe2-core`. Nothing in the build or release path depends on `cargo-mutants`.
 22. Shells contain no business logic. This is what makes their reduced coverage target legitimate, and it is audit-enforced (§6.3).
+23. **Tier 1 facts have exactly one home.** Constants, rates, recipes and lookup tables live as schema-validated data in `spec/` and are **generated** into Rust and TypeScript. Hand-editing a generated constant fails the build (§6.2).
+24. No literal in `oe2-core` duplicates a Tier 1 fact. Reference the generated constant (§6.2).
+25. `spec/` is internally consistent, mechanically verified. Two requirements may not assert different values for the same fact (§6.2.1).
+26. Changing an observable value is impossible without the change appearing in `spec/` in the same diff. **Drift is prevented by construction, never by review** (§6.2.1).
 
 ---
 
@@ -803,17 +927,31 @@ The architecture in this document assumes the spec process will provide:
    tags naming individual requirement IDs on modules and public API items. A
    requirement the size of a chapter cannot be referenced usefully; the ID must
    correspond to roughly one verifiable behaviour.
-6. **Completeness sufficient to drive regeneration** — the regeneration drill
-   (§6.2) consumes requirement text plus tests. Requirements written as summaries
-   rather than as specifications of behaviour will cause drills to fail, and those
-   failures are reported as specification defects.
+6. **Completeness sufficient to drive regeneration from the spec alone** — Pass A of
+   the drill (§6.2) withholds the tests. Requirements written as summaries rather
+   than as specifications of behaviour will fail it.
+7. **A machine-readable tier.** Tier 1 facts (constants, rates, recipes, lookup
+   tables) must be expressible as schema-validated structured data that `xtask` can
+   generate code from, not only as prose. Prose stating `0.85` cannot be the
+   generation source.
+8. **Validated internal consistency.** An exhaustive specification is large enough
+   to contradict itself. The format must make contradiction detectable, not merely
+   discouraged.
 
 If any of those assumptions is wrong, flag it to the owner rather than working around it.
 
-**Note on 5 and 6:** these two are new as of the §6.2 traceability rule and are the
-most demanding things this document asks of the spec process. They are worth
-confirming before the process is finalised, because retrofitting requirement
-granularity after the fact means renumbering every ID that code already references.
+**Note on 5 through 8:** these are the most demanding things this document asks of
+the spec process, and they follow from §6.2 rather than from anything about the stack.
+They are worth confirming before the format is finalised:
+
+- retrofitting requirement **granularity** means renumbering every ID that code
+  already references
+- retrofitting a **machine-readable tier** means re-expressing every numeric fact
+  that prose already states, and rewriting the generators
+
+Both are cheap now and expensive after Phase 2. The owner's position is that a
+sufficiently opinionated, mechanically validated format can guarantee the detail
+density these rules need. This document assumes that is the design intent.
 
 ### 9.2 Interim arrangement
 
@@ -883,6 +1021,9 @@ Do not guess at these. Ask before the relevant phase begins.
 | The 100% coverage gate slows early feature work | Certain, and partly the point | Accepted. The cost lands in Phase 2 where the core is pure and coverage is cheapest; it is far more expensive to retrofit |
 | The coverage exclusion list erodes into a dumping ground | **The main long-term threat to §6.3** | Every exclusion needs an individual written reason; review the list as a whole each phase, not entry by entry |
 | The regeneration drill has no precedent and may prove expensive or inconclusive | Real — this is the most novel process idea in the plan | Scheduled, never a PR gate. Start with one small `oe2-core` module in Phase 2 and judge the value before extending it |
+| An exhaustive agent-maintained specification grows large enough to contradict itself | Real, and the cost of the §6.2 ambition | Tier 1 generation gives every numeric fact one home, which removes most of it; `just trace` validates internal consistency for the rest |
+| An exhaustive specification can be confidently *wrong*, and prose has no compiler | The residual risk once drift is solved | Tier 1 is schema-validated and generated, so it is effectively compiled; Tier 2 is pinned by tests and by the drill. Nothing relies on prose being correct unaided |
+| The spec-first editing workflow is half-adopted, leaving some facts generated and others hand-written | Likely, and worse than not adopting it | Dirty-generated check plus the literal-duplication check (checklist 23, 24) fail the build rather than warn |
 | `cargo-mutants` has a single maintainer with limited time | Accepted under C1 | Measurement only; nothing in the build or release path may depend on it (§6.3) |
 
 ---

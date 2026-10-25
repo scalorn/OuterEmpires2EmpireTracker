@@ -248,12 +248,34 @@ parts worth keeping:
 7. **WASM-in-webview on mobile is the least-proven element.** Comparable apps (Anki,
    Bitwarden, Element) all use FFI there. `uniffi` is the recorded escape hatch, and
    it is additive because the engine has no UI coupling.
-8. **Traceability and coverage are one mechanism, not two rules.** Regeneration
-   consumes spec text *plus tests*, because no realistic spec encodes every
-   tolerance and error variant. That makes the tests the oracle, which means
-   uncovered code is literally unregenerable code — so 100% coverage is what makes
-   regenerability provable rather than aspirational. It also means tests may never
-   assert on implementation detail, or a correct regeneration would fail them.
+8. **Traceability and coverage are one mechanism, not two rules.** Tests are the
+   regeneration oracle, so uncovered code is literally unregenerable code — 100%
+   coverage is what makes regenerability provable rather than aspirational. It also
+   means tests may never assert on implementation detail, or a correct regeneration
+   would fail them.
+8a. **An earlier draft claimed spec-alone regeneration was impossible. That was
+   wrong and the owner corrected it.** The claim was an argument from the economics
+   of *human* authorship dressed up as a property of specifications. Literate
+   programming and the formal specification languages failed on authorship cost, not
+   on logic, and agent authorship removes that cost. The standard is therefore
+   **spec alone is sufficient**, with three supporting mechanisms:
+   - **Tier 1 / generation.** Constants, rates and tables live as schema-validated
+     data in `spec/` and are *generated* into Rust and TypeScript. One home per
+     fact, so drift is impossible rather than merely detectable. Stronger than the
+     rule as originally stated.
+   - **The observable-behaviour boundary.** Specify anything where a different
+     choice changes observable behaviour; never specify implementation freedom
+     (`HashMap` vs `Vec`, variable names). Otherwise the spec becomes a prose
+     transliteration of the code and *both* can drift.
+   - **Drill Pass A withholds the tests from the regenerator.** Supplying them
+     measures test sufficiency, not spec sufficiency. The Pass A/B diff localises
+     the specification gap precisely.
+8b. **The drift principle is the owner's core thesis and the reason §6.2 exists:**
+   every value was decided by something; if the value changes and the thing that
+   decided it does not, the system is lying about itself. This is the origin of both
+   tribal knowledge and “AI slop” — an agent satisfies the prompt and has no reason
+   to notice it just invalidated a documented rationale. The problems live in the
+   gap, not in the changed value. Enforce by construction, never by review.
 9. **Rust branch coverage is not reliably measurable on stable** — `cargo-llvm-cov`
    needs nightly for it and is inconsistent on generics. The gate is therefore
    **100% region coverage** (sub-expression granular, stricter than line coverage)
