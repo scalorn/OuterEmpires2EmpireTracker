@@ -112,7 +112,14 @@ namespace OE2EmpireTracker.Services
                     return new TokenRefreshResult { Success = false, NewToken = null };
                 }
 
-                // No InvalidateToken call needed — typed client manages its own token cache.
+                // The typed client serves a non-expired token straight from its cache, so
+                // without this the exchange below would hand back the very token the
+                // server just rejected and the 401 could never be recovered from until the
+                // token expired on its own. An earlier comment here claimed no
+                // invalidation was needed because "the typed client manages its own token
+                // cache" — managing it is precisely why it has to be told.
+                _typedClient.InvalidateToken(_settings.ClientId, secret);
+
                 var tokenDto = await _typedClient.ExchangeTokenAsync(
                     _settings.AppId,
                     _settings.ClientId,

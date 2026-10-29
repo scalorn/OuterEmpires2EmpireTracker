@@ -458,6 +458,11 @@ namespace OE2EmpireTracker.Tests.Services
             {
             }
 
+            /// <inheritdoc/>
+            public void InvalidateToken(string clientId, string secret)
+            {
+            }
+
             private void ThrowIfGeneralException()
             {
                 if (this.GeneralDataException != null)

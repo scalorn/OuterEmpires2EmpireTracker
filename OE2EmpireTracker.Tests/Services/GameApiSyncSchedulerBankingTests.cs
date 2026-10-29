@@ -28,6 +28,8 @@ namespace OE2EmpireTracker.Tests.Services
         private const string AppId = "test-app-id";
         private const string ClientId = "test-client-id";
 
+        private static readonly DateTime FrozenTime = new DateTime(2025, 1, 20, 10, 0, 0, DateTimeKind.Utc);
+
         private readonly List<string> _tempFiles = new List<string>();
 
         /// <summary>
@@ -42,11 +44,28 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         /// <summary>
-        /// Cleans up temp files after each test.
+        /// Freezes the clock and makes delays instant.
+        /// </summary>
+        /// <remarks>
+        /// These tests drive full sync cycles, and the typed client's token bucket runs
+        /// at 0.9 TPS, so every request would otherwise wait over a second of real time.
+        /// Across the property tests that adds up to minutes per test.
+        /// </remarks>
+        [SetUp]
+        public void SetUp()
+        {
+            SystemClock.UtcNowFunc = () => FrozenTime;
+            SystemClock.EnableInstantDelay();
+        }
+
+        /// <summary>
+        /// Restores the real clock and cleans up temp files after each test.
         /// </summary>
         [TearDown]
         public void TearDown()
         {
+            SystemClock.Reset();
+
             foreach (string path in _tempFiles)
             {
                 if (File.Exists(path))

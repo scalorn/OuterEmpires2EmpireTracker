@@ -330,19 +330,16 @@ namespace OE2EmpireTracker.Tests.Services
         /// </summary>
         private static GameApiClient CreateClientWithHandler(HttpMessageHandler handler)
         {
-            var client = new GameApiClient("http://fake-server");
+            // Construct over the fake-backed HttpClient rather than swapping a private
+            // field afterwards: the generated client captures the HttpClient during
+            // construction, so a post-construction swap is never observed.
             var httpClient = new HttpClient(handler)
             {
                 Timeout = TimeSpan.FromSeconds(30),
+                BaseAddress = new Uri("http://fake-server"),
             };
 
-            // Replace the private _httpClient field with our fake-backed one
-            FieldInfo httpClientField = typeof(GameApiClient).GetField(
-                "_httpClient",
-                BindingFlags.NonPublic | BindingFlags.Instance);
-            httpClientField.SetValue(client, httpClient);
-
-            return client;
+            return new GameApiClient(httpClient);
         }
 
         /// <summary>

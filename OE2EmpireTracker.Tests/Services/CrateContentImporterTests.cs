@@ -147,7 +147,7 @@ namespace OE2EmpireTracker.Tests.Services
             // Verify type counts — codes with known mappings
             Assert.That(result.CountsByType[ItemType.ItemTypeEnum.Blueprint], Is.EqualTo(1), "Bp -> Blueprint");
             Assert.That(result.CountsByType[ItemType.ItemTypeEnum.Resource], Is.EqualTo(1), "R -> Resource");
-            Assert.That(result.CountsByType[ItemType.ItemTypeEnum.Commodity], Is.EqualTo(1), "C -> Commodity");
+            Assert.That(result.CountsByType[ItemType.ItemTypeEnum.Commodity], Is.EqualTo(2), "C and L -> Commodity");
             Assert.That(result.CountsByType[ItemType.ItemTypeEnum.ShipPart], Is.EqualTo(1), "S -> ShipPart");
             Assert.That(result.CountsByType[ItemType.ItemTypeEnum.ShipHull], Is.EqualTo(1), "SH -> ShipHull");
             Assert.That(result.CountsByType[ItemType.ItemTypeEnum.Munition], Is.EqualTo(1), "A -> Munition");
@@ -156,8 +156,10 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(result.CountsByType[ItemType.ItemTypeEnum.Share], Is.EqualTo(1), "Sh -> Share");
             Assert.That(result.CountsByType[ItemType.ItemTypeEnum.Survey], Is.EqualTo(1), "Sc -> Survey");
 
-            // "L" (CommodityL) and "D" (Deployable) have no mapping in MapAssetTypeC -> None
-            Assert.That(result.CountsByType[ItemType.ItemTypeEnum.None], Is.EqualTo(2), "L and D -> None (unmapped)");
+            // "L" (CommodityL) maps to Commodity alongside "C" -- see commit "Fix stock
+            // target not counting commodities in crates (typeC 'L' unmapped)". Only "D"
+            // (Deployable) has no mapping in MapAssetTypeC and falls through to None.
+            Assert.That(result.CountsByType[ItemType.ItemTypeEnum.None], Is.EqualTo(1), "D -> None (unmapped)");
         }
 
         // -------------------------------------------------------------------

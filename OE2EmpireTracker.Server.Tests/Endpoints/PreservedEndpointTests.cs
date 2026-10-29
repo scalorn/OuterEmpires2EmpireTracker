@@ -4,10 +4,10 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using System.Net.Http.Json;
 using System.Net;
-using System.Text.Json;
+using System.Net.Http.Json;
 using System.Text;
+using System.Text.Json;
 using NUnit.Framework;
 
 namespace OE2EmpireTracker.Server.Tests.Endpoints;

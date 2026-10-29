@@ -5,8 +5,8 @@
 // -----------------------------------------------------------------------
 
 using System.Security.Claims;
-using System.Text.Json;
 using System.Text;
+using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using NUnit.Framework;
 using OE2EmpireTracker.Common.Interfaces;

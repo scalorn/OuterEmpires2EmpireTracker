@@ -76,6 +76,17 @@
     <Reference Include="Microsoft.Data.Sqlite, Version=8.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Data.Sqlite.Core.8.0.0\lib\netstandard2.0\Microsoft.Data.Sqlite.dll</HintPath>
     </Reference>
+    <!-- Polly is a transitive dependency of OE2EmpireTracker.Common (SDK-style,
+         PackageReference). Transitive package assets do not flow across the
+         SDK-style -> packages.config project boundary, so GameApiTypedClient's
+         resilience pipeline fails to load at runtime unless this project
+         references Polly explicitly. Versions match Common's PackageReference. -->
+    <Reference Include="Polly, Version=8.0.0.0, Culture=neutral, PublicKeyToken=c8a3ffc3f8f825cc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Polly.8.7.0\lib\net472\Polly.dll</HintPath>
+    </Reference>
+    <Reference Include="Polly.Core, Version=8.0.0.0, Culture=neutral, PublicKeyToken=c8a3ffc3f8f825cc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Polly.Core.8.7.0\lib\net472\Polly.Core.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Extensions.Configuration, Version=10.0.0.9, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Configuration.10.0.9\lib\net462\Microsoft.Extensions.Configuration.dll</HintPath>
@@ -285,6 +296,7 @@
     <Compile Include="Client\FactionServer\SerializationFormatPropertyTests.cs" />
     <Compile Include="Client\GameApiColonyDiscoveryTests.cs" />
     <Compile Include="Helpers\LegacyGameApiClientShim.cs" />
+    <Compile Include="Helpers\OfflineGameApiClientStub.cs" />
     <Compile Include="Helpers\LegacyResponseModels.cs" />
     <Compile Include="Services\GameApiFullDiscoveryTests.cs" />
     <Compile Include="Services\BackgroundProcessorTests.cs" />

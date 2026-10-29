@@ -1,4 +1,4 @@
-// -----------------------------------------------------------------------
+﻿// -----------------------------------------------------------------------
 // <copyright file="StorageBackendFactoryTests.cs" company="OE2EmpireTracker">
 //     Copyright (c) OE2EmpireTracker. All rights reserved.
 // </copyright>
@@ -109,7 +109,7 @@ namespace OE2EmpireTracker.Tests.Storage
             var backend = await StorageBackendFactory.CreateAsync(
                 StorageBackendType.JsonMultiFile, config);
 
-            // Assert — ValidateConnection works (proves initialized)
+            // Assert â€” ValidateConnection works (proves initialized)
             var valid = await backend.ValidateConnectionAsync();
             Assert.That(valid, Is.True);
 
@@ -125,7 +125,7 @@ namespace OE2EmpireTracker.Tests.Storage
         [Test]
         public async Task JsonSingleFile_CreatesCorrectBackend()
         {
-            // Arrange — use the temp dir (constructor resolves files inside)
+            // Arrange â€” use the temp dir (constructor resolves files inside)
             var config = new StorageBackendConfig
             {
                 ConnectionString = _tempDir
@@ -174,15 +174,15 @@ namespace OE2EmpireTracker.Tests.Storage
         [Test]
         public void DynamoDb_ThrowsOnInvalidEndpoint()
         {
-            // Arrange — point at a non-existent local endpoint
+            // Arrange â€” point at a non-existent local endpoint
             var config = new StorageBackendConfig
             {
-                ConnectionString = "http://localhost:59999",
+                ConnectionString = "http://127.0.0.1:59999",
                 AwsRegion = "us-east-1",
                 TablePrefix = "TestTable"
             };
 
-            // Act & Assert — CreateAsync calls InitializeAsync which
+            // Act & Assert â€” CreateAsync calls InitializeAsync which
             // attempts DescribeTable against the unreachable endpoint.
             Assert.CatchAsync<Exception>(
                 () => StorageBackendFactory.CreateAsync(
@@ -196,13 +196,13 @@ namespace OE2EmpireTracker.Tests.Storage
         [Test]
         public void Postgres_ThrowsOnInvalidEndpoint()
         {
-            // Arrange — point at a non-existent Postgres server
+            // Arrange â€” point at a non-existent Postgres server
             var config = new StorageBackendConfig
             {
                 ConnectionString = "Host=localhost;Port=59999;Database=test;Timeout=2"
             };
 
-            // Act & Assert — CreateAsync calls InitializeAsync which
+            // Act & Assert â€” CreateAsync calls InitializeAsync which
             // attempts to open the connection and run schema setup.
             Assert.CatchAsync<Exception>(
                 () => StorageBackendFactory.CreateAsync(

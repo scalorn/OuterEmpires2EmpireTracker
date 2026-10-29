@@ -1,4 +1,4 @@
-// -----------------------------------------------------------------------
+﻿// -----------------------------------------------------------------------
 // <copyright file="DynamoDbBackendCharacterEntityTests.cs" company="OE2EmpireTracker">
 //     Copyright (c) OE2EmpireTracker. All rights reserved.
 // </copyright>
@@ -37,7 +37,8 @@ namespace OE2EmpireTracker.Tests.Storage
             _backend = new DynamoDbBackend(
                 tablePrefix,
                 "us-east-1",
-                DynamoDbLocalFixture.ServiceUrl);
+                DynamoDbLocalFixture.ServiceUrl,
+                DynamoDbLocalFixture.Credentials);
             await _backend.InitializeAsync();
             _characterUUID = Guid.NewGuid().ToString();
         }
@@ -120,14 +121,14 @@ namespace OE2EmpireTracker.Tests.Storage
                 SurveyID = "SRV-001",
             };
 
-            // Act — upsert and verify present
+            // Act â€” upsert and verify present
             await _backend.UpsertSurveyAsync(_characterUUID, survey);
             var retrieved = await _backend.GetSurveyAsync(_characterUUID, survey.UUID);
             Assert.That(retrieved, Is.Not.Null);
             Assert.That(retrieved.UUID, Is.EqualTo(survey.UUID));
             Assert.That(retrieved.PlanetName, Is.EqualTo("Kepler-22b"));
 
-            // Act — delete and verify gone
+            // Act â€” delete and verify gone
             await _backend.DeleteSurveyAsync(_characterUUID, survey.UUID);
             var afterDelete = await _backend.GetSurveyAsync(_characterUUID, survey.UUID);
             Assert.That(afterDelete, Is.Null);

@@ -1,4 +1,4 @@
-// <copyright file="GameApiSyncSchedulerTests.cs" company="OE2EmpireTracker">
+﻿// <copyright file="GameApiSyncSchedulerTests.cs" company="OE2EmpireTracker">
 // Copyright (c) OE2EmpireTracker. All rights reserved.
 // </copyright>
 
@@ -10,6 +10,7 @@ using FsCheck;
 using NUnit.Framework;
 using OE2EmpireTracker.Client;
 using OE2EmpireTracker.Services;
+using OE2EmpireTracker.Tests.Helpers;
 
 namespace OE2EmpireTracker.Tests.Services
 {
@@ -21,6 +22,8 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class GameApiSyncSchedulerTests
     {
+        private static readonly DateTime FrozenTime = new DateTime(2025, 1, 20, 10, 0, 0, DateTimeKind.Utc);
+
         private readonly List<string> _tempFiles = new List<string>();
 
         [OneTimeSetUp]
@@ -32,9 +35,27 @@ namespace OE2EmpireTracker.Tests.Services
                 OE2EmpireTracker.Client.CredentialStore.Unprotect);
         }
 
+        /// <summary>
+        /// Freezes the clock and makes delays instant.
+        /// </summary>
+        /// <remarks>
+        /// Each PerformRoundRobinSyncAsync cycle issues several requests through the typed
+        /// client's 0.9 TPS token bucket, so a cycle costs roughly four seconds of real
+        /// time. RoundRobinFairnessProperty runs up to thirty cycles per iteration over a
+        /// hundred iterations, which is hours of waiting rather than a test.
+        /// </remarks>
+        [SetUp]
+        public void SetUp()
+        {
+            SystemClock.UtcNowFunc = () => FrozenTime;
+            SystemClock.EnableInstantDelay();
+        }
+
         [TearDown]
         public void TearDown()
         {
+            SystemClock.Reset();
+
             foreach (string path in _tempFiles)
             {
                 if (File.Exists(path))
@@ -67,7 +88,7 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         // -------------------------------------------------------------------
-        // Property 1: Round-robin fairness — each character synced at
+        // Property 1: Round-robin fairness â€” each character synced at
         // least floor(N/K) times over N cycles with K characters.
         // **Validates: Requirements 5.4, 5.7**
         // -------------------------------------------------------------------
@@ -84,7 +105,7 @@ namespace OE2EmpireTracker.Tests.Services
                 param =>
                 {
                     var credManager = CreateCredentialManagerWithKeys(param.K);
-                    var client = new GameApiClient("http://localhost:59999");
+                    var client = new OfflineGameApiClientStub();
                     var firstUUID = credManager.GetConfiguredPlayerUUIDs()[0];
                     var monitor = new GameApiConnectionMonitor(client, credManager, firstUUID, "test-app-id", "test-client-id");
 
@@ -125,7 +146,7 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         // -------------------------------------------------------------------
-        // Property 2: Index advancement — after each PerformRoundRobinSyncAsync
+        // Property 2: Index advancement â€” after each PerformRoundRobinSyncAsync
         // call, CurrentRoundRobinIndex advances by 1 (wrapping at K).
         // **Validates: Requirements 5.4**
         // -------------------------------------------------------------------
@@ -142,7 +163,7 @@ namespace OE2EmpireTracker.Tests.Services
                 param =>
                 {
                     var credManager = CreateCredentialManagerWithKeys(param.K);
-                    var client = new GameApiClient("http://localhost:59999");
+                    var client = new OfflineGameApiClientStub();
                     var firstUUID = credManager.GetConfiguredPlayerUUIDs()[0];
                     var monitor = new GameApiConnectionMonitor(client, credManager, firstUUID, "test-app-id", "test-client-id");
 
@@ -176,7 +197,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void SyncNowAsyncCallsSyncForAllCharacters()
         {
             var credManager = CreateCredentialManagerWithKeys(3);
-            var client = new GameApiClient("http://localhost:59999");
+            var client = new OfflineGameApiClientStub();
             var firstUUID = credManager.GetConfiguredPlayerUUIDs()[0];
             var monitor = new GameApiConnectionMonitor(client, credManager, firstUUID, "test-app-id", "test-client-id");
 
@@ -200,7 +221,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void IndexWrapsAroundAtCharacterCount()
         {
             var credManager = CreateCredentialManagerWithKeys(3);
-            var client = new GameApiClient("http://localhost:59999");
+            var client = new OfflineGameApiClientStub();
             var firstUUID = credManager.GetConfiguredPlayerUUIDs()[0];
             var monitor = new GameApiConnectionMonitor(client, credManager, firstUUID, "test-app-id", "test-client-id");
 
@@ -225,7 +246,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void FailedCharacterSkippedIndexStillAdvances()
         {
             var credManager = CreateCredentialManagerWithKeys(4);
-            var client = new GameApiClient("http://localhost:59999");
+            var client = new OfflineGameApiClientStub();
             var firstUUID = credManager.GetConfiguredPlayerUUIDs()[0];
             var monitor = new GameApiConnectionMonitor(client, credManager, firstUUID, "test-app-id", "test-client-id");
 

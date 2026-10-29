@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Amazon;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
+using Amazon.Runtime;
 using Newtonsoft.Json;
 using NLog;
 using OE2EmpireTracker.Common.Interfaces;
@@ -65,6 +66,39 @@ namespace OE2EmpireTracker.Common.Storage
                 ServiceURL = serviceUrl,
             };
             _client = new AmazonDynamoDBClient(config);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DynamoDbBackend"/> class
+        /// with a custom service URL and explicit credentials.
+        /// </summary>
+        /// <remarks>
+        /// Use this overload when talking to a local stub such as DynamoDB Local, which
+        /// ignores the credential values but still requires the request to be signed.
+        /// The <see cref="DynamoDbBackend(string, string, string)"/> overload resolves
+        /// credentials from the ambient AWS chain, which on a developer machine yields a
+        /// lazy EC2 instance-metadata provider that only fails when the first request is
+        /// made. Passing credentials explicitly keeps that machine state out of the
+        /// picture.
+        /// </remarks>
+        /// <param name="tableName">The DynamoDB table name.</param>
+        /// <param name="region">The AWS region name (e.g. "us-east-1").</param>
+        /// <param name="serviceUrl">The DynamoDB service endpoint URL (e.g. "http://localhost:8111").</param>
+        /// <param name="credentials">The credentials used to sign requests.</param>
+        public DynamoDbBackend(string tableName, string region, string serviceUrl, AWSCredentials credentials)
+        {
+            if (credentials == null)
+            {
+                throw new ArgumentNullException(nameof(credentials));
+            }
+
+            _tableName = tableName ?? "OE2EmpireTracker";
+            var config = new AmazonDynamoDBConfig
+            {
+                RegionEndpoint = RegionEndpoint.GetBySystemName(region ?? "us-east-1"),
+                ServiceURL = serviceUrl,
+            };
+            _client = new AmazonDynamoDBClient(credentials, config);
         }
 
         // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•

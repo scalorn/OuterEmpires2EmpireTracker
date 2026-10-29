@@ -5,7 +5,7 @@
 
 These questions were identified during design review and need resolution before implementation of the affected iteration. Each is tagged with the iteration it blocks.
 
-### OQ-30: StockTarget Persistence â€” Nested vs Flat (Iteration 7) â€” RESOLVED
+### OQ-30: StockTarget Persistence — Nested vs Flat (Iteration 7) — RESOLVED
 
 **Decision:** Eliminate standalone StockTargets entirely. Everything is a StockPlan with nested targets. What was previously a "standalone target" (e.g. "20k Munitions") is modeled as a StockPlan with a single target inside it. This simplifies the data model, persistence, UI, and reference counting.
 
@@ -15,13 +15,13 @@ Changes:
 - `StockTarget.StockPlanUUID` removed (targets are always nested, no foreign key needed).
 - `StockTarget.ReplenishmentBuildPlanUUID` removed (lives on StockPlan only).
 - `StockTargetList` on PlayerContext removed.
-- `StockProfileEntry.StockTargetUUID` removed â€” entries only reference StockPlans.
-- `StockTargetReferenceCounter` eliminated â€” no standalone targets to reference-count.
+- `StockProfileEntry.StockTargetUUID` removed — entries only reference StockPlans.
+- `StockTargetReferenceCounter` eliminated — no standalone targets to reference-count.
 - FormStockTargets simplified to a single plan list (no separate standalone section).
 
-The AND/OR composition system works the same way â€” StockProfiles reference StockPlans. A "simple" target like "20k Munitions" is just a plan named "20k Munitions" with one target inside it. The UI can streamline creation of single-target plans with a "Quick Add" button that creates the plan and target in one step.
+The AND/OR composition system works the same way — StockProfiles reference StockPlans. A "simple" target like "20k Munitions" is just a plan named "20k Munitions" with one target inside it. The UI can streamline creation of single-target plans with a "Quick Add" button that creates the plan and target in one step.
 
-### OQ-31: ShipComponentSlot SlotType Values (Iteration 2) â€” RESOLVED
+### OQ-31: ShipComponentSlot SlotType Values (Iteration 2) — RESOLVED
 
 **Decision:** Weapons use three separate slot types (`WeaponSmall`, `WeaponMedium`, `WeaponLarge`). Hull modifications are separate types. The complete mapping from hull property to SlotType is defined below.
 
@@ -55,56 +55,56 @@ Notes:
 - The SlotType string is used as-is in `ShipComponentSlot.SlotType`. The mapping from BlueprintType ID to SlotType is done by a lookup table in `ShipBuildService` (or a constants class).
 - When installing a component, the service resolves the blueprint's BluePrintType to a SlotType via this mapping, then checks the hull's available count for that SlotType.
 
-### OQ-32: Weapon Slot Size Enforcement (Iteration 2) â€” RESOLVED
+### OQ-32: Weapon Slot Size Enforcement (Iteration 2) — RESOLVED
 
-**Decision:** Option (a) â€” SlotType encodes size. Weapons use `WeaponSmall`, `WeaponMedium`, `WeaponLarge` as separate slot types. The weapon blueprint's BluePrintType ID encodes the size (e.g. `Beamer/Small` â†’ `WeaponSmall`, `Railgun/Large` â†’ `WeaponLarge`). The mapping table above defines which BlueprintType IDs map to which SlotType. No additional `SlotSize` field is needed on `ShipComponentSlot`.
+**Decision:** Option (a) — SlotType encodes size. Weapons use `WeaponSmall`, `WeaponMedium`, `WeaponLarge` as separate slot types. The weapon blueprint's BluePrintType ID encodes the size (e.g. `Beamer/Small` → `WeaponSmall`, `Railgun/Large` → `WeaponLarge`). The mapping table above defines which BlueprintType IDs map to which SlotType. No additional `SlotSize` field is needed on `ShipComponentSlot`.
 
 Validation: When installing a weapon, the service extracts the size from the BlueprintType ID (the `/Small`, `/Medium`, `/Large` suffix), maps it to the corresponding `WeaponSmall`/`WeaponMedium`/`WeaponLarge` SlotType, and checks the hull's available mount count for that size.
 
-### OQ-33: WarehouseOverflowRule Delivery Route (Iteration 6) â€” RESOLVED
+### OQ-33: WarehouseOverflowRule Delivery Route (Iteration 6) — RESOLVED
 
-**Decision:** Option (a) â€” the rule includes a `DeliveryRouteUUID` field. The user picks the route when creating the overflow rule. The background processor uses that route when generating the delivery plan.
+**Decision:** Option (a) — the rule includes a `DeliveryRouteUUID` field. The user picks the route when creating the overflow rule. The background processor uses that route when generating the delivery plan.
 
-Model change â€” add to `WarehouseOverflowRule`:
+Model change — add to `WarehouseOverflowRule`:
 ```csharp
 public string DeliveryRouteUUID { get; set; } = string.Empty;
 ```
 
 The Overflow tab on FormColony includes a route selector combo in the add-rule panel. If the selected route doesn't include both the source colony and the destination as stops, the UI shows a validation warning.
 
-### OQ-34: BuildItem Status â€” Cascade vs Manual Override (Iteration 1) â€” RESOLVED
+### OQ-34: BuildItem Status — Cascade vs Manual Override (Iteration 1) — RESOLVED
 
-**Decision:** Manual status transitions always win. The user has an incomplete view of the data (no game API), so the tool must trust the user's judgment. The cascade processor only advances status automatically in one direction (Staged â†’ Delivering â†’ Ready) and never overwrites a status that the user has manually set forward.
+**Decision:** Manual status transitions always win. The user has an incomplete view of the data (no game API), so the tool must trust the user's judgment. The cascade processor only advances status automatically in one direction (Staged → Delivering → Ready) and never overwrites a status that the user has manually set forward.
 
 Rules:
-- The cascade can set `Delivering` (when a delivery plan is generated) and `Ready` (when resources are confirmed available). It never sets `InProgress` or `Completed` â€” those are always manual.
+- The cascade can set `Delivering` (when a delivery plan is generated) and `Ready` (when resources are confirmed available). It never sets `InProgress` or `Completed` — those are always manual.
 - If the user manually sets a status forward (e.g. skips from Staged straight to Ready because they know resources are there), the cascade respects that and does not revert it.
-- If the user manually sets `Completed`, the cascade skips that item entirely â€” it's done.
+- If the user manually sets `Completed`, the cascade skips that item entirely — it's done.
 - If the user manually sets `InProgress`, the cascade does not revert to Ready or Delivering even if the resource check says resources are missing. The user is saying "I started this in-game" and the tool trusts that.
 - The cascade only moves status forward, never backward. The user can move status backward manually if they made a mistake.
 
-This means the cascade is advisory â€” it advances items through the pipeline when it can confirm conditions are met, but the user can always override by manually setting any status. No `ManualOverride` flag is needed; the rule is simply "cascade never decreases status ordinal."
+This means the cascade is advisory — it advances items through the pipeline when it can confirm conditions are met, but the user can always override by manually setting any status. No `ManualOverride` flag is needed; the rule is simply "cascade never decreases status ordinal."
 
 Status ordinal: Staged(0) < Delivering(1) < Ready(2) < InProgress(3) < Completed(4). Cascade sets `max(currentStatus, computedStatus)`.
 
-### OQ-35: StockTarget Replenishment Plan Designation (Iteration 7) â€” RESOLVED
+### OQ-35: StockTarget Replenishment Plan Designation (Iteration 7) — RESOLVED
 
-**Decision:** Option (c) â€” user designates a target build plan on the StockPlan. When the stock target check finds shortfalls, replenishment items are created in the designated plan.
+**Decision:** Option (c) — user designates a target build plan on the StockPlan. When the stock target check finds shortfalls, replenishment items are created in the designated plan.
 
-Model change â€” add to `StockPlan`:
+Model change — add to `StockPlan`:
 ```csharp
 public string ReplenishmentBuildPlanUUID { get; set; } = string.Empty;
 ```
 
 FormStockTargets shows a build plan selector combo on the plan detail panel. If no replenishment plan is designated when "Check & Generate Orders" is clicked, the form prompts the user to select or create one before proceeding.
 
-### OQ-36: Crate Volume in Delivery Planning (Iteration 3) â€” RESOLVED
+### OQ-36: Crate Volume in Delivery Planning (Iteration 3) — RESOLVED
 
-**Decision:** Crates have no volume or mass of their own â€” they are purely an organizational concept. A crate's volume is the sum of the volumes of items inside it. A crate's mass is the sum of the masses of items inside it. This applies everywhere: ship cargo capacity checks, delivery plan trip splitting, and any other volume/mass computation.
+**Decision:** Crates have no volume or mass of their own — they are purely an organizational concept. A crate's volume is the sum of the volumes of items inside it. A crate's mass is the sum of the masses of items inside it. This applies everywhere: ship cargo capacity checks, delivery plan trip splitting, and any other volume/mass computation.
 
-For delivery planning, crate contents are included in the cargo volume computation. A crate with 10 items totaling 500 mÂ³ counts as 500 mÂ³ toward the ship's cargo capacity, not as a single item with its own volume.
+For delivery planning, crate contents are included in the cargo volume computation. A crate with 10 items totaling 500 m³ counts as 500 m³ toward the ship's cargo capacity, not as a single item with its own volume.
 
-### OQ-37: Station Blueprint Type (Iteration 4) â€” DEFERRED
+### OQ-37: Station Blueprint Type (Iteration 4) — DEFERRED
 
 **Decision:** Deferred until the game releases the rest of the player station features. In-game, stations use "build packages" rather than blueprints, but build packages currently have no properties (no slot counts, no stats). Until the game defines what properties a station build package has, we cannot model station slot counts or component limits.
 
@@ -115,28 +115,28 @@ For now:
 - `StationStats` computation is deferred alongside the Components tab.
 - The `StationBlueprintUUID` field and `Components` list on Station are present in the model with empty defaults so no migration is needed when the feature is eventually implemented.
 
-### OQ-38: ExternalCharacter Name Collision (Iteration 1) â€” RESOLVED
+### OQ-38: ExternalCharacter Name Collision (Iteration 1) — RESOLVED
 
-**Decision:** Not an issue. The game has a single server and character names are unique â€” no duplicate names are allowed. Deterministic UUID from character name is safe.
+**Decision:** Not an issue. The game has a single server and character names are unique — no duplicate names are allowed. Deterministic UUID from character name is safe.
 
-### OQ-39: SupplyChain Delivery Route Selection (Iteration 6) â€” RESOLVED
+### OQ-39: SupplyChain Delivery Route Selection (Iteration 6) — RESOLVED
 
-**Decision:** Consistent with OQ-33 â€” each `SupplyChainStage` that triggers a delivery (PickUp, Refine, Deliver stages with accumulation thresholds) includes a `DeliveryRouteUUID` field. The user picks the route when defining the stage.
+**Decision:** Consistent with OQ-33 — each `SupplyChainStage` that triggers a delivery (PickUp, Refine, Deliver stages with accumulation thresholds) includes a `DeliveryRouteUUID` field. The user picks the route when defining the stage.
 
-Model change â€” add to `SupplyChainStage`:
+Model change — add to `SupplyChainStage`:
 ```csharp
 public string DeliveryRouteUUID { get; set; } = string.Empty;  // Route for threshold-triggered deliveries
 ```
 
 Mine and AsteroidMine stages don't need a route (they produce at a location, they don't move resources). PickUp/Refine/Deliver stages that have an `AccumulationThreshold > 0` require a route to be set. FormSupplyChain validates this on save.
 
-### OQ-40: Resource Check Scope â€” Colony Warehouse Only or Also Station Holds? (Iteration 1) â€” RESOLVED
+### OQ-40: Resource Check Scope — Colony Warehouse Only or Also Station Holds? (Iteration 1) — RESOLVED
 
-**Decision:** Station holds are included in resource checks. Only the current player's hold at each station is checked â€” `station.Holds[currentPlayerUUID]`. All plans, stock levels, and automations are owned by a specific player; there are no cross-player automations.
+**Decision:** Station holds are included in resource checks. Only the current player's hold at each station is checked — `station.Holds[currentPlayerUUID]`. All plans, stock levels, and automations are owned by a specific player; there are no cross-player automations.
 
 For ResourceCheckService, the scope is:
 - Colony warehouse at the allocated colony (primary)
 - Station holds for the current player at stations on the associated delivery route (secondary)
 
-This reduces false shortfalls â€” if the player already has resources at a station on the route, the system knows they're available and doesn't flag them as missing. The resource check takes a `Func<string, Station> stationFinder` and the current player UUID to look up the relevant holds.
+This reduces false shortfalls — if the player already has resources at a station on the route, the system knows they're available and doesn't flag them as missing. The resource check takes a `Func<string, Station> stationFinder` and the current player UUID to look up the relevant holds.
 

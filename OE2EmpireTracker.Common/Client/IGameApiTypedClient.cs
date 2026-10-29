@@ -27,6 +27,20 @@ namespace OE2EmpireTracker.Common.Client
         Task<TokenResponseDto> ExchangeTokenAsync(string appId, string clientId, string secret, CancellationToken ct = default);
 
         /// <summary>
+        /// Discards any cached token for the given credentials, so the next
+        /// <see cref="ExchangeTokenAsync"/> performs a real exchange.
+        /// </summary>
+        /// <remarks>
+        /// Required by the 401 path. The client serves a non-expired token from cache,
+        /// so a caller handling an “unauthorized” response would otherwise be handed back
+        /// the very token the server just rejected, and could not recover until the
+        /// cached token expired on its own.
+        /// </remarks>
+        /// <param name="clientId">The player's account identifier.</param>
+        /// <param name="secret">The per-character secret.</param>
+        void InvalidateToken(string clientId, string secret);
+
+        /// <summary>
         /// Tests connectivity by performing a trial token exchange.
         /// </summary>
         Task<bool> TestConnectionAsync(string appId, string clientId, string secret, CancellationToken ct = default);

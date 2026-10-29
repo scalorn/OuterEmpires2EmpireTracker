@@ -1,4 +1,4 @@
-// -----------------------------------------------------------------------
+﻿// -----------------------------------------------------------------------
 // <copyright file="DynamoDbBackendLifecycleTests.cs" company="OE2EmpireTracker">
 //     Copyright (c) OE2EmpireTracker. All rights reserved.
 // </copyright>
@@ -35,7 +35,8 @@ namespace OE2EmpireTracker.Tests.Storage
             var backend = new DynamoDbBackend(
                 TestTableName + "_init",
                 "us-east-1",
-                DynamoDbLocalFixture.ServiceUrl);
+                DynamoDbLocalFixture.ServiceUrl,
+                DynamoDbLocalFixture.Credentials);
 
             Assert.DoesNotThrowAsync(async () => await backend.InitializeAsync());
         }
@@ -46,7 +47,8 @@ namespace OE2EmpireTracker.Tests.Storage
             var backend = new DynamoDbBackend(
                 TestTableName + "_validate",
                 "us-east-1",
-                DynamoDbLocalFixture.ServiceUrl);
+                DynamoDbLocalFixture.ServiceUrl,
+                DynamoDbLocalFixture.Credentials);
 
             await backend.InitializeAsync();
             var result = await backend.ValidateConnectionAsync();
@@ -60,7 +62,8 @@ namespace OE2EmpireTracker.Tests.Storage
             var backend = new DynamoDbBackend(
                 TestTableName + "_info",
                 "us-east-1",
-                DynamoDbLocalFixture.ServiceUrl);
+                DynamoDbLocalFixture.ServiceUrl,
+                DynamoDbLocalFixture.Credentials);
 
             var info = backend.GetStorageInfo();
 
@@ -74,7 +77,8 @@ namespace OE2EmpireTracker.Tests.Storage
             var backend = new DynamoDbBackend(
                 TestTableName + "_double",
                 "us-east-1",
-                DynamoDbLocalFixture.ServiceUrl);
+                DynamoDbLocalFixture.ServiceUrl,
+                DynamoDbLocalFixture.Credentials);
 
             await backend.InitializeAsync();
 

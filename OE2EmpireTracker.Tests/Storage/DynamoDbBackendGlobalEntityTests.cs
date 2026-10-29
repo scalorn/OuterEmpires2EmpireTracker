@@ -1,4 +1,4 @@
-// -----------------------------------------------------------------------
+﻿// -----------------------------------------------------------------------
 // <copyright file="DynamoDbBackendGlobalEntityTests.cs" company="OE2EmpireTracker">
 //     Copyright (c) OE2EmpireTracker. All rights reserved.
 // </copyright>
@@ -39,7 +39,8 @@ namespace OE2EmpireTracker.Tests.Storage
             _backend = new DynamoDbBackend(
                 _tablePrefix,
                 "us-east-1",
-                DynamoDbLocalFixture.ServiceUrl);
+                DynamoDbLocalFixture.ServiceUrl,
+                DynamoDbLocalFixture.Credentials);
             await _backend.InitializeAsync();
         }
 
@@ -137,12 +138,12 @@ namespace OE2EmpireTracker.Tests.Storage
                 ExpiresUtc = SystemClock.UtcNow.AddDays(7),
             };
 
-            // Act — upsert and verify present
+            // Act â€” upsert and verify present
             await _backend.UpsertMembershipActionAsync(action);
             var actions = await _backend.GetFactionActionsAsync("faction-111");
             Assert.That(actions.Any(a => a.Id == action.Id), Is.True);
 
-            // Act — delete and verify gone
+            // Act â€” delete and verify gone
             await _backend.DeleteMembershipActionAsync(action.Id);
             var actionsAfter = await _backend.GetFactionActionsAsync("faction-111");
             Assert.That(actionsAfter.Any(a => a.Id == action.Id), Is.False);

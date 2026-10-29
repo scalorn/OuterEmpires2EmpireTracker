@@ -10,6 +10,7 @@ using System.IO;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Amazon.Runtime;
 using NLog;
 using NUnit.Framework;
 
@@ -47,6 +48,18 @@ namespace OE2EmpireTracker.Tests.Storage
         /// (JDK and JAR exist and the process started successfully).
         /// </summary>
         public static bool IsAvailable => _available;
+
+        /// <summary>
+        /// Gets placeholder credentials for DynamoDB Local.
+        /// </summary>
+        /// <remarks>
+        /// DynamoDB Local ignores the credential values but still requires requests to
+        /// be signed. Supplying these explicitly keeps the tests independent of whatever
+        /// AWS credentials the host machine happens to have configured; the ambient
+        /// credential chain otherwise resolves to an EC2 instance-metadata provider that
+        /// fails on first use.
+        /// </remarks>
+        public static AWSCredentials Credentials => new BasicAWSCredentials("local", "local");
 
         /// <summary>
         /// Starts DynamoDB Local before all tests in the Storage namespace.

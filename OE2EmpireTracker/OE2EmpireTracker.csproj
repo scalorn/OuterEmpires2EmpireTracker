@@ -260,7 +260,9 @@
     </Compile>
     <Compile Include="Controls\DataGridViewFilteredComboBoxColumn.cs" />
     <Compile Include="Controls\RouteDropdownHelper.cs" />
-    <Compile Include="Controls\FilteredTextComboSet.cs" />
+    <Compile Include="Controls\FilteredTextComboSet.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controls\ValidatedTextBox.cs">
       <SubType>Component</SubType>
     </Compile>

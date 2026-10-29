@@ -83,24 +83,21 @@ namespace OE2EmpireTracker.Services
                 }
             }
 
-            // Merge Ranks from Levels collection
+            // Merge Ranks from Levels collection.
+            //
+            // The API carries at most one level per track, but a malformed response with
+            // several entries for the same track must not break idempotency. Merging each
+            // entry in turn settles on the last one, so the state is stable, but every
+            // pass rewrites the rank back and forth and therefore reports changed=true
+            // forever -- which would make QueueSyncService persist and raise change
+            // notifications on every single sync cycle. Collapsing to the last entry per
+            // track keeps last-one-wins semantics for valid responses while making the
+            // merge genuinely idempotent for any input.
             if (remote.Levels != null)
             {
-                foreach (var level in remote.Levels)
-                {
-                    if (string.Equals(level.Track, "public", StringComparison.OrdinalIgnoreCase))
-                    {
-                        changed |= MergeRank(local.Public, level, "Public");
-                    }
-                    else if (string.Equals(level.Track, "private", StringComparison.OrdinalIgnoreCase))
-                    {
-                        changed |= MergeRank(local.Private, level, "Private");
-                    }
-                    else if (string.Equals(level.Track, "military", StringComparison.OrdinalIgnoreCase))
-                    {
-                        changed |= MergeRank(local.Military, level, "Military");
-                    }
-                }
+                changed |= MergeRank(local.Public, FindLastLevelForTrack(remote.Levels, "public"), "Public");
+                changed |= MergeRank(local.Private, FindLastLevelForTrack(remote.Levels, "private"), "Private");
+                changed |= MergeRank(local.Military, FindLastLevelForTrack(remote.Levels, "military"), "Military");
             }
 
             // Merge Skills (overwrite levels from API, preserve TrainingStarted and CompletionTime)
@@ -110,6 +107,20 @@ namespace OE2EmpireTracker.Services
             }
 
             return changed;
+        }
+
+        /// <summary>
+        /// Finds the last level entry matching the given track, or null when the track is absent.
+        /// </summary>
+        /// <param name="levels">The remote levels collection.</param>
+        /// <param name="track">The track name to match, compared case-insensitively.</param>
+        /// <returns>The last matching level, or null if no entry matches.</returns>
+        private static CharacterLevel FindLastLevelForTrack(IEnumerable<CharacterLevel> levels, string track)
+        {
+            return levels
+                .Where(level => level != null
+                    && string.Equals(level.Track, track, StringComparison.OrdinalIgnoreCase))
+                .LastOrDefault();
         }
 
         /// <summary>

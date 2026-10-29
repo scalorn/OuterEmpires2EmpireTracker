@@ -31,8 +31,8 @@ namespace OE2EmpireTracker.Tests.Constants
 
         /// <summary>
         /// Cargo constants that MapAssetTypeC maps to a non-None ItemTypeEnum.
-        /// Excludes Deployable, CommodityL, Colony, Station, and Ship since
-        /// MapAssetTypeC returns None for those (they are not in its mapping).
+        /// Excludes Deployable, Colony, Station, and Ship since MapAssetTypeC
+        /// returns None for those (they are not in its mapping).
         /// </summary>
         private static readonly string[] CargoConstants = new[]
         {
@@ -45,6 +45,7 @@ namespace OE2EmpireTracker.Tests.Constants
             AssetTypeCodes.Resource,
             AssetTypeCodes.Ammunition,
             AssetTypeCodes.Commodity,
+            AssetTypeCodes.CommodityL,
             AssetTypeCodes.Share,
             AssetTypeCodes.ShipHull,
         };

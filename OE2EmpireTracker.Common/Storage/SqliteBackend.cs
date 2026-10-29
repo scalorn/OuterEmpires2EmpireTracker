@@ -8705,7 +8705,6 @@ DROP TABLE MarketTransactions_old;
             }
         }
 
-
         // ===============================================================
         // SQL Logging Helpers
         // ===============================================================
@@ -8725,7 +8724,7 @@ DROP TABLE MarketTransactions_old;
                     caller,
                     sw.ElapsedMilliseconds,
                     affected,
-                    cmd.CommandText.Replace("\n", " ").Replace("\r", string.Empty).Substring(0, Math.Min(cmd.CommandText.Length, 200)),
+                    FormatSqlForLog(cmd.CommandText),
                     FormatParameters(cmd.Parameters));
             }
 
@@ -8746,7 +8745,7 @@ DROP TABLE MarketTransactions_old;
                     "SQL|{0}|{1}ms|{2}|{3}",
                     caller,
                     sw.ElapsedMilliseconds,
-                    cmd.CommandText.Replace("\n", " ").Replace("\r", string.Empty).Substring(0, Math.Min(cmd.CommandText.Length, 200)),
+                    FormatSqlForLog(cmd.CommandText),
                     FormatParameters(cmd.Parameters));
             }
 
@@ -8767,11 +8766,30 @@ DROP TABLE MarketTransactions_old;
                     "SQL|{0}|{1}ms|{2}|{3}",
                     caller,
                     sw.ElapsedMilliseconds,
-                    cmd.CommandText.Replace("\n", " ").Replace("\r", string.Empty).Substring(0, Math.Min(cmd.CommandText.Length, 200)),
+                    FormatSqlForLog(cmd.CommandText),
                     FormatParameters(cmd.Parameters));
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Flattens SQL onto a single line and truncates it for log output.
+        /// The truncation bound must come from the flattened text: stripping carriage
+        /// returns shortens the string, so bounding by the original CommandText length
+        /// throws ArgumentOutOfRangeException for any statement shorter than the limit.
+        /// </summary>
+        private static string FormatSqlForLog(string commandText)
+        {
+            if (string.IsNullOrEmpty(commandText))
+            {
+                return string.Empty;
+            }
+
+            string flattened = commandText.Replace("\n", " ").Replace("\r", string.Empty);
+
+            // 200 characters is enough to identify a statement in the log.
+            return flattened.Length <= 200 ? flattened : flattened.Substring(0, 200);
         }
 
         private static string FormatParameters(SqliteParameterCollection parameters)

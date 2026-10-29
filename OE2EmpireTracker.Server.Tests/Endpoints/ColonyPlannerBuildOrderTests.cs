@@ -4,12 +4,12 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using System.Net.Http.Json;
 using System.Net;
-using System.Text.Json;
+using System.Net.Http.Json;
 using System.Text;
-using FsCheck.NUnit;
+using System.Text.Json;
 using FsCheck;
+using FsCheck.NUnit;
 using NUnit.Framework;
 using OE2EmpireTracker.Server.Tests;
 

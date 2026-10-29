@@ -10,7 +10,9 @@ using System.Threading.Tasks;
 using FsCheck;
 using NUnit.Framework;
 using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Client.Generated;
 using OE2EmpireTracker.Services;
+using OE2EmpireTracker.Tests.Helpers;
 
 namespace OE2EmpireTracker.Tests.Services
 {
@@ -63,14 +65,23 @@ namespace OE2EmpireTracker.Tests.Services
         /// A testable GameApiClient subclass that overrides ExchangeTokenAsync
         /// to count invocations and return a controlled token.
         /// </summary>
-        private class FakeGameApiClient : GameApiClient
+        /// <remarks>
+        /// This previously derived from the <c>GameApiClient</c> shim and overrode its
+        /// public tuple-returning <c>ExchangeTokenAsync</c>. That never intercepted
+        /// anything: <see cref="TokenRefreshHandler"/> calls the
+        /// <see cref="IGameApiTypedClient"/> member, which the shim implements
+        /// *explicitly*, and an explicit interface implementation cannot be overridden by
+        /// a derived class. So every call fell through to the real typed client and tried
+        /// to reach `http://localhost`. The test could not have passed, and nobody knew
+        /// because a missing Polly reference made the fixture fail to load first.
+        ///
+        /// Deriving from <see cref="OfflineGameApiClientStub"/> and overriding the
+        /// interface member through a normal virtual gets the interception the original
+        /// was reaching for.
+        /// </remarks>
+        private class FakeGameApiClient : OfflineGameApiClientStub
         {
             private int _exchangeCallCount;
-
-            public FakeGameApiClient()
-                : base("http://localhost")
-            {
-            }
 
             /// <summary>
             /// Gets the number of times ExchangeTokenAsync was called.
@@ -83,23 +94,22 @@ namespace OE2EmpireTracker.Tests.Services
             public string FakeNewToken { get; set; } = "refreshed-token-abc";
 
             /// <inheritdoc/>
-            public override async Task<(bool Success, GameApiTokenResponse Token, string ErrorMessage)> ExchangeTokenAsync(
+            public override async Task<TokenResponseDto> ExchangeTokenAsync(
                 string appId,
                 string clientId,
-                string secret)
+                string secret,
+                CancellationToken ct = default)
             {
                 Interlocked.Increment(ref _exchangeCallCount);
 
-                // Simulate network latency to amplify concurrency window
-                await Task.Delay(20).ConfigureAwait(false);
+                // Simulate network latency to amplify the concurrency window
+                await Task.Delay(20, ct).ConfigureAwait(false);
 
-                var token = new GameApiTokenResponse
+                return new TokenResponseDto
                 {
                     AccessToken = this.FakeNewToken,
                     ExpiresIn = 3600,
                 };
-
-                return (true, token, null);
             }
         }
 

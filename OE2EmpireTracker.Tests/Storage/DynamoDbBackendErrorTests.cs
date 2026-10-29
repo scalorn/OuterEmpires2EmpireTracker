@@ -1,4 +1,4 @@
-// -----------------------------------------------------------------------
+﻿// -----------------------------------------------------------------------
 // <copyright file="DynamoDbBackendErrorTests.cs" company="OE2EmpireTracker">
 //     Copyright (c) OE2EmpireTracker. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ namespace OE2EmpireTracker.Tests.Storage
     [TestFixture]
     public class DynamoDbBackendErrorTests
     {
-        private const string UnreachableEndpoint = "http://localhost:59999";
+        private const string UnreachableEndpoint = "http://127.0.0.1:59999";
         private const string TestTable = "error_test_table";
 
         [Test]

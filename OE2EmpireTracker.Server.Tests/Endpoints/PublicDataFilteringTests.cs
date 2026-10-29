@@ -6,9 +6,9 @@
 
 using System.Net.Http.Json;
 using System.Text.Json;
-using Microsoft.Extensions.DependencyInjection;
-using FsCheck.NUnit;
 using FsCheck;
+using FsCheck.NUnit;
+using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using OE2EmpireTracker.Common.Interfaces;
 using OE2EmpireTracker.Common.Models;

@@ -35,7 +35,8 @@ const tools = [
     { name: 'Code Metrics', script: 'code-metrics.js' },
     { name: 'Mutation Audit', script: 'mutation-audit.js' },
     { name: 'DateTime Check', script: 'datetime-check.js' },
-    { name: 'Server Build', script: 'server-build-check.js' },
+    // Runs a real dotnet build; needs far more than the 60s default.
+    { name: 'Server Build', script: 'server-build-check.js', timeout: 300000 },
 ];
 
 let totalFindings = 0;
@@ -46,19 +47,39 @@ for (const tool of tools) {
     try {
         const output = execSync('node ' + scriptPath, {
             encoding: 'utf8',
-            timeout: 60000,
+            timeout: tool.timeout || 60000,
             stdio: ['pipe', 'pipe', 'pipe']
         });
         results.push({ name: tool.name, status: 'CLEAN', count: 0, output: output.trim() });
     } catch (err) {
-        const output = (err.stdout || '').trim();
+        // Merge stderr: some checks (e.g. server-build-check) report entirely on
+        // stderr, which previously left `output` empty and scored them 0 findings.
+        const stdout = (err.stdout || '').trim();
+        const stderr = (err.stderr || '').trim();
+        const output = [stdout, stderr].filter(Boolean).join('\n');
         const lines = output.split('\n').filter(l => l.trim());
         // Last line is usually "N findings"
         const lastLine = lines[lines.length - 1] || '';
         const countMatch = lastLine.match(/(\d+)\s+findings/);
-        const count = countMatch ? parseInt(countMatch[1]) : lines.length;
+        let count = countMatch ? parseInt(countMatch[1]) : lines.length;
+        const timedOut = err.killed === true || err.signal != null;
+
+        // A non-zero exit ALWAYS counts as at least one finding. Without this a
+        // check could fail, emit nothing parseable, score 0, and the aggregate
+        // would still exit 0 -- reporting a clean audit over a broken gate.
+        // That is the same false-success failure mode as the old oebackup.ps1,
+        // and it hid 4 real StyleCop analyzer crashes in the Server build.
+        if (count === 0) {
+            count = 1;
+        }
+
         totalFindings += count;
-        results.push({ name: tool.name, status: 'FINDINGS', count, output });
+        results.push({
+            name: tool.name,
+            status: timedOut ? 'ERROR' : 'FINDINGS',
+            count,
+            output: output || ('check exited ' + (err.status != null ? err.status : '?') + ' with no output'),
+        });
     }
 }
 
@@ -66,15 +87,25 @@ for (const tool of tools) {
 console.log('=== Audit Summary ===\n');
 for (const r of results) {
     const icon = r.status === 'CLEAN' ? '\u2713' : '\u2717';
-    console.log(icon + ' ' + r.name + ': ' + (r.status === 'CLEAN' ? 'clean' : r.count + ' findings'));
+    let label;
+    if (r.status === 'CLEAN') {
+        label = 'clean';
+    } else if (r.status === 'ERROR') {
+        label = 'ERROR (check did not complete) - counted as ' + r.count;
+    } else {
+        label = r.count + ' findings';
+    }
+
+    console.log(icon + ' ' + r.name + ': ' + label);
 }
 console.log('\nTotal: ' + totalFindings + ' findings');
 
-// Show details if findings exist and --fix flag
-if (totalFindings > 0 && process.argv.includes('--fix')) {
+// Always show details on failure. Previously this required --fix, so a failing
+// gate could print a bare summary and leave the cause invisible.
+if (totalFindings > 0) {
     console.log('\n=== Details ===\n');
     for (const r of results) {
-        if (r.status === 'FINDINGS') {
+        if (r.status !== 'CLEAN') {
             console.log('--- ' + r.name + ' ---');
             console.log(r.output);
             console.log('');

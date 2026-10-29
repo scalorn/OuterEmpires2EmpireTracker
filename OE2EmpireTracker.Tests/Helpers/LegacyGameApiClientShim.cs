@@ -29,8 +29,30 @@ namespace OE2EmpireTracker.Client
             _inner = new GameApiTypedClient(serverUrl, "test-app-id", 0.9);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GameApiClient"/> class over a
+        /// caller-supplied <see cref="HttpClient"/>, so a test can inject a fake handler.
+        /// </summary>
+        /// <remarks>
+        /// This replaces a reflection hack that set a private `_httpClient` field after
+        /// construction. That stopped working when the client moved behind
+        /// <see cref="GameApiTypedClient"/> — the field is no longer on this type — and it
+        /// could not have worked anyway, because the generated client captures the
+        /// HttpClient during construction, so a later field swap is not observed.
+        /// The failure was invisible until the Polly reference was fixed, because these
+        /// tests had never actually run.
+        /// </remarks>
+        /// <param name="httpClient">The HTTP client to use; its BaseAddress must be set.</param>
+        public GameApiClient(HttpClient httpClient)
+        {
+            _inner = new GameApiTypedClient(httpClient, "test-app-id", 0.9);
+        }
+
         /// <inheritdoc/>
         public bool IsCircuitOpen => _inner.IsCircuitOpen;
+
+        /// <inheritdoc/>
+        public void InvalidateToken(string clientId, string secret) => _inner.InvalidateToken(clientId, secret);
 
         /// <summary>
         /// Legacy token exchange returning a tuple for backward compatibility.

@@ -62,10 +62,24 @@ namespace OE2EmpireTracker.Common.Client
             _rateLimiter = new TokenBucketRateLimiter(tps);
             _tokenCache = new ConcurrentDictionary<string, CachedToken>();
 
+            // The backoff is 1s, 2s then 4s, but the waiting is done by SystemClock
+            // rather than by Polly: Polly 8's v7-compatibility layer no longer routes its
+            // sleeps through Polly.Utilities.SystemClock, so tests had no way to make a
+            // retry instant and every call against an unreachable endpoint cost seven
+            // seconds of wall clock. Handing the sleep to SystemClock puts it behind the
+            // same seam as TokenBucketRateLimiter and GameApiRequestQueue, so
+            // SystemClock.EnableInstantDelay() covers all three. Attempt counts, exception
+            // filters and circuit-breaker transitions are unchanged.
             _retryPolicy = Policy
                 .Handle<HttpRequestException>()
                 .Or<ApiHttpException>(ex => ex.StatusCode >= 500)
-                .WaitAndRetryAsync(3, attempt => TimeSpan.FromSeconds(Math.Pow(2, attempt - 1)));
+                .WaitAndRetryAsync(
+                    3,
+                    attempt => TimeSpan.Zero,
+                    (exception, timespan, attempt, context) =>
+                        SystemClock.DelayAsync(
+                            (int)(Math.Pow(2, attempt - 1) * 1000),
+                            CancellationToken.None));
 
             _circuitBreaker = Policy
                 .Handle<HttpRequestException>()
@@ -99,6 +113,16 @@ namespace OE2EmpireTracker.Common.Client
         }
 
         /// <inheritdoc/>
+        public void InvalidateToken(string clientId, string secret)
+        {
+            string key = ComputeCacheKey(clientId, secret);
+            if (_tokenCache.TryRemove(key, out _))
+            {
+                Log.Debug("Cached token discarded for client {0}.", clientId);
+            }
+        }
+
+        /// <inheritdoc/>
         public async Task<TokenResponseDto> ExchangeTokenAsync(string appId, string clientId, string secret, CancellationToken ct = default)
         {
             string key = ComputeCacheKey(clientId, secret);
@@ -108,16 +132,30 @@ namespace OE2EmpireTracker.Common.Client
                 return new TokenResponseDto { AccessToken = cached.AccessToken, ExpiresIn = cached.ExpiresIn };
             }
 
-            // Token exchange bypasses both rate limiter and Polly policies
-            var response = await _generatedClient.ExchangeTokenAsync(
-                new TokenRequestDto
-                {
-                    AppId = appId,
-                    ClientId = clientId,
-                    Secret = secret,
-                    GrantType = "client_credentials",
-                },
-                ct).ConfigureAwait(false);
+            // Token exchange bypasses both rate limiter and Polly policies.
+            //
+            // It does not bypass the exception contract. Every other method on this
+            // client surfaces ApiHttpException via ExecuteAsync; letting the generated
+            // ApiException escape from here alone meant callers could not catch a failed
+            // refresh without depending on a generated type. TokenRefreshHandler catches
+            // ApiHttpException and was therefore unable to see a 401 at all.
+            Generated.ServiceResponse_tokenResponseDto response;
+            try
+            {
+                response = await _generatedClient.ExchangeTokenAsync(
+                    new TokenRequestDto
+                    {
+                        AppId = appId,
+                        ClientId = clientId,
+                        Secret = secret,
+                        GrantType = "client_credentials",
+                    },
+                    ct).ConfigureAwait(false);
+            }
+            catch (Generated.ApiException ex)
+            {
+                throw new ApiHttpException(ex.StatusCode, ex.Response);
+            }
 
             if (!response.Success)
             {

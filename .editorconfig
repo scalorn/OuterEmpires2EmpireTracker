@@ -126,3 +126,24 @@ dotnet_diagnostic.SA1201.severity = none
 dotnet_diagnostic.SA1202.severity = none
 # SA1204: Static members should appear before non-static — test files group helpers near their tests
 dotnet_diagnostic.SA1204.severity = none
+
+# --- Server project: SDK-style, net8.0, uses C# record declarations ---
+# StyleCop.Analyzers 1.1.118 (pinned in Directory.Build.props) predates C# 9
+# records. Its ordering analyzers throw KeyNotFoundException on
+# 'RecordDeclaration', which the compiler surfaces as AD0001 analyzer-crash
+# warnings and breaks the zero-warnings policy. Disabling the ordering rules
+# for this project only keeps the rest of StyleCop active here.
+# Revisit if StyleCop.Analyzers is ever upgraded to the 1.2.x line.
+[OE2EmpireTracker.Server/**/*.cs]
+dotnet_diagnostic.SA1201.severity = none
+dotnet_diagnostic.SA1202.severity = none
+dotnet_diagnostic.SA1204.severity = none
+
+# --- SqliteBackend: SQL logging helpers grouped in a labelled region ---
+# This 8800-line class keeps its private static SQL logging helpers together in
+# a "SQL Logging Helpers" region at the end of the file. SA1204 would require
+# hoisting them above ~8600 lines of instance members, which costs readability
+# for no benefit. Same rationale as the Tests project relaxation above.
+# Surfaced once the AD0001 analyzer crash stopped masking the ordering rules.
+[OE2EmpireTracker.Common/Storage/SqliteBackend.cs]
+dotnet_diagnostic.SA1204.severity = none

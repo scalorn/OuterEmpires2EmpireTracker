@@ -6,123 +6,123 @@
 MDI child form. Left-list / right-detail pattern with tabs for hold/components/munitions.
 
 ```
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚ #1 - Stations                                                           [_][â–¡][X]â”‚
-â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
-â”‚ Filter: [__________] â”‚ Name: [Station Alpha_________]                          â”‚
-â”‚                      â”‚ Type: [Station     â–¼]  Ownership: [Government â–¼]        â”‚
-â”‚ â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” â”‚                                                         â”‚
-â”‚ â”‚â–¸ Station Alpha   â”‚ â”‚ â”Œâ”€ Hold â”€â”¬â”€ Components â”€â”¬â”€ Munitions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”   â”‚
-â”‚ â”‚  Outpost Beta    â”‚ â”‚ â”‚        â”‚              â”‚                          â”‚   â”‚
-â”‚ â”‚  Starbase Omega  â”‚ â”‚ â”‚ (current player's hold)                          â”‚   â”‚
-â”‚ â”‚  My Station      â”‚ â”‚ â”‚                                                  â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”‚ Type     â”‚ Item             â”‚ Qty â”‚            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”¤            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”‚ Resource â”‚ Refined Titanium â”‚ 500 â”‚            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”‚ Commodty â”‚ Reactor Mk3      â”‚  12 â”‚            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”‚ [Crate]  â”‚ Order #42 (8)    â”‚   1 â”‚            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”‚ Blueprnt â”‚ Drive Mk3        â”‚   3 â”‚            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”˜            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚                                                  â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ Crate Contents (Order #42):                      â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”‚ Type     â”‚ Item             â”‚ Qty â”‚            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”¤            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”‚ Commodty â”‚ Reactor Mk3      â”‚   4 â”‚            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”‚ Commodty â”‚ Drive Mk3        â”‚   4 â”‚            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”˜            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚                                                  â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ Add: Type:[Resourceâ–¼] Filter:[___] [Titaniumâ–¼]  â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚      Purity:[Refinedâ–¼] Qty:[100] [Add]          â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ [New Crate] [Move to Crate] [Remove] [Del Crate]â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜   â”‚
-â”‚ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ â”‚                                                         â”‚
-â”‚ [New] [Delete]       â”‚                                                         â”‚
-â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
-â”‚ [Save] [Delete]                                                                â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ #1 - Stations                                                           [_][□][X]│
+├──────────────────────┬──────────────────────────────────────────────────────────┤
+│ Filter: [__________] │ Name: [Station Alpha_________]                          │
+│                      │ Type: [Station     ▼]  Ownership: [Government ▼]        │
+│ ┌──────────────────┐ │                                                         │
+│ │▸ Station Alpha   │ │ ┌─ Hold ─┬─ Components ─┬─ Munitions ──────────────┐   │
+│ │  Outpost Beta    │ │ │        │              │                          │   │
+│ │  Starbase Omega  │ │ │ (current player's hold)                          │   │
+│ │  My Station      │ │ │                                                  │   │
+│ │                  │ │ │ ┌──────────┬──────────────────┬─────┐            │   │
+│ │                  │ │ │ │ Type     │ Item             │ Qty │            │   │
+│ │                  │ │ │ ├──────────┼──────────────────┼─────┤            │   │
+│ │                  │ │ │ │ Resource │ Refined Titanium │ 500 │            │   │
+│ │                  │ │ │ │ Commodty │ Reactor Mk3      │  12 │            │   │
+│ │                  │ │ │ │ [Crate]  │ Order #42 (8)    │   1 │            │   │
+│ │                  │ │ │ │ Blueprnt │ Drive Mk3        │   3 │            │   │
+│ │                  │ │ │ └──────────┴──────────────────┴─────┘            │   │
+│ │                  │ │ │                                                  │   │
+│ │                  │ │ │ Crate Contents (Order #42):                      │   │
+│ │                  │ │ │ ┌──────────┬──────────────────┬─────┐            │   │
+│ │                  │ │ │ │ Type     │ Item             │ Qty │            │   │
+│ │                  │ │ │ ├──────────┼──────────────────┼─────┤            │   │
+│ │                  │ │ │ │ Commodty │ Reactor Mk3      │   4 │            │   │
+│ │                  │ │ │ │ Commodty │ Drive Mk3        │   4 │            │   │
+│ │                  │ │ │ └──────────┴──────────────────┴─────┘            │   │
+│ │                  │ │ │                                                  │   │
+│ │                  │ │ │ Add: Type:[Resource▼] Filter:[___] [Titanium▼]  │   │
+│ │                  │ │ │      Purity:[Refined▼] Qty:[100] [Add]          │   │
+│ │                  │ │ │ [New Crate] [Move to Crate] [Remove] [Del Crate]│   │
+│ │                  │ │ └──────────────────────────────────────────────────┘   │
+│ └──────────────────┘ │                                                         │
+│ [New] [Delete]       │                                                         │
+├──────────────────────┴─────────────────────────────────────────────────────────┤
+│ [Save] [Delete]                                                                │
+└────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 Components tab (player-owned stations only):
 
 ```
-â”‚ â”Œâ”€ Hold â”€â”¬â”€ Components â”€â”¬â”€ Munitions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”   â”‚
-â”‚ â”‚        â”‚              â”‚                                  â”‚   â”‚
-â”‚ â”‚ Station Blueprint: [Outpost Mk2                      â–¼] â”‚   â”‚
-â”‚ â”‚                                                          â”‚   â”‚
-â”‚ â”‚ â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”â”‚   â”‚
-â”‚ â”‚ â”‚ Slot Type  â”‚ Slot# â”‚ Blueprint            â”‚ Condition     â”‚ MaxRep â”‚ Actions â”‚â”‚   â”‚
-â”‚ â”‚ â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤â”‚   â”‚
-â”‚ â”‚ â”‚ Hull       â”‚   -   â”‚ Outpost Mk2          â”‚ 76000/80000 95%â”‚  100% â”‚         â”‚â”‚   â”‚
-â”‚ â”‚ â”‚ Reactor    â”‚   0   â”‚ Station Reactor Mk2  â”‚  1200/1200 100%â”‚  100% â”‚ [Clear] â”‚â”‚   â”‚
-â”‚ â”‚ â”‚ Shield     â”‚   0   â”‚ Shield Generator Mk1 â”‚ 11000/12000 92%â”‚   90% â”‚ [Clear] â”‚â”‚   â”‚
-â”‚ â”‚ â”‚ Weapon     â”‚   0   â”‚ Turret Mk2           â”‚   450/500   90%â”‚  100% â”‚ [Clear] â”‚â”‚   â”‚
-â”‚ â”‚ â”‚ Weapon     â”‚   1   â”‚ (empty)              â”‚               â”‚        â”‚ [Set]   â”‚â”‚   â”‚
-â”‚ â”‚ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜â”‚   â”‚
-â”‚ â”‚                                                          â”‚   â”‚
-â”‚ â”‚ Install: Filter:[______] [Shield Gen Mk2          â–¼]    â”‚   â”‚
-â”‚ â”‚          Slot:  [Shield / 0  â–¼]  [Install]              â”‚   â”‚
-â”‚ â”‚                                                          â”‚   â”‚
-â”‚ â”‚ Stats:                                                   â”‚   â”‚
-â”‚ â”‚ â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”                    â”‚   â”‚
-â”‚ â”‚ â”‚ Total Mass           â”‚  45000 kg  â”‚                    â”‚   â”‚
-â”‚ â”‚ â”‚ Power Generated      â”‚   1200 MW  â”‚                    â”‚   â”‚
-â”‚ â”‚ â”‚ Power Consumed       â”‚    850 MW  â”‚                    â”‚   â”‚
-â”‚ â”‚ â”‚ Power Balance        â”‚  + 350 MW  â”‚                    â”‚   â”‚
-â”‚ â”‚ â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤                    â”‚   â”‚
-â”‚ â”‚ â”‚ Total Health         â”‚  80000 HP  â”‚                    â”‚   â”‚
-â”‚ â”‚ â”‚ Shield HP            â”‚  12000     â”‚                    â”‚   â”‚
-â”‚ â”‚ â”‚ Shield Regen         â”‚     50/s   â”‚                    â”‚   â”‚
-â”‚ â”‚ â”‚ Energy Defence       â”‚    250     â”‚                    â”‚   â”‚
-â”‚ â”‚ â”‚ Kinetic Defence      â”‚    180     â”‚                    â”‚   â”‚
-â”‚ â”‚ â”‚ Missile Defence      â”‚    120     â”‚                    â”‚   â”‚
-â”‚ â”‚ â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤                    â”‚   â”‚
-â”‚ â”‚ â”‚ Weapons (S/M/L)      â”‚   1/1/0    â”‚                    â”‚   â”‚
-â”‚ â”‚ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜                    â”‚   â”‚
-â”‚ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜   â”‚
+│ ┌─ Hold ─┬─ Components ─┬─ Munitions ──────────────────────┐   │
+│ │        │              │                                  │   │
+│ │ Station Blueprint: [Outpost Mk2                      ▼] │   │
+│ │                                                          │   │
+│ │ ┌────────────┬───────┬──────────────────────┬───────────────┬────────┬─────────┐│   │
+│ │ │ Slot Type  │ Slot# │ Blueprint            │ Condition     │ MaxRep │ Actions ││   │
+│ │ ├────────────┼───────┼──────────────────────┼───────────────┼────────┼─────────┤│   │
+│ │ │ Hull       │   -   │ Outpost Mk2          │ 76000/80000 95%│  100% │         ││   │
+│ │ │ Reactor    │   0   │ Station Reactor Mk2  │  1200/1200 100%│  100% │ [Clear] ││   │
+│ │ │ Shield     │   0   │ Shield Generator Mk1 │ 11000/12000 92%│   90% │ [Clear] ││   │
+│ │ │ Weapon     │   0   │ Turret Mk2           │   450/500   90%│  100% │ [Clear] ││   │
+│ │ │ Weapon     │   1   │ (empty)              │               │        │ [Set]   ││   │
+│ │ └────────────┴───────┴──────────────────────┴───────────────┴────────┴─────────┘│   │
+│ │                                                          │   │
+│ │ Install: Filter:[______] [Shield Gen Mk2          ▼]    │   │
+│ │          Slot:  [Shield / 0  ▼]  [Install]              │   │
+│ │                                                          │   │
+│ │ Stats:                                                   │   │
+│ │ ┌──────────────────────┬────────────┐                    │   │
+│ │ │ Total Mass           │  45000 kg  │                    │   │
+│ │ │ Power Generated      │   1200 MW  │                    │   │
+│ │ │ Power Consumed       │    850 MW  │                    │   │
+│ │ │ Power Balance        │  + 350 MW  │                    │   │
+│ │ ├──────────────────────┼────────────┤                    │   │
+│ │ │ Total Health         │  80000 HP  │                    │   │
+│ │ │ Shield HP            │  12000     │                    │   │
+│ │ │ Shield Regen         │     50/s   │                    │   │
+│ │ │ Energy Defence       │    250     │                    │   │
+│ │ │ Kinetic Defence      │    180     │                    │   │
+│ │ │ Missile Defence      │    120     │                    │   │
+│ │ ├──────────────────────┼────────────┤                    │   │
+│ │ │ Weapons (S/M/L)      │   1/1/0    │                    │   │
+│ │ └──────────────────────┴────────────┘                    │   │
+│ └──────────────────────────────────────────────────────────┘   │
 ```
 
 Controls:
-- Left: `flpSearchList` â†’ `txtStationFilter` + `lvwStations` (ListView) + `cmdNew` / `cmdDelete`
-- Right: `flpStationData` â†’ `txtName`, `cmbStationType`, `cmbOwnership`, `cmdSave`, `tabStationDetail` (TabControl with Hold, Components, Munitions tabs)
-- Hold tab: `dgvHold` (DataGridView, editable â€” scoped to current player's hold), `dgvHoldCrateContents` (detail grid), add-item panel (`cmbHoldType`, `cmbHoldItem` (FilteredTextComboSet), `cmbHoldPurity`, `txtHoldQty`, `cmdHoldAdd`, `cmdHoldRemove`), crate buttons
-- Components tab: `cmbStationBlueprint` (FilteredTextComboSet, parallel value list: Blueprint UUID), `dgvComponents` (columns: Slot Type, Slot#, Blueprint, Condition, MaxRepair, Actions â€” Condition and MaxRepair editable, hull row always first), install panel, `rtbStationStats` (read-only RichTextBox) â€” computed via ShipBuildService.ComputeStationStats
-- Munitions tab: `dgvMunitions` (DataGridView), add panel (`cmbMunItem` (FilteredTextComboSet), `txtMunQty`, `cmdMunAdd`, `cmdMunRemove`) â€” visible only for armed player-owned stations
+- Left: `flpSearchList` → `txtStationFilter` + `lvwStations` (ListView) + `cmdNew` / `cmdDelete`
+- Right: `flpStationData` → `txtName`, `cmbStationType`, `cmbOwnership`, `cmdSave`, `tabStationDetail` (TabControl with Hold, Components, Munitions tabs)
+- Hold tab: `dgvHold` (DataGridView, editable — scoped to current player's hold), `dgvHoldCrateContents` (detail grid), add-item panel (`cmbHoldType`, `cmbHoldItem` (FilteredTextComboSet), `cmbHoldPurity`, `txtHoldQty`, `cmdHoldAdd`, `cmdHoldRemove`), crate buttons
+- Components tab: `cmbStationBlueprint` (FilteredTextComboSet, parallel value list: Blueprint UUID), `dgvComponents` (columns: Slot Type, Slot#, Blueprint, Condition, MaxRepair, Actions — Condition and MaxRepair editable, hull row always first), install panel, `rtbStationStats` (read-only RichTextBox) — computed via ShipBuildService.ComputeStationStats
+- Munitions tab: `dgvMunitions` (DataGridView), add panel (`cmbMunItem` (FilteredTextComboSet), `txtMunQty`, `cmdMunAdd`, `cmdMunRemove`) — visible only for armed player-owned stations
 
 ### Crate UI Pattern (All Inventory Views)
 
 All forms that display ItemBag contents (station holds, ship cargo, colony warehouse) use the same master-detail pattern for crates:
 
 ```
-â”Œâ”€ Inventory â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚ â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”â”‚
-â”‚ â”‚ Type     â”‚ Item                 â”‚ Qty â”‚ Volume     â”‚ Condition â”‚ MaxRep â”‚â”‚
-â”‚ â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”¤â”‚
-â”‚ â”‚ Resource â”‚ Refined Titanium     â”‚ 500 â”‚    500 mÂ³  â”‚           â”‚        â”‚â”‚
-â”‚ â”‚ [Crate]  â”‚ Supply Run (12 items)â”‚   1 â”‚    850 mÂ³  â”‚           â”‚        â”‚â”‚ â† selected
-â”‚ â”‚ ShipPart â”‚ Reactor Mk3          â”‚   1 â”‚     50 mÂ³  â”‚ 380/400 95%â”‚  90% â”‚â”‚
-â”‚ â”‚ Commodty â”‚ Fuel Cells           â”‚  50 â”‚    500 mÂ³  â”‚           â”‚        â”‚â”‚
-â”‚ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”˜â”‚
-â”‚                                                                            â”‚
-â”‚ Crate Contents (Supply Run):                                               â”‚
-â”‚ â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”â”‚
-â”‚ â”‚ Type     â”‚ Item                 â”‚ Qty â”‚ Volume     â”‚ Condition â”‚ MaxRep â”‚â”‚
-â”‚ â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”¤â”‚
-â”‚ â”‚ Resource â”‚ Flatpack: Mfg Bay    â”‚   4 â”‚    400 mÂ³  â”‚           â”‚        â”‚â”‚
-â”‚ â”‚ Commodty â”‚ Fuel Cells           â”‚   8 â”‚    200 mÂ³  â”‚           â”‚        â”‚â”‚
-â”‚ â”‚ ShipPart â”‚ Drive Mk2            â”‚   1 â”‚     50 mÂ³  â”‚ 140/180 78%â”‚  85% â”‚â”‚
-â”‚ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”˜â”‚
-â”‚                                                                            â”‚
-â”‚ [New Crate] [Move to Crate] [Remove from Crate] [Delete Crate]            â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+┌─ Inventory ────────────────────────────────────────────────────────────────┐
+│ ┌──────────┬──────────────────────┬─────┬────────────┬───────────┬────────┐│
+│ │ Type     │ Item                 │ Qty │ Volume     │ Condition │ MaxRep ││
+│ ├──────────┼──────────────────────┼─────┼────────────┼───────────┼────────┤│
+│ │ Resource │ Refined Titanium     │ 500 │    500 m³  │           │        ││
+│ │ [Crate]  │ Supply Run (12 items)│   1 │    850 m³  │           │        ││ ← selected
+│ │ ShipPart │ Reactor Mk3          │   1 │     50 m³  │ 380/400 95%│  90% ││
+│ │ Commodty │ Fuel Cells           │  50 │    500 m³  │           │        ││
+│ └──────────┴──────────────────────┴─────┴────────────┴───────────┴────────┘│
+│                                                                            │
+│ Crate Contents (Supply Run):                                               │
+│ ┌──────────┬──────────────────────┬─────┬────────────┬───────────┬────────┐│
+│ │ Type     │ Item                 │ Qty │ Volume     │ Condition │ MaxRep ││
+│ ├──────────┼──────────────────────┼─────┼────────────┼───────────┼────────┤│
+│ │ Resource │ Flatpack: Mfg Bay    │   4 │    400 m³  │           │        ││
+│ │ Commodty │ Fuel Cells           │   8 │    200 m³  │           │        ││
+│ │ ShipPart │ Drive Mk2            │   1 │     50 m³  │ 140/180 78%│  85% ││
+│ └──────────┴──────────────────────┴─────┴────────────┴───────────┴────────┘│
+│                                                                            │
+│ [New Crate] [Move to Crate] [Remove from Crate] [Delete Crate]            │
+└────────────────────────────────────────────────────────────────────────────┘
 ```
 
 Behavior:
 - Main grid shows all items including crates. Crate rows display "[Crate]" prefix and an item count summary (e.g. "Supply Run (12 items)").
 - When a crate row is selected, the detail grid below shows the crate's contents.
 - When a non-crate row is selected, the detail grid is hidden or shows empty.
-- Condition and MaxRepair columns are editable on any item. Clicking the Condition cell opens an inline editor for CurrentHP/MaxHP. Clicking MaxRepair edits the percentage. For items with no damage (all zeros), the cells are blank. The user can enter damage on any item type â€” the model supports it universally.
+- Condition and MaxRepair columns are editable on any item. Clicking the Condition cell opens an inline editor for CurrentHP/MaxHP. Clicking MaxRepair edits the percentage. For items with no damage (all zeros), the cells are blank. The user can enter damage on any item type — the model supports it universally.
 - Buttons: "New Crate" (creates empty crate), "Move to Crate" (moves selected main-grid item into the selected crate), "Remove from Crate" (moves item from crate detail back to main inventory), "Delete Crate" (moves contents back to main inventory first, then removes the crate).
 - Crate rows cannot be dragged into other crate rows (no nesting).
 
