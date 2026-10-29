@@ -5,11 +5,9 @@ compaction or a new session. Written because build verification is **parked** un
 the owner finishes using the V1 app.
 
 **Delete this file** once §2 (parked build verification) is complete and committed.
-Everything in §3 lives permanently in `V2-TECHNICAL-SEED.md` and does not need to
-be carried forward from here.
+Nothing here needs to be carried forward.
 
-**Read `V2-TECHNICAL-SEED.md` first** if the topic is V2 architecture. This file is
-operational state, not design.
+This file is operational state, not design.
 
 ---
 
@@ -33,7 +31,7 @@ f00b4c84  Add V2 technical seed: Rust core, React view layer, Electron/Capacitor
 
 The session began as a design discussion about V2's technology stack. It expanded
 into repairing the backup script (which turned out to be silently broken) and then
-into repo hygiene. The design output is `V2-TECHNICAL-SEED.md`.
+into repo hygiene.
 
 ---
 
@@ -202,230 +200,12 @@ owner's and can ride along with either.
 
 ---
 
-## 3. The design discussion — V2
+## 3. The design discussion
 
-**Full output: `V2-TECHNICAL-SEED.md`** (committed, 662 lines, 13 sections). It is
-written as a handoff to an agent working on a Linux host and is authoritative for
-stack and architecture. Do not re-litigate §3.8 (rejected alternatives) or §3.9
-(grounding against real applications) without the owner.
-
-### Decided stack, in one line each
-
-| Layer | Choice |
-|---|---|
-| Engine | Rust, sans-IO pure domain core, compiles to native + WASM |
-| Server | Rust + axum + sqlx |
-| View | TypeScript + React + Vite + Tailwind |
-| Desktop | Electron, MDI shell, engine via `napi-rs` native addon |
-| Web | Vite SPA, engine as WASM |
-| Mobile | Capacitor (Android, iOS), engine as WASM |
-
-Two languages total: Rust and TypeScript.
-
-### The reasoning that is easy to lose
-
-These are the non-obvious conclusions. If the conversation compacts, these are the
-parts worth keeping:
-
-1. **Rust was chosen for AI-native development, not performance.** The compiler is
-   the strictest automated reviewer of agent-generated code. This app's bottleneck
-   was never GC — it was `DataGridView` and synchronous UI-thread work.
-2. **Electron over Tauri**, reversing an earlier lean, purely on the owner's
-   maturity-over-novelty requirement. The shell boundary is kept swappable.
-3. **MDI is not native anywhere except Win32.** macOS never had it, Linux WMs do not
-   provide it, Qt's `QMdiArea` is itself a reimplementation. So MDI is owned code in
-   every possible stack, which removes “has native MDI” as a selection criterion and
-   makes HTML/CSS a perfectly good substrate.
-4. **Qt was the strongest runner-up and failed on licensing**, not capability: Qt for
-   WebAssembly is GPLv3-or-commercial for open source, incompatible with the
-   permissive licence the owner wants. C++ with agents was the secondary objection.
-5. **The sans-IO core is mandatory, not stylistic.** `wasm32-unknown-unknown` has no
-   filesystem, no sockets, and a `SystemTime` that misbehaves, so a core assuming
-   ambient I/O cannot compile to the web and mobile targets.
-6. **No floats in domain values.** The same engine runs as WASM in a browser and
-   native on a server; float drift between them would destroy the determinism that
-   makes “identical results everywhere” true.
-7. **WASM-in-webview on mobile is the least-proven element.** Comparable apps (Anki,
-   Bitwarden, Element) all use FFI there. `uniffi` is the recorded escape hatch, and
-   it is additive because the engine has no UI coupling.
-8. **Traceability and coverage are one mechanism, not two rules.** Tests are the
-   regeneration oracle, so uncovered code is literally unregenerable code — 100%
-   coverage is what makes regenerability provable rather than aspirational. It also
-   means tests may never assert on implementation detail, or a correct regeneration
-   would fail them.
-8a. **An earlier draft claimed spec-alone regeneration was impossible. That was
-   wrong and the owner corrected it.** The claim was an argument from the economics
-   of *human* authorship dressed up as a property of specifications. Literate
-   programming and the formal specification languages failed on authorship cost, not
-   on logic, and agent authorship removes that cost. The standard is therefore
-   **spec alone is sufficient**, with three supporting mechanisms:
-   - **Tier 1 / generation.** Constants, rates and tables live as schema-validated
-     data in `spec/` and are *generated* into Rust and TypeScript. One home per
-     fact, so drift is impossible rather than merely detectable. Stronger than the
-     rule as originally stated.
-   - **The observable-behaviour boundary.** Specify anything where a different
-     choice changes observable behaviour; never specify implementation freedom
-     (`HashMap` vs `Vec`, variable names). Otherwise the spec becomes a prose
-     transliteration of the code and *both* can drift.
-   - **Drill Pass A withholds the tests from the regenerator.** Supplying them
-     measures test sufficiency, not spec sufficiency. The Pass A/B diff localises
-     the specification gap precisely.
-8c. **Facts are addressable nodes with generated reverse indexes** (seed §6.2.2).
-   The owner's spec process already generates reverse-reference indexes for
-   requirements (`REQ-099` gains `referenced by: REQ-100, REQ-101`); the same is
-   applied to facts, so changing a number shows its cascade. Four things were added
-   on top:
-   - **The fact index spans spec, code, tests AND fixtures.** A spec-only index
-     misses most of the blast radius. Test fixtures holding precomputed expected
-     values are the dangerous case — they either break mysteriously or keep passing
-     while meaning something different.
-   - **Axioms vs derived facts.** A derived fact stored as a literal is drift one
-     level up, so derived facts store the *formula* and are computed at generation
-     time. Only axioms are hand-editable. This makes the cascade transitive.
-   - **The index is committed**, against the usual convention for generated files,
-     because the diff of a one-number change *is* the blast radius report and the
-     diff is where it gets seen. A stale index fails the build.
-   - **`provenance` and `confidence` are required fields**, because this project's
-     facts are empirical observations of someone else's game, not design decisions.
-     When OE2 patches, the question is “which of our facts were observations, and
-     are they still true?” — `just impact` over every `observed` axiom answers it.
-     An `assumed` low-confidence axiom is also where V1's `spec/Ambiguities.md`
-     lands permanently.
-8d. **Code-side indexes already exist in the owner's process, and the annotation is
-   `@specref`, not the `Satisfies:`/`Verifies:` tags an earlier draft invented.**
-   Every `@specref` is collected into a generated index per package, so finding
-   where `REQ-100` is referenced in code means reading that package's index.
-   - **This is what preserves one-fact-one-place for code references:** the
-     `@specref` annotation is the *single declaration* of the relationship, and
-     both index families are derived views of it. An earlier draft listed code call
-     sites inside the spec-side fact node *as well as* assuming `@specref` in code,
-     which asserted the same relationship twice with no authoritative source. That
-     was the exact duplication §6.2 exists to prevent, reintroduced one level up.
-   - The spec-side fact node therefore stops at **package granularity** and points
-     at the code indexes. Inlining call sites would make a spec artifact depend on
-     scanning the code tree and churn `spec/` on every code movement.
-   - `just impact` is a **join** of both families, walking derived facts
-     transitively. Neither side is sufficient alone.
-   - Side benefit worth keeping: a `shells/` package index containing refs to domain
-     requirements is business logic having leaked out of the core. **The shell
-     indexes are an audit surface for founding rule 7 for free.**
-   - Honest correction recorded in the seed: a *fact-value* change moves the axiom
-     node, the generated constants and the derived facts — but **not** either index,
-     since citations and annotations did not change. The indexes say where to look;
-     enumeration comes from querying them. The seed recommends the change-impact
-     gate write its `just impact` closure manifest into the commit to close that gap.
-8e. **Markers are a concept, not a syntax; and reference generation is two-pass**
-   (seed §6.2.3, §6.2.4). `@specref` is javadoc-flavoured and an earlier draft
-   treated code annotations as the only marker mechanism.
-   - **General rule:** every artifact that *can* carry a marker does — doc comments
-     in code, `spec_refs` frontmatter in Markdown, structured keys in TOML/YAML.
-     Artifacts whose format cannot (`.resx`, binaries, images, mockup exports) get
-     a **sidecar**: `REQ-100 file:report.rdl section:DataSet/ColonyYield`.
-   - **Sidecars are strictly worse than in-band markers** because an in-band marker
-     travels with the thing it marks, while a sidecar is a second location that
-     silently rots on rename. Compensating control: **every sidecar entry must
-     resolve** — file exists, selector present — checked in CI.
-   - **Two passes.** Pass 1 = direct references, per package, parallel, content-hash
-     cached. Pass 2 = one global **impact graph** joining all pass-1 output, which is
-     what answers “change REQ-100, what might be impacted downstream?” Emit the
-     graph; derive `just impact`, the gate and visualisations from it. Do not
-     generate parallel closure files.
-   - **Typed edges are what make it usable:** `must-change` (derived facts,
-     generated constants — deterministic, enforced at any depth), `may-change`
-     (citations, implementations, tests — judgement, enforced within a hop budget,
-     start at 2), `informational` (never gated). Without this split the closure of a
-     widely-cited requirement is “most of the system”, which nobody reads — **that
-     is the mechanism by which the gate degrades into a rubber stamp.**
-   - Cycles among requirements must be collapsed, and reported as a spec smell: if A
-     justifies B and B justifies A, neither is grounded.
-   - **The limit, recorded honestly:** the graph answers “what references this”,
-     which is a proxy for “what is affected by this”. A missing marker is invisible
-     to it. This is the load-bearing reason every marker gate is mandatory rather
-     than advisory, and why closures are candidate lists rather than proofs.
-8f. **Cycles are not real. The owner's question drove a design fix** (seed §6.2.5).
-   An earlier draft said requirement cycles “will” happen and should be collapsed
-   and reported as a smell. That was treating a symptom. The correct position falls
-   straight out of one fact, one place:
-   - **The dependency graph is acyclic by construction. A cycle is never legitimate
-     — it is a *detector* for a violation of the rule.**
-   - Every apparent cycle resolves to one of two defects: **mis-decomposition** (one
-     fact modelled as several — simultaneous systems, recursive definitions, state
-     machines) or **edge-type conflation** (a symmetric relation represented as two
-     opposing directed dependency edges).
-   - The fix was to name the relations and traverse only the acyclic ones:
-     `derives-from`, `implements` and `verifies` form the dependency graph;
-     `constrains` and `references` are **symmetric, stored as undirected adjacency,
-     never walked for impact.** That is what stops them fabricating cycles. The
-     earlier draft had a single undifferentiated “citation” edge, which is where the
-     phantom cycles came from.
-   - **A cycle in the domain is not a cycle in the graph**, and this matters here
-     because the domain is loop-heavy (resources → commodities → ships → resources).
-     Domain loops live *inside* one node as content. Rule of thumb: if breaking the
-     cycle would require changing the game, it is a domain loop; if it only requires
-     reorganising the spec, it is a decomposition defect.
-   - SCC detection is retained as an **assertion**: `just cascade` fails the build
-     and prints the cycle path. No acceptable-cycles list, because admitting one
-     would concede that two facts can occupy one place.
-   - **Why it is load-bearing:** acyclicity is what makes closures terminate, hop
-     distance meaningful, `must-change` cascades deterministic, and the regeneration
-     drill well-founded. One fact, one place applied properly *implies* a DAG, and
-     the cycle check is how that rule gets tested.
-8b. **The drift principle is the owner's core thesis and the reason §6.2 exists:**
-   every value was decided by something; if the value changes and the thing that
-   decided it does not, the system is lying about itself. This is the origin of both
-   tribal knowledge and “AI slop” — an agent satisfies the prompt and has no reason
-   to notice it just invalidated a documented rationale. The problems live in the
-   gap, not in the changed value. Enforce by construction, never by review.
-9. **Rust branch coverage is not reliably measurable on stable** — `cargo-llvm-cov`
-   needs nightly for it and is inconsistent on generics. The gate is therefore
-   **100% region coverage** (sub-expression granular, stricter than line coverage)
-   plus scheduled mutation testing, which together prove more than a branch
-   percentage would. Do not “restore” a branch-coverage gate without rechecking
-   whether the tooling has improved.
-
-### Owner decisions captured this session (do not re-ask)
-
-- **Licence:** permissive. MIT recommended, BSD or GPLv2 also acceptable. Rationale:
-  negligible commercial-appropriation risk for a niche game tool.
-- **DynamoDB:** must remain an option for the faction server's durable storage.
-  Never fully implemented or tested in V1, so treat as a greenfield adapter.
-- **JSON file persistence:** retired. Does not scale. SQLite is the local store;
-  JSON survives only as V1 import, test fixtures, and user-facing export.
-- **SQLite local-only** is a first-class supported mode, not a degraded fallback.
-- **Test storage strategy:** SQLite in-memory plus DynamoDB Local.
-- **Auth:** never implemented or tested in V1. Greenfield, highest-risk Phase 4 item.
-- **V1 lifecycle:** stays maintained until switchover. Owner is the **sole active
-  user**; a few people trialled V1, none active, no substantive feedback ever
-  received. Therefore **no backwards-compatibility burden at all**.
-- **MDI on desktop** is deliberate and heavily used. Keep it.
-- **Visual consistency** is a nice-to-have, not a requirement.
-- **Maturity over novelty** is a hard requirement.
-- **Complete traceability with provable regenerability** (seed §6.2). Every
-  requirement traces both ways; it must be possible to delete a module and
-  reconstruct it from its REQ references and its tests.
-- **100% coverage** of the core, server logic and storage adapters (seed §6.3).
-  The owner's stated reasoning, which should be quoted in review: an uncoverable
-  branch usually means the failure cannot be injected, which means there is no
-  seam, which is a design defect. Fix the design, not the target.
-
-### Still open (from `V2-TECHNICAL-SEED.md` §11)
-
-1. **Spec process timing — this is the real blocker for V2 work.** The owner has a
-   brownfield spec process under development in another project, with hard format
-   requirements, schema validation, validated interlinking, and shardable ownership.
-   V2 will be reshaped into it. Seed §9 deliberately designs no spec format and
-   defines the seam. **Phases 0 and 1 are infrastructure and can start now; Phase 2
-   onwards should wait for the spec process**, because that is where requirements
-   begin driving code.
-2. Hosting and deployment target for `oe2-server`.
-3. Auth model specifics — local accounts, OAuth provider, or something else.
-4. Game API integration scope and which phase it lands in.
-5. iOS distribution — is there an Apple Developer account and a Mac or CI budget?
-   If not, iOS slips out of Phase 6.
-6. DynamoDB sub-question: alternative to PostgreSQL, or specifically for
-   faction/shared data while player data stays relational?
-
----
+Removed. The V2 design work this section recorded is maintained as its own project
+in a separate repository, and nothing in it is needed to continue the operational
+work below. The section number is kept so the cross-references in later sections
+still resolve.
 
 ## 4. Machine environment set up this session
 
@@ -464,7 +244,7 @@ desktop. Recorded here so it is not rediscovered.
 
 This session found three independent quality gates that reported success while
 failing. It is worth stating together because it is the evidence base for
-`V2-TECHNICAL-SEED.md` §2.3 and for §6's insistence that enforcement be mechanical
+§6's insistence that enforcement be mechanical
 rather than a matter of discipline.
 
 1. **`oebackup.ps1`** printed `Backup complete.` unconditionally while all three of
@@ -537,10 +317,9 @@ The pattern: none of these failed loudly. All three required someone to go looki
    of V2 and nothing else can be sequenced without it.
 4. **Optionally start V2 Phase 0** (repository skeleton, Cargo + pnpm workspaces,
    pinned toolchain, `justfile`, Linux CI, `legacy/` populated). Phase 0 and Phase 1
-   are pure infrastructure and do not depend on the spec process. See
-   `V2-TECHNICAL-SEED.md` §10.
+   are pure infrastructure and do not depend on the spec process..
 5. Consider whether `niabus` (192.168.4.36), currently being rebuilt, is intended to
-   become the Linux dev host from `V2-TECHNICAL-SEED.md` C2. If so, V2 Phase 0 may
+   become the intended Linux development host. If so, new work may
    be better started there than on this Windows desktop.
 
 ---

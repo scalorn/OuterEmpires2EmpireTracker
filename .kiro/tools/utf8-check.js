@@ -6,7 +6,8 @@
  *   node .kiro/tools/utf8-check.js
  *
  * Scans all .cs files in OE2EmpireTracker/ and OE2EmpireTracker.Tests/,
- * plus all .md files in spec/ and docs/.
+ * plus all .md files in spec/, docs/, .kiro/specs/, .kiro/steering/ and the
+ * repository root.
  * Reports any file containing bytes that decode to common mojibake patterns
  * (e.g. Ã¢â‚¬â€ instead of an em-dash, Ã¢â‚¬â€œ instead of an en-dash).
  *
@@ -30,6 +31,14 @@ const SCAN_DIRS = [
     { dir: 'docs', ext: '.md' },
     { dir: '.kiro/specs', ext: '.md' },
     { dir: '.kiro/steering', ext: '.md' },
+    // The repository root, non-recursively. Added after HANDOFF.md was found with 141
+    // double-encoded byte pairs that had survived every audit run, because the scan
+    // list was all subdirectories and nothing looked at the top level. The cause is a
+    // PowerShell `Get-Content -Raw` without -Encoding, which reads UTF-8 as
+    // Windows-1252, followed by `Set-Content -Encoding UTF8` writing the mojibake
+    // back. A detector with a hole in it reports clean, which is worse than no
+    // detector.
+    { dir: '.', ext: '.md', recurse: false },
 ];
 
 const SKIP_DIRS = new Set(['obj', 'bin', '.vs', 'node_modules', 'packages']);
@@ -99,7 +108,18 @@ function checkFile(filePath) {
         // Pattern: Ã followed by a character in the \x80-\xBF range (as decoded Latin-1)
         // In double-encoded UTF-8, the original lead byte 0xC0-0xFF becomes Ã (0xC3) + continuation
         // Look for Ã followed by characters like ¢ â ¡ etc.
-        const mojibakeMatch = line.match(/\xC3[\x80-\xBF]/);
+        // Two lead characters have to be checked, not one. After the buffer is
+        // decoded as UTF-8, a double-encoded original lead byte appears as a single
+        // Latin-1 character:
+        //
+        //   original 0xE2 (3-byte lead: em-dash, arrows, quotes) -> 'Ã' U+00C3
+        //   original 0xC2 (2-byte lead: section sign, plus-minus) -> 'Â' U+00C2
+        //
+        // Only the first was checked, so hundreds of occurrences of a double-encoded
+        // section sign ('Â§' for '§') went undetected across two commits. Both
+        // leads are now matched; neither 'Ã' nor 'Â' immediately followed by a
+        // Latin-1 supplement character occurs in legitimate text here.
+        const mojibakeMatch = line.match(/[\xC2\xC3][\x80-\xBF]/);
         if (mojibakeMatch) {
             const col = mojibakeMatch.index + 1;
             const snippet = line.substring(Math.max(0, mojibakeMatch.index - 10), mojibakeMatch.index + 20).trim();
